@@ -15,5 +15,6 @@ if now.weekday() == 4 and now.day == 13:
 else:
     print 'NO'
 
+print '<div class="disclaimer" style="font-size:10px; ">All times are in UTC</div>'
 print '</div></body></html>'
 
