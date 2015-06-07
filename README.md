@@ -11,11 +11,11 @@ How?
 
 Getting the playoff list is manual (for now):
 
- 1 Visit http://www.nhl.com/ice/schedulebyseason.htm
- 2 Click on print
- 3 Print as pdf
- 4 pdftotext
- 5 Alter the python script to point to the new file and print what you want (only the dates).
+ - Visit http://www.nhl.com/ice/schedulebyseason.htm
+ - Click on print
+ - Print as pdf
+ - pdftotext
+ - Alter the python script to point to the new file and print what you want (only the dates).
 
 
 How to make this work per team and regular season?
