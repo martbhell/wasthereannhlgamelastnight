@@ -2,6 +2,7 @@ import webapp2
 import os
 import datetime
 
+print "Hello"
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
@@ -12,6 +13,8 @@ class MainPage(webapp2.RequestHandler):
         now2 = datetime.datetime.now()
         yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
         yesterday = yesterday.strftime("%a %b %-d, %Y")
+
+        print "World"
 
 
         self.response.headers['Content-Type'] = 'text/html'
