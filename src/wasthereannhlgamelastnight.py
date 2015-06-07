@@ -6,7 +6,7 @@ print 'Content-Type: text/html'
 print ''
 print '<!DOCTYPE html>\
         <html lang ="en">\
-        <head><title>Is it Friday the 13th?</title></head>\
+        <head><title>Was there an NHL game last night?</title></head>\
         <body style="text-align: center; padding-top: 200px;">\
             <div class="content" style="font-weight: bold; font-size: 220px; font-family: Arial,sans-serif; text-decoration: none; color: black;">'
 
