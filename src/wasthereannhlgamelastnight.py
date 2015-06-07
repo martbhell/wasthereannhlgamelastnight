@@ -29,11 +29,11 @@ lines = ['Sat Jun 6, 2015', 'Mon Jun 8, 2015', 'Wed Jun 10, 2015', 'Sat Jun 13, 
 
 print 'Content-Type: text/html'
 print ''
-print '<!DOCTYPE html>\
-        <html lang ="en">\
-        <head><title>Was there an NHL game last night?</title></head>\
-        <body style="text-align: center; padding-top: 200px;">\
-            <div class="content" style="font-weight: bold; font-size: 220px; font-family: Arial,sans-serif; text-decoration: none; color: black;">'
+print '<!DOCTYPE html>\n\
+        <html lang ="en">\n\
+        <head><title>Was there an NHL game last night?</title></head>\n\
+        <body style="text-align: center; padding-top: 200px;">\n\
+            <div class="content" style="font-weight: bold; font-size: 220px; font-family: Arial,sans-serif; text-decoration: none; color: black;">\n'
 
 for game in lines:
     if yesterday == game:
@@ -43,6 +43,6 @@ for game in lines:
         print "NO"
         break
 
-print '<div class="disclaimer" style="font-size:10px; ">All times are in UTC</div>'
-print '<!-- NHL.com is the official web site of the National Hockey League. NHL, the NHL Shield, the word mark and image of the Stanley Cup, Center Ice name and logo, NHL Conference logos are registered trademarks. All NHL logos and marks and NHL team logos and marks depicted herein are the property of the NHL and the respective teams. This website is not affiliated with NHL. -->'
+print '<div class="disclaimer" style="font-size:10px; ">All times are in UTC</div>\n'
+print '<!-- NHL.com is the official web site of the National Hockey League. NHL, the NHL Shield, the word mark and image of the Stanley Cup, Center Ice name and logo, NHL Conference logos are registered trademarks. All NHL logos and marks and NHL team logos and marks depicted herein are the property of the NHL and the respective teams. This website is not affiliated with NHL. -->\n'
 print '</div></body></html>'
