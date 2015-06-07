@@ -44,4 +44,5 @@ for game in lines:
         break
 
 print '<div class="disclaimer" style="font-size:10px; ">All times are in UTC</div>'
+print '<!-- NHL.com is the official web site of the National Hockey League. NHL, the NHL Shield, the word mark and image of the Stanley Cup, Center Ice name and logo, NHL Conference logos are registered trademarks. All NHL logos and marks and NHL team logos and marks depicted herein are the property of the NHL and the respective teams. This website is not affiliated with NHL. -->'
 print '</div></body></html>'
