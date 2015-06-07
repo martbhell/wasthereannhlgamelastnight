@@ -20,9 +20,11 @@ def cmdline(command):
     )
     return process.communicate()[0]
 
-data = cmdline("grep 'VISITING TEAM' -B 20 -m 1 NHL.2014-2015.Playoffs.txt|grep 2015|grep -v PLAYOFF")
+#data = cmdline("grep 'VISITING TEAM' -B 20 -m 1 NHL.2014-2015.Playoffs.txt|grep 2015|grep -v PLAYOFF")
 
-lines = data.split('\n')
+#lines = data.split('\n')
+
+lines = ['Sat Jun 6, 2015', 'Mon Jun 8, 2015', 'Wed Jun 10, 2015', 'Sat Jun 13, 2015', 'Mon Jun 15, 2015', 'Wed Jun 17, 2015', '']
 
 ### What to print?
 
