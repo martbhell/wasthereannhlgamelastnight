@@ -1,24 +1,23 @@
-# grep "VISITING TEAM" -B 20 -m 1 NHL.2014-2015.Playoffs.txt
-
 import os
 import datetime
 
+# grep "VISITING TEAM" -B 20 -m 1 NHL.2014-2015.Playoffs.txt
 # today's and yesterday's date in the same format as in the schedule from NHL.
 # dates looks like this: Sat Jun 6, 2015
 now = datetime.datetime.now().strftime("%a %b %-d, %Y")
 yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
 yesterday = yesterday.strftime("%a %b %-d, %Y")
 
-from subprocess import PIPE, Popen
-dates={}
-
-def cmdline(command):
-    process = Popen(
-        args=command,
-        stdout=PIPE,
-        shell=True
-    )
-    return process.communicate()[0]
+#from subprocess import PIPE, Popen
+#dates={}
+#
+#def cmdline(command):
+#    process = Popen(
+#        args=command,
+#        stdout=PIPE,
+#        shell=True
+#    )
+#    return process.communicate()[0]
 
 #data = cmdline("grep 'VISITING TEAM' -B 20 -m 1 NHL.2014-2015.Playoffs.txt|grep 2015|grep -v PLAYOFF")
 
