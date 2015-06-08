@@ -89,10 +89,52 @@ def get_team(team):
     "WSH" : "Washington Capitals",
     }
 
+    teamnamedict = {
+    "ANA" : "DUCKS",
+    "ARI" : "COYOTES",
+    "BOS" : "BRUINS",
+    "BUF" : "SABRES",
+    "CAR" : "HURRICANES",
+    "CBJ" : "BLUEJACKETS",
+    "CGY" : "FLAMES",
+    "CHI" : "BLACKHAWKS",
+    "COL" : "AVALANCHE",
+    "DAL" : "STARS",
+    "DET" : "REDWINGS",
+    "EDM" : "OILERS",
+    "FLA" : "PANTHERS",
+    "LAK" : "KINGS",
+    "MIN" : "WILD",
+    "MTL" : "CANADIENS",
+    "NJD" : "DEVILS",
+    "NSH" : "PREDATORS",
+    "NYI" : "ISLANDERS",
+    "NYR" : "RANGERS",
+    "OTT" : "SENATORS",
+    "PHI" : "FLYERS",
+    "PIT" : "PENGUINS",
+    "SJS" : "SHARKS",
+    "STL" : "BLUES",
+    "TBL" : "LIGHTNING",
+    "TOR" : "MAPLELEAFS",
+    "VAN" : "CANUCKS",
+    "WPG" : "JETS",
+    "WSH" : "CAPITALS",
+    }
+
+    # Flip the values because I'm lazy
+    teamnamedict1 = {value: key for key, value in teamnamedict.items()}
+
+    # First check if someone put in the proper abbreviation
     try:
       return(teamdict1[team])
     except KeyError:
-      return("")
+    # If not, then try with the name of the team
+      try:
+        return(teamdict1[teamnamedict1[team]])
+      except:
+      # No team selected
+        return("")
 
 def get_team_colors(team):
     """Return a color"""
