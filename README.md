@@ -1,6 +1,13 @@
 wasthereannhlgamelastnight
 ==========================
 
+Usage
+=====
+
+ * http://wasthereannhlgamelastnight.appspot.com
+ * http://wasthereannhlgamelastnight.appspot.com/DET
+ * http://wasthereannhlgamelastnight.appspot.com/redwings
+
 Why?
 ====
 
