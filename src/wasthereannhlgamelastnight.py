@@ -125,6 +125,18 @@ def get_team(team):
     # Flip the values because I'm lazy
     teamnamedict1 = {value: key for key, value in teamnamedict.items()}
 
+    teamnameshortdict = {
+    "CANES" : "CAR",
+    "JACKETS" : "CBJ",
+    "HAWKS" : "CHI",
+    "WINGS" : "DET",
+    "PREDS" : "NSH",
+    "SENS" : "OTT",
+    "PENS" : "PIT",
+    "LEAFS" : "TOR",
+    "CAPS" : "WSH",
+    }
+
     # First check if someone put in the proper abbreviation
     try:
       return(teamdict1[team])
@@ -133,8 +145,12 @@ def get_team(team):
       try:
         return(teamdict1[teamnamedict1[team]])
       except:
-      # No team selected
-        return("")
+      # Then one could have one more for half names, like la, leafs, wings, jackets, etc
+        try:
+          return(teamdict1[teamnameshortdict[team]])
+        except:
+        # After that no team selected - nothing in title
+          return("")
 
 def get_team_colors(team):
     """Return a color"""
