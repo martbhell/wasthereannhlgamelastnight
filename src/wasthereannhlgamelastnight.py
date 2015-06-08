@@ -2,10 +2,9 @@ import webapp2
 import os
 import datetime
 
-print "Hello"
-
 class MainPage(webapp2.RequestHandler):
     def get(self):
+        """Return a friendly HTTP greeting."""
         #data = cmdline("grep 'VISITING TEAM' -B 20 -m 1 NHL.2014-2015.Playoffs.txt|grep 2015|grep -v PLAYOFF")
         #lines = data.split('\n')
         lines = ['Sat Jun 6, 2015', 'Mon Jun 8, 2015', 'Wed Jun 10, 2015', 'Sat Jun 13, 2015', 'Mon Jun 15, 2015', 'Wed Jun 17, 2015', '']
@@ -13,9 +12,6 @@ class MainPage(webapp2.RequestHandler):
         now2 = datetime.datetime.now()
         yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
         yesterday = yesterday.strftime("%a %b %-d, %Y")
-
-        print "World"
-
 
         self.response.headers['Content-Type'] = 'text/html'
         self.response.write('<!DOCTYPE html>\n\
@@ -26,10 +22,10 @@ class MainPage(webapp2.RequestHandler):
 
         for game in lines:
             if yesterday == game:
-                print "YES"
+                self.response.write("YES")
                 break
             else:
-                print "NO"
+                self.response.write("NO")
                 break
 
         self.response.write('<div class="disclaimer" style="font-size:10px; ">')
@@ -42,6 +38,14 @@ class MainPage(webapp2.RequestHandler):
         self.response.write('</div></body></html>')
 
 
-APP = webapp2.WSGIApplication([
-    ('/.*', MainPage),
+
+def handle_404(request, response, exception):
+    """Return a custom 404 error."""
+    response.write('Sorry, nothing at this URL.')
+    response.set_status(404)
+
+
+application = webapp2.WSGIApplication([
+    ('/', MainPage),
 ], debug=True)
+application.error_handlers[404] = handle_404
