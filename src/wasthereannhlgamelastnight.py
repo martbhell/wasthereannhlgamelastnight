@@ -16,15 +16,16 @@ class MainPage(webapp2.RequestHandler):
         team = uri.split('/')[3].upper()
         color = get_team_colors(team)
         fgcolor = color[0]
-        try:
-          bgcolor = color[1]
-        except IndexError:
-          bgcolor = "000000"
 
         self.response.headers['Content-Type'] = 'text/html'
         self.response.write('<!DOCTYPE html>\n\
         <html lang ="en">\n\
-        <head><title>Was there an NHL game last night?</title></head>\n\
+        <head><title>Was there an NHL game last night?')
+        try:
+          self.response.write(get_team(team))
+        except:
+          self.response.write(get_team("DET"))
+        self.response.write('</title></head>\n\
         <body style="text-align: center; padding-top: 200px;">\n\
             <div class="content" style="font-weight: bold; font-size: 220px; font-family: Arial,sans-serif; text-decoration: none; color: #')
         self.response.write(fgcolor)
@@ -91,7 +92,7 @@ def get_team(team):
     try:
       return(teamdict1[team])
     except KeyError:
-      return(teamdict1["PIT"])
+      return("")
 
 def get_team_colors(team):
     """Return a color"""
@@ -134,7 +135,7 @@ def get_team_colors(team):
     try:
       return(NHL[teamname])
     except:
-      return(NHL["Detroit Red Wings"])
+      return(["000000"])
 
 
 application = webapp2.WSGIApplication([
