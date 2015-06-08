@@ -13,7 +13,7 @@ class MainPage(webapp2.RequestHandler):
         yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
         yesterday = yesterday.strftime("%a %b %-d, %Y")
         uri = self.request.uri
-        team = uri.split('/')[3]
+        team = uri.split('/')[3].upper()
         color = get_team_colors(team)
         fgcolor = color[0]
         try:
