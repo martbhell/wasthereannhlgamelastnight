@@ -26,7 +26,7 @@ class MainPage(webapp2.RequestHandler):
         <html lang ="en">\n\
         <head><title>Was there an NHL game last night?</title></head>\n\
         <body style="text-align: center; padding-top: 200px;">\n\
-            <div class="content" style="font-weight: bold; font-size: 220px; font-family: Arial,sans-serif; text-decoration: none; color: ')
+            <div class="content" style="font-weight: bold; font-size: 220px; font-family: Arial,sans-serif; text-decoration: none; color: #')
         self.response.write(fgcolor)
         self.response.write(';">\n')
 
@@ -57,7 +57,7 @@ def get_team(team):
 
     teamdict1 = {
     "ANA" : "Anaheim Ducks",
-    "ARI" : "Arizona Coyototes",
+    "ARI" : "Arizona Coyotes",
     "BOS" : "Boston Bruins",
     "BUF" : "Buffalo Sabres",
     "CAR" : "Carolina Hurricanes",
@@ -85,13 +85,13 @@ def get_team(team):
     "TOR" : "Toronto Maple Leafs",
     "VAN" : "Vancouver Canucks",
     "WPG" : "Winnipeg Jets",
-    "WSH" : "Washington Captials"
+    "WSH" : "Washington Capitals",
     }
 
     try:
       return(teamdict1[team])
     except KeyError:
-      return(teamdict1["DET"])
+      return(teamdict1["PIT"])
 
 def get_team_colors(team):
     """Return a color"""
@@ -131,8 +131,10 @@ def get_team_colors(team):
         "Washington Capitals" :             ["CF132B", "00214E", "000000"],
         "Winnipeg Jets" :                   ["002E62", "0168AB", "A8A9AD" ]
     }
-
-    return(NHL[teamname])
+    try:
+      return(NHL[teamname])
+    except:
+      return(NHL["Detroit Red Wings"])
 
 
 application = webapp2.WSGIApplication([
