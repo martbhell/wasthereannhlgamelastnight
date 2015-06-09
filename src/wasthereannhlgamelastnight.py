@@ -31,13 +31,17 @@ class MainPage(webapp2.RequestHandler):
         self.response.write(fgcolor)
         self.response.write(';">\n')
 
-        for game in lines:
-            if yesterday == game:
+        # Start counter at zero
+        yes = 0
+        # Compare all the dates with today's date
+        for date in lines:
+            if yesterday == date:
+                yes += 1
+
+        if yes != 0:
                 self.response.write("YES")
-                break
-            else:
+        else:
                 self.response.write("NO")
-                break
 
         self.response.write('<div class="disclaimer" style="font-size:10px; ">')
         self.response.write(now2)
