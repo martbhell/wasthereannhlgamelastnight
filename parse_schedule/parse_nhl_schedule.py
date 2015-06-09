@@ -12,6 +12,10 @@ soup = BeautifulSoup(page.read())
 data = []
 data1 = []
 lines = []
+# Thought experiment:
+# Format1 test: { "CHI" : [ "Mon Jun 8, 2015", "Wed Jun 10, 2015" ], "TBL" : [ "Mon Jun 8, 2015", "Wed Jun 10, 2015" ] }
+# Format2 test: { "Wed Jun 8, 2015" : [ "CHI", "TBL" ] }
+teamdates = {}
 table = soup.find('table', attrs={'class':'data schedTbl'})
 table_body = table.find('tbody')
 
