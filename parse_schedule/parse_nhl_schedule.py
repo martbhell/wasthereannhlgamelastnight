@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# This requires BS4
+# This requires BS4 (findAll vs find_all)
 
 from BeautifulSoup import BeautifulSoup
 import urllib2
@@ -38,5 +38,8 @@ for tr in data1:
     date.encode("UTF8")
     lines.append(date)
 
+# Using the list as it is:
 print lines[0]
-print lines
+# printing without unicode - for copy-pasting
+linestr = "lines = " + str(lines).encode('utf8').replace("u'","'")
+print linestr
