@@ -129,6 +129,7 @@ def get_team(team):
     # Flip the values because I'm lazy
     teamnamedict1 = {value: key for key, value in teamnamedict.items()}
 
+    # The rest in this one:
     teamnameshortdict = {
     "CANES" : "CAR",
     "JACKETS" : "CBJ",
@@ -139,6 +140,10 @@ def get_team(team):
     "PENS" : "PIT",
     "LEAFS" : "TOR",
     "CAPS" : "WSH",
+    "TAMPA" : "TBL",
+    "LA" : "LAK",
+    "NJ" : "NJD",
+    "SJ" : "SJS",
     }
 
     # First check if someone put in the proper abbreviation
