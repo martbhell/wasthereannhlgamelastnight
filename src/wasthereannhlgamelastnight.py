@@ -57,7 +57,8 @@ def handle_404(request, response, exception):
     response.set_status(404)
 
 def get_team_from_city(city):
-    """Returns a team abbreviation from team name
+    """Returns a team abbreviation from cityname.
+       This is also to parse the teamName div class on NHL's schedule
     """
 
     citydict = {
@@ -102,8 +103,9 @@ def get_team_from_city(city):
       return("nope")
 
 def get_team(team):
-    """Returns a team name
-    This function is called twice. Could be improved.
+    """Returns a "City Team Name", as in teamdict1.
+    Is in that format because the dictionary in get_team_colors wants that.
+    This function is called twice, perhaps unnecessarily.
     """
 
     teamdict1 = {
@@ -138,6 +140,10 @@ def get_team(team):
     "WPG" : "Winnipeg Jets",
     "WSH" : "Washington Capitals",
     }
+
+    # To make DETROITREDWINGS return DET
+    teamdict1nospaces = { key:value.replace(" ", "").upper() for key, value in teamdict1.iteritems()}
+    teamdict1nospaces = {value: key for key, value in teamdict1nospaces.items()}
 
     teamnamedict = {
     "ANA" : "DUCKS",
@@ -184,6 +190,7 @@ def get_team(team):
     "PREDS" : "NSH",
     "SENS" : "OTT",
     "PENS" : "PIT",
+    "BOLTS" : "TBL",
     "LEAFS" : "TOR",
     "CAPS" : "WSH",
     "TAMPA" : "TBL",
@@ -207,9 +214,13 @@ def get_team(team):
         # Perhaps it's a city name?
           try:
             return(teamdict1[get_team_from_city(team)])
-        # After that no team selected - nothing in title
           except:
-            return("")
+          #Perhaps it's a citynameteamname?1
+            try:
+              return(teamdict1[teamdict1nospaces[team]])
+            except:
+            # After that no team selected - nothing in title
+              return("")
 
 def get_team_colors(team):
     """Return a color"""
