@@ -16,6 +16,12 @@ class MainPage(webapp2.RequestHandler):
         team = uri.split('/')[3].upper()
         color = get_team_colors(team)
         fgcolor = color[0]
+        try:
+          fgcolor2 = color[1]
+        except:
+          fgcolor2 = color[0]
+        if fgcolor == "000000":
+            fgcolor = fgcolor2
 
         self.response.headers['Content-Type'] = 'text/html'
         self.response.write('<!DOCTYPE html>\n\
