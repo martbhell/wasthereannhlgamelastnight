@@ -56,8 +56,54 @@ def handle_404(request, response, exception):
     response.write('Sorry, nothing at this URL.')
     response.set_status(404)
 
+def get_team_from_city(city):
+    """Returns a team abbreviation from team name
+    """
+
+    citydict = {
+    "ANA" : "ANAHEIM",
+    "ARI" : "ARIZONA",
+    "BOS" : "BOSTON",
+    "BUF" : "BUFFALO",
+    "CAR" : "CAROLINA",
+    "CBJ" : "COLUMBUS",
+    "CGY" : "CALGARY",
+    "CHI" : "CHICAGO",
+    "COL" : "COLORADO",
+    "DAL" : "DALLAS",
+    "DET" : "DETROIT",
+    "EDM" : "EDMONTON",
+    "FLA" : "FLORIDA",
+    "LAK" : "LOSANGELES",
+    "MIN" : "MINNESOTA",
+    "MTL" : "MONTREAL",
+    "NJD" : "NEWJERSEY",
+    "NSH" : "NASHVILLE",
+    "NYI" : "NYISLANDERS",
+    "NYR" : "NYRANGERS",
+    "OTT" : "OTTAWA",
+    "PHI" : "PHILADELPHIA",
+    "PIT" : "PITTSBURGH",
+    "SJS" : "SANJOSE",
+    "STL" : "STLOUIS",
+    "TBL" : "TAMPABAY",
+    "TOR" : "TORONTO",
+    "VAN" : "VANCOUVER",
+    "WPG" : "WINNIPEG",
+    "WSH" : "WASHINGTON",
+    }
+
+    # Flip because I'm lazy
+    citydictflip = {value: key for key, value in citydict.items()}
+
+    try:
+      return(citydictflip[city])
+    except KeyError:
+      return("nope")
+
 def get_team(team):
     """Returns a team name
+    This function is called twice. Could be improved.
     """
 
     teamdict1 = {
@@ -158,8 +204,12 @@ def get_team(team):
         try:
           return(teamdict1[teamnameshortdict[team]])
         except:
+        # Perhaps it's a city name?
+          try:
+            return(teamdict1[get_team_from_city(team)])
         # After that no team selected - nothing in title
-          return("")
+          except:
+            return("")
 
 def get_team_colors(team):
     """Return a color"""
