@@ -4,9 +4,13 @@ wasthereannhlgamelastnight
 Usage
 =====
 
+case insensitive:  
+
  * http://wasthereannhlgamelastnight.appspot.com
- * http://wasthereannhlgamelastnight.appspot.com/DET
+ * http://wasthereannhlgamelastnight.appspot.com/det
  * http://wasthereannhlgamelastnight.appspot.com/redwings
+ * http://wasthereannhlgamelastnight.appspot.com/nyrangers
+ * http://wasthereannhlgamelastnight.appspot.com/newyorkrangers
 
 Why?
 ====
@@ -34,8 +38,4 @@ Source
 
 Forked from https://github.com/amanjeev/isitfridaythe13th because it had the google appspot already in it and python :) Thanks!
 
-I am obsessed with Friday the 13th examples. This is just a trial app to test basics of Google App Engine.
-
-App URL: http://isitfridaythe13th.appspot.com/
-
-
+wasthereannhlgamelastnight(..) has been re-written a few times - it's no longer even close to the isitfridaythe13th - it now uses webapp2 for example instead of python print to stdout.
