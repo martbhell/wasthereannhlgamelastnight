@@ -39,6 +39,7 @@ for row in rows:
         data2.append(a.find('a').contents[0])
     teamdates[date[0]] = data2
 
+# team dates look like: {u'Mon Jun 15, 2015': [u'Tampa Bay', u'Chicago'], u'Sat Jun 13, 2015': [u'Chicago', u'Tampa Bay'], u'Wed Jun 17, 2015': [u'Chicago', u'Tampa Bay']}
 print teamdates
 
 # We want this in a list, like:
@@ -54,3 +55,5 @@ print lines[0]
 # printing without unicode - for copy-pasting
 linestr = "lines = " + str(lines).encode('utf8').replace("u'","'")
 print linestr
+teamdatestr = "teamdates = " + str(teamdates).encode('utf8').replace("u'","'")
+print teamdatestr
