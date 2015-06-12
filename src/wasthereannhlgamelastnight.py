@@ -4,9 +4,9 @@ import datetime
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
-        """Return a friendly HTTP greeting."""
-        #data = cmdline("grep 'VISITING TEAM' -B 20 -m 1 NHL.2014-2015.Playoffs.txt|grep 2015|grep -v PLAYOFF")
-        #lines = data.split('\n')
+        """Return a friendly HTTP greeting.
+        lines and teamdates dicts come from the parser, they are created and added manually.
+        """
         lines = ['Sat Jun 6, 2015', 'Mon Jun 8, 2015', 'Wed Jun 10, 2015', 'Sat Jun 13, 2015', 'Mon Jun 15, 2015', 'Wed Jun 17, 2015', '']
         teamdates = {'Mon Jun 15, 2015': ['Tampa Bay', 'Chicago'], 'Sat Jun 13, 2015': ['Chicago', 'Tampa Bay'], 'Wed Jun 17, 2015': ['Chicago', 'Tampa Bay'] }
 

@@ -12,6 +12,8 @@ case insensitive:
  * http://wasthereannhlgamelastnight.appspot.com/nyrangers
  * http://wasthereannhlgamelastnight.appspot.com/newyorkrangers
 
+*Chosing a team means you only get YES if that team played last night.*
+
 Why?
 ====
 
