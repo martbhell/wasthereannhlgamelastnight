@@ -8,12 +8,18 @@ class MainPage(webapp2.RequestHandler):
         #data = cmdline("grep 'VISITING TEAM' -B 20 -m 1 NHL.2014-2015.Playoffs.txt|grep 2015|grep -v PLAYOFF")
         #lines = data.split('\n')
         lines = ['Sat Jun 6, 2015', 'Mon Jun 8, 2015', 'Wed Jun 10, 2015', 'Sat Jun 13, 2015', 'Mon Jun 15, 2015', 'Wed Jun 17, 2015', '']
+        teamdates = {'Mon Jun 15, 2015': ['Tampa Bay', 'Chicago'], 'Sat Jun 13, 2015': ['Chicago', 'Tampa Bay'], 'Wed Jun 17, 2015': ['Chicago', 'Tampa Bay'] }
+
         now = datetime.datetime.now().strftime("%a %b %-d, %Y")
         now2 = datetime.datetime.now()
         yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
         yesterday = yesterday.strftime("%a %b %-d, %Y")
         uri = self.request.uri
         team = uri.split('/')[3].upper()
+        chosen_team = get_team(team) # returns "New York Rangers" on http://URL/NYR or "" on no match
+        chosen_city = get_city_from_team(chosen_team) # outputs "NY Rangers" on http://URL/NYR or "" 
+#        print "chosen team" + chosen_team
+#        print "chosen city" + chosen_city
         color = get_team_colors(team)
         fgcolor = color[0]
         try:
@@ -28,7 +34,7 @@ class MainPage(webapp2.RequestHandler):
         <html lang ="en">\n\
         <head><title>Was there an NHL game last night?')
         try:
-          self.response.write(get_team(team))
+          self.response.write(chosen_team)
         except:
           self.response.write(get_team("DET"))
         self.response.write('</title></head>\n\
@@ -39,15 +45,32 @@ class MainPage(webapp2.RequestHandler):
 
         # Start counter at zero
         yes = 0
-        # Compare all the dates with today's date
-        for date in lines:
-            if yesterday == date:
-                yes += 1
-
-        if yes != 0:
-                self.response.write("YES")
+        # Check in lines list if today's date is in the list.
+        if team == "FAVICON.ICO":
+          nothing = 0
+        elif team == "":
+          for date in lines:
+              if yesterday == date:
+                  yes += 1
+          if yes != 0:
+                  self.response.write("YES")
+          else:
+                  self.response.write("NO")
         else:
-                self.response.write("NO")
+          # Check if the team selected is in today's date
+          try:
+            for t in teamdates[yesterday]:
+                if t == chosen_city:
+                  yes += 1
+            if yes != 0:
+              self.response.write("YES")
+            else:
+              self.response.write("NO")
+          # keyerror comes if yesterday's date is not in the list - no games at all
+          except KeyError:
+              self.response.write("NO")
+
+
 
         self.response.write('<div class="disclaimer" style="font-size:10px; ">')
         # maybe https://github.com/simonwhitaker/github-fork-ribbon-css is better..
@@ -64,9 +87,54 @@ def handle_404(request, response, exception):
     response.write('Sorry, nothing at this URL.')
     response.set_status(404)
 
+def get_city_from_team(cityteam):
+    """Returns a city from teamname. It should return the teamName div class as in the NHL schedule.
+    """
+
+    citydict1 = {
+    "Anaheim" : "Anaheim Ducks",
+    "Arizona" : "Arizona Coyotes",
+    "Boston" : "Boston Bruins",
+    "Buffalo" : "Buffalo Sabres",
+    "Carolina" : "Carolina Hurricanes",
+    "Columbus" : "Columbus Blue Jackets",
+    "Calgary" : "Calgary Flames",
+    "Chicago" : "Chicago Black Hawks",
+    "Colorado" : "Colorado Avalanche",
+    "Dallas" : "Dallas Stars",
+    "Detroit" : "Detroit Red Wings",
+    "Edmonton" : "Edmonton Oilers",
+    "Florida" : "Florida Panthers",
+    "Los Angeles" : "Los Angeles Kings",
+    "Minnesota" : "Minnesota Wild",
+    "Montreal" : "Montreal Canadiens",
+    "New Jersey" : "New Jersey Devils",
+    "Nashville" : "Nashville Predators",
+    "NY Islanders" : "New York Islanders",
+    "NY Rangers" : "New York Rangers",
+    "Ottawa" : "Ottawa Senators",
+    "Philadelphia" : "Philadelphia Flyers",
+    "Pittsburgh" : "Pittsburgh Penguins",
+    "San Jose" : "San Jose Sharks",
+    "St. Louis" : "St Louis Blues",
+    "Tampa Bay" : "Tampa Bay Lightning",
+    "Toronto" : "Toronto Maple Leafs",
+    "Vancouver" : "Vancouver Canucks",
+    "Winnipeg" : "Winnipeg Jets",
+    "Washington" : "Washington Capitals",
+    }
+
+    # Flip because I'm lazy
+    citydict1flip = {value: key for key, value in citydict1.items()}
+
+    try:
+      return(citydict1flip[cityteam])
+    except KeyError:
+      return("")
+
+
 def get_team_from_city(city):
     """Returns a team abbreviation from cityname.
-       This is also to parse the teamName div class on NHL's schedule
     """
 
     citydict = {
@@ -113,7 +181,6 @@ def get_team_from_city(city):
 def get_team(team):
     """Returns a "City Team Name", as in teamdict1.
     Is in that format because the dictionary in get_team_colors wants that.
-    This function is called twice, perhaps unnecessarily.
     """
 
     teamdict1 = {
