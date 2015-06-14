@@ -10,6 +10,7 @@ case insensitive:
  * http://wasthereannhlgamelastnight.appspot.com/det
  * http://wasthereannhlgamelastnight.appspot.com/redwings
  * http://wasthereannhlgamelastnight.appspot.com/nyrangers
+ * http://wasthereannhlgamelastnight.appspot.com/tampabay
  * http://wasthereannhlgamelastnight.appspot.com/newyorkrangers
 
 *Chosing a team means you only get YES if that team played last night.*
