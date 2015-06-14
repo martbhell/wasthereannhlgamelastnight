@@ -12,9 +12,9 @@ class MainPage(webapp2.RequestHandler):
 
         #This is for making the source look "nice"
         YES = "\
-            YES"
+            YES\n"
         NO = "\
-            NO"
+            NO\n"
 
         now = datetime.datetime.now().strftime("%a %b %-d, %Y")
         now2 = datetime.datetime.now()
@@ -76,21 +76,22 @@ class MainPage(webapp2.RequestHandler):
           except KeyError:
               self.response.write(NO)
 
-
-        self.response.write('\n\
-            <link rel="stylesheet" href="/stylesheets/gh-fork-ribbon.css" />\
-            <!--[if lt IE 9]>\
-              <link rel="stylesheet" href="/stylesheets/gh-fork-ribbon.ie.css" />\
-              <![endif]-->\
-              <!-- TOP LEFT RIBBON: START COPYING HERE -->\
-              <div class="github-fork-ribbon-wrapper right-bottom">\
-                <div class="github-fork-ribbon">\
-                    <a href="https://github.com/martbhell/wasthereannhlgamelastnight">Fork me on GitHub</a>\
-                </div>\
-              </div>')
-        #self.response.write(now2)
         self.response.write('\
             </div>\n')
+
+        # The github banner
+        self.response.write('\n\
+            <link rel="stylesheet" href="/stylesheets/gh-fork-ribbon.css" />\n\
+            <!--[if lt IE 9]>\n\
+              <link rel="stylesheet" href="/stylesheets/gh-fork-ribbon.ie.css" />\n\
+              <![endif]-->\n\
+              <!-- TOP LEFT RIBBON: START COPYING HERE -->\n\
+              <div class="github-fork-ribbon-wrapper right-bottom">\n\
+                <div class="github-fork-ribbon">\n\
+                    <a href="https://github.com/martbhell/wasthereannhlgamelastnight">Fork me on GitHub</a>\n\
+                </div>\n\
+              </div>\n')
+        #self.response.write(now2)
         self.response.write('\n\
             <div class="disclaimer" style="font-size:10px; ">')
         self.response.write('<!-- NHL.com is the official web site of the National Hockey League. NHL, the NHL Shield, the word mark and image of the Stanley Cup, Center Ice name and logo, NHL Conference logos are registered trademarks. All NHL logos and marks and NHL team logos and marks depicted herein are the property of the NHL and the respective teams. This website is not affiliated with NHL. -->')
