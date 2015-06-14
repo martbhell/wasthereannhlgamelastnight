@@ -49,6 +49,8 @@ class MainPage(webapp2.RequestHandler):
         self.response.write(fgcolor)
         self.response.write(';">\n')
 
+
+        ### The YES/NO logic:
         # Start counter at zero
         yes = 0
         # Check in lines list if today's date is in the list.
@@ -79,13 +81,14 @@ class MainPage(webapp2.RequestHandler):
         self.response.write('\
             </div>\n')
 
+        ### End YES/NO
+
         # The github banner
         self.response.write('\n\
             <link rel="stylesheet" href="/stylesheets/gh-fork-ribbon.css" />\n\
             <!--[if lt IE 9]>\n\
               <link rel="stylesheet" href="/stylesheets/gh-fork-ribbon.ie.css" />\n\
               <![endif]-->\n\
-              <!-- TOP LEFT RIBBON: START COPYING HERE -->\n\
               <div class="github-fork-ribbon-wrapper right-bottom">\n\
                 <div class="github-fork-ribbon">\n\
                     <a href="https://github.com/martbhell/wasthereannhlgamelastnight">Fork me on GitHub</a>\n\
