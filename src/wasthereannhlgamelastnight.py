@@ -10,6 +10,12 @@ class MainPage(webapp2.RequestHandler):
         lines = ['Sat Jun 6, 2015', 'Mon Jun 8, 2015', 'Wed Jun 10, 2015', 'Sat Jun 13, 2015', 'Mon Jun 15, 2015', 'Wed Jun 17, 2015', '']
         teamdates = {'Mon Jun 15, 2015': ['Tampa Bay', 'Chicago'], 'Sat Jun 13, 2015': ['Chicago', 'Tampa Bay'], 'Wed Jun 17, 2015': ['Chicago', 'Tampa Bay'] }
 
+        #This is for making the source look "nice"
+        YES = "\
+            YES"
+        NO = "\
+            NO"
+
         now = datetime.datetime.now().strftime("%a %b %-d, %Y")
         now2 = datetime.datetime.now()
         yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
@@ -38,8 +44,8 @@ class MainPage(webapp2.RequestHandler):
         except:
           self.response.write(get_team("DET"))
         self.response.write('</title></head>\n\
-        <body style="text-align: center; padding-top: 200px;">\n\
-            <div class="content" style="font-weight: bold; font-size: 220px; font-family: Arial,sans-serif; text-decoration: none; color: #')
+        <body style="text-align: center; padding-top: 5px;">\n\
+            <div class="content" style="font-weight: bold; font-size: 220px; font-size: 30vw; font-family: Arial,sans-serif; text-decoration: none; color: #')
         self.response.write(fgcolor)
         self.response.write(';">\n')
 
@@ -53,9 +59,9 @@ class MainPage(webapp2.RequestHandler):
               if yesterday == date:
                   yes += 1
           if yes != 0:
-                  self.response.write("YES")
+                  self.response.write(YES)
           else:
-                  self.response.write("NO")
+                  self.response.write(NO)
         else:
           # Check if the team selected is in today's date
           try:
@@ -63,22 +69,28 @@ class MainPage(webapp2.RequestHandler):
                 if t == chosen_city:
                   yes += 1
             if yes != 0:
-              self.response.write("YES")
+              self.response.write(YES)
             else:
-              self.response.write("NO")
+              self.response.write(NO)
           # keyerror comes if yesterday's date is not in the list - no games at all
           except KeyError:
-              self.response.write("NO")
+              self.response.write(NO)
 
 
 
-        self.response.write('<div class="disclaimer" style="font-size:10px; ">')
         # maybe https://github.com/simonwhitaker/github-fork-ribbon-css is better..
-        self.response.write('<a href="https://github.com/martbhell/wasthereannhlgamelastnight"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/567c3a48d796e2fc06ea80409cc9dd82bf714434/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_darkblue_121621.png"></a>')
+        self.response.write('\n\
+            <a href="https://github.com/martbhell/wasthereannhlgamelastnight"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/567c3a48d796e2fc06ea80409cc9dd82bf714434/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_darkblue_121621.png"></a>\n')
         #self.response.write(now2)
-        self.response.write('</div>\n')
-        self.response.write('<!-- NHL.com is the official web site of the National Hockey League. NHL, the NHL Shield, the word mark and image of the Stanley Cup, Center Ice name and logo, NHL Conference logos are registered trademarks. All NHL logos and marks and NHL team logos and marks depicted herein are the property of the NHL and the respective teams. This website is not affiliated with NHL. -->\n')
-        self.response.write('</div></body></html>')
+        self.response.write('\
+            </div>\n')
+        self.response.write('\n\
+            <div class="disclaimer" style="font-size:10px; ">')
+        self.response.write('<!-- NHL.com is the official web site of the National Hockey League. NHL, the NHL Shield, the word mark and image of the Stanley Cup, Center Ice name and logo, NHL Conference logos are registered trademarks. All NHL logos and marks and NHL team logos and marks depicted herein are the property of the NHL and the respective teams. This website is not affiliated with NHL. -->')
+        self.response.write('\n\
+            </div>\n\
+        </body>\n\
+        </html>')
 
 
 
