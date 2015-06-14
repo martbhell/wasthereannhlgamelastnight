@@ -5,5 +5,8 @@ api_version: 1
 threadsafe: false
 
 handlers:
+- url: /stylesheets
+  static_dir: stylesheets
+
 - url: /.*
   script: wasthereannhlgamelastnight.application
