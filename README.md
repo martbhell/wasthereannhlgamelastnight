@@ -13,28 +13,29 @@ case insensitive:
  * http://wasthereannhlgamelastnight.appspot.com/tampabay
  * http://wasthereannhlgamelastnight.appspot.com/newyorkrangers
 
-*Chosing a team means you only get YES if that team played last night.*
+*Choosing a team means you only get YES if that team played last night.*
 
 Why?
 ====
 
-So I live in a timezone where the NHL games are often over at 5am in the morning. I tend to watch replays. I'm not always sure if there was a game last night. Schedules often have the results too. I tend to not want to know the results if I intend to watch the replay. It would be really nice if I could just browse to $URL/team and it would tell me if my team played last night or during stanley cup $URL would be enough.
+So I(author) live in a timezone where the NHL games are often over at 5am in the morning, sometimes they start then. I tend to watch replays. I'm not always sure if there was a game last night. Schedules often have the results too. I tend to not want to know the results if I intend to watch the replay. It would be really nice if I could just browse to $URL/team and it would tell me if my team played last night or during Stanley Cup $URL would be enough to just tell me if there was a game at all. Actually that could be handy for regular season too but I guess it's quite often at least one game on.
 
-How?
+How to update the schedule inside the scripts?
 ====
 
-Getting the playoff list is manual (for now):
+Updating the playoff list in wasthereannhlgamelastnight.py is done by:
 
- - Visit http://www.nhl.com/ice/schedulebyseason.htm
- - Click on print
- - Print as pdf
- - pdftotext
- - Alter the python script to point to the new file and print what you want (only the dates).
+ - Visit http://www.nhl.com/ice/schedulebyseason.htm and make sure it has the games
+ - Run ./parser/parse_nhl_schedule.py
+ - Confirm that it doesn't output garbage :)
+ - This outputs dictionaries that you can paste into wasthereannhlgamelastnight.py
 
-
-How to make this work per team and regular season?
+What about regular season and playoffs?
 ==================================================
-TBA
+
+Currently the script doesn't differentiate between playoffs and regular seasons.
+
+It just takes the dates from http://www.nhl.com/ice/schedulebyseason.htm
 
 Source
 ======
