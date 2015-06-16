@@ -45,6 +45,8 @@ class MainPage(webapp2.RequestHandler):
           self.response.write(get_team("DET"))
         self.response.write('</title>\n\
         <meta charset="UTF-8">\n\
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">\n\
+        <meta name="robots" content="index,follow">\n\
         <meta name="application-name" content="Was there an NHL game last night?">\n\
         <meta name="description" content="Indicates with a YES/NO if there was an NHL game on last night">\n\
         <meta name="keywords" content="YES,NO,NHL,icehockey,hockey,games,match,wasthereannhlgamelastnight">\n\
@@ -91,9 +93,9 @@ class MainPage(webapp2.RequestHandler):
 
         # The github banner
         self.response.write('\n\
-            <link rel="stylesheet" href="/stylesheets/gh-fork-ribbon.css" />\n\
+            <link rel="stylesheet" href="/stylesheets/gh-fork-ribbon.css" property="stylesheet"/>\n\
             <!--[if lt IE 9]>\n\
-              <link rel="stylesheet" href="/stylesheets/gh-fork-ribbon.ie.css" />\n\
+              <link rel="stylesheet" href="/stylesheets/gh-fork-ribbon.ie.css" property="stylesheet" />\n\
               <![endif]-->\n\
               <div class="github-fork-ribbon-wrapper right-bottom">\n\
                 <div class="github-fork-ribbon">\n\
