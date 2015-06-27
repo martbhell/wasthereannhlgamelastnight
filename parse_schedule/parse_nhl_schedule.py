@@ -66,8 +66,10 @@ for tr in data1:
 #print lines[0]
 # remove all duplicate entries - http://stackoverflow.com/questions/8200342/removing-duplicate-strings-from-a-list-in-python
 lines = set(lines)
-# printing without unicode - for copy-pasting
+# printing without unicode - for copy-pasting - not needed if importing
 linestr = "lines = " + str(lines).encode('utf8').replace("u'","'")
-print linestr
+print "lines = " + str(lines)
+#print linestr
 teamdatestr = "teamdates = " + str(teamdates).encode('utf8').replace("u'","'")
-print teamdatestr
+print "teamdates = " + str(teamdates)
+#print teamdatestr
