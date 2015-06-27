@@ -28,7 +28,7 @@ Updating the playoff list in wasthereannhlgamelastnight.py is done by:
  - Visit http://www.nhl.com/ice/schedulebyseason.htm and make sure it has the games
  - Run ./parser/parse_nhl_schedule.py
  - Confirm that it doesn't output garbage :)
- - This outputs dictionaries that you can paste into wasthereannhlgamelastnight.py
+ - This outputs dictionaries that you can put in NHL_schedule.py
 
 What about regular season and playoffs?
 ==================================================
