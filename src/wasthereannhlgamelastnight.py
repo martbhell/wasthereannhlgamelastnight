@@ -5,8 +5,8 @@ import NHL_schedule
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
-        """Return a friendly HTTP greeting.
-        lines and teamdates dicts come from the NHL_schedule.py file, it is created manually
+        """Return a <strike>friendly</strike> binary HTTP greeting.
+        lines and teamdates dictionaries come from the NHL_schedule.py file, it is created manually
         with ../parser/parse_nhl_schedule.py
 
         Examples:
@@ -16,27 +16,21 @@ class MainPage(webapp2.RequestHandler):
         lines = NHL_schedule.lines
         teamdates = NHL_schedule.teamdates
 
-        #This is for making the source look "nice"
-        YES = "\
-            YES\n"
-        NO = "\
-            NO\n"
+        #These are the defaults, only used with "CLI" user agents
+        YES = "YES\n"
+        NO = "NO\n"
 
         # Date format: Mon Jun 8, 2015
         now = datetime.datetime.now().strftime("%a %b %-d, %Y")
         now2 = datetime.datetime.now()
-        yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
-        yesterday = yesterday.strftime("%a %b %-d, %Y")
-#       For debug:
-#        yesterday = "Sun Oct 25, 2015"
-        ## End date formatting
 
+        useragent = self.request.headers['User-Agent'].split('/')[0]
+        cliagents = [ "curl", "Wget"]
+        # this sometimes (not for Links..) makes user agent without version, like curl, Safari
         uri = self.request.uri
+        # Team variable is the argument is used to call yesorno and get_team_colors functions
         team = uri.split('/')[3].upper()
-        chosen_team = get_team(team) # returns "New York Rangers" on http://URL/NYR or "" on no match
-        chosen_city = get_city_from_team(chosen_team) # outputs "NY Rangers" on http://URL/NYR or "" 
-#        print "chosen team" + chosen_team
-#        print "chosen city" + chosen_city
+        # Select a color, take second color if the first is black.
         color = get_team_colors(team)
         fgcolor = color[0]
         try:
@@ -46,87 +40,148 @@ class MainPage(webapp2.RequestHandler):
         if fgcolor == "000000":
             fgcolor = fgcolor2
 
-        ## Header
-        self.response.headers['Content-Type'] = 'text/html'
-        self.response.write('<!DOCTYPE html>\n\
-        <html lang ="en">\n\
-        <head><title>Was there an NHL game last night?')
-        try:
-          self.response.write(chosen_team)
-        except:
-          self.response.write(get_team("DET"))
-        self.response.write('</title>\n\
-        <meta charset="UTF-8">\n\
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">\n\
-        <meta name="robots" content="index,follow">\n\
-        <meta name="application-name" content="Was there an NHL game last night?">\n\
-        <meta name="description" content="Indicates with a YES/NO if there was an NHL game on last night">\n\
-        <meta name="keywords" content="YES,NO,NHL,icehockey,hockey,games,match,wasthereannhlgamelastnight">\n\
-        <meta name="author" content="Johan Guldmyr">\n\
-        </head>\n\
-        <body style="text-align: center; padding-top: 5px;">\n\
-            <div class="content" style="font-weight: bold; font-size: 220px; font-size: 30vw; font-family: Arial,sans-serif; text-decoration: none; color: #')
-        self.response.write(fgcolor)
-        self.response.write(';">\n')
+        ## Minimalistic style if from a CLI tool
+        if useragent in cliagents:
 
-
-        ### The YES/NO logic:
-        # Start counter at zero
-        yes = 0
-        # Check in lines list if today's date is in the list.
-        if team == "FAVICON.ICO":
-          nothing = 0
-        elif team == "":
-          for date in lines:
-              if yesterday == date:
-                  yes += 1
-          if yes != 0:
-                  self.response.write(YES)
-          else:
-                  self.response.write(NO)
-        else:
-          # Format: {'Sun Oct 25, 2015': [['Minnesota', 'Winnipeg'], ['Calgary', 'NY Rangers'], ['Los Angeles', 'Edmonton']], 'Fri Feb 12, 2016': [
-          # Check if the team selected is in today's date
-          try:
-            for list in teamdates[yesterday]:
-              for t in list:
-                if t == chosen_city:
-                  yes += 1
-            if yes != 0:
+            ### The YES/NO logic:
+            if yesorno(team):
               self.response.write(YES)
             else:
               self.response.write(NO)
-          # keyerror comes if yesterday's date is not in the list - no games at all
-          except KeyError:
+            ### End YES/NO logic
+
+        else:
+            # YES/NO prettifying..
+            YES = "\
+            YES\n"
+            NO = "\
+            NO\n"
+
+            # Headers
+            self.response.headers['Content-Type'] = 'text/html'
+            self.response.write('<!DOCTYPE html>\n\
+            <html lang ="en">\n\
+            <head><title>Was there an NHL game last night?')
+            try:
+              self.response.write(chosen_team)
+            except:
+              self.response.write(get_team("DET"))
+            self.response.write('</title>\n\
+            <meta charset="UTF-8">\n\
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">\n\
+            <meta name="robots" content="index,follow">\n\
+            <meta name="application-name" content="Was there an NHL game last night?">\n\
+            <meta name="description" content="Indicates with a YES/NO if there was an NHL game on last night">\n\
+            <meta name="keywords" content="YES,NO,NHL,icehockey,hockey,games,match,wasthereannhlgamelastnight">\n\
+            <meta name="author" content="Johan Guldmyr">\n\
+            </head>\n\
+            <body style="text-align: center; padding-top: 5px;">\n\
+                <div class="content" style="font-weight: bold; font-size: 220px; font-size: 30vw; font-family: Arial,sans-serif; text-decoration: none; color: #')
+            self.response.write(fgcolor)
+            self.response.write(';">\n')
+
+            ### The YES/NO logic:
+            if yesorno(team):
+              self.response.write(YES)
+            else:
               self.response.write(NO)
+            ### End YES/NO logic
 
-        self.response.write('\
-            </div>\n')
+            self.response.write('\
+                </div>\n')
 
-        ### End YES/NO logic
-
-        ### The github forkme
-        self.response.write('\n\
-            <link rel="stylesheet" href="/stylesheets/gh-fork-ribbon.css" property="stylesheet"/>\n\
-            <!--[if lt IE 9]>\n\
-              <link rel="stylesheet" href="/stylesheets/gh-fork-ribbon.ie.css" property="stylesheet" />\n\
-              <![endif]-->\n\
-              <div class="github-fork-ribbon-wrapper right-bottom">\n\
-                <div class="github-fork-ribbon">\n\
-                    <a href="https://github.com/martbhell/wasthereannhlgamelastnight">Fork me on GitHub</a>\n\
+            ### The github forkme
+            self.response.write('\n\
+                <link rel="stylesheet" href="/stylesheets/gh-fork-ribbon.css" property="stylesheet"/>\n\
+                <!--[if lt IE 9]>\n\
+                  <link rel="stylesheet" href="/stylesheets/gh-fork-ribbon.ie.css" property="stylesheet" />\n\
+                  <![endif]-->\n\
+                  <div class="github-fork-ribbon-wrapper right-bottom">\n\
+                    <div class="github-fork-ribbon">\n\
+                        <a href="https://github.com/martbhell/wasthereannhlgamelastnight">Fork me on GitHub</a>\n\
+                    </div>\n\
+                  </div>\n')
+            ### End github forkme
+            #self.response.write(now2)
+            self.response.write('\n\
+                <div class="disclaimer" style="font-size:10px; ">')
+            self.response.write('<!-- NHL.com is the official web site of the National Hockey League. NHL, the NHL Shield, the word mark and image of the Stanley Cup, Center Ice name and logo, NHL Conference logos are registered trademarks. All NHL logos and marks and NHL team logos and marks depicted herein are the property of the NHL and the respective teams. This website is not affiliated with NHL. -->')
+            self.response.write('\n\
+                <!-- Written by Johan Guldmyr - source is available at https://github.com/martbhell/wasthereannhlgamelastnight -->')
+            self.response.write('\n\
                 </div>\n\
-              </div>\n')
-        ### End github forkme
-        #self.response.write(now2)
-        self.response.write('\n\
-            <div class="disclaimer" style="font-size:10px; ">')
-        self.response.write('<!-- NHL.com is the official web site of the National Hockey League. NHL, the NHL Shield, the word mark and image of the Stanley Cup, Center Ice name and logo, NHL Conference logos are registered trademarks. All NHL logos and marks and NHL team logos and marks depicted herein are the property of the NHL and the respective teams. This website is not affiliated with NHL. -->')
-        self.response.write('\n\
-            <!-- Written by Johan Guldmyr - source is available at https://github.com/martbhell/wasthereannhlgamelastnight -->')
-        self.response.write('\n\
-            </div>\n\
-        </body>\n\
-        </html>\n')
+            </body>\n\
+            </html>\n')
+
+
+def yesorno(team):
+
+    """
+    Input: team/city/etc
+    Returns: True/False
+    """
+
+    # lines has dates 
+    # teamdates has dates in dict with lists of games
+    lines = NHL_schedule.lines
+    teamdates = NHL_schedule.teamdates
+
+    # Set to 1 for debug
+    debug = 0
+
+## Debug
+    if debug != 0:
+      yesterday = "Sun Oct 25, 2015"
+      print "yesterday:" + yesterday
+    else:
+      yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
+      yesterday = yesterday.strftime("%a %b %-d, %Y")
+##
+
+    chosen_team = get_team(team) # returns "New York Rangers" on http://URL/NYR or "" on no match
+    chosen_city = get_city_from_team(chosen_team) # outputs "NY Rangers" on http://URL/NYR or "".
+
+    ### The YES/NO logic:
+    # Start counter at zero
+    yes = 0
+
+    # Check in lines list if yesterday's date is in the list, continue on first hit (list is not ordered..).
+    if team == "FAVICON.ICO":
+      nothing = 0
+    elif team == "":
+      for date in lines:
+          if yesterday == date:
+              yes += 1
+              continue
+      if yes != 0:
+              return(True)
+      else:
+              if debug != 0:
+                print "D"
+              return(False)
+    else:
+      # A-Team has been chosen!
+      # Format of teamdates dict: {'Sun Oct 25, 2015': [['Minnesota', 'Winnipeg'], ['Calgary', 'NY Rangers'], ['Los Angeles', 'Edmonton']], 'Fri Feb 12, 2016': [
+      # Check if the team selected is in any of yesterday's lists
+      try:
+        for list in teamdates[yesterday]:
+          for t in list:
+            if t == chosen_city:
+              yes += 1
+              continue
+        if yes != 0:
+          if debug != 0:
+            print "A"
+          return(True)
+        else:
+          if debug != 0:
+            print "B"
+          return(False)
+      # keyerror comes if yesterday's date is not in the list - no games at all
+      except KeyError:
+          if debug != 0:
+            print "C"
+          return(False)
 
 
 def handle_404(request, response, exception):
