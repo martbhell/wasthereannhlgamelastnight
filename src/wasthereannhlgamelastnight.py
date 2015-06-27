@@ -6,12 +6,14 @@ import NHL_schedule
 class MainPage(webapp2.RequestHandler):
     def get(self):
         """Return a friendly HTTP greeting.
-        lines and teamdates dicts come from the parser, they are created and added manually.
-        """
+        lines and teamdates dicts come from the NHL_schedule.py file, it is created manually
+        with ../parser/parse_nhl_schedule.py
+
+        Examples:
 #        lines = ['Sat Jun 6, 2015', 'Mon Jun 8, 2015', 'Wed Jun 10, 2015', 'Sat Jun 13, 2015', 'Mon Jun 15, 2015', 'Wed Jun 17, 2015', '']
-#        teamdates = {'Mon Jun 15, 2015': ['Tampa Bay', 'Chicago'], 'Sat Jun 13, 2015': ['Chicago', 'Tampa Bay'], 'Wed Jun 17, 2015': ['Chicago', 'Tampa Bay'] }
+#        teamdates = {'Sun Oct 25, 2015': [['Minnesota', 'Winnipeg'], ['Calgary', 'NY Rangers'], ['Los Angeles', 'Edmonton']], 'Fri Feb 12, 2016': [ ...
+        """
         lines = NHL_schedule.lines
-#        print lines
         teamdates = NHL_schedule.teamdates
 
         #This is for making the source look "nice"
@@ -20,10 +22,15 @@ class MainPage(webapp2.RequestHandler):
         NO = "\
             NO\n"
 
+        # Date format: Mon Jun 8, 2015
         now = datetime.datetime.now().strftime("%a %b %-d, %Y")
         now2 = datetime.datetime.now()
         yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
         yesterday = yesterday.strftime("%a %b %-d, %Y")
+#       For debug:
+#        yesterday = "Sun Oct 25, 2015"
+        ## End date formatting
+
         uri = self.request.uri
         team = uri.split('/')[3].upper()
         chosen_team = get_team(team) # returns "New York Rangers" on http://URL/NYR or "" on no match
@@ -39,6 +46,7 @@ class MainPage(webapp2.RequestHandler):
         if fgcolor == "000000":
             fgcolor = fgcolor2
 
+        ## Header
         self.response.headers['Content-Type'] = 'text/html'
         self.response.write('<!DOCTYPE html>\n\
         <html lang ="en">\n\
@@ -77,9 +85,11 @@ class MainPage(webapp2.RequestHandler):
           else:
                   self.response.write(NO)
         else:
+          # Format: {'Sun Oct 25, 2015': [['Minnesota', 'Winnipeg'], ['Calgary', 'NY Rangers'], ['Los Angeles', 'Edmonton']], 'Fri Feb 12, 2016': [
           # Check if the team selected is in today's date
           try:
-            for t in teamdates[yesterday]:
+            for list in teamdates[yesterday]:
+              for t in list:
                 if t == chosen_city:
                   yes += 1
             if yes != 0:
@@ -93,9 +103,9 @@ class MainPage(webapp2.RequestHandler):
         self.response.write('\
             </div>\n')
 
-        ### End YES/NO
+        ### End YES/NO logic
 
-        # The github banner
+        ### The github forkme
         self.response.write('\n\
             <link rel="stylesheet" href="/stylesheets/gh-fork-ribbon.css" property="stylesheet"/>\n\
             <!--[if lt IE 9]>\n\
@@ -106,6 +116,7 @@ class MainPage(webapp2.RequestHandler):
                     <a href="https://github.com/martbhell/wasthereannhlgamelastnight">Fork me on GitHub</a>\n\
                 </div>\n\
               </div>\n')
+        ### End github forkme
         #self.response.write(now2)
         self.response.write('\n\
             <div class="disclaimer" style="font-size:10px; ">')
@@ -118,9 +129,8 @@ class MainPage(webapp2.RequestHandler):
         </html>\n')
 
 
-
 def handle_404(request, response, exception):
-    """Return a custom 404 error."""
+    """Return a custom 404 error. Currently unused"""
     response.write('Sorry, nothing at this URL.')
     response.set_status(404)
 
