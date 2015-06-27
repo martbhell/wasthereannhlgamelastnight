@@ -1,14 +1,18 @@
 import webapp2
 import os
 import datetime
+import NHL_schedule
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
         """Return a friendly HTTP greeting.
         lines and teamdates dicts come from the parser, they are created and added manually.
         """
-        lines = ['Sat Jun 6, 2015', 'Mon Jun 8, 2015', 'Wed Jun 10, 2015', 'Sat Jun 13, 2015', 'Mon Jun 15, 2015', 'Wed Jun 17, 2015', '']
-        teamdates = {'Mon Jun 15, 2015': ['Tampa Bay', 'Chicago'], 'Sat Jun 13, 2015': ['Chicago', 'Tampa Bay'], 'Wed Jun 17, 2015': ['Chicago', 'Tampa Bay'] }
+#        lines = ['Sat Jun 6, 2015', 'Mon Jun 8, 2015', 'Wed Jun 10, 2015', 'Sat Jun 13, 2015', 'Mon Jun 15, 2015', 'Wed Jun 17, 2015', '']
+#        teamdates = {'Mon Jun 15, 2015': ['Tampa Bay', 'Chicago'], 'Sat Jun 13, 2015': ['Chicago', 'Tampa Bay'], 'Wed Jun 17, 2015': ['Chicago', 'Tampa Bay'] }
+        lines = NHL_schedule.lines
+#        print lines
+        teamdates = NHL_schedule.teamdates
 
         #This is for making the source look "nice"
         YES = "\
