@@ -8,6 +8,7 @@ import urllib2
 url= 'http://www.nhl.com/ice/schedulebyseason.htm'
 page = urllib2.urlopen(url)
 soup = BeautifulSoup(page.read())
+debug = False
 
 data = []
 data1 = []
@@ -31,7 +32,12 @@ for row in rows:
 
     # This finds one specific div in the row
     date = row.find("div", {"class": "skedStartDateSite"})
-    date = [ele1.strip() for ele1 in date]
+    if debug:
+      print date
+    try:
+      date = [ele1.strip() for ele1 in date]
+    except TypeError:
+      continue
     data1.append([ele for ele in date if ele]) # Get rid of empty values
 
 ### teamdates
