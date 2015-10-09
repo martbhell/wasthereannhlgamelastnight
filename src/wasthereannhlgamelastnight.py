@@ -30,6 +30,7 @@ class MainPage(webapp2.RequestHandler):
         uri = self.request.uri
         # Team variable is the argument is used to call yesorno and get_team_colors functions
         team = uri.split('/')[3].upper()
+
         # Select a color, take second color if the first is black.
         color = get_team_colors(team)
         fgcolor = color[0]
@@ -125,6 +126,7 @@ def yesorno(team):
     # teamdates has dates in dict with lists of games
     lines = NHL_schedule.lines
     teamdates = NHL_schedule.teamdates
+    dateNHLformat = None
 
     # Set to 1 for debug
     debug = 0
@@ -159,6 +161,21 @@ def yesorno(team):
               if debug != 0:
                 print "D"
               return(False)
+
+    # Date chosen?
+    elif team.startswith("2"):
+      # Not accepting day in the middle
+      DATE_FORMATS = ['%d-%m-%Y', '%Y-%m-%d', '%d.%m.%Y', '%Y.%m.%d', '%d%m%Y', '%Y%m%d']
+      for date_format in DATE_FORMATS:
+          try:
+              dateNHLformat = datetime.datetime.strptime(team, date_format).strftime("%a %b %-d, %Y")
+          except ValueError:
+              pass
+          else:
+            break
+      if dateNHLformat and dateNHLformat in teamdates:
+        return(True)
+
     else:
       # A-Team has been chosen!
       # Format of teamdates dict: {'Sun Oct 25, 2015': [['Minnesota', 'Winnipeg'], ['Calgary', 'NY Rangers'], ['Los Angeles', 'Edmonton']], 'Fri Feb 12, 2016': [
