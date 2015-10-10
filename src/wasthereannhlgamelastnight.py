@@ -2,6 +2,7 @@ import webapp2
 import os
 import datetime
 import NHL_schedule
+import re
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
@@ -126,7 +127,7 @@ def yesorno(team):
     # teamdates has dates in dict with lists of games
     lines = NHL_schedule.lines
     teamdates = NHL_schedule.teamdates
-    dateNHLformat = None
+    requestcontainsanumber = None
 
     # Set to 1 for debug
     debug = 0
@@ -147,6 +148,14 @@ def yesorno(team):
     # Start counter at zero
     yes = 0
 
+    # Date chosen if there is a number in the URI
+    try:
+      parse = re.search('\d', team)
+      if parse != None:
+        requestcontainsanumber = True
+    except:
+      requestcontainsanumber = False
+
     # Check in lines list if yesterday's date is in the list, continue on first hit (list is not ordered..).
     if team == "FAVICON.ICO":
       nothing = 0
@@ -162,18 +171,9 @@ def yesorno(team):
                 print "D"
               return(False)
 
-    # Date chosen?
-    elif team.startswith("2"):
-      # Not accepting day in the middle
-      DATE_FORMATS = ['%d-%m-%Y', '%Y-%m-%d', '%d.%m.%Y', '%Y.%m.%d', '%d%m%Y', '%Y%m%d']
-      for date_format in DATE_FORMATS:
-          try:
-              dateNHLformat = datetime.datetime.strptime(team, date_format).strftime("%a %b %-d, %Y")
-          except ValueError:
-              pass
-          else:
-            break
-      if dateNHLformat and dateNHLformat in teamdates:
+    # Number in the request
+    elif requestcontainsanumber:
+      if dateapi(team):
         return(True)
 
     else:
@@ -200,6 +200,23 @@ def yesorno(team):
             print "C"
           return(False)
 
+def dateapi(team):
+    """Return true if there was a game on the date
+    Return false there was not and if date was unparseable"""
+    # Not accepting day in the middle
+    dateNHLformat = None
+    DATE_FORMATS = ['%d-%m-%Y', '%Y-%m-%d', '%d.%m.%Y', '%Y.%m.%d', '%d%m%Y', '%Y%m%d']
+    teamdates = NHL_schedule.teamdates
+
+    for date_format in DATE_FORMATS:
+        try:
+            dateNHLformat = datetime.datetime.strptime(team, date_format).strftime("%a %b %-d, %Y")
+        except ValueError:
+            pass
+    if dateNHLformat and dateNHLformat in teamdates:
+      return(True)
+    else:
+      return(False)
 
 def handle_404(request, response, exception):
     """Return a custom 404 error. Currently unused"""
