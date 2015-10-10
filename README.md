@@ -14,6 +14,7 @@ case insensitive:
  * http://wasthereannhlgamelastnight.appspot.com/newyorkrangers
  * http://wasthereannhlgamelastnight.appspot.com/20151222
  * http://wasthereannhlgamelastnight.appspot.com/22-12-2015
+ * http://wasthereannhlgamelastnight.appspot.com/22-12-2015?team=DET
 
 *Choosing a team means you only get YES if that team played last night.*
 *Choosing a date means you only get YES if there is a game on _that_ date.*

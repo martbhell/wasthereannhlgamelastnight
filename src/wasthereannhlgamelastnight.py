@@ -4,6 +4,8 @@ import datetime
 import NHL_schedule
 import re
 
+debug = False
+
 class MainPage(webapp2.RequestHandler):
     def get(self):
         """Return a <strike>friendly</strike> binary HTTP greeting.
@@ -128,12 +130,10 @@ def yesorno(team):
     lines = NHL_schedule.lines
     teamdates = NHL_schedule.teamdates
     requestcontainsanumber = None
-
-    # Set to 1 for debug
-    debug = 0
+    requesthasteamarg = None
 
 ## Debug
-    if debug != 0:
+    if debug:
       yesterday = "Sun Oct 25, 2015"
       print "yesterday:" + yesterday
     else:
@@ -156,6 +156,17 @@ def yesorno(team):
     except:
       requestcontainsanumber = False
 
+    # Should the arguments be parsed here?
+    # Team also chosen if there is a ?t= in the URI
+    try:
+      parseteam = re.search('\?', team)
+      if debug:
+        print "parseteam: " + parseteam
+      if parseteam != None:
+        requesthasteamarg = True
+    except:
+      requesthasteamarg = False
+
     # Check in lines list if yesterday's date is in the list, continue on first hit (list is not ordered..).
     if team == "FAVICON.ICO":
       nothing = 0
@@ -167,13 +178,13 @@ def yesorno(team):
       if yes != 0:
               return(True)
       else:
-              if debug != 0:
+              if debug:
                 print "D"
               return(False)
 
     # Number in the request
     elif requestcontainsanumber:
-      if dateapi(team):
+      if dateapi(team,requesthasteamarg):
         return(True)
 
     else:
@@ -187,34 +198,76 @@ def yesorno(team):
               yes += 1
               continue
         if yes != 0:
-          if debug != 0:
+          if debug:
             print "A"
           return(True)
         else:
-          if debug != 0:
+          if debug:
             print "B"
           return(False)
       # keyerror comes if yesterday's date is not in the list - no games at all
       except KeyError:
-          if debug != 0:
+          if debug:
             print "C"
           return(False)
 
-def dateapi(team):
+def dateapi(team,requesthasteamarg):
     """Return true if there was a game on the date
-    Return false there was not and if date was unparseable"""
+    Return false there was not and if date was unparseable
+    Takes URI requst and requesthasteamarg(true/false) as arguments"""
     # Not accepting day in the middle
     dateNHLformat = None
     DATE_FORMATS = ['%d-%m-%Y', '%Y-%m-%d', '%d.%m.%Y', '%Y.%m.%d', '%d%m%Y', '%Y%m%d']
     teamdates = NHL_schedule.teamdates
+    chosen_team = None
+    chosen_city = None
 
+    # a ?team= argument was provided. 
+    if requesthasteamarg:
+      try:
+        findteamarg = team.split("=")
+        if debug:
+          print findteamarg
+        if findteamarg[1]:
+          # remove last 5 characters before the first = - assume /DATE?team=TEAM
+          chosen_date = findteamarg[0][:-5]
+          chosen_team = get_team(findteamarg[1])
+          chosen_city = get_city_from_team(chosen_team)
+          if debug:
+            print chosen_date
+      except IndexError:
+        # /20151222?team=
+        nothing = 0
+
+    #### Date parsing
+    # Try to make the date provided into the NHL format
     for date_format in DATE_FORMATS:
         try:
             dateNHLformat = datetime.datetime.strptime(team, date_format).strftime("%a %b %-d, %Y")
         except ValueError:
             pass
+
+    # First assume it's only the date
     if dateNHLformat and dateNHLformat in teamdates:
       return(True)
+
+    # If arguments are provided, check if chosen_date has a date
+    if requesthasteamarg:
+      for date_format in DATE_FORMATS:
+          try:
+              dateNHLformat = datetime.datetime.strptime(chosen_date, date_format).strftime("%a %b %-d, %Y")
+          except ValueError:
+              pass
+          except UnboundLocalError:
+              pass
+
+      # if dateNHLformat exists a date has been chosen
+      if chosen_city and dateNHLformat:
+      # for each list (matchup) at the date chosen
+        for list in teamdates[dateNHLformat]:
+          for t in list:
+            if t == chosen_city:
+              return(True)
     else:
       return(False)
 
