@@ -8,52 +8,49 @@ import urllib2
 url= 'http://www.nhl.com/ice/schedulebyseason.htm'
 page = urllib2.urlopen(url)
 soup = BeautifulSoup(page.read())
-debug = False
+debug = True
 
-data = []
+data = {}
 data1 = []
 lines = []
 # Format2 test: { "Wed Jun 8, 2015" : [ "Tampa Bay", "Chicago" ] }
 teamdates = {}
-table = soup.find('table', attrs={'class':'data schedTbl'})
-table_body = table.find('tbody')
+div = soup.find('div', attrs={'class':'card'})
+div_body = div.findAll('div', attrs={'class':['day-table-horiz-scrollable-wrapper', 'section-subheader']})
 
-
-# Just get dates and put them in a list:
-rows = table_body.findAll('tr')
-for row in rows:
-
-### dates where there are games
-    # http://stackoverflow.com/questions/23377533/python-beautifulsoup-parsing-table
-    # This finds them, but the dates are listed twice each row so problem.
-    cols = row.findAll('td')
-    cols = [ele.text.strip() for ele in cols]
-    data.append([ele for ele in cols if ele]) # Get rid of empty values
-
-    # This finds one specific div in the row
-    date = row.find("div", {"class": "skedStartDateSite"})
-    if debug:
-      print date
-    try:
-      date = [ele1.strip() for ele1 in date]
-    except TypeError:
-      continue
-    data1.append([ele for ele in date if ele]) # Get rid of empty values
+#if debug: print len(div_body)
+# every even numbered element including zero is a date, the second one is the games on that date
+# put the matchups in each date's key
+for col in range(0, len(div_body)):
+  teams = {}
+  if col % 2 == 0:
+    matchups_ele = col +1
+    #print matchups_ele
+    print "############################" + div_body[col].contents[0]
+    date = div_body[col].contents[0]
+    #print div_body[matchups_ele]
+    data[date] = div_body[matchups_ele]
+    matchups = div_body[matchups_ele].findAll('div', attrs={'class':'wide-matchup'})
+    for i in range(len(matchups)):
+      teams[i] = []
+      for team in matchups[i].findAll('a', href=True):
+        teams[i].append(team['href'][1:])
+    print teams
 
 ### teamdates
     # date and teams playing that date:  first a <div class=teamName"> <a ..>Detroit</a></div>
     # data2 = [u'Chicago', u'Tampa Bay']
-    tivs = row.findAll("div", {"class": "teamName"})
-    data2 = []
-    for a in tivs:
-        data2.append(a.find('a').contents[0])
-    # first try to add append the list (of two teams) to the date (list and key) in teamdates dict
-    try:
-      teamdates[date[0]].append(data2)
-    except:
-    # If that date(list and key) does not exist, create it first
-      teamdates[date[0]] = []
-      teamdates[date[0]].append(data2)
+#    tivs = row.findAll("div", {"class": "teamName"})
+#    data2 = []
+#    for a in tivs:
+#        data2.append(a.find('a').contents[0])
+#    # first try to add append the list (of two teams) to the date (list and key) in teamdates dict
+#    try:
+#      teamdates[date[0]].append(data2)
+#    except:
+#    # If that date(list and key) does not exist, create it first
+#      teamdates[date[0]] = []
+#      teamdates[date[0]].append(data2)
 
 # team dates look like: {u'Mon Jun 15, 2015': [u'Tampa Bay', u'Chicago'], u'Sat Jun 13, 2015': [u'Chicago', u'Tampa Bay'], u'Wed Jun 17, 2015': [u'Chicago', u'Tampa Bay']}
 # without utf8: 'Fri Oct 9, 2015': [['Winnipeg', 'New Jersey'], ['NY Rangers', 'Columbus'], ['Toronto', 'Detroit'], ['Chicago', 'NY Islanders'], ['Arizona', 'Los Angeles']],
