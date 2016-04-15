@@ -22,20 +22,25 @@ div_body = div.findAll('div', attrs={'class':['day-table-horiz-scrollable-wrappe
 # every even numbered element including zero is a date, the second one is the games on that date
 # put the matchups in each date's key
 for col in range(0, len(div_body)):
-  teams = {}
+  teams = []
   if col % 2 == 0:
     matchups_ele = col +1
     #print matchups_ele
-    print "############################" + div_body[col].contents[0]
     date = div_body[col].contents[0]
+    data1.append(date)
+    #print "############################" + date
     #print div_body[matchups_ele]
+    teamdates[date] = []
     data[date] = div_body[matchups_ele]
     matchups = div_body[matchups_ele].findAll('div', attrs={'class':'wide-matchup'})
     for i in range(len(matchups)):
-      teams[i] = []
+      twoteams = []
       for team in matchups[i].findAll('a', href=True):
-        teams[i].append(team['href'][1:])
-    print teams
+        twoteams.append(team['href'][1:])
+
+      teamdates[date].append(twoteams)
+
+print data1
 
 ### teamdates
     # date and teams playing that date:  first a <div class=teamName"> <a ..>Detroit</a></div>
