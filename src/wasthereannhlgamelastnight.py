@@ -4,7 +4,7 @@ import datetime
 import NHL_schedule
 import re
 
-debug = True
+debug = False
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
@@ -277,40 +277,45 @@ def handle_404(request, response, exception):
     response.set_status(404)
 
 def get_city_from_team(cityteam):
-    """Returns a city from teamname. It should return the teamName div class as in the NHL schedule.
+    """Returns a city and teamname from teamname in lower case. It should return the contents of class wide-matchup from the NHL schedule
+    For historical reasons:
+      This function used to return a city from a team name, citydict1 had entries like:
+      "Washington" : "Washington Capitals",
+
+    This function is not named well anymore, but it works ;) Something like, get_city_team_from_team? Confusing in any case..
     """
 
     citydict1 = {
-    "Anaheim" : "Anaheim Ducks",
-    "Arizona" : "Arizona Coyotes",
-    "Boston" : "Boston Bruins",
-    "Buffalo" : "Buffalo Sabres",
-    "Carolina" : "Carolina Hurricanes",
-    "Columbus" : "Columbus Blue Jackets",
-    "Calgary" : "Calgary Flames",
-    "Chicago" : "Chicago Black Hawks",
-    "Colorado" : "Colorado Avalanche",
-    "Dallas" : "Dallas Stars",
-    "Detroit" : "Detroit Red Wings",
-    "Edmonton" : "Edmonton Oilers",
-    "Florida" : "Florida Panthers",
-    "Los Angeles" : "Los Angeles Kings",
-    "Minnesota" : "Minnesota Wild",
-    "Montreal" : "Montreal Canadiens",
-    "New Jersey" : "New Jersey Devils",
-    "Nashville" : "Nashville Predators",
-    "NY Islanders" : "New York Islanders",
-    "NY Rangers" : "New York Rangers",
-    "Ottawa" : "Ottawa Senators",
-    "Philadelphia" : "Philadelphia Flyers",
-    "Pittsburgh" : "Pittsburgh Penguins",
-    "San Jose" : "San Jose Sharks",
-    "St. Louis" : "St Louis Blues",
-    "Tampa Bay" : "Tampa Bay Lightning",
-    "Toronto" : "Toronto Maple Leafs",
-    "Vancouver" : "Vancouver Canucks",
-    "Winnipeg" : "Winnipeg Jets",
-    "Washington" : "Washington Capitals",
+    "ducks" : "Anaheim Ducks",
+    "coyotes" : "Arizona Coyotes",
+    "bruins" : "Boston Bruins",
+    "buffalo" : "Buffalo Sabres",
+    "hurricanes" : "Carolina Hurricanes",
+    "bluejackets" : "Columbus Blue Jackets",
+    "flames" : "Calgary Flames",
+    "blackhawks" : "Chicago Black Hawks",
+    "avalanche" : "Colorado Avalanche",
+    "stars" : "Dallas Stars",
+    "redwings" : "Detroit Red Wings",
+    "oilers" : "Edmonton Oilers",
+    "panthers" : "Florida Panthers",
+    "kings" : "Los Angeles Kings",
+    "wild" : "Minnesota Wild",
+    "canadiens" : "Montreal Canadiens",
+    "devils" : "New Jersey Devils",
+    "predators" : "Nashville Predators",
+    "islanders" : "New York Islanders",
+    "rangers" : "New York Rangers",
+    "senators" : "Ottawa Senators",
+    "flyers" : "Philadelphia Flyers",
+    "penguins" : "Pittsburgh Penguins",
+    "sharks" : "San Jose Sharks",
+    "blues" : "St Louis Blues",
+    "lightning" : "Tampa Bay Lightning",
+    "leafs" : "Toronto Maple Leafs",
+    "canucks" : "Vancouver Canucks",
+    "jets" : "Winnipeg Jets",
+    "capitals" : "Washington Capitals",
     }
 
     # Flip because I'm lazy
