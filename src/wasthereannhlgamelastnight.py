@@ -4,7 +4,7 @@ import datetime
 import NHL_schedule
 import re
 
-debug = False
+debug = True
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
@@ -13,8 +13,8 @@ class MainPage(webapp2.RequestHandler):
         with ../parser/parse_nhl_schedule.py
 
         Examples:
-#        lines = ['Sat Jun 6, 2015', 'Mon Jun 8, 2015', 'Wed Jun 10, 2015', 'Sat Jun 13, 2015', 'Mon Jun 15, 2015', 'Wed Jun 17, 2015', '']
-#        teamdates = {'Sun Oct 25, 2015': [['Minnesota', 'Winnipeg'], ['Calgary', 'NY Rangers'], ['Los Angeles', 'Edmonton']], 'Fri Feb 12, 2016': [ ...
+        #lines = set([u'Wednesday, Apr 27', u'Monday, Apr 25', u'Monday, Apr 18', u'Wednesday, Apr 20'])
+        #teamdates = {u'Wednesday, Apr 27': [[u'flyers', u'capitals'], [u'rangers', u'penguins'], [u'predators', u'ducks']], u'Monday, Apr 25': [[u'p .. )
         """
         lines = NHL_schedule.lines
         teamdates = NHL_schedule.teamdates
@@ -23,8 +23,8 @@ class MainPage(webapp2.RequestHandler):
         YES = "YES\n"
         NO = "NO\n"
 
-        # Date format: Mon Jun 8, 2015
-        now = datetime.datetime.now().strftime("%a %b %-d, %Y")
+        # Date format: Wednesday, Apr 27
+        now = datetime.datetime.now().strftime("%A %b %-d")
         now2 = datetime.datetime.now()
 
         useragent = self.request.headers['User-Agent'].split('/')[0]
@@ -134,11 +134,11 @@ def yesorno(team):
 
 ## Debug
     if debug:
-      yesterday = "Sun Oct 25, 2015"
+      yesterday = "Sunday, Apr 17"
       print "yesterday:" + yesterday
     else:
       yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
-      yesterday = yesterday.strftime("%a %b %-d, %Y")
+      yesterday = yesterday.strftime("%A %b %-d")
 ##
 
     chosen_team = get_team(team) # returns "New York Rangers" on http://URL/NYR or "" on no match
