@@ -24,7 +24,7 @@ class MainPage(webapp2.RequestHandler):
         NO = "NO\n"
 
         # Date format: Wednesday, Apr 27
-        now = datetime.datetime.now().strftime("%A %b %-d")
+        now = datetime.datetime.now().strftime("%A, %b %-d")
         now2 = datetime.datetime.now()
 
         useragent = self.request.headers['User-Agent'].split('/')[0]
@@ -137,11 +137,11 @@ def yesorno(team):
       yesterday = "Saturday, Apr 16"
       print "yesterday:" + yesterday
       yesterday4 = datetime.datetime.now() - datetime.timedelta(days=1)
-      yesterday4 = yesterday4.strftime("%A %b %-d")
+      yesterday4 = yesterday4.strftime("%A, %b %-d")
       print "yesterday4:" + yesterday4
     else:
       yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
-      yesterday = yesterday.strftime("%A %b %-d")
+      yesterday = yesterday.strftime("%A, %b %-d")
 ##
 
     chosen_team = get_team(team) # returns "New York Rangers" on http://URL/NYR or "" on no match
@@ -220,7 +220,7 @@ def dateapi(team,requesthasteamarg):
     Takes URI requst and requesthasteamarg(true/false) as arguments"""
     # Not accepting day in the middle
     dateNHLformat = None
-    DATE_FORMATS = ['%d-%m-%Y', '%Y-%m-%d', '%d.%m.%Y', '%Y.%m.%d', '%d%m%Y', '%Y%m%d']
+    DATE_FORMATS = ['%d-%m-%Y', '%Y-%m-%d', '%d.%m.%Y', '%Y.%m.%d', '%d%m%Y', '%Y%m%d', '%A, %b %-d']
     teamdates = NHL_schedule.teamdates
     chosen_team = None
     chosen_city = None
@@ -246,7 +246,7 @@ def dateapi(team,requesthasteamarg):
     # Try to make the date provided into the NHL format
     for date_format in DATE_FORMATS:
         try:
-            dateNHLformat = datetime.datetime.strptime(team, date_format).strftime("%A %b %-d")
+            dateNHLformat = datetime.datetime.strptime(team, date_format).strftime("%A, %b %-d")
         except ValueError:
             pass
 
@@ -258,7 +258,7 @@ def dateapi(team,requesthasteamarg):
     if requesthasteamarg:
       for date_format in DATE_FORMATS:
           try:
-              dateNHLformat = datetime.datetime.strptime(chosen_date, date_format).strftime("%A %b %-d")
+              dateNHLformat = datetime.datetime.strptime(chosen_date, date_format).strftime("%A, %b %-d")
           except ValueError:
               pass
           except UnboundLocalError:
