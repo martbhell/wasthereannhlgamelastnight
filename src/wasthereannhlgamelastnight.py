@@ -134,8 +134,11 @@ def yesorno(team):
 
 ## Debug
     if debug:
-      yesterday = "Sunday, Apr 17"
+      yesterday = "Saturday, Apr 16"
       print "yesterday:" + yesterday
+      yesterday4 = datetime.datetime.now() - datetime.timedelta(days=1)
+      yesterday4 = yesterday4.strftime("%A %b %-d")
+      print "yesterday4:" + yesterday4
     else:
       yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
       yesterday = yesterday.strftime("%A %b %-d")
@@ -243,7 +246,7 @@ def dateapi(team,requesthasteamarg):
     # Try to make the date provided into the NHL format
     for date_format in DATE_FORMATS:
         try:
-            dateNHLformat = datetime.datetime.strptime(team, date_format).strftime("%a %b %-d, %Y")
+            dateNHLformat = datetime.datetime.strptime(team, date_format).strftime("%A %b %-d")
         except ValueError:
             pass
 
@@ -255,7 +258,7 @@ def dateapi(team,requesthasteamarg):
     if requesthasteamarg:
       for date_format in DATE_FORMATS:
           try:
-              dateNHLformat = datetime.datetime.strptime(chosen_date, date_format).strftime("%a %b %-d, %Y")
+              dateNHLformat = datetime.datetime.strptime(chosen_date, date_format).strftime("%A %b %-d")
           except ValueError:
               pass
           except UnboundLocalError:
