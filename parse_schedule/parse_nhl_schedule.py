@@ -27,6 +27,7 @@ for col in range(0, len(div_body)):
     matchups_ele = col +1
     #print matchups_ele
     date = div_body[col].contents[0]
+    #data1 has a list of all the dates
     data1.append(date)
     #print "############################" + date
     #print div_body[matchups_ele]
@@ -38,46 +39,22 @@ for col in range(0, len(div_body)):
       for team in matchups[i].findAll('a', href=True):
         twoteams.append(team['href'][1:])
 
+      # teamdates has a dict of lists with dates as keys and matchups in the lists
       teamdates[date].append(twoteams)
 
-print data1
+### Making the output (before / after )
+# lines = set([u'Sun Oct 25, 2015', u'Fri Feb 12, 2016', u'Sat Dec 12, 2015', u'Tue Feb 9, 2016', u'Thu Nov 12, 2015', u'Mon Mar 14, 2016', u'Tue Feb 23, 2016', u'Fri Apr 8, 2016', u'Sun Mar 20, 2016', u'Fri Dec 1...)
+# lines = set([u'Wednesday, Apr 27', u'Monday, Apr 25', u'Monday, Apr 18', u'Wednesday, Apr 20', u'Tuesday, Apr 19', u'Sunday, Apr 24', u'Friday, Apr 22', u'Tuesday, Apr 26', u'Thursday, Apr 21', u'Saturday, Apr 23', u'Sunday, Apr 17'])
+####
+# teamdates = {u'Sun Oct 25, 2015': [[u'Minnesota', u'Winnipeg'], [u'Calgary', u'NY Rangers'], [u'Los Angeles', u'Edmonton']], u'Fri Feb 12, 2016': [[u'Montr\xe9al', u'Buffalo'], [u'Los Angeles', u'NY Rangers'], [u'Pittsburgh', u'Carolina'] ... }
+# teamdates = {u'Wednesday, Apr 27': [[u'flyers', u'capitals'], [u'rangers', u'penguins'], [u'predators', u'ducks']], u'Monday, Apr 25': [[u'penguins', u'rangers'], [u'blackhawks', u'blues'], [u'ducks', u'predators']], u'Monday, Apr 18': [[u'capi ... }
+###
 
-### teamdates
-    # date and teams playing that date:  first a <div class=teamName"> <a ..>Detroit</a></div>
-    # data2 = [u'Chicago', u'Tampa Bay']
-#    tivs = row.findAll("div", {"class": "teamName"})
-#    data2 = []
-#    for a in tivs:
-#        data2.append(a.find('a').contents[0])
-#    # first try to add append the list (of two teams) to the date (list and key) in teamdates dict
-#    try:
-#      teamdates[date[0]].append(data2)
-#    except:
-#    # If that date(list and key) does not exist, create it first
-#      teamdates[date[0]] = []
-#      teamdates[date[0]].append(data2)
-
-# team dates look like: {u'Mon Jun 15, 2015': [u'Tampa Bay', u'Chicago'], u'Sat Jun 13, 2015': [u'Chicago', u'Tampa Bay'], u'Wed Jun 17, 2015': [u'Chicago', u'Tampa Bay']}
-# without utf8: 'Fri Oct 9, 2015': [['Winnipeg', 'New Jersey'], ['NY Rangers', 'Columbus'], ['Toronto', 'Detroit'], ['Chicago', 'NY Islanders'], ['Arizona', 'Los Angeles']],
-#print teamdates
-### end teamdates
-
-# We want this in a list, like:
-# lines = ['Sat Jun 6, 2015', 'Mon Jun 8, 2015', 'Wed Jun 10, 2015', 'Sat Jun 13, 2015', 'Mon Jun 15, 2015', 'Wed Jun 17, 2015', '']
-
-for tr in data1:
-    d8 = tr[0]
-    d8.encode("UTF8")
-    lines.append(d8)
-
-# Using the list as it is:
-#print lines[0]
 # remove all duplicate entries - http://stackoverflow.com/questions/8200342/removing-duplicate-strings-from-a-list-in-python
-lines = set(lines)
+lines = set(data1)
 # printing without unicode - for copy-pasting - not needed if importing
 linestr = "lines = " + str(lines).encode('utf8').replace("u'","'")
 print "lines = " + str(lines)
 #print linestr
 teamdatestr = "teamdates = " + str(teamdates).encode('utf8').replace("u'","'")
 print "teamdates = " + str(teamdates)
-#print teamdatestr
