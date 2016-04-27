@@ -1,6 +1,8 @@
 wasthereannhlgamelastnight
 ==========================
 
+This works with the new NHL.com website (2016)
+
 Usage
 =====
 
