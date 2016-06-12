@@ -1,2 +1,2 @@
-lines = set([u'Wednesday, Jun 1', u'Monday, Jun 6', u'Sunday, Jun 12', u'Monday, May 30', u'Saturday, Jun 4', u'Thursday, Jun 9'])
-teamdates = {u'Wednesday, Jun 1': [[u'sharks', u'penguins']], u'Monday, Jun 6': [[u'penguins', u'sharks']], u'Sunday, Jun 12': [[u'penguins', u'sharks']], u'Monday, May 30': [[u'sharks', u'penguins']], u'Saturday, Jun 4': [[u'penguins', u'sharks']], u'Thursday, Jun 9': [[u'sharks', u'penguins']]}
+lines = set([u'Wednesday, Jun 15', u'Sunday, Jun 12'])
+teamdates = {u'Wednesday, Jun 15': [[u'sharks', u'penguins']], u'Sunday, Jun 12': [[u'penguins', u'sharks']]}
