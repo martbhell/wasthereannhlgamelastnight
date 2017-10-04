@@ -55,7 +55,7 @@ TODO / Known issues
 ====================
 
  * choosing a date and team doesn't work currently
- * the schedule (which is a file in this repo) is updated by me, would be cool if it was done periodically and automagically in the gcloud
+ * the schedule (which is a file in this repo) is updated by me, would be cool if it was done periodically and automagically in the <a href="gcloud.md">gcloud</a>.
 
 Source
 ======
