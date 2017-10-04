@@ -12,6 +12,7 @@ class MainPage(webapp2.RequestHandler):
         lines and teamdates dictionaries come from the NHL_schedule.py file, it is created manually
         with ../parser/parse_nhl_schedule.py
 
+        TODO: Update examples
         Examples:
         #lines = set([u'Wednesday, Apr 27', u'Monday, Apr 25', u'Monday, Apr 18', u'Wednesday, Apr 20'])
         #teamdates = {u'Wednesday, Apr 27': [[u'flyers', u'capitals'], [u'rangers', u'penguins'], [u'predators', u'ducks']], u'Monday, Apr 25': [[u'p .. )
@@ -23,8 +24,9 @@ class MainPage(webapp2.RequestHandler):
         YES = "YES\n"
         NO = "NO\n"
 
-        # Date format: Wednesday, Apr 27
-        now = datetime.datetime.now().strftime("%A, %b %-d")
+        # Date format: 2017-10-08
+	# These are only used while debugging
+        now = datetime.datetime.now().strftime("%Y-%m-%d")
         now2 = datetime.datetime.now()
 
         useragent = self.request.headers['User-Agent'].split('/')[0]
@@ -107,6 +109,7 @@ class MainPage(webapp2.RequestHandler):
                   </div>\n')
             ### End github forkme
             #self.response.write(now2)
+
             self.response.write('\n\
                 <div class="disclaimer" style="font-size:10px; ">')
             self.response.write('<!-- NHL.com is the official web site of the National Hockey League. NHL, the NHL Shield, the word mark and image of the Stanley Cup, Center Ice name and logo, NHL Conference logos are registered trademarks. All NHL logos and marks and NHL team logos and marks depicted herein are the property of the NHL and the respective teams. This website is not affiliated with NHL. -->')
@@ -134,14 +137,14 @@ def yesorno(team):
 
 ## Debug
     if debug:
-      yesterday = "Saturday, Apr 16"
+      yesterday = "2017-10-01"
       print "yesterday:" + yesterday
       yesterday4 = datetime.datetime.now() - datetime.timedelta(days=1)
-      yesterday4 = yesterday4.strftime("%A, %b %-d")
+      yesterday4 = yesterday4.strftime("%Y-%m-%d")
       print "yesterday4:" + yesterday4
     else:
       yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
-      yesterday = yesterday.strftime("%A, %b %-d")
+      yesterday = yesterday.strftime("%Y-%m-%d")
 ##
 
     chosen_team = get_team(team) # returns "New York Rangers" on http://URL/NYR or "" on no match
@@ -192,6 +195,7 @@ def yesorno(team):
 
     else:
       # A-Team has been chosen!
+      # TODO: update format
       # Format of teamdates dict: {'Sun Oct 25, 2015': [['Minnesota', 'Winnipeg'], ['Calgary', 'NY Rangers'], ['Los Angeles', 'Edmonton']], 'Fri Feb 12, 2016': [
       # Check if the team selected is in any of yesterday's lists
       try:
@@ -246,7 +250,7 @@ def dateapi(team,requesthasteamarg):
     # Try to make the date provided into the NHL format
     for date_format in DATE_FORMATS:
         try:
-            dateNHLformat = datetime.datetime.strptime(team, date_format).strftime("%A, %b %-d")
+            dateNHLformat = datetime.datetime.strptime(team, date_format).strftime("%Y-%m-%d")
         except ValueError:
             pass
 
@@ -258,7 +262,7 @@ def dateapi(team,requesthasteamarg):
     if requesthasteamarg:
       for date_format in DATE_FORMATS:
           try:
-              dateNHLformat = datetime.datetime.strptime(chosen_date, date_format).strftime("%A, %b %-d")
+              dateNHLformat = datetime.datetime.strptime(chosen_date, date_format).strftime("%Y-%m-%d")
           except ValueError:
               pass
           except UnboundLocalError:
@@ -496,7 +500,7 @@ def get_team(team):
 
 def get_team_colors(team):
     """Return a color"""
-    """ List is from https://github.com/teamcolors/teamcolors.github.io """
+    """ List is from https://github.com/jimniels/teamcolors.github.io """
 
     teamname = get_team(team)
 
@@ -529,6 +533,7 @@ def get_team_colors(team):
         "Tampa Bay Lightning" :             ["013E7D", "000000", "C0C0C0"],
         "Toronto Maple Leafs" :             ["003777"],
         "Vancouver Canucks" :               ["07346F", "047A4A", "A8A9AD"],
+        "Vegas Golden Knights" :            ["010101", "B4975A", "333F42"],
         "Washington Capitals" :             ["CF132B", "00214E", "000000"],
         "Winnipeg Jets" :                   ["002E62", "0168AB", "A8A9AD" ]
     }
