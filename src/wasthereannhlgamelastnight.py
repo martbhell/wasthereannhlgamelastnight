@@ -367,6 +367,7 @@ def get_team_from_city(city):
     "TBL" : "TAMPABAY",
     "TOR" : "TORONTO",
     "VAN" : "VANCOUVER",
+    "VGK" : "VEGAS",
     "WPG" : "WINNIPEG",
     "WSH" : "WASHINGTON",
     }
@@ -413,6 +414,7 @@ def get_team(team):
     "TBL" : "Tampa Bay Lightning",
     "TOR" : "Toronto Maple Leafs",
     "VAN" : "Vancouver Canucks",
+    "VGK" : "Vegas Golden Knights",
     "WPG" : "Winnipeg Jets",
     "WSH" : "Washington Capitals",
     }
@@ -450,6 +452,7 @@ def get_team(team):
     "TBL" : "LIGHTNING",
     "TOR" : "MAPLELEAFS",
     "VAN" : "CANUCKS",
+    "VGK" : "GOLDENKNIGHTS",
     "WPG" : "JETS",
     "WSH" : "CAPITALS",
     }
@@ -457,7 +460,7 @@ def get_team(team):
     # Flip the values because I'm lazy
     teamnamedict1 = {value: key for key, value in teamnamedict.items()}
 
-    # The rest in this one:
+    # Some extra "non-standard" ones
     teamnameshortdict = {
     "CANES" : "CAR",
     "JACKETS" : "CBJ",
@@ -473,6 +476,8 @@ def get_team(team):
     "LA" : "LAK",
     "NJ" : "NJD",
     "SJ" : "SJS",
+    "LV" : "VGK",
+    "LASVEGAS" : "VGK",
     }
 
     # First check if someone put in the proper abbreviation
