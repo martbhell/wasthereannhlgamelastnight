@@ -49,7 +49,10 @@ What about regular season and playoffs?
 
 Currently the script doesn't differentiate between playoffs and regular seasons.
 
-It just takes the dates from NHL.com's API
+It just takes the dates from NHL.com's API which can be accessed on https://statsapi.web.nhl.com/api/v1/schedule?startDate=2017-10-04&endDate=2018-04-09 - now there are more arguments to this API that I have not found any documentation for. Here's another example: 
+<pre>
+https://www.google.fi/url?sa=t&rct=j&q=&esrc=s&source=web&cd=7&cad=rja&uact=8&ved=0ahUKEwidtqvvn9fWAhWlApoKHd_VBVUQFghJMAY&url=https%3A%2F%2Fstatsapi.web.nhl.com%2Fapi%2Fv1%2Fschedule%3FstartDate%3D2016-01-31%26endDate%3D2016-02-05%26expand%3Dschedule.teams%2Cschedule.linescore%2Cschedule.broadcasts%2Cschedule.ticket%2Cschedule.game.content.media.epg%26leaderCategories%3D%26site%3Den_nhl%26teamId%3D&usg=AOvVaw293oxkI9Kgt_VuxY0dLmjf 
+</pre>
 
 TODO / Known issues
 ====================
