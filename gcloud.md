@@ -1,6 +1,8 @@
+https://cloud.google.com/sdk/docs/quickstart-debian-ubuntu
+
 because I forget:
 
-<pre>dev_appserver.py app.yaml
-gcloud preview app deploy
+<pre>
+gcloud app deploy
 </pre>
 
