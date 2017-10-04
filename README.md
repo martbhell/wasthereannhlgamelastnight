@@ -1,7 +1,7 @@
 wasthereannhlgamelastnight
 ==========================
 
-This works with the new NHL.com website (2016)
+This works with the new NHL.com website (2017-2018)
 
 Usage
 =====
@@ -18,8 +18,11 @@ case insensitive:
  * http://wasthereannhlgamelastnight.appspot.com/22-12-2015
  * http://wasthereannhlgamelastnight.appspot.com/22-12-2015?team=DET
 
-*Choosing a team means you only get YES if that team played last night.*
-*Choosing a date means you only get YES if there is a game on _that_ date.*
+What does this mean?
+
+ * *Choosing a team means you only get YES if that team played last night.*
+ * *Choosing a date means you only get YES if there is a game on _that_ date.*
+ * *Choosing a team and a date doesn't work currently*
 
 Why?
 ====
@@ -31,8 +34,7 @@ How to update the schedule inside the scripts?
 
 Updating the playoff list in wasthereannhlgamelastnight.py is done by:
 
- - Visit http://www.nhl.com/ice/schedulebyseason.htm and make sure it has the games
- - Run ./parser/parse_nhl_schedule.py
+ - Run ./parser/parse_nhl_schedule_json.py
  - Confirm that it doesn't output garbage :)
  - This outputs dictionaries that you can put in NHL_schedule.py
 
@@ -41,7 +43,7 @@ What about regular season and playoffs?
 
 Currently the script doesn't differentiate between playoffs and regular seasons.
 
-It just takes the dates from http://www.nhl.com/ice/schedulebyseason.htm
+It just takes the dates from NHL.com's API
 
 Source
 ======
