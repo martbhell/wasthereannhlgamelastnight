@@ -10,12 +10,11 @@ class MainPage(webapp2.RequestHandler):
     def get(self):
         """Return a <strike>friendly</strike> binary HTTP greeting.
         lines and teamdates dictionaries come from the NHL_schedule.py file, it is created manually
-        with ../parser/parse_nhl_schedule.py
+        with ../parser/parse_nhl_schedule_json.py
 
-        TODO: Update examples
         Examples:
-        #lines = set([u'Wednesday, Apr 27', u'Monday, Apr 25', u'Monday, Apr 18', u'Wednesday, Apr 20'])
-        #teamdates = {u'Wednesday, Apr 27': [[u'flyers', u'capitals'], [u'rangers', u'penguins'], [u'predators', u'ducks']], u'Monday, Apr 25': [[u'p .. )
+	lines = set([u'2017-11-14', u'2018-04-04', u'2017-11-01'])
+	teamdates = {u'2017-11-14': [[u'Buffalo Sabres', u'Pittsburgh Penguins'], [u'Columbus Blue Jackets', u'Montr\xe9al Canadiens'] ], u'2018-04-04': [[u'Ottawa Senators', u'Buffalo Sabres'], [u'Chicago Blackhawks', u'St. Louis Blues']] }
         """
         lines = NHL_schedule.lines
         teamdates = NHL_schedule.teamdates
@@ -69,7 +68,7 @@ class MainPage(webapp2.RequestHandler):
             <html lang ="en">\n\
             <head><title>Was there an NHL game last night?')
             try:
-              self.response.write(chosen_team)
+              self.response.write(get_team(team))
             except:
               self.response.write(get_team("DET"))
             self.response.write('</title>\n\
@@ -195,8 +194,7 @@ def yesorno(team):
 
     else:
       # A-Team has been chosen!
-      # TODO: update format
-      # Format of teamdates dict: {'Sun Oct 25, 2015': [['Minnesota', 'Winnipeg'], ['Calgary', 'NY Rangers'], ['Los Angeles', 'Edmonton']], 'Fri Feb 12, 2016': [
+      # Format of teamdates dict: {'2017-10-04': [['Minnesota', 'Winnipeg'], ['Calgary', 'NY Rangers'], ['Los Angeles', 'Edmonton']], '2017-10-22': [
       # Check if the team selected is in any of yesterday's lists
       try:
         for list in teamdates[yesterday]:
@@ -225,6 +223,7 @@ def dateapi(team,requesthasteamarg):
     # Not accepting day in the middle
     dateNHLformat = None
     DATE_FORMATS = ['%d-%m-%Y', '%Y-%m-%d', '%d.%m.%Y', '%Y.%m.%d', '%d%m%Y', '%Y%m%d', '%A, %b %-d']
+    lines = NHL_schedule.lines
     teamdates = NHL_schedule.teamdates
     chosen_team = None
     chosen_city = None
@@ -269,7 +268,7 @@ def dateapi(team,requesthasteamarg):
               pass
 
       # if dateNHLformat exists a date has been chosen
-      if chosen_city and dateNHLformat:
+      if chosen_city and dateNHLformat and dateNHLformat in lines:
       # for each list (matchup) at the date chosen
         for list in teamdates[dateNHLformat]:
           for t in list:
@@ -538,7 +537,7 @@ def get_team_colors(team):
         "Tampa Bay Lightning" :             ["013E7D", "000000", "C0C0C0"],
         "Toronto Maple Leafs" :             ["003777"],
         "Vancouver Canucks" :               ["07346F", "047A4A", "A8A9AD"],
-        "Vegas Golden Knights" :            ["010101", "B4975A", "333F42"],
+        "Vegas Golden Knights" :            ["333F42", "B4975A", "010101"],
         "Washington Capitals" :             ["CF132B", "00214E", "000000"],
         "Winnipeg Jets" :                   ["002E62", "0168AB", "A8A9AD" ]
     }
