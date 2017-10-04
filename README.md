@@ -12,11 +12,11 @@ case insensitive:
  * http://wasthereannhlgamelastnight.appspot.com/det
  * http://wasthereannhlgamelastnight.appspot.com/redwings
  * http://wasthereannhlgamelastnight.appspot.com/nyrangers
- * http://wasthereannhlgamelastnight.appspot.com/tampabay
+ * http://wasthereannhlgamelastnight.appspot.com/Vgk
  * http://wasthereannhlgamelastnight.appspot.com/newyorkrangers
- * http://wasthereannhlgamelastnight.appspot.com/20151222
- * http://wasthereannhlgamelastnight.appspot.com/22-12-2015
- * http://wasthereannhlgamelastnight.appspot.com/22-12-2015?team=DET
+ * http://wasthereannhlgamelastnight.appspot.com/20171222
+ * http://wasthereannhlgamelastnight.appspot.com/22-12-2017
+ * http://wasthereannhlgamelastnight.appspot.com/22-12-2017?team=DET
 
 What does this mean?
 
