@@ -199,7 +199,7 @@ def yesorno(team):
       try:
         for list in teamdates[yesterday]:
           for t in list:
-            if t == chosen_city:
+            if t == chosen_team:
               yes += 1
               continue
         if yes != 0:
