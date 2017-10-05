@@ -59,6 +59,7 @@ TODO / Known issues
 
  * choosing a date and team doesn't work currently
  * the schedule (which is a file in this repo) is updated by me, would be cool if it was done periodically and automagically in the <a href="gcloud.md">gcloud</a>.
+ * could be nice if one could get debug errors to the browser console, rather than having to run the local app_devserver
 
 Source
 ======
