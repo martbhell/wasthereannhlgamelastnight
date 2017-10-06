@@ -1,0 +1,4 @@
+cron:
+- description: update schedule
+  url: /update_schedule
+  schedule: every day 22:00

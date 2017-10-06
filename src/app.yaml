@@ -5,8 +5,16 @@ api_version: 1
 threadsafe: false
 
 handlers:
+- url: /(robots\.txt|favicon\.ico)
+  static_files: static/\1
+  upload: static/.*
+
 - url: /stylesheets
   static_dir: stylesheets
+
+- url: /update_schedule
+  script: update_schedule.application
+  login: admin
 
 - url: /.*
   script: wasthereannhlgamelastnight.application
