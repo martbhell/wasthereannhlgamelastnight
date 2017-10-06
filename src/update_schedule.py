@@ -20,5 +20,5 @@ class MainPage(webapp2.RequestHandler):
     self.response.write('Using bucket name: ' + bucket_name + '\n\n')
   
 
-app = webapp2.WSGIApplication([('/', MainPage)],
+application = webapp2.WSGIApplication([('/.*', MainPage)],
                                       debug=True)
