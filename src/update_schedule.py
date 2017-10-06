@@ -5,7 +5,12 @@ import webapp2
 
 from google.appengine.api import app_identity
 
-# let's update the schedule!
+# plan:
+# one, read/list file in the bucket in google cloud storage, grab checksum of file
+# two, run the parser (fetch upstream schedule, parse it). We could move the parser into this file or even better import it
+# three, write the nhl schedule to a tempfile, calculate checksum
+# four, only if checksum is different than the existing one, write to bucket
+# five, remove tempfile
 
 class MainPage(webapp2.RequestHandler):
   """Main page for GCS demo application."""

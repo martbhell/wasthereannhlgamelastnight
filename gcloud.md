@@ -1,3 +1,6 @@
+Backend / Development notes
+===========================
+
 https://cloud.google.com/sdk/docs/quickstart-debian-ubuntu
 
 because I forget:
@@ -15,3 +18,5 @@ sudo apt-get install google-cloud-sdk-app-engine-python
 
 curl http://localhost:8080
 </pre>
+
+maybe the cloudstorage library in lib/ shouldn't/doesn't have to be in here?
