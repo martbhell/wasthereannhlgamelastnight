@@ -39,10 +39,7 @@ How to update the schedule inside the scripts?
 
 Updating the playoff list in wasthereannhlgamelastnight.py is done by:
 
- - Run ./parser/parse_nhl_schedule_json.py
- - Confirm that it doesn't output garbage :)
- - This outputs a list and a dictionary that you put in NHL_schedule.py
- - Then run gcloud commands to update your app
+ - Adding cron.yaml to gcloud
 
 What about regular season and playoffs?
 ==================================================
@@ -58,12 +55,15 @@ TODO / Known issues
 ====================
 
  * choosing a date and team doesn't work currently
- * the schedule (which is a file in this repo) is updated by me, would be cool if it was done periodically and automagically in the <a href="gcloud.md">gcloud</a>.
  * could be nice if one could get debug errors to the browser console, rather than having to run the local app_devserver
 
 Source
 ======
 
+<a href="gcloud.md">gcloud</a> - reminders for myself.
+
 Forked from https://github.com/amanjeev/isitfridaythe13th because it had the google appspot already in it and python :) Thanks!
 
-wasthereannhlgamelastnight(..) has been re-written a few times - it's no longer even close to the isitfridaythe13th - it now uses webapp2 for example instead of python print to stdout.
+wasthereannhlgamelastnight(..) has been re-written a few times - it's no longer even close to the isitfridaythe13th, for example:
+ - it now uses webapp2 for example instead of python print to stdout.
+ - it used to have a manual NHL_schedule.py with a set and a list, now it reads and writes to gcloud object store!
