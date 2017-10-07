@@ -1,9 +1,17 @@
+# imports for GCS
+
 import logging
 import os
 import cloudstorage as gcs
 import webapp2
 
 from google.appengine.api import app_identity
+
+# for NHL parsing
+import json # to parse URL
+import urllib2 # to fetch URL
+import datetime # to compose URL
+import tempfile
 
 debug = True
 
@@ -12,7 +20,9 @@ debug = True
 # two, run the parser (fetch upstream schedule, parse it). We could move the parser into this file or even better import it
 # three, write the nhl schedule to a tempfile, calculate checksum
 # four, only if checksum is different than the existing one, write to bucket
+#  - skip four - is there a way to calculate etag? or then have to fetch file, calculate md5sum. Also have to write the JSON so that it's sorted
 # five, remove tempfile
+#  - meh
 
 class MainPage(webapp2.RequestHandler):
   """Main page for GCS demo application."""
@@ -34,14 +44,39 @@ class MainPage(webapp2.RequestHandler):
 
     try:
         filename_etag = self.stat_file(filename).etag
-        if debug: self.response.write("etag: %s" % filename_etag)
+        if debug: self.response.write("etag: %s \n" % filename_etag)
     except gcs.NotFoundError:
         if debug: print "P1"
         pass
 
-    self.create_file(filename)
+    # composing a URL 
+    now = datetime.datetime.now()
+    [ current_month, current_year ] = now.month, now.year
+    last_year = current_year - 1
+    next_year = current_year + 1
+    # if now is before August we get last year from September until July
+    if current_month < 8:
+      start_date = "%s-09-01" % last_year
+      end_date = "%s-07-01" % current_year
+    # if now is in or after August we get this year from September until July
+    else:
+      start_date = "%s-09-01" % current_year
+      end_date = "%s-07-01" % next_year
 
-  def create_file(self, filename):
+    url = 'https://statsapi.web.nhl.com/api/v1/schedule?startDate=%s&endDate=%s' % (start_date, end_date)
+    [ totalGames, jsondata ] = self.fetch_upstream_schedule(url)
+
+    if totalGames == 0:
+      pass
+    else:
+      # parse
+      self.response.write("Total Games: %s\n" % totalGames)
+      [ lines, teamdates ] = self.parse_schedule(jsondata)
+      content = self.make_data_json(lines,teamdates)
+      self.create_file(filename, content)
+    if debug: self.read_file(filename)
+
+  def create_file(self, filename, content):
       """Create a file."""
 
       self.response.write('Creating file {}\n'.format(filename))
@@ -53,8 +88,7 @@ class MainPage(webapp2.RequestHandler):
           filename, 'w', content_type='text/plain', options={
               'x-goog-acl': 'private', 'x-goog-meta-type': 'schedule'},
               retry_params=write_retry_params) as cloudstorage_file:
-                  cloudstorage_file.write('abcde\n')
-                  cloudstorage_file.write('f'*1024*4 + '\n')
+                  cloudstorage_file.write(content)
       self.tmp_filenames_to_clean_up.append(filename)
   
   def stat_file(self, filename):
@@ -64,6 +98,65 @@ class MainPage(webapp2.RequestHandler):
       stat = gcs.stat(filename)
 
       return(stat)
+
+  def fetch_upstream_schedule(self, url):
+      """ geturl a file
+      """
+
+      page = urllib2.urlopen(url)
+      jsondata = json.loads(page.read())
+      totalGames = jsondata['totalGames']
+
+      if totalGames == 0:
+          self.response.write('ERROR parsing data, 0 games found')
+          self.response.set_status(500)
+	  return(totalGames, False)
+
+      else:
+          return(totalGames,jsondata)
+
+  def parse_schedule(self, jsondata):
+      """ parse the json data into set(list) and dict the app is used to. """
+
+      dict_of_keys_and_matchups = {}
+      list_of_dates = []      
+
+      dates = jsondata['dates']
+      for key in dates:
+        date = key['date']
+        dict_of_keys_and_matchups[date] = []
+        list_of_dates.append(date)
+        games = key['games']
+        for game in games:
+          twoteams = []
+          teams = game['teams']
+          twoteams.append(teams['away']['team']['name'])
+          twoteams.append(teams['home']['team']['name'])
+          dict_of_keys_and_matchups[date].append(twoteams)
+
+      return([set(list_of_dates), dict_of_keys_and_matchups])
+
+  def make_data_json(self, lines, teamdates):
+      """ turn parsed data into json """
+
+#{
+# "dates": [ "2017-10-08", "2017-10-09" ], 
+# "teamdates": { "2017-12-30": [["Boston Bruins", "Ottawa Senators"]], "2017-12-21": [["Boston Bruins", "Ottawa Senators"]] }
+#}
+      data = {}
+      data['dates'] = list(lines) # can't be a set
+      data['teamdates'] = teamdates
+      json_data = json.dumps(data)
+
+      return(json_data)
+
+  def read_file(self, filename):
+    self.response.write(
+        'Abbreviated file content (first line and last 1K):\n')
+
+    with gcs.open(filename) as cloudstorage_file:
+        self.response.write(cloudstorage_file.readline())
+        self.response.write(cloudstorage_file.read())
 
 application = webapp2.WSGIApplication([('/.*', MainPage)],
                                       debug=True)

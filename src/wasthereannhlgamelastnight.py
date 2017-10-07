@@ -1,23 +1,27 @@
 import webapp2
 import os
 import datetime
-import NHL_schedule
 import re
+
+import cloudstorage as gcs # we fetch the schedule from gcs
+
+from google.appengine.api import app_identity
+import json # data is stored in json
 
 debug = False
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
         """Return a <strike>friendly</strike> binary HTTP greeting.
-        lines and teamdates dictionaries come from the NHL_schedule.py file, it is created manually
-        with ../parser/parse_nhl_schedule_json.py
+        lines and teamdates dictionaries is in JSON come from the update_schedule.py file, it is created in a cronjob
 
-        Examples:
-	lines = set([u'2017-11-14', u'2018-04-04', u'2017-11-01'])
-	teamdates = {u'2017-11-14': [[u'Buffalo Sabres', u'Pittsburgh Penguins'], [u'Columbus Blue Jackets', u'Montr\xe9al Canadiens'] ], u'2018-04-04': [[u'Ottawa Senators', u'Buffalo Sabres'], [u'Chicago Blackhawks', u'St. Louis Blues']] }
         """
-        lines = NHL_schedule.lines
-        teamdates = NHL_schedule.teamdates
+
+        theschedule = json.loads(self.read_file())
+        global lines
+        lines = theschedule['dates']
+        global teamdates
+        teamdates = theschedule['teamdates']
 
         #These are the defaults, only used with "CLI" user agents
         YES = "YES\n"
@@ -112,6 +116,19 @@ class MainPage(webapp2.RequestHandler):
             </body>\n\
             </html>\n')
 
+    def read_file(self):
+    
+        bucket_name = os.environ.get('BUCKET_NAME',
+                                     app_identity.get_default_gcs_bucket_name())
+    
+        bucket = '/' + bucket_name
+        filename = bucket + '/schedule'
+    
+        with gcs.open(filename) as cloudstorage_file:
+            jsondata = cloudstorage_file.read()
+    
+        return(jsondata)
+
 
 def yesorno(team):
 
@@ -120,10 +137,6 @@ def yesorno(team):
     Returns: True/False
     """
 
-    # lines has dates 
-    # teamdates has dates in dict with lists of games
-    lines = NHL_schedule.lines
-    teamdates = NHL_schedule.teamdates
     requestcontainsanumber = None
     requesthasteamarg = None
 
@@ -216,8 +229,6 @@ def dateapi(team,requesthasteamarg):
     # Not accepting day in the middle
     dateNHLformat = None
     DATE_FORMATS = ['%d-%m-%Y', '%Y-%m-%d', '%d.%m.%Y', '%Y.%m.%d', '%d%m%Y', '%Y%m%d', '%A, %b %-d']
-    lines = NHL_schedule.lines
-    teamdates = NHL_schedule.teamdates
     chosen_team = None
     chosen_city = None
 
