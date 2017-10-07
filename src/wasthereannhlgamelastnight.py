@@ -324,6 +324,7 @@ def get_city_from_team(cityteam):
     "lightning" : "Tampa Bay Lightning",
     "leafs" : "Toronto Maple Leafs",
     "canucks" : "Vancouver Canucks",
+    "goldenknights" : "Vegas Golden Knights",
     "jets" : "Winnipeg Jets",
     "capitals" : "Washington Capitals",
     }
