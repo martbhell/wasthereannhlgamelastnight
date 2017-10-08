@@ -12,6 +12,10 @@ handlers:
 - url: /stylesheets
   static_dir: stylesheets
 
+- url: /google9273e1dd86a36f05.html
+  static_files: google_verification/google9273e1dd86a36f05.html
+  upload: google_verification/google9273e1dd86a36f05.html
+
 - url: /update_schedule
   script: update_schedule.application
   login: admin
