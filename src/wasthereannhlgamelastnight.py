@@ -83,6 +83,9 @@ class MainPage(webapp2.RequestHandler):
             <meta name="description" content="Indicates with a YES/NO if there was an NHL game on last night">\n\
             <meta name="keywords" content="YES,NO,NHL,icehockey,hockey,games,match,wasthereannhlgamelastnight">\n\
             <meta name="author" content="Johan Guldmyr">\n\
+            <meta name="theme-color" content="#')
+            self.response.write(fgcolor)
+            self.response.write('">\n\
             </head>\n\
             <body style="text-align: center; padding-top: 5px;">\n\
                 <div class="content" style="font-weight: bold; font-size: 220px; font-size: 30vw; font-family: Arial,sans-serif; text-decoration: none; color: #')
