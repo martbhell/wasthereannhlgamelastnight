@@ -10,7 +10,7 @@ gcloud app deploy cron.yaml # deploy the cron to update gs:/bucket/schedule whic
 gcloud app deploy -v master # name the version rather than dynamic to not hit the limit
 </pre>
 
-debugging / development (set debug = True in wasthereannhlgamelastnight.py first ):
+debugging / development (set debug = True in wasthereannhlgamelastnight.py or update_schedule.py first ):
 
 <pre>
 sudo apt-get install google-cloud-sdk-app-engine-python
