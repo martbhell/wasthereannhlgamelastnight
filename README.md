@@ -56,6 +56,7 @@ TODO / Known issues
 
  * choosing a date and team doesn't work currently
  * could be nice if one could get debug errors to the browser console, rather than having to run the local app_devserver
+ * dynamically generate a sitemap.xml
 
 Source
 ======

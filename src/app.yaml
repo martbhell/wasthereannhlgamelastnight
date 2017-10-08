@@ -5,7 +5,7 @@ api_version: 1
 threadsafe: false
 
 handlers:
-- url: /(robots\.txt|favicon\.ico)
+- url: /(robots\.txt|favicon\.ico|sitemap\.xml)
   static_files: static/\1
   upload: static/.*
 
