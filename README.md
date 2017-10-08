@@ -39,7 +39,7 @@ How to update the schedule inside the scripts?
 
 Updating the playoff list in wasthereannhlgamelastnight.py is done by:
 
- - Adding cron.yaml to gcloud
+ - Adding cron.yaml to <a href="gcloud.md">gcloud</a>
 
 What about regular season and playoffs?
 ==================================================
