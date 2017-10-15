@@ -143,7 +143,8 @@ class MainPage(webapp2.RequestHandler):
       }
       """
       data = {}
-      data['dates'] = list(lines) # can't be a set
+      #data['dates'] = list(lines) # can't be a set
+      # not using this dates anymore, it's the same data from the key names in teamdates
       data['teamdates'] = teamdates
       json_data = json.dumps(data)
 
