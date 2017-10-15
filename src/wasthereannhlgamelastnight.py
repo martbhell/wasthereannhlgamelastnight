@@ -13,13 +13,11 @@ debug = False
 class MainPage(webapp2.RequestHandler):
     def get(self):
         """Return a <strike>friendly</strike> binary HTTP greeting.
-        lines and teamdates dictionaries is in JSON come from the update_schedule.py file, it is created in a cronjob
+        teamdates dictionary is in JSON come from the update_schedule.py file, it is created in a cronjob
 
         """
 
         theschedule = json.loads(self.read_file())
-        global lines
-        lines = theschedule['dates']
         global teamdates
         teamdates = theschedule['teamdates']
 
@@ -36,10 +34,8 @@ class MainPage(webapp2.RequestHandler):
         cliagents = [ "curl", "Wget"]
         # this sometimes (not for Links..) makes user agent without version, like curl, Safari
         uri = self.request.uri
-        # Team variable is the argument is used to call yesorno and get_team_colors functions
-        team = uri.split('/')[3].upper()
         arguments = uri.split('/')
-        remove_these = ['wtangy.se','https:','http:', '', 'localhost:8080', 'WINGS', 'wtangy.se', 'wasthereannhlgamelastnight.appspot.com']
+        remove_these = ['wtangy.se','https:','http:', '', 'localhost:8080', 'wtangy.se', 'wasthereannhlgamelastnight.appspot.com']
         for arg in arguments:
             if arg in remove_these: arguments.remove(arg)
         arguments = filter(None, arguments) # remove empty strings
@@ -47,10 +43,11 @@ class MainPage(webapp2.RequestHandler):
 
         json1 = False
         date1 = None
+        # Team variable is the argument is used to call yesorno and get_team_colors functions
         team1 = None
         argcounter = 0
 
-        # TODO: How to make order irrelevant?
+        # TOOD: How to handle if someone enters multiple dates etc?
         for arg in arguments:
           if get_team(arg):
               argcounter = argcounter + 1
@@ -202,14 +199,9 @@ def yesorno(team,date2=None):
     chosen_city = get_city_from_team(chosen_team) # outputs "NY Rangers" on http://URL/NYR or "".
 
     ### The YES/NO logic:
-    # Start counter at zero
-    yes = 0
-
-    # Check in lines list if yesterday's date is in the list, continue on first hit (list is not ordered..).
-    if team == "FAVICON.ICO":
-      nothing = 0
-    elif chosen_team == None and date2 == None:
-      for date in lines:
+    # Check if yesterday's date is a key in teamdates, continue on first hit (not ordered..).
+    if chosen_team == None and date2 == None:
+      for date in teamdates:
           if yesterday == date:
               if debug:
                 print "D1"
@@ -226,7 +218,7 @@ def yesorno(team,date2=None):
 def dateapi(team=None,date=None):
     """Return true if there was a game on the date
     Return false there was not and if date was unparseable
-    Take a team and or a date as arguments """
+    Take a team and/or a date as arguments """
     # Not accepting day in the middle
     dateNHLformat = None
     DATE_FORMATS = ['%d-%m-%Y', '%Y-%m-%d', '%d.%m.%Y', '%Y.%m.%d', '%d%m%Y', '%Y%m%d', '%A, %b %-d']
@@ -235,7 +227,6 @@ def dateapi(team=None,date=None):
 
     # a date was provided
     if date:
-
       #### Date parsing
       # Try to make the date provided into the NHL format
       for date_format in DATE_FORMATS:
@@ -243,7 +234,6 @@ def dateapi(team=None,date=None):
               dateNHLformat = datetime.datetime.strptime(date, date_format).strftime("%Y-%m-%d")
           except ValueError:
               pass
-
 
       # First assume it's only the date
       if debug: print "datenhl: %s" % dateNHLformat
@@ -253,7 +243,7 @@ def dateapi(team=None,date=None):
         return(True)
       elif dateNHLformat and (dateNHLformat in teamdates) and chosen_team:
         # if dateNHLformat exists a date has been chosen
-        if chosen_team and dateNHLformat and dateNHLformat in lines:
+        if chosen_team and dateNHLformat and (dateNHLformat in teamdates):
           # for each list (matchup) at the date chosen
           for list in teamdates[dateNHLformat]:
             for t in list:
