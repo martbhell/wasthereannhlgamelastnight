@@ -26,8 +26,8 @@ What does this mean?
  * *Not choosing anything just tells you if there was a game yesterday*
  * *Choosing a team means you only get YES if that team played yesterday.*
  * *Choosing a date means you only get YES if there is a game on _that_ date.*
- * *Choosing a team and a date only checks if the chosen team plays on that date.*
- * *Choosing a team incorrectly and a date it only checks the date*
+ * *Choosing a team and a date you only get YES if the chosen team plays/played on that date.*
+ * *Choosing a team incorrectly and a date correctly you only get YES if there was/is a game on that date*
 
 Why?
 ====
@@ -58,10 +58,12 @@ https://www.google.fi/url?sa=t&rct=j&q=&esrc=s&source=web&cd=7&cad=rja&uact=8&ve
 TODO / Known issues
 ====================
 
+ * flowchart for parameters? =)
  * games include preseason - if this is a problem let me know!
  * could be nice if one could get debug errors to the browser console, rather than having to run the local app_devserver
  * dynamically generate a sitemap.xml
  * Would be cool to not have \n all over the python and still get the HTML page readable
+ * CI - would be cool with some automatic testing - especially that the arguments are working!
 
 Source
 ======
