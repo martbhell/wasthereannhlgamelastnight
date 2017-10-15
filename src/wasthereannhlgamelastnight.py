@@ -38,9 +38,32 @@ class MainPage(webapp2.RequestHandler):
         uri = self.request.uri
         # Team variable is the argument is used to call yesorno and get_team_colors functions
         team = uri.split('/')[3].upper()
+        arguments = uri.split('/')
+        remove_these = ['wtangy.se','https:','http:', '', 'localhost:8080', 'WINGS', 'wtangy.se', 'wasthereannhlgamelastnight.appspot.com']
+        for arg in arguments:
+            if arg in remove_these: arguments.remove(arg)
+        arguments = filter(None, arguments) # remove empty strings
+        if debug: print arguments
+
+        json1 = False
+        date1 = None
+        team1 = None
+        argcounter = 0
+
+        # TODO: How to make order irrelevant?
+        for arg in arguments:
+          if get_team(arg):
+              argcounter = argcounter + 1
+              team1 = arg
+          elif "json" in arg or "JSON" in arg:
+              argcounter = argcounter + 1
+              json1 = True
+          elif any(char.isdigit() for char in arg):
+              argcounter = argcounter + 1
+              date1 = arg
 
         # Select a color, take second color if the first is black.
-        color = get_team_colors(team)
+        [ color, foundateam ] = get_team_colors(team1)
         fgcolor = color[0]
         try:
           fgcolor2 = color[1]
@@ -53,7 +76,7 @@ class MainPage(webapp2.RequestHandler):
         if useragent in cliagents:
 
             ### The YES/NO logic:
-            if yesorno(team):
+            if yesorno(team1,date1):
               self.response.write(YES)
             else:
               self.response.write(NO)
@@ -72,7 +95,7 @@ class MainPage(webapp2.RequestHandler):
             <html lang ="en">\n\
             <head><title>Was there an NHL game yesterday?')
             try:
-              TEAMLONGTEXT=get_team(team)
+              TEAMLONGTEXT=get_team(team1)
             except:
               # Can't figure out what team that was, set no team chosen.
               TEAMLONGTEXT=""
@@ -95,7 +118,7 @@ class MainPage(webapp2.RequestHandler):
             self.response.write(';">\n')
 
             ### The YES/NO logic:
-            if yesorno(team):
+            if yesorno(team1,date1):
               self.response.write(YES)
               THEREWASAGAME="YES"
             else:
@@ -156,19 +179,16 @@ class MainPage(webapp2.RequestHandler):
         return(jsondata)
 
 
-def yesorno(team):
+def yesorno(team,date2=None):
 
     """
-    Input: team/city/etc
+    Input: team/city/etc and date
     Returns: True/False
     """
 
-    requestcontainsanumber = None
-    requesthasteamarg = None
-
 ## Debug
     if debug:
-      yesterday = "2017-10-01"
+      yesterday = "2017-10-14"
       print "yesterday:" + yesterday
       yesterday4 = datetime.datetime.now() - datetime.timedelta(days=1)
       yesterday4 = yesterday4.strftime("%Y-%m-%d")
@@ -185,126 +205,63 @@ def yesorno(team):
     # Start counter at zero
     yes = 0
 
-    # Date chosen if there is a number in the URI
-    try:
-      parse = re.search('\d', team)
-      if parse != None:
-        requestcontainsanumber = True
-    except:
-      requestcontainsanumber = False
-
-    # Should the arguments be parsed here?
-    # Team also chosen if there is a ?t= in the URI
-    try:
-      parseteam = re.search('\?', team)
-      if debug:
-        print "parseteam: " + parseteam
-      if parseteam != None:
-        requesthasteamarg = True
-    except:
-      requesthasteamarg = False
-
     # Check in lines list if yesterday's date is in the list, continue on first hit (list is not ordered..).
     if team == "FAVICON.ICO":
       nothing = 0
-    elif team == "":
+    elif chosen_team == None and date2 == None:
       for date in lines:
           if yesterday == date:
-              yes += 1
-              continue
-      if yes != 0:
-              return(True)
-      else:
               if debug:
-                print "D"
-              return(False)
+                print "D1"
+              return(True)
 
-    # Number in the request
-    elif requestcontainsanumber:
-      if dateapi(team,requesthasteamarg):
-        return(True)
+    if date2 == None:
+      # If no date set - set it to yesterday
+      date2 = yesterday
+    if dateapi(chosen_team,date2):
+      return(True)
 
-    else:
-      # A-Team has been chosen!
-      # Format of teamdates dict: {'2017-10-04': [['Minnesota', 'Winnipeg'], ['Calgary', 'NY Rangers'], ['Los Angeles', 'Edmonton']], '2017-10-22': [
-      # Check if the team selected is in any of yesterday's lists
-      try:
-        for list in teamdates[yesterday]:
-          for t in list:
-            if t == chosen_team:
-              yes += 1
-              continue
-        if yes != 0:
-          if debug:
-            print "A"
-          return(True)
-        else:
-          if debug:
-            print "B"
-          return(False)
-      # keyerror comes if yesterday's date is not in the list - no games at all
-      except KeyError:
-          if debug:
-            print "C"
-          return(False)
+    return(False)
 
-def dateapi(team,requesthasteamarg):
+def dateapi(team=None,date=None):
     """Return true if there was a game on the date
     Return false there was not and if date was unparseable
-    Takes URI requst and requesthasteamarg(true/false) as arguments"""
+    Take a team and or a date as arguments """
     # Not accepting day in the middle
     dateNHLformat = None
     DATE_FORMATS = ['%d-%m-%Y', '%Y-%m-%d', '%d.%m.%Y', '%Y.%m.%d', '%d%m%Y', '%Y%m%d', '%A, %b %-d']
-    chosen_team = None
+    chosen_team = team
     chosen_city = None
 
-    # a ?team= argument was provided. 
-    if requesthasteamarg:
-      try:
-        findteamarg = team.split("=")
-        if debug:
-          print findteamarg
-        if findteamarg[1]:
-          # remove last 5 characters before the first = - assume /DATE?team=TEAM
-          chosen_date = findteamarg[0][:-5]
-          chosen_team = get_team(findteamarg[1])
-          chosen_city = get_city_from_team(chosen_team)
-          if debug:
-            print chosen_date
-      except IndexError:
-        # /20151222?team=
-        nothing = 0
+    # a date was provided
+    if date:
 
-    #### Date parsing
-    # Try to make the date provided into the NHL format
-    for date_format in DATE_FORMATS:
-        try:
-            dateNHLformat = datetime.datetime.strptime(team, date_format).strftime("%Y-%m-%d")
-        except ValueError:
-            pass
-
-    # First assume it's only the date
-    if dateNHLformat and dateNHLformat in teamdates:
-      return(True)
-
-    # If arguments are provided, check if chosen_date has a date
-    if requesthasteamarg:
+      #### Date parsing
+      # Try to make the date provided into the NHL format
       for date_format in DATE_FORMATS:
           try:
-              dateNHLformat = datetime.datetime.strptime(chosen_date, date_format).strftime("%Y-%m-%d")
+              dateNHLformat = datetime.datetime.strptime(date, date_format).strftime("%Y-%m-%d")
           except ValueError:
               pass
-          except UnboundLocalError:
-              pass
 
-      # if dateNHLformat exists a date has been chosen
-      if chosen_city and dateNHLformat and dateNHLformat in lines:
-      # for each list (matchup) at the date chosen
-        for list in teamdates[dateNHLformat]:
-          for t in list:
-            if t == chosen_city:
-              return(True)
+
+      # First assume it's only the date
+      if debug: print "datenhl: %s" % dateNHLformat
+      if debug: print "chosen: %s" % chosen_team
+      if dateNHLformat and (dateNHLformat in teamdates) and chosen_team == None:
+        if debug: print "F1"
+        return(True)
+      elif dateNHLformat and (dateNHLformat in teamdates) and chosen_team:
+        # if dateNHLformat exists a date has been chosen
+        if chosen_team and dateNHLformat and dateNHLformat in lines:
+          # for each list (matchup) at the date chosen
+          for list in teamdates[dateNHLformat]:
+            for t in list:
+              if t == chosen_team:
+                if debug: print "E1"
+                return(True)
     else:
+      if debug: print "G1"
       return(False)
 
 def handle_404(request, response, exception):
@@ -414,6 +371,11 @@ def get_team(team):
     """Returns a "City Team Name", as in teamdict1.
     Is in that format because the dictionary in get_team_colors wants that.
     """
+
+    if team:
+        team = team.upper()
+    else:
+      return(None)
 
     teamdict1 = {
     "ANA" : "Anaheim Ducks",
@@ -531,10 +493,10 @@ def get_team(team):
               return(teamdict1[teamdict1nospaces[team]])
             except:
             # After that no team selected - nothing in title
-              return("")
+              return(None)
 
 def get_team_colors(team):
-    """Return a color"""
+    """Return a color and True/False if we found a team"""
     """ List is from https://github.com/jimniels/teamcolors.github.io """
 
     teamname = get_team(team)
@@ -573,9 +535,9 @@ def get_team_colors(team):
         "Winnipeg Jets" :                   ["002E62", "0168AB", "A8A9AD" ]
     }
     try:
-      return(NHL[teamname])
+      return(NHL[teamname], True)
     except:
-      return(["000000"])
+      return(["000000"], False)
 
 
 application = webapp2.WSGIApplication([

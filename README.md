@@ -8,22 +8,26 @@ Usage
 
 case insensitive:  
 
- * http://wasthereannhlgamelastnight.appspot.com
- * http://wasthereannhlgamelastnight.appspot.com/det
- * http://wasthereannhlgamelastnight.appspot.com/redwings
- * http://wasthereannhlgamelastnight.appspot.com/nyrangers
- * http://wasthereannhlgamelastnight.appspot.com/Vgk
- * http://wasthereannhlgamelastnight.appspot.com/newyorkrangers
- * http://wasthereannhlgamelastnight.appspot.com/20171222
- * http://wasthereannhlgamelastnight.appspot.com/22-12-2017
- * http://wasthereannhlgamelastnight.appspot.com/22-12-2017?team=DET
+ * https://wtangy.se
+ * https://wtangy.se/det
+ * https://wtangy.se/redwings
+ * https://wtangy.se/nyrangers
+ * https://wtangy.se/Vgk
+ * https://wtangy.se/newyorkrangers
+ * https://wtangy.se/20171222
+ * https://wtangy.se/22-12-2017
+ * https://wtangy.se/22-12-2017/DET
+ * https://wtangy.se/lak/20171014
+ * https://wtangy.se/foo/20171014
+ * https://wtangy.se/foo/20170901
 
 What does this mean?
 
  * *Not choosing anything just tells you if there was a game yesterday*
  * *Choosing a team means you only get YES if that team played yesterday.*
  * *Choosing a date means you only get YES if there is a game on _that_ date.*
- * *Choosing a team and a date doesn't work currently*
+ * *Choosing a team and a date only checks if the chosen team plays on that date.*
+ * *Choosing a team incorrectly and a date it only checks the date*
 
 Why?
 ====
@@ -54,7 +58,7 @@ https://www.google.fi/url?sa=t&rct=j&q=&esrc=s&source=web&cd=7&cad=rja&uact=8&ve
 TODO / Known issues
 ====================
 
- * choosing a date and team doesn't work currently
+ * games include preseason - if this is a problem let me know!
  * could be nice if one could get debug errors to the browser console, rather than having to run the local app_devserver
  * dynamically generate a sitemap.xml
  * Would be cool to not have \n all over the python and still get the HTML page readable
