@@ -72,9 +72,11 @@ class MainPage(webapp2.RequestHandler):
             <html lang ="en">\n\
             <head><title>Was there an NHL game yesterday?')
             try:
-              self.response.write(get_team(team))
+              TEAMLONGTEXT=get_team(team)
             except:
-              self.response.write(get_team("DET"))
+              # Can't figure out what team that was, set no team chosen.
+              TEAMLONGTEXT=""
+            self.response.write(TEAMLONGTEXT)
             self.response.write('</title>\n\
             <meta charset="UTF-8">\n\
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">\n\
@@ -95,9 +97,28 @@ class MainPage(webapp2.RequestHandler):
             ### The YES/NO logic:
             if yesorno(team):
               self.response.write(YES)
+              THEREWASAGAME="YES"
             else:
               self.response.write(NO)
+              THEREWASAGAME="NO"
             ### End YES/NO logic
+
+            ### Structured Data
+	    self.response.write(' \
+            <script type="application/ld+json">\n\
+            { \n\
+              "@context": "http://schema.org/", \n\
+              "@type": "Thing", \n\
+              "url": "https://wtangy.se", \n\
+              "name": "Was There An NHL Game Yesterday?", \n\
+              "description": "Did My Team Play Yesterday In NHL?", \n\
+              "potentialAction": { \n\
+                "name": "N/A", \n\
+                "result": "%s", \n\
+                "agent": "%s" \n\
+              } \n\
+            } \n\
+            </script> \n' % (THEREWASAGAME,TEAMLONGTEXT) )
 
             self.response.write('\
                 </div>\n')

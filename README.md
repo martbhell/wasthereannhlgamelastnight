@@ -57,7 +57,7 @@ TODO / Known issues
  * choosing a date and team doesn't work currently
  * could be nice if one could get debug errors to the browser console, rather than having to run the local app_devserver
  * dynamically generate a sitemap.xml
- * dynamically generate structured data https://developers.google.com/search/docs/guides/intro-structured-data?visit_id=1-636430636338364976-7963722&hl=en&rd=1
+ * Would be cool to not have \n all over the python and still get the HTML page readable
 
 Source
 ======
