@@ -70,7 +70,7 @@ class MainPage(webapp2.RequestHandler):
             self.response.headers['Content-Type'] = 'text/html'
             self.response.write('<!DOCTYPE html>\n\
             <html lang ="en">\n\
-            <head><title>Was there an NHL game last night?')
+            <head><title>Was there an NHL game yesterday?')
             try:
               self.response.write(get_team(team))
             except:
@@ -79,9 +79,9 @@ class MainPage(webapp2.RequestHandler):
             <meta charset="UTF-8">\n\
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">\n\
             <meta name="robots" content="index,follow">\n\
-            <meta name="application-name" content="Was there an NHL game last night?">\n\
-            <meta name="description" content="Indicates with a YES/NO if there was an NHL game on last night">\n\
-            <meta name="keywords" content="YES,NO,NHL,icehockey,hockey,games,match,wasthereannhlgamelastnight">\n\
+            <meta name="application-name" content="Was there an NHL game yesterday?">\n\
+            <meta name="description" content="Indicates with a YES/NO if there was an NHL game on yesterday">\n\
+            <meta name="keywords" content="YES,NO,NHL,icehockey,hockey,games,match,wasthereannhlgamelastnight,wasthereannhlgameyesterday,wtangy,wtangln">\n\
             <meta name="author" content="Johan Guldmyr">\n\
             <meta name="theme-color" content="#')
             self.response.write(fgcolor)

@@ -20,17 +20,17 @@ case insensitive:
 
 What does this mean?
 
- * *Not choosing anything just tells you if there was a game last night*
- * *Choosing a team means you only get YES if that team played last night.*
+ * *Not choosing anything just tells you if there was a game yesterday*
+ * *Choosing a team means you only get YES if that team played yesterday.*
  * *Choosing a date means you only get YES if there is a game on _that_ date.*
  * *Choosing a team and a date doesn't work currently*
 
 Why?
 ====
 
-So I(author) live in a timezone where the NHL games are often over at 5am in the morning, sometimes they start then. I tend to watch replays. I'm not always sure if there was a game last night. Schedules online often have the results, news or "yes it went to overtime" to spoil the game.
+So I(author) live in a timezone where the NHL games are often over at 5am in the morning, sometimes they start then. I tend to watch replays. I'm not always sure if there was a game yesterday. Schedules online often have the results, news or "yes it went to overtime" to spoil the game.
 
-It would be really nice if I could just browse to $URL/team and it would tell me if my team played last night or during Stanley Cup (or regular season) $URL would be enough to just tell me if there was a game at all.
+It would be really nice if I could just browse to $URL/team and it would tell me if my team played yesterday or during Stanley Cup (or regular season) $URL would be enough to just tell me if there was a game at all.
 
 Now there is! :)
 
