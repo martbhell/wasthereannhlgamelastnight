@@ -8,17 +8,22 @@ handlers:
 - url: /(robots\.txt|favicon\.ico|sitemap\.xml)
   static_files: static/\1
   upload: static/.*
+  secure: always
 
 - url: /stylesheets
   static_dir: stylesheets
+  secure: always
 
 - url: /google9273e1dd86a36f05.html
   static_files: google_verification/google9273e1dd86a36f05.html
   upload: google_verification/google9273e1dd86a36f05.html
+  secure: always
 
 - url: /update_schedule
   script: update_schedule.application
   login: admin
+  secure: always
 
 - url: /.*
   script: wasthereannhlgamelastnight.application
+  secure: always
