@@ -1,4 +1,4 @@
-# imports for GCS
+""" imports for GCS """
 
 import os
 import json # to parse URL
@@ -50,7 +50,6 @@ class MainPage(webapp2.RequestHandler):
         except gcs.NotFoundError:
             if DEBUG:
                 print "P1"
-            pass
 
         # composing a URL
         now = datetime.datetime.now()
@@ -73,8 +72,8 @@ class MainPage(webapp2.RequestHandler):
             pass
         else:
             self.response.write("Total Games: %s\n" % totalgames)
-            [datelist, teamdates] = self.parse_schedule(jsondata)
-            content = self.make_data_json(datelist, teamdates)
+            [teamdates] = self.parse_schedule(jsondata)
+            content = self.make_data_json(teamdates)
             self.create_file(filename, content)
             if DEBUG:
                 self.read_file(filename)
@@ -98,8 +97,7 @@ class MainPage(webapp2.RequestHandler):
         This returns a CLASS, fetch properties in the results with var.id, not var['id']
         """
         stat = gcs.stat(filename)
-
-        return(stat)
+        return stat
 
     def fetch_upstream_schedule(self, url):
         """ geturl a file and do some health checking
@@ -112,22 +110,18 @@ class MainPage(webapp2.RequestHandler):
         if totalgames == 0:
             self.response.write('ERROR parsing data, 0 games found')
             self.response.set_status(500)
-            return(totalgames, False)
-
-        else:
-            return(totalgames, jsondata)
+            return (totalgames, False)
+        return (totalgames, jsondata)
 
     def parse_schedule(self, jsondata):
-        """ parse the json data into set(list) and dict the app is used to. """
+        """ parse the json data into a dict the app is used to. """
 
         dict_of_keys_and_matchups = {}
-        list_of_dates = []
 
         dates = jsondata['dates']
         for key in dates:
             date = key['date']
             dict_of_keys_and_matchups[date] = []
-            list_of_dates.append(date)
             games = key['games']
             for game in games:
                 twoteams = []
@@ -136,25 +130,24 @@ class MainPage(webapp2.RequestHandler):
                 twoteams.append(teams['home']['team']['name'])
                 dict_of_keys_and_matchups[date].append(twoteams)
 
-        return([set(list_of_dates), dict_of_keys_and_matchups])
+        return [dict_of_keys_and_matchups]
 
-    def make_data_json(self, lines, teamdates):
+    def make_data_json(self, teamdates):
         """ turn parsed data into json, end result in JSON should look like:
         {
-         "dates": [ "2017-10-08", "2017-10-09" ],
          "teamdates": { "2017-12-30": [["Boston Bruins", "Ottawa Senators"]], "2017-12-21": [["Boston Bruins", "Ottawa Senators"]] }
         }
         """
         data = {}
-        #data['dates'] = list(lines) # can't be a set
-        # not using this dates anymore, it's the same data from the key names in teamdates
         data['teamdates'] = teamdates
         json_data = json.dumps(data)
 
-        return(json_data)
+        return json_data
 
 
     def read_file(self, filename):
+        """ read a file! """
+
         self.response.write(
             'Abbreviated file content (first line and last 1K):\n')
 
