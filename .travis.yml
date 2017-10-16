@@ -1,0 +1,25 @@
+# https://github.com/GoogleCloudPlatform/continuous-deployment-demo/blob/master/.travis.yml
+sudo: false
+services:
+  - docker
+language: python
+  - "2.7"
+cache:
+  directories:
+    - "$HOME/google-cloud-sdk/"
+deploy:
+  provider: gae
+  project: wasthereannhlgamelastnight
+  keyfile: wasthereannhlgamelastnight-c0aea3438a34.json
+  version: testing
+  on: testing
+  no_promote: true
+  config: src/app.yaml
+before_install:
+  - openssl aes-256-cbc -K $encrypted_ae95481c2257_key -iv $encrypted_ae95481c2257_iv
+    -in wasthereannhlgamelastnight-c0aea3438a34.json.enc -out wasthereannhlgamelastnight-c0aea3438a34.json
+    -d
+before_script:
+  - travis_retry pip install --user pylint
+script:
+  - echo "no script"
