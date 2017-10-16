@@ -20,7 +20,7 @@ handlers:
   secure: always
 
 - url: /update_schedule
-  script: update_schedule.application
+  script: update_schedule.APPLICATION
   login: admin
   secure: always
 

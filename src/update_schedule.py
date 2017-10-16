@@ -1,16 +1,14 @@
 # imports for GCS
 
-import logging
 import os
+import json # to parse URL
+import urllib2 # to fetch URL
+import datetime # to compose URL
+
 import cloudstorage as gcs
 import webapp2
 
 from google.appengine.api import app_identity
-
-# for NHL parsing
-import json # to parse URL
-import urllib2 # to fetch URL
-import datetime # to compose URL
 
 DEBUG = True
 
@@ -78,7 +76,8 @@ class MainPage(webapp2.RequestHandler):
             [datelist, teamdates] = self.parse_schedule(jsondata)
             content = self.make_data_json(datelist, teamdates)
             self.create_file(filename, content)
-            if DEBUG: self.read_file(filename)
+            if DEBUG:
+                self.read_file(filename)
 
     def create_file(self, filename, content):
         """Create a file."""
@@ -163,5 +162,5 @@ class MainPage(webapp2.RequestHandler):
             self.response.write(cloudstorage_file.readline())
             self.response.write(cloudstorage_file.read())
 
-application = webapp2.WSGIApplication([('/.*', MainPage)],
+APPLICATION = webapp2.WSGIApplication([('/.*', MainPage)],
                                       debug=True)
