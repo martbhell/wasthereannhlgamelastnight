@@ -155,8 +155,7 @@ else:
     START_DATE = "%s-09-01" % CURRENT_YEAR
     END_DATE = "%s-07-01" % NEXT_YEAR
 
-URL = """ https://statsapi.web.nhl.com/api/v1/schedule?startDate=%s
-          &endDate=%s """ % (START_DATE, END_DATE)
+URL = "https://statsapi.web.nhl.com/api/v1/schedule?startDate=%s&endDate=%s" % (START_DATE, END_DATE) # pylint: disable=line-too-long
 
 ########## This variable is referenced from app.yaml
 
