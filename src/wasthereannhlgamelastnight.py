@@ -533,4 +533,4 @@ def get_team_colors(team):
 APPLICATION = webapp2.WSGIApplication([
     ('/.*', MainPage),
 ], debug=True)
-application.error_handlers[404] = handle_404
+APPLICATION.error_handlers[404] = handle_404
