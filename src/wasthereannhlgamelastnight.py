@@ -1,16 +1,16 @@
-import webapp2
 import os
 import datetime
-import re
+import json # data is stored in json
 
+import webapp2
 import cloudstorage as gcs # we fetch the schedule from gcs
 
 from google.appengine.api import app_identity
-import json # data is stored in json
 
 debug = False
 
 class MainPage(webapp2.RequestHandler):
+    """ Main Page Class """
     def get(self):
         """Return a <strike>friendly</strike> binary HTTP greeting.
         teamdates dictionary is in JSON come from the update_schedule.py file, it is created in a cronjob
@@ -530,7 +530,7 @@ def get_team_colors(team):
       return(["000000"], False)
 
 
-application = webapp2.WSGIApplication([
+APPLICATION = webapp2.WSGIApplication([
     ('/.*', MainPage),
 ], debug=True)
 application.error_handlers[404] = handle_404

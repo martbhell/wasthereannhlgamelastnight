@@ -25,5 +25,5 @@ handlers:
   secure: always
 
 - url: /.*
-  script: wasthereannhlgamelastnight.application
+  script: wasthereannhlgamelastnight.APPLICATION
   secure: always
