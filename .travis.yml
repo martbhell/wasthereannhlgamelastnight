@@ -12,7 +12,7 @@ deploy:
   project: wasthereannhlgamelastnight
   keyfile: wasthereannhlgamelastnight-c0aea3438a34.json
   version: testing
-  on: testing
+  on: master
   no_promote: true
   config: src/app.yaml
 before_install:
