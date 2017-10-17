@@ -51,22 +51,7 @@ class MainPage(webapp2.RequestHandler):
             if DEBUG:
                 print "P1"
 
-        # composing a URL
-        now = datetime.datetime.now()
-        [current_month, current_year] = now.month, now.year
-        last_year = current_year - 1
-        next_year = current_year + 1
-        # if now is before August we get last year from September until July
-        if current_month < 8:
-            start_date = "%s-09-01" % last_year
-            end_date = "%s-07-01" % current_year
-        # if now is in or after August we get this year from September until July
-        else:
-            start_date = "%s-09-01" % current_year
-            end_date = "%s-07-01" % next_year
-
-        url = 'https://statsapi.web.nhl.com/api/v1/schedule?startDate=%s&endDate=%s' % (start_date, end_date)
-        [totalgames, jsondata] = self.fetch_upstream_schedule(url)
+        [totalgames, jsondata] = self.fetch_upstream_schedule(URL)
 
         if totalgames == 0:
             pass
@@ -135,7 +120,7 @@ class MainPage(webapp2.RequestHandler):
     def make_data_json(self, teamdates):
         """ turn parsed data into json, end result in JSON should look like:
         {
-         "teamdates": { "2017-12-30": [["Boston Bruins", "Ottawa Senators"]], "2017-12-21": [["Boston Bruins", "Ottawa Senators"]] }
+         "teamdates": { "2017-12-30": [["Boston Bruins", "Ottawa Senators"]], }
         }
         """
         data = {}
@@ -154,6 +139,26 @@ class MainPage(webapp2.RequestHandler):
         with gcs.open(filename) as cloudstorage_file:
             self.response.write(cloudstorage_file.readline())
             self.response.write(cloudstorage_file.read())
+
+###### Define some variables used to compose a URL
+
+NOW = datetime.datetime.now()
+[CURRENT_MONTH, CURRENT_YEAR] = NOW.month, NOW.year
+LAST_YEAR = CURRENT_YEAR - 1
+NEXT_YEAR = CURRENT_YEAR + 1
+# if now is before August we get last year from September until July
+if CURRENT_MONTH < 8:
+    START_DATE = "%s-09-01" % LAST_YEAR
+    END_DATE = "%s-07-01" % CURRENT_YEAR
+# if now is in or after August we get this year from September until July
+else:
+    START_DATE = "%s-09-01" % CURRENT_YEAR
+    END_DATE = "%s-07-01" % NEXT_YEAR
+
+URL = """ https://statsapi.web.nhl.com/api/v1/schedule?startDate=%s
+          &endDate=%s """ % (START_DATE, END_DATE)
+
+########## This variable is referenced from app.yaml
 
 APPLICATION = webapp2.WSGIApplication([('/.*', MainPage)],
                                       debug=True)
