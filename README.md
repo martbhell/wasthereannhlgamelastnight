@@ -63,6 +63,10 @@ TODO / Known issues
  * could be nice if one could get debug errors to the browser console, rather than having to run the local app_devserver
  * dynamically generate a sitemap.xml
  * Would be cool to not have \n all over the python and still get the HTML page readable
+ * improve testing
+  * pylint
+  * fetch schedule from gcs and validate it "a bit"
+  * assert that we are redirected to update_schedule
 
 Source
 ======
