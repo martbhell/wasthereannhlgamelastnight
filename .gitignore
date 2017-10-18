@@ -1,3 +1,5 @@
 wasthere*.json
+api_key.py
+credentials.tar.gz
 *.pyc
 *.pyo

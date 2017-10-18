@@ -1,34 +1,34 @@
-# https://github.com/GoogleCloudPlatform/continuous-deployment-demo/blob/master/.travis.yml
 sudo: false
 services:
   - docker
-language: python
-  - "2.7"
+language: python - "2.7"
 cache:
   directories:
     - "$HOME/google-cloud-sdk/"
 before_install:
   - openssl aes-256-cbc -K $encrypted_ae95481c2257_key -iv $encrypted_ae95481c2257_iv
-    -in wasthereannhlgamelastnight-c0aea3438a34.json.enc -out wasthereannhlgamelastnight-c0aea3438a34.json
-    -d
+    -in credentials.tar.gz.enc -out credentials.tar.gz -d
+  - if [ ! -d ${HOME}/google-cloud-sdk ]; then
+       curl https://sdk.cloud.google.com | bash;
+    fi
+  - gcloud --quiet components update
+  - gcloud version
+  - tar -xzf credentials.tar.gz
+  - mkdir -p lib
+  # Here we use the decrypted service account credentials to authenticate the command line tool
+  - gcloud auth activate-service-account --key-file wasthereannhlgamelastnight-c0aea3438a34.json
+
 before_script:
   - travis_retry pip install --user pylint
 script:
-  - echo "no script"
+  - gcloud -q app deploy src/app.yaml -v testing --log-http --verbosity=debug
 deploy:
-  -  provider: gae
-     project: wasthereannhlgamelastnight
-     keyfile: wasthereannhlgamelastnight-c0aea3438a34.json
-     version: testing
-     on: master
-     no_promote: true
-     config: src/app.yaml
-  -  provider: gae
-     project: wasthereannhlgamelastnight
-     keyfile: wasthereannhlgamelastnight-c0aea3438a34.json
-     version: master
-     on: master
-     no_promote: true
-     config: src/app.yaml
+  - provider: gae
+    project: wasthereannhlgamelastnight
+    keyfile: wasthereannhlgamelastnight-c0aea3438a34.json
+    version: master
+    on: master
+    no_promote: true
+    config: src/app.yaml
 after_deploy:
-  - curl https://wtangy.se
+  - curl -q https://wtangy.se
