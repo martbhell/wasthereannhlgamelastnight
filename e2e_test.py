@@ -13,7 +13,7 @@ import logging
 
 HOST='https://testing-dot-wasthereannhlgamelastnight.appspot.com'
 
-ARGS= [ 'WINGS', 'Lak', 'travis_e2e_test', '20171012', 'WINGS/20171012', '20171013/WINGS', 'update_schedule' ]
+ARGS= [ '', 'WINGS', 'Lak', 'travis_e2e_test', '20171012', 'WINGS/20171012', '20171013/WINGS', 'update_schedule' ]
 
 for arg in ARGS:
   response = urllib2.urlopen("{}/%s".format(HOST) % arg)
