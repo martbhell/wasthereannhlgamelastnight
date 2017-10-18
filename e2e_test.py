@@ -21,7 +21,7 @@ for arg in ARGS:
   response = urllib2.urlopen("{}/%s".format(HOST) % arg)
   html = response.read()
   print response.code
-  if arg != "update_schedule":
-      print html
+  #if arg != "update_schedule":
+  print html
 #  assert(html == "NO\n" or html == "YES\n")
 # [END e2e]
