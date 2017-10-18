@@ -13,13 +13,13 @@ import logging
 
 HOST='https://testing-dot-wasthereannhlgamelastnight.appspot.com'
 
-ARGS= [ 'WINGS', 'Lak', 'foo', '20171012', 'WINGS/20171012', '20171013/WINGS', 'update_schedule' ]
+ARGS= [ 'WINGS', 'Lak', 'travis_e2e_test', '20171012', 'WINGS/20171012', '20171013/WINGS', 'update_schedule' ]
 
 for arg in ARGS:
   response = urllib2.urlopen("{}/%s".format(HOST) % arg)
   html = response.read()
-  print response.code
   if arg != "update_schedule":
+    print "asserting %s/%s" % (HOST,arg)
     assert(html == "NO\n" or html == "YES\n")
   else:
     assert("accounts.google.com" in html)
