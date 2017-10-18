@@ -19,7 +19,12 @@ for arg in ARGS:
   response = urllib2.urlopen("{}/%s".format(HOST) % arg)
   html = response.read()
   if arg != "update_schedule":
-    print "asserting %s/%s" % (HOST,arg)
+    print "asserting %s/%s - response code: %s" % (HOST,arg,response.code)
     assert(html == "NO\n" or html == "YES\n")
   else:
+    # TODO: Redirect is good - how to make sure we _are_ redirected?
+    print "asserting %s/%s - response code: %s" % (HOST,arg,response.code)
     assert("accounts.google.com" in html)
+
+#TODO:
+# fetch schedule and test some more of that
