@@ -14,14 +14,12 @@ import logging
 HOST='https://testing-dot-wasthereannhlgamelastnight.appspot.com'
 
 ARGS= [ 'WINGS', 'Lak', 'foo', '20171012', 'WINGS/20171012', '20171013/WINGS', 'update_schedule' ]
-#ARGS= [ 'WINGS', 'Lak', 'foo', '20171012', 'WINGS/20171012', '20171013/WINGS', 'update_schedule' ]
 
-# [START e2e]
 for arg in ARGS:
   response = urllib2.urlopen("{}/%s".format(HOST) % arg)
   html = response.read()
   print response.code
-  #if arg != "update_schedule":
-  print html
-#  assert(html == "NO\n" or html == "YES\n")
-# [END e2e]
+  if arg != "update_schedule":
+    assert(html == "NO\n" or html == "YES\n")
+  else:
+    assert("accounts.google.com" in html)
