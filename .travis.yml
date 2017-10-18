@@ -19,7 +19,7 @@ script:
   - gcloud config set project wasthereannhlgamelastnight
   - gcloud config list
   - gcloud -q app deploy src/app.yaml --no-promote -v testing
-after_script:
+after_success:
   - python e2e_test.py
 deploy:
   - provider: gae
