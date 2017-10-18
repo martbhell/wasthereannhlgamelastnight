@@ -63,7 +63,6 @@ TODO / Known issues
  * could be nice if one could get debug errors to the browser console, rather than having to run the local app_devserver
  * dynamically generate a sitemap.xml
  * Would be cool to not have \n all over the python and still get the HTML page readable
- * CI - would be cool with some automatic testing - especially that the arguments are working!
 
 Source
 ======

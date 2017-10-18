@@ -22,7 +22,7 @@ curl http://localhost:8080
 
 maybe the cloudstorage library in lib/ shouldn't/doesn't have to be in here?
 
-## This has been gold:
+## This has been gold for setting up travis:
 
 https://github.com/GoogleCloudPlatform/continuous-deployment-demo
 
