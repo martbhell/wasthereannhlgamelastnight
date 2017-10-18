@@ -27,7 +27,7 @@ class MainPage(webapp2.RequestHandler):
         nope = "NO\n"
 
         useragent = self.request.headers['User-Agent'].split('/')[0]
-        cliagents = ["curl", "Wget", 'Python']
+        cliagents = ["curl", "Wget", "Python-urllib"]
         # this sometimes (not for Links..) makes user agent without version, like curl, Safari
         uri = self.request.uri
         arguments = uri.split('/')
