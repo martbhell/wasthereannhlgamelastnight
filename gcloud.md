@@ -21,3 +21,10 @@ curl http://localhost:8080
 </pre>
 
 maybe the cloudstorage library in lib/ shouldn't/doesn't have to be in here?
+
+## This has been gold:
+
+https://github.com/GoogleCloudPlatform/continuous-deployment-demo
+
+not all is relevant anymore or has changed, but do pay attention to:
+ - gcloud config set project $name
