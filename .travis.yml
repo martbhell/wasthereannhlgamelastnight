@@ -16,12 +16,19 @@ before_script:
 script:
   - echo "no script"
 deploy:
-  provider: gae
-  project: wasthereannhlgamelastnight
-  keyfile: wasthereannhlgamelastnight-c0aea3438a34.json
-  version: testing
-  on: master
-  no_promote: true
-  config: src/app.yaml
+  -  provider: gae
+     project: wasthereannhlgamelastnight
+     keyfile: wasthereannhlgamelastnight-c0aea3438a34.json
+     version: testing
+     on: master
+     no_promote: true
+     config: src/app.yaml
+  -  provider: gae
+     project: wasthereannhlgamelastnight
+     keyfile: wasthereannhlgamelastnight-c0aea3438a34.json
+     version: master
+     on: master
+     no_promote: true
+     config: src/app.yaml
 after_deploy:
   - curl https://wtangy.se
