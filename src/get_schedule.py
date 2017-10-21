@@ -24,11 +24,11 @@ class MainPage(webapp2.RequestHandler):
         if version == "None":
             version = "master"
 
-        self.response.headers['Content-Type'] = 'text/plain'
-        if DEBUG:
-            self.response.write('Demo GCS Application running from Version: '
-                                + os.environ['CURRENT_VERSION_ID'] + '\n')
-            self.response.write('Using bucket name: ' + bucket_name + '\n\n')
+        self.response.headers['Content-Type'] = 'application/json'
+#        if DEBUG:
+#            self.response.write('Demo GCS Application running from Version: '
+#                                + os.environ['CURRENT_VERSION_ID'] + '\n')
+#            self.response.write('Using bucket name: ' + bucket_name + '\n\n')
 
         bucket = '/' + bucket_name
         filename = bucket + '/schedule_' + version
