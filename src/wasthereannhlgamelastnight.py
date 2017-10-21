@@ -57,7 +57,7 @@ class MainPage(webapp2.RequestHandler):
         fgcolor = color[0]
         try:
             fgcolor2 = color[1]
-        except KeyError:
+        except IndexError:
             fgcolor2 = color[0]
         if fgcolor == "000000":
             fgcolor = fgcolor2
