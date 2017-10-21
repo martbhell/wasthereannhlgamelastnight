@@ -16,11 +16,10 @@ before_install:
   - gcloud auth activate-service-account --key-file wasthereannhlgamelastnight-c0aea3438a34.json
 before_script:
   - travis_retry pip install --user pylint
-script:
   - gcloud config set project wasthereannhlgamelastnight
   - gcloud config list
   - gcloud -q app deploy src/app.yaml --no-promote -v testing
-after_success:
+script:
   - python e2e_test.py
 deploy:
   - provider: gae
