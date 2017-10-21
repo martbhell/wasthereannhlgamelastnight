@@ -72,7 +72,6 @@ TODO / Known issues
  * Would be cool to not have \n all over the python and still get the HTML page readable
  * improve testing
   * pylint
-  * fetch schedule from gcs and validate it "a bit"
   * assert that we are redirected to update_schedule
 
 Source
