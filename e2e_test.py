@@ -11,28 +11,47 @@
 
 import urllib2
 import sys
+import json
 
 HOST = 'https://testing-dot-wasthereannhlgamelastnight.appspot.com'
 
-ARGS = ['', 'WINGS', 'Lak', 'travis_e2e_test', '20171012', 'WINGS/20171012',
-        '20171013/WINGS', 'update_schedule', 'get_schedule']
+YESNO = ["YES\n", "NO\n"]
+
+ARGS = {
+    '':                 {"test": YESNO},
+    'WINGS':            {"test": YESNO},
+    'Lak':              {"test": YESNO},
+    'travis_e2e_test':  {"test": YESNO},
+    '20171012':         {"test": YESNO},
+    'WINGS/20171013':   {"test": YESNO},
+    'WINGS/20171014':   {"test": YESNO},
+    'update_schedule':  {"test": 'accounts.google.com', "type": "in"},
+    'get_schedule':     {"test": 'teamdates', "type": "injson"},
+}
 
 for arg in ARGS:
     response = urllib2.urlopen("{}/%s".format(HOST) % arg)
     html = response.read()
-    if arg == "update_schedule":
-        print "asserting %s/%s - response code: %s" % (HOST, arg, response.code)
-        try:
-            assert "accounts.google.com" in html
-        except AssertionError:
-            print "%s/%s does not contain %s" % (HOST, arg, "accounts.google.com")
-            sys.exit(1)
-    elif arg == "get_schedule":
-        print "asserting %s/%s - response code: %s" % (HOST, arg, response.code)
-    else:
+
+    if ARGS[arg]['test'] == YESNO:
         print "asserting %s/%s - response code: %s" % (HOST, arg, response.code)
         try:
             assert html == "NO\n" or html == "YES\n"
         except AssertionError:
             print "%s/%s does not contain %s" % (HOST, arg, "YES\n or NO\n")
             sys.exit(3)
+
+    else:
+        print "asserting %s/%s contains %s- response code: %s" % (HOST, arg, ARGS[arg]['test'], response.code) # pylint: disable=line-too-long
+        try:
+            if ARGS[arg]['type'] == "in" or ARGS[arg]['type'] == "injson":
+                assert ARGS[arg]['test'] in html
+        except AssertionError:
+            print "%s/%s does not contain %s" % (HOST, arg, ARGS[arg])
+            sys.exit(1)
+        if ARGS[arg]['type'] == "injson":
+            try:
+                assert json.loads(html)['teamdates'].popitem()
+            except KeyError:
+                print "popitem of JSON on %s/%s key %s failed" % (HOST, arg, ARGS[arg]['test'])
+                sys.exit(1)
