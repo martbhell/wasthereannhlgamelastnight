@@ -12,15 +12,15 @@ DEBUG = False
 
 class MainPage(webapp2.RequestHandler):
     """ Main Page Class """
-    def get(self):
+
+    theschedule = json.loads(read_file())
+    teamdates = theschedule['teamdates']
+
+    def get(self, teamdates):
         """Return a <strike>friendly</strike> binary HTTP greeting.
         teamdates dictionary is in JSON, from the update_schedule.py file in a cronjob
 
         """
-
-        theschedule = json.loads(self.read_file())
-        global teamdates
-        teamdates = theschedule['teamdates']
 
         #These are the defaults, only used with "CLI" user agents
         yes = "YES\n"
@@ -39,7 +39,6 @@ class MainPage(webapp2.RequestHandler):
         if DEBUG:
             print arguments
 
-        json1 = False
         date1 = None
         # Team variable is the argument is used to call yesorno and get_team_colors functions
         team1 = None
@@ -58,7 +57,7 @@ class MainPage(webapp2.RequestHandler):
                 date1 = arg
 
         # Select a color, take second color if the first is black.
-        [color, foundateam] = get_team_colors(team1)
+        color = get_team_colors(team1)
         fgcolor = color[0]
         try:
             fgcolor2 = color[1]
@@ -71,7 +70,7 @@ class MainPage(webapp2.RequestHandler):
         if useragent in cliagents:
 
             ### The YES/NO logic:
-            if yesorno(team1, date1):
+            if yesorno(teamdates, team1, date1):
                 self.response.write(yes)
             else:
                 self.response.write(nope)
@@ -113,7 +112,7 @@ class MainPage(webapp2.RequestHandler):
             self.response.write(';">\n')
 
             ### The YES/NO logic:
-            if yesorno(team1, date1):
+            if yesorno(teamdates, team1, date1):
                 self.response.write(yes)
                 therewasagame = "YES"
             else:
@@ -160,28 +159,28 @@ class MainPage(webapp2.RequestHandler):
             </body>\n\
             </html>\n')
 
-    def read_file(self):
-        """ Read the schedule from GCS, return JSON """
-        bucket_name = os.environ.get('BUCKET_NAME',
-                                     app_identity.get_default_gcs_bucket_name())
+def read_file():
+    """ Read the schedule from GCS, return JSON """
+    bucket_name = os.environ.get('BUCKET_NAME',
+                                 app_identity.get_default_gcs_bucket_name())
 
-        version = os.environ['CURRENT_VERSION_ID'].split('.')[0]
-        if version == "None":
-            version = "master"
+    version = os.environ['CURRENT_VERSION_ID'].split('.')[0]
+    if version == "None":
+        version = "master"
 
-        bucket = '/' + bucket_name
-        filename = bucket + '/schedule_' + version
+    bucket = '/' + bucket_name
+    filename = bucket + '/schedule_' + version
 
-        with gcs.open(filename) as cloudstorage_file:
-            jsondata = cloudstorage_file.read()
+    with gcs.open(filename) as cloudstorage_file:
+        jsondata = cloudstorage_file.read()
 
-        return jsondata
+    return jsondata
 
 
-def yesorno(team, date2=None):
+def yesorno(team, teamdates, date2=None):
 
     """
-    Input: team/city/etc and date
+    Input: team/city/etc, teamdates and date
     Returns: True/False
     """
 
@@ -198,7 +197,6 @@ def yesorno(team, date2=None):
 ##
 
     chosen_team = get_team(team) # returns "New York Rangers" on http://URL/NYR or "" on no match
-    chosen_city = get_city_from_team(chosen_team) # outputs "NY Rangers" on http://URL/NYR or "".
 
     ### The YES/NO logic:
     # Check if yesterday's date is a key in teamdates, continue on first hit (not ordered..).
@@ -212,12 +210,12 @@ def yesorno(team, date2=None):
     if date2 is None:
         # If no date set - set it to yesterday
         date2 = yesterday
-    if dateapi(chosen_team, date2):
+    if dateapi(teamdates, chosen_team, date2):
         return True
 
     return False
 
-def dateapi(team=None, date=None):
+def dateapi(teamdates, team=None, date=None):
     """Return true if there was a game on the date
     Return false there was not and if date was unparseable
     Take a team and/or a date as arguments """
@@ -225,7 +223,6 @@ def dateapi(team=None, date=None):
     dateinnhlformat = None
     date_formats = ['%d-%m-%Y', '%Y-%m-%d', '%d.%m.%Y', '%Y.%m.%d', '%d%m%Y', '%Y%m%d', '%A, %b %-d'] # pylint: disable=line-too-long
     chosen_team = team
-    chosen_city = None
 
     # a date was provided
     if date:
@@ -260,11 +257,6 @@ def dateapi(team=None, date=None):
         if DEBUG:
             print "G1"
         return False
-
-def handle_404(request, response, exception):
-    """Return a custom 404 error. Currently unused"""
-    response.write('Sorry, nothing at this URL.')
-    response.set_status(404)
 
 def get_city_from_team(cityteam):
     """Returns a city and teamname from teamname in lower case.
@@ -478,19 +470,19 @@ def get_team(team):
         # If not, then try with the name of the team
         try:
             return teamdict1[teamnamedict1[team]]
-        except:
+        except KeyError:
             # Then one could have one more for half names, like la, leafs, wings, jackets, etc
             try:
                 return teamdict1[teamnameshortdict[team]]
-            except:
+            except KeyError:
                 # Perhaps it's a city name?
                 try:
                     return teamdict1[get_team_from_city(team)]
-                except:
+                except KeyError:
                     #Perhaps it's a citynameteamname?1
                     try:
                         return teamdict1[teamdict1nospaces[team]]
-                    except:
+                    except KeyError:
                         # After that no team selected - nothing in title
                         return None
 
@@ -534,12 +526,11 @@ def get_team_colors(team):
         "Winnipeg Jets" :                   ["002E62", "0168AB", "A8A9AD"]
     }
     try:
-        return(nhl[teamname], True)
-    except:
-        return(["000000"], False)
+        return nhl[teamname]
+    except KeyError:
+        return ["000000"]
 
 
 APPLICATION = webapp2.WSGIApplication([
     ('/.*', MainPage),
 ], debug=True)
-APPLICATION.error_handlers[404] = handle_404
