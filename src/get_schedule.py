@@ -1,14 +1,12 @@
 """ imports for GCS """
 
 import os
-import json # to parse URL
-import urllib2 # to fetch URL
-import datetime # to compose URL
+import json
 
-import cloudstorage as gcs
-import webapp2
+import cloudstorage as gcs # pylint: disable=import-error
+import webapp2 # pylint: disable=import-error
 
-from google.appengine.api import app_identity
+from google.appengine.api import app_identity # pylint: disable=import-error
 
 DEBUG = True
 
@@ -27,21 +25,15 @@ class MainPage(webapp2.RequestHandler):
             version = "master"
 
         self.response.headers['Content-Type'] = 'text/plain'
-        self.response.write('Demo GCS Application running from Version: '
-                            + os.environ['CURRENT_VERSION_ID'] + '\n')
-        self.response.write('Using bucket name: ' + bucket_name + '\n\n')
+        if DEBUG:
+            self.response.write('Demo GCS Application running from Version: '
+                                + os.environ['CURRENT_VERSION_ID'] + '\n')
+            self.response.write('Using bucket name: ' + bucket_name + '\n\n')
 
         bucket = '/' + bucket_name
         filename = bucket + '/schedule_' + version
 
         self.read_file(filename)
-
-    def stat_file(self, filename):
-        """ stat a file
-        This returns a CLASS, fetch properties in the results with var.id, not var['id']
-        """
-        stat = gcs.stat(filename)
-        return stat
 
     def read_file(self, filename):
         """ read a file! """
