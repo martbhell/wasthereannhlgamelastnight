@@ -32,8 +32,6 @@ class MainPage(webapp2.RequestHandler):
         for arg in REMOVE_THESE:
             while arg in arguments:
                 arguments.remove(arg)
-        if DEBUG:
-            print arguments
 
         date1 = None
         # Team variable is the argument is used to call yesorno and get_team_colors functions
@@ -46,15 +44,7 @@ class MainPage(webapp2.RequestHandler):
             elif any(char.isdigit() for char in arg):
                 date1 = arg
 
-        # Select a color, take second color if the first is black.
-        color = get_team_colors(team1)
-        fgcolor = color[0]
-        try:
-            fgcolor2 = color[1]
-        except IndexError:
-            fgcolor2 = color[0]
-        if fgcolor == "000000":
-            fgcolor = fgcolor2
+        fgcolor = self.give_me_a_color(team1)
 
         ## Minimalistic style if from a CLI tool
         if useragent in CLIAGENTS:
@@ -138,6 +128,21 @@ class MainPage(webapp2.RequestHandler):
         </body>\n\
         </html>\n')
 
+    @classmethod
+    def give_me_a_color(cls, team1):
+        """ Select a color, take second color if the first is black. """
+
+        color = get_team_colors(team1)
+        fgcolor = color[0]
+        try:
+            fgcolor2 = color[1]
+        except IndexError:
+            fgcolor2 = color[0]
+        if fgcolor == "000000":
+            fgcolor = fgcolor2
+
+        return fgcolor
+
 def read_file():
     """ Read the schedule from GCS, return JSON """
     bucket_name = os.environ.get('BUCKET_NAME',
@@ -155,7 +160,6 @@ def read_file():
         jsondata = cloudstorage_file.read()
 
     return jsondata
-
 
 def yesorno(team, teamdates, date2=None):
 
