@@ -25,10 +25,14 @@ for arg in ARGS:
         try:
             assert "accounts.google.com" in html
         except AssertionError:
-            print "failed assertion"
+            print "%s/%s does not contain %s" % (HOST, arg, "accounts.google.com")
             sys.exit(1)
     elif arg == "get_schedule":
         print "asserting %s/%s - response code: %s" % (HOST, arg, response.code)
     else:
         print "asserting %s/%s - response code: %s" % (HOST, arg, response.code)
-        assert html == "NO\n" or html == "YES\n"
+        try:
+            assert html == "NO\n" or html == "YES\n"
+        except AssertionError:
+            print "%s/%s does not contain %s" % (HOST, arg, "YES\n or NO\n")
+            sys.exit(3)
