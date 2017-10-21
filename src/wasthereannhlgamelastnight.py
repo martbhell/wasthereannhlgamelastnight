@@ -28,8 +28,9 @@ class MainPage(webapp2.RequestHandler):
         # this sometimes (not for Links..) makes user agent without version, like curl, Safari
         uri = self.request.uri
         arguments = list(set(uri.split('/')))
-        for arg in arguments:
-            if arg in REMOVE_THESE:
+
+        for arg in REMOVE_THESE:
+            while arg in arguments:
                 arguments.remove(arg)
         if DEBUG:
             print arguments
@@ -173,17 +174,8 @@ def yesorno(team, teamdates, date2=None):
     Returns: True/False
     """
 
-## Debug
-    if DEBUG:
-        yesterday = "2017-10-14"
-        print "yesterday:" + yesterday
-        yesterday4 = datetime.datetime.now() - datetime.timedelta(days=1)
-        yesterday4 = yesterday4.strftime("%Y-%m-%d")
-        print "yesterday4:" + yesterday4
-    else:
-        yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
-        yesterday = yesterday.strftime("%Y-%m-%d")
-##
+    yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
+    yesterday = yesterday.strftime("%Y-%m-%d")
 
     chosen_team = get_team(team) # returns "New York Rangers" on http://URL/NYR or "" on no match
 
@@ -454,26 +446,28 @@ def get_team(team):
 
     # First check if someone put in the proper abbreviation
     try:
-        return teamdict1[team]
+        thisisyourteam = teamdict1[team]
     except KeyError:
         # If not, then try with the name of the team
         try:
-            return teamdict1[teamnamedict1[team]]
+            thisisyourteam = teamdict1[teamnamedict1[team]]
         except KeyError:
             # Then one could have one more for half names, like la, leafs, wings, jackets, etc
             try:
-                return teamdict1[teamnameshortdict[team]]
+                thisisyourteam = teamdict1[teamnameshortdict[team]]
             except KeyError:
                 # Perhaps it's a city name?
                 try:
-                    return teamdict1[get_team_from_city(team)]
+                    thisisyourteam = teamdict1[get_team_from_city(team)]
                 except KeyError:
                     #Perhaps it's a citynameteamname?1
                     try:
-                        return teamdict1[teamdict1nospaces[team]]
+                        thisisyourteam = teamdict1[teamdict1nospaces[team]]
                     except KeyError:
                         # After that no team selected - nothing in title
-                        return None
+                        thisisyourteam = None
+
+    return thisisyourteam
 
 def get_team_colors(team):
     """Return a color and True/False if we found a team
