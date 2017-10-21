@@ -222,13 +222,12 @@ def dateapi(teamdates, team=None, date=None):
             except ValueError:
                 pass
 
-        # First assume it's only the date
-        if DEBUG:
-            print "datenhl: %s" % dateinnhlformat
-            print "chosen: %s" % team
+        # First assume it's only the date and no team
         if (dateinnhlformat) and (dateinnhlformat in teamdates) and (team is None):
             if DEBUG:
                 print "F1"
+                print "datenhl: %s" % dateinnhlformat
+                print "chosen: %s" % team
             return True
         elif dateinnhlformat and (dateinnhlformat in teamdates) and team:
             # if dateinnhlformat exists a date has been chosen
@@ -238,9 +237,13 @@ def dateapi(teamdates, team=None, date=None):
                     if combatant == team:
                         if DEBUG:
                             print "E1"
+                            print "datenhl: %s" % dateinnhlformat
+                            print "chosen: %s" % team
                         return True
     else:
         if DEBUG:
+            print "datenhl: %s" % dateinnhlformat
+            print "chosen: %s" % team
             print "G1"
         return False
 
