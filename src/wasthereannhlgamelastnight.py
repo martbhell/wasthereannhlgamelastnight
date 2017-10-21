@@ -27,11 +27,10 @@ class MainPage(webapp2.RequestHandler):
         useragent = self.request.headers['User-Agent'].split('/')[0]
         # this sometimes (not for Links..) makes user agent without version, like curl, Safari
         uri = self.request.uri
-        arguments = uri.split('/')
+        arguments = list(set(uri.split('/')))
         for arg in arguments:
             if arg in REMOVE_THESE:
                 arguments.remove(arg)
-        arguments = filter(None, arguments) # remove empty strings
         if DEBUG:
             print arguments
 
@@ -227,7 +226,6 @@ def dateapi(teamdates, team=None, date=None):
         # First assume it's only the date
         if DEBUG:
             print "datenhl: %s" % dateinnhlformat
-        if DEBUG:
             print "chosen: %s" % chosen_team
         if (dateinnhlformat) and (dateinnhlformat in teamdates) and (chosen_team is None):
             if DEBUG:
@@ -235,14 +233,13 @@ def dateapi(teamdates, team=None, date=None):
             return True
         elif dateinnhlformat and (dateinnhlformat in teamdates) and chosen_team:
             # if dateinnhlformat exists a date has been chosen
-            if chosen_team and dateinnhlformat and (dateinnhlformat in teamdates):
-                # for each list (matchup) at the date chosen
-                for matchup in teamdates[dateinnhlformat]:
-                    for combatant in matchup:
-                        if combatant == chosen_team:
-                            if DEBUG:
-                                print "E1"
-                            return True
+            # for each list (matchup) at the date chosen
+            for matchup in teamdates[dateinnhlformat]:
+                for combatant in matchup:
+                    if combatant == chosen_team:
+                        if DEBUG:
+                            print "E1"
+                        return True
     else:
         if DEBUG:
             print "G1"
