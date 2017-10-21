@@ -8,7 +8,7 @@ import webapp2 # pylint: disable=import-error
 
 from google.appengine.api import app_identity # pylint: disable=import-error
 
-DEBUG = True
+DEBUG = False
 
 class MainPage(webapp2.RequestHandler):
     """Main page for GCS demo application."""
@@ -36,8 +36,8 @@ class MainPage(webapp2.RequestHandler):
         self.read_file(filename)
 
     def read_file(self, filename):
-        """ read a file! """
-
+        """ read a file!
+            and as a bonus assume content is JSON and return pretty JSON """
 
         with gcs.open(filename) as cloudstorage_file:
             content = cloudstorage_file.read()
