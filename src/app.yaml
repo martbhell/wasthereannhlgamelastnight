@@ -19,6 +19,10 @@ handlers:
   upload: google_verification/google9273e1dd86a36f05.html
   secure: always
 
+- url: /get_schedule
+  script: get_schedule.APPLICATION
+  secure: always
+
 - url: /update_schedule
   script: update_schedule.APPLICATION
   login: admin

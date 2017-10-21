@@ -1,6 +1,8 @@
 wasthereannhlgamelastnight
 ==========================
 
+Print YES or NO!
+
 This works with the new NHL.com website (2017-2018)
 
 Usage
@@ -21,13 +23,18 @@ case insensitive:
  * https://wtangy.se/foo/20171014
  * https://wtangy.se/foo/20170901
 
-What does this mean?
+What do these mean?
 
  * *Not choosing anything just tells you if there was a game yesterday*
  * *Choosing a team means you only get YES if that team played yesterday.*
  * *Choosing a date means you only get YES if there is a game on _that_ date.*
  * *Choosing a team and a date you only get YES if the chosen team plays/played on that date.*
  * *Choosing a team incorrectly and a date correctly you only get YES if there was/is a game on that date*
+
+There's also:
+
+ * https://wtangy.se/get_schedule # get the schedule this website uses in JSON
+ * https://wtangy.se/update_schedule # for admins only
 
 Why?
 ====
