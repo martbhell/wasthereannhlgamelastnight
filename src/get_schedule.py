@@ -32,9 +32,6 @@ class MainPage(webapp2.RequestHandler):
 #                                + os.environ['CURRENT_VERSION_ID'] + '\n')
 #            self.response.write('Using bucket name: ' + bucket_name + '\n\n')
 
-        bucket = '/' + bucket_name
-        filename = bucket + '/schedule_' + version
-
         self.read_file(filename)
 
     def read_file(self, filename):
