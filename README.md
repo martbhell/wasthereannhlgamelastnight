@@ -71,8 +71,9 @@ TODO / Known issues
  * dynamically generate a sitemap.xml
  * Would be cool to not have \n all over the python and still get the HTML page readable
  * improve testing
-  * pylint
   * assert that we are redirected to update_schedule
+  * update schedule_testing and then verify it
+  * test with non-static year
 
 Source
 ======
