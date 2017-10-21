@@ -7,22 +7,23 @@
 # or implied. See the License for the specific language governing permissions and
 # limitations under the License.
 
+""" Do some testing """
 
 import urllib2
-import logging
 
-HOST='https://testing-dot-wasthereannhlgamelastnight.appspot.com'
+HOST = 'https://testing-dot-wasthereannhlgamelastnight.appspot.com'
 
-ARGS= [ '', 'WINGS', 'Lak', 'travis_e2e_test', '20171012', 'WINGS/20171012', '20171013/WINGS', 'update_schedule', 'get_schedule') ]
+ARGS = ['', 'WINGS', 'Lak', 'travis_e2e_test', '20171012', 'WINGS/20171012',
+        '20171013/WINGS', 'update_schedule', 'get_schedule']
 
 for arg in ARGS:
-  response = urllib2.urlopen("{}/%s".format(HOST) % arg)
-  html = response.read()
-  if arg != "update_schedule":
-    print "asserting %s/%s - response code: %s" % (HOST,arg,response.code)
-    assert(html == "NO\n" or html == "YES\n")
-  elif arg != "get_schedule":
-    print "asserting %s/%s - response code: %s" % (HOST,arg,response.code)
-  else:
-    print "asserting %s/%s - response code: %s" % (HOST,arg,response.code)
-    assert("accounts.google.com" in html)
+    response = urllib2.urlopen("{}/%s".format(HOST) % arg)
+    html = response.read()
+    if arg != "update_schedule":
+        print "asserting %s/%s - response code: %s" % (HOST, arg, response.code)
+        assert html == "NO\n" or html == "YES\n"
+    elif arg != "get_schedule":
+        print "asserting %s/%s - response code: %s" % (HOST, arg, response.code)
+    else:
+        print "asserting %s/%s - response code: %s" % (HOST, arg, response.code)
+        assert "accounts.google.com" in html
