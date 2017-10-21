@@ -28,7 +28,7 @@ deploy:
     keyfile: wasthereannhlgamelastnight-c0aea3438a34.json
     version: master
     on: master
-    no_promote: true
+    no_promote: False
     config: src/app.yaml
 after_deploy:
   - curl -q https://wtangy.se
