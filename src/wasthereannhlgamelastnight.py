@@ -18,21 +18,18 @@ class MainPage(webapp2.RequestHandler):
         teamdates dictionary is in JSON, from the update_schedule.py file in a cronjob
 
         """
-        theschedule = json.loads(read_file())
-        teamdates = theschedule['teamdates']
+        teamdates = json.loads(read_file())['teamdates']
 
         #These are the defaults, only used with "CLI" user agents
         yes = "YES\n"
         nope = "NO\n"
 
         useragent = self.request.headers['User-Agent'].split('/')[0]
-        cliagents = ["curl", "Wget", "Python-urllib"]
         # this sometimes (not for Links..) makes user agent without version, like curl, Safari
         uri = self.request.uri
         arguments = uri.split('/')
-        remove_these = ['wtangy.se', 'https:', 'http:', '', 'localhost:8080', 'wtangy.se', 'wasthereannhlgamelastnight.appspot.com'] # pylint: disable=line-too-long
         for arg in arguments:
-            if arg in remove_these:
+            if arg in REMOVE_THESE:
                 arguments.remove(arg)
         arguments = filter(None, arguments) # remove empty strings
         if DEBUG:
@@ -41,15 +38,12 @@ class MainPage(webapp2.RequestHandler):
         date1 = None
         # Team variable is the argument is used to call yesorno and get_team_colors functions
         team1 = None
-        argcounter = 0
 
         # TOOD: How to handle if someone enters multiple dates etc?
         for arg in arguments:
             if get_team(arg):
-                argcounter = argcounter + 1
                 team1 = arg
             elif any(char.isdigit() for char in arg):
-                argcounter = argcounter + 1
                 date1 = arg
 
         # Select a color, take second color if the first is black.
@@ -63,7 +57,7 @@ class MainPage(webapp2.RequestHandler):
             fgcolor = fgcolor2
 
         ## Minimalistic style if from a CLI tool
-        if useragent in cliagents:
+        if useragent in CLIAGENTS:
 
             ### The YES/NO logic:
             if yesorno(team1, teamdates, date1):
@@ -525,6 +519,10 @@ def get_team_colors(team):
         return nhl[teamname]
     except KeyError:
         return ["000000"]
+
+
+CLIAGENTS = ["curl", "Wget", "Python-urllib"]
+REMOVE_THESE = ['wtangy.se', 'https:', 'http:', '', 'localhost:8080', 'wtangy.se', 'wasthereannhlgamelastnight.appspot.com'] # pylint: disable=line-too-long
 
 APPLICATION = webapp2.WSGIApplication([
     ('/.*', MainPage),
