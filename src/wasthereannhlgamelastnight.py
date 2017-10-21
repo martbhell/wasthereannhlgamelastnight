@@ -13,14 +13,13 @@ DEBUG = False
 class MainPage(webapp2.RequestHandler):
     """ Main Page Class """
 
-    theschedule = json.loads(read_file())
-    teamdates = theschedule['teamdates']
-
-    def get(self, teamdates):
+    def get(self):
         """Return a <strike>friendly</strike> binary HTTP greeting.
         teamdates dictionary is in JSON, from the update_schedule.py file in a cronjob
 
         """
+        theschedule = json.loads(read_file())
+        teamdates = theschedule['teamdates']
 
         #These are the defaults, only used with "CLI" user agents
         yes = "YES\n"
@@ -70,7 +69,7 @@ class MainPage(webapp2.RequestHandler):
         if useragent in cliagents:
 
             ### The YES/NO logic:
-            if yesorno(teamdates, team1, date1):
+            if yesorno(team1, teamdates, date1):
                 self.response.write(yes)
             else:
                 self.response.write(nope)
@@ -112,7 +111,7 @@ class MainPage(webapp2.RequestHandler):
             self.response.write(';">\n')
 
             ### The YES/NO logic:
-            if yesorno(teamdates, team1, date1):
+            if yesorno(team1, teamdates, date1):
                 self.response.write(yes)
                 therewasagame = "YES"
             else:
@@ -165,11 +164,12 @@ def read_file():
                                  app_identity.get_default_gcs_bucket_name())
 
     version = os.environ['CURRENT_VERSION_ID'].split('.')[0]
-    if version == "None":
-        version = "master"
-
     bucket = '/' + bucket_name
-    filename = bucket + '/schedule_' + version
+    # for dev_appserver we get version None
+    if version == "None":
+        filename = bucket + '/schedule'
+    else:
+        filename = bucket + '/schedule_' + version
 
     with gcs.open(filename) as cloudstorage_file:
         jsondata = cloudstorage_file.read()
@@ -529,7 +529,6 @@ def get_team_colors(team):
         return nhl[teamname]
     except KeyError:
         return ["000000"]
-
 
 APPLICATION = webapp2.WSGIApplication([
     ('/.*', MainPage),
