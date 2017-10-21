@@ -81,7 +81,8 @@ class MainPage(webapp2.RequestHandler):
             retry_params=write_retry_params) as cloudstorage_file:
             cloudstorage_file.write(content)
 
-    def stat_file(self, filename):
+    @classmethod
+    def stat_file(cls, filename):
         """ stat a file
         This returns a CLASS, fetch properties in the results with var.id, not var['id']
         """
@@ -102,7 +103,8 @@ class MainPage(webapp2.RequestHandler):
             return (totalgames, False)
         return (totalgames, jsondata)
 
-    def parse_schedule(self, jsondata):
+    @classmethod
+    def parse_schedule(cls, jsondata):
         """ parse the json data into a dict the app is used to. """
 
         dict_of_keys_and_matchups = {}
@@ -121,7 +123,8 @@ class MainPage(webapp2.RequestHandler):
 
         return [dict_of_keys_and_matchups]
 
-    def make_data_json(self, teamdates):
+    @classmethod
+    def make_data_json(cls, teamdates):
         """ turn parsed data into json, end result in JSON should look like:
         {
          "teamdates": { "2017-12-30": [["Boston Bruins", "Ottawa Senators"]], }
