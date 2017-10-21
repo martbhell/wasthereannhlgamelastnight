@@ -10,6 +10,7 @@
 """ Do some testing """
 
 import urllib2
+import sys
 
 HOST = 'https://testing-dot-wasthereannhlgamelastnight.appspot.com'
 
@@ -19,11 +20,15 @@ ARGS = ['', 'WINGS', 'Lak', 'travis_e2e_test', '20171012', 'WINGS/20171012',
 for arg in ARGS:
     response = urllib2.urlopen("{}/%s".format(HOST) % arg)
     html = response.read()
-    if arg != "update_schedule":
+    if arg == "update_schedule":
         print "asserting %s/%s - response code: %s" % (HOST, arg, response.code)
-        assert html == "NO\n" or html == "YES\n"
-    elif arg != "get_schedule":
+        try:
+            assert "accounts.google.com" in html
+        except AssertionError:
+            print "failed assertion"
+            sys.exit(1)
+    elif arg == "get_schedule":
         print "asserting %s/%s - response code: %s" % (HOST, arg, response.code)
     else:
         print "asserting %s/%s - response code: %s" % (HOST, arg, response.code)
-        assert "accounts.google.com" in html
+        assert html == "NO\n" or html == "YES\n"
