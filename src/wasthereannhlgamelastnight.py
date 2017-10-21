@@ -227,10 +227,6 @@ def dateapi(teamdates, team=None, date=None):
             for matchup in teamdates[dateinnhlformat]:
                 for combatant in matchup:
                     if combatant == team:
-                        if DEBUG:
-                            print "E1"
-                            print "datenhl: %s" % dateinnhlformat
-                            print "chosen: %s" % team
                         return True
     else:
         if DEBUG:
