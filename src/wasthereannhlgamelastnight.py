@@ -76,14 +76,13 @@ class MainPage(webapp2.RequestHandler):
             # Headers
             self.response.headers['Content-Type'] = 'text/html'
             self.response.write('<!DOCTYPE html>\n\
-            <html lang ="en">\n\
-            <head><title>Was there an NHL game yesterday?')
+        <html lang ="en">\n\
+        <head><title>Was there an NHL game yesterday?')
             teamlongtext = get_team(team1)
             if teamlongtext is None:
                 teamlongtext = ""
                 # Can't figure out what team that was, set no team chosen.
-            self.response.write(teamlongtext)
-            self.response.write('</title>\n\
+            self.response.write('%s</title>\n\
             <meta charset="UTF-8">\n\
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">\n\
             <meta name="robots" content="index,follow">\n\
@@ -91,14 +90,10 @@ class MainPage(webapp2.RequestHandler):
             <meta name="description" content="Indicates with a YES/NO if there was an NHL game on yesterday">\n\
             <meta name="keywords" content="YES,NO,NHL,icehockey,hockey,games,match,wasthereannhlgamelastnight,wasthereannhlgameyesterday,wtangy,wtangln">\n\
             <meta name="author" content="Johan Guldmyr">\n\
-            <meta name="theme-color" content="#')
-            self.response.write(fgcolor)
-            self.response.write('">\n\
-            </head>\n\
+            <meta name="theme-color" content="#%s">\n\
+        </head>\n\
             <body style="text-align: center; padding-top: 5px;">\n\
-            <div class="content" style="font-weight: bold; font-size: 220px; font-size: 30vw; font-family: Arial,sans-serif; text-decoration: none; color: #') # pylint: disable=line-too-long
-            self.response.write(fgcolor)
-            self.response.write(';">\n')
+            <div class="content" style="font-weight: bold; font-size: 220px; font-size: 30vw; font-family: Arial,sans-serif; text-decoration: none; color: #%s;">\n' % (teamlongtext, fgcolor, fgcolor)) # pylint: disable=line-too-long
 
             ### The YES/NO logic:
             if yesorno(team1, teamdates, date1):
@@ -124,14 +119,11 @@ class MainPage(webapp2.RequestHandler):
                 "agent": "%s" \n\
               } \n\
             } \n\
-            </script> \n' % (therewasagame, teamlongtext))
-
-            self.response.write('\
-                </div>\n')
+             </script>\n\t\t\t</div> \n' % (therewasagame, teamlongtext))
 
             ### The github forkme
             # http://tholman.com/github-corners/
-            self.response.write('<a href="https://github.com/martbhell/wasthereannhlgamelastnight" class="github-corner" aria-label="View source on Github"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#') # pylint: disable=line-too-long
+            self.response.write('\t\t\t<a href="https://github.com/martbhell/wasthereannhlgamelastnight" class="github-corner" aria-label="View source on Github"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#') # pylint: disable=line-too-long
             self.response.write(fgcolor)
             self.response.write('; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>') # pylint: disable=line-too-long
 
@@ -139,14 +131,12 @@ class MainPage(webapp2.RequestHandler):
             #self.response.write(now2)
 
             self.response.write('\n\
-                <div class="disclaimer" style="font-size:10px; ">')
-            self.response.write('<!-- NHL.com is the official web site of the National Hockey League. NHL, the NHL Shield, the word mark and image of the Stanley Cup, Center Ice name and logo, NHL Conference logos are registered trademarks. All NHL logos and marks and NHL team logos and marks depicted herein are the property of the NHL and the respective teams. This website is not affiliated with NHL. -->') # pylint: disable=line-too-long
-            self.response.write('\n\
-                <!-- Written by Johan Guldmyr - source is available at https://github.com/martbhell/wasthereannhlgamelastnight -->') # pylint: disable=line-too-long
-            self.response.write('\n\
-                </div>\n\
-            </body>\n\
-            </html>\n')
+            <div class="disclaimer" style="font-size:10px; ">\n\
+            <!-- NHL.com is the official web site of the National Hockey League. NHL, the NHL Shield, the word mark and image of the Stanley Cup, Center Ice name and logo, NHL Conference logos are registered trademarks. All NHL logos and marks and NHL team logos and marks depicted herein are the property of the NHL and the respective teams. This website is not affiliated with NHL. -->\n\
+            <!-- Written by Johan Guldmyr - source is available at https://github.com/martbhell/wasthereannhlgamelastnight -->\n\
+            </div>\n\
+        </body>\n\
+        </html>\n')
 
 def read_file():
     """ Read the schedule from GCS, return JSON """
