@@ -211,7 +211,6 @@ def dateapi(teamdates, team=None, date=None):
     # Not accepting day in the middle
     dateinnhlformat = None
     date_formats = ['%d-%m-%Y', '%Y-%m-%d', '%d.%m.%Y', '%Y.%m.%d', '%d%m%Y', '%Y%m%d', '%A, %b %-d'] # pylint: disable=line-too-long
-    chosen_team = team
 
     # a date was provided
     if date:
@@ -226,17 +225,17 @@ def dateapi(teamdates, team=None, date=None):
         # First assume it's only the date
         if DEBUG:
             print "datenhl: %s" % dateinnhlformat
-            print "chosen: %s" % chosen_team
-        if (dateinnhlformat) and (dateinnhlformat in teamdates) and (chosen_team is None):
+            print "chosen: %s" % team
+        if (dateinnhlformat) and (dateinnhlformat in teamdates) and (team is None):
             if DEBUG:
                 print "F1"
             return True
-        elif dateinnhlformat and (dateinnhlformat in teamdates) and chosen_team:
+        elif dateinnhlformat and (dateinnhlformat in teamdates) and team:
             # if dateinnhlformat exists a date has been chosen
             # for each list (matchup) at the date chosen
             for matchup in teamdates[dateinnhlformat]:
                 for combatant in matchup:
-                    if combatant == chosen_team:
+                    if combatant == team:
                         if DEBUG:
                             print "E1"
                         return True
