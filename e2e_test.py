@@ -30,7 +30,11 @@ ARGS = {
 }
 
 for arg in ARGS:
-    response = urllib2.urlopen("{}/%s".format(HOST) % arg)
+    try:
+        response = urllib2.urlopen("{}/%s".format(HOST) % arg)
+    except urllib2.HTTPError as urlliberror:
+        print "Cannot fetch URL: %s" % urlliberror
+        sys.exit(66)
     html = response.read()
 
     if ARGS[arg]['test'] == YESNO:
