@@ -3,10 +3,10 @@ import os
 import datetime
 import json # data is stored in json
 
-import webapp2
-import cloudstorage as gcs # we fetch the schedule from gcs
+import webapp2 # pylint: disable=import-error
+import cloudstorage as gcs # we fetch the schedule from gcs pylint: disable=import-error
 
-from google.appengine.api import app_identity
+from google.appengine.api import app_identity # pylint: disable=import-error
 
 DEBUG = False
 

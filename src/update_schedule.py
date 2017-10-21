@@ -5,10 +5,10 @@ import json # to parse URL
 import urllib2 # to fetch URL
 import datetime # to compose URL
 
-import cloudstorage as gcs
-import webapp2
+import cloudstorage as gcs # pylint: disable=import-error
+import webapp2 # pylint: disable=import-error
 
-from google.appengine.api import app_identity
+from google.appengine.api import app_identity # pylint: disable=import-error
 
 DEBUG = True
 
