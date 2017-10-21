@@ -165,8 +165,12 @@ class MainPage(webapp2.RequestHandler):
         bucket_name = os.environ.get('BUCKET_NAME',
                                      app_identity.get_default_gcs_bucket_name())
 
+        version = os.environ['CURRENT_VERSION_ID'].split('.')[0]
+        if version == "None":
+            version = "master"
+
         bucket = '/' + bucket_name
-        filename = bucket + '/schedule'
+        filename = bucket + '/schedule_' + version
 
         with gcs.open(filename) as cloudstorage_file:
             jsondata = cloudstorage_file.read()

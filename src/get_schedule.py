@@ -16,10 +16,15 @@ class MainPage(webapp2.RequestHandler):
     """Main page for GCS demo application."""
 
     def get(self):
+
         """This get() calls the other functions for some reason(tm)."""
 
         bucket_name = os.environ.get('BUCKET_NAME',
                                      app_identity.get_default_gcs_bucket_name())
+
+        version = os.environ['CURRENT_VERSION_ID'].split('.')[0]
+        if version == "None":
+            version = "master"
 
         self.response.headers['Content-Type'] = 'text/plain'
         self.response.write('Demo GCS Application running from Version: '
@@ -27,7 +32,7 @@ class MainPage(webapp2.RequestHandler):
         self.response.write('Using bucket name: ' + bucket_name + '\n\n')
 
         bucket = '/' + bucket_name
-        filename = bucket + '/schedule'
+        filename = bucket + '/schedule_' + version
 
         self.read_file(filename)
 
