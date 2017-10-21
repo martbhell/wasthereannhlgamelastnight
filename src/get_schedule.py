@@ -20,11 +20,13 @@ class MainPage(webapp2.RequestHandler):
         bucket_name = os.environ.get('BUCKET_NAME',
                                      app_identity.get_default_gcs_bucket_name())
 
+        bucket = '/' + bucket_name
         version = os.environ['CURRENT_VERSION_ID'].split('.')[0]
         if version == "None":
-            version = "master"
+            filename = bucket + '/schedule'
+        else:
+            filename = bucket + '/schedule_' + version
 
-        self.response.headers['Content-Type'] = 'application/json'
 #        if DEBUG:
 #            self.response.write('Demo GCS Application running from Version: '
 #                                + os.environ['CURRENT_VERSION_ID'] + '\n')
@@ -42,6 +44,7 @@ class MainPage(webapp2.RequestHandler):
         with gcs.open(filename) as cloudstorage_file:
             content = cloudstorage_file.read()
             parsed = json.loads(content)
+            self.response.headers['Content-Type'] = 'application/json'
             self.response.write(json.dumps(parsed, indent=4, sort_keys=True))
 
 ########## This variable is referenced from app.yaml

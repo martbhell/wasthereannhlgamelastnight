@@ -39,11 +39,11 @@ class MainPage(webapp2.RequestHandler):
         self.response.write('Using bucket name: ' + bucket_name + '\n\n')
 
         version = os.environ['CURRENT_VERSION_ID'].split('.')[0]
-        if version == "None":
-            version = "master"
-
         bucket = '/' + bucket_name
-        filename = bucket + '/schedule_' + version
+        if version == "None":
+            filename = bucket + '/schedule'
+        else:
+            filename = bucket + '/schedule_' + version
 
         # This _etag is currently unused, could be used to reduce writes to
         #  only when the schedule is updated (and to notify of updates)
