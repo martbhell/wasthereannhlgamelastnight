@@ -48,9 +48,6 @@ class MainPage(webapp2.RequestHandler):
             if get_team(arg):
                 argcounter = argcounter + 1
                 team1 = arg
-            elif "json" in arg or "JSON" in arg:
-                argcounter = argcounter + 1
-                json1 = True
             elif any(char.isdigit() for char in arg):
                 argcounter = argcounter + 1
                 date1 = arg
@@ -60,7 +57,7 @@ class MainPage(webapp2.RequestHandler):
         fgcolor = color[0]
         try:
             fgcolor2 = color[1]
-        except:
+        except KeyError:
             fgcolor2 = color[0]
         if fgcolor == "000000":
             fgcolor = fgcolor2
@@ -87,11 +84,10 @@ class MainPage(webapp2.RequestHandler):
             self.response.write('<!DOCTYPE html>\n\
             <html lang ="en">\n\
             <head><title>Was there an NHL game yesterday?')
-            try:
-                teamlongtext = get_team(team1)
-            except:
-                # Can't figure out what team that was, set no team chosen.
+            teamlongtext = get_team(team1)
+            if teamlongtext is None:
                 teamlongtext = ""
+                # Can't figure out what team that was, set no team chosen.
             self.response.write(teamlongtext)
             self.response.write('</title>\n\
             <meta charset="UTF-8">\n\
