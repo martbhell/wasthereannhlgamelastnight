@@ -21,7 +21,7 @@ install:
 before_script:
   - gcloud -q app deploy src/app.yaml --no-promote -v testing
 script:
-  - pylint src/!(appengine_config).py *.py
+  - pylint src/!(appengine_config).py *.py -r y
   - python e2e_test.py
 deploy:
   - provider: gae
