@@ -73,7 +73,6 @@ TODO / Known issues
  * improve testing
   * assert that we are redirected to update_schedule
   * update schedule_testing and then verify it
-  * test with non-static year
 
 Source
 ======

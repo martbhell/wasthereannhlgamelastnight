@@ -9,25 +9,42 @@
 
 """ Do some testing """
 
-import urllib2
-import sys
-import json
+import urllib2 # we validate that a website responds properly
+import sys # control exit codes
+import json # validate json
+import datetime # figure out year to have dynamic year testing
 
 HOST = 'https://testing-dot-wasthereannhlgamelastnight.appspot.com'
 
 YESNO = ["YES\n", "NO\n"]
 
+NOW = datetime.datetime.now()
+THIS_YEAR = NOW.year
+LAST_YEAR = NOW.year - 1
+NEXT_YEAR = NOW.year + 1
+
+# This is a list of the basic tests / arguments.
+YESNODATES = [
+    str(THIS_YEAR) + '1013',
+    str(LAST_YEAR) + "1013",
+    str(NEXT_YEAR) + "0316",
+    "wingS/" + str(LAST_YEAR) + "1014",
+    "wingS/" + str(NEXT_YEAR) + "0315",
+    str(NEXT_YEAR) + "0315" + "/wingS",
+    '',
+    'WINGS',
+    'Lak',
+    'travis_e2e_test']
+
+# First we define two special URIs where we do some extra testing
 ARGS = {
-    '':                 {"test": YESNO},
-    'WINGS':            {"test": YESNO},
-    'Lak':              {"test": YESNO},
-    'travis_e2e_test':  {"test": YESNO},
-    '20171012':         {"test": YESNO},
-    'WINGS/20171013':   {"test": YESNO},
-    'WINGS/20171014':   {"test": YESNO},
     'update_schedule':  {"test": 'accounts.google.com', "type": "in"},
     'get_schedule':     {"test": 'teamdates', "type": "injson"},
 }
+
+# Add the "basic" tests where we should only get a YES or NO
+for date in YESNODATES:
+    ARGS[date] = {"test": YESNO}
 
 for arg in ARGS:
     try:
