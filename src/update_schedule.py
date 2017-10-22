@@ -132,7 +132,7 @@ class MainPage(webapp2.RequestHandler):
         """
         data = {}
         data['teamdates'] = teamdates
-        json_data = json.dumps(data)
+        json_data = json.dumps(data, sort_keys=True)
 
         return json_data
 
