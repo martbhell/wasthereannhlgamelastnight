@@ -11,11 +11,9 @@ from google.appengine.api import app_identity # pylint: disable=import-error
 DEBUG = False
 
 class MainPage(webapp2.RequestHandler):
-    """Main page for GCS demo application."""
+    """ Fetch a file and render it."""
 
     def get(self):
-
-        """This get() calls the other functions for some reason(tm)."""
 
         bucket_name = os.environ.get('BUCKET_NAME',
                                      app_identity.get_default_gcs_bucket_name())
@@ -26,11 +24,6 @@ class MainPage(webapp2.RequestHandler):
             filename = bucket + '/updated_schedule'
         else:
             filename = bucket + '/updated_schedule_' + version
-
-#        if DEBUG:
-#            self.response.write('Demo GCS Application running from Version: '
-#                                + os.environ['CURRENT_VERSION_ID'] + '\n')
-#            self.response.write('Using bucket name: ' + bucket_name + '\n\n')
 
         self.read_file(filename)
 

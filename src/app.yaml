@@ -24,7 +24,7 @@ handlers:
   secure: always
 
 - url: /version
-  script: get_schedule_version.APPLICATION
+  script: version.APPLICATION
   secure: always
 
 - url: /update_schedule
