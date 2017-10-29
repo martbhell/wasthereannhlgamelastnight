@@ -20,11 +20,11 @@ handlers:
   secure: always
 
 - url: /get_schedule
-  script: get_schedule.APPLICATION
+  script: get_schedule.GETSCHEDULE
   secure: always
 
 - url: /version
-  script: version.APPLICATION
+  script: get_schedule.VERSION
   secure: always
 
 - url: /update_schedule
