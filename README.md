@@ -10,6 +10,22 @@ This works with the new NHL.com website (2017-2018)
 Usage
 =====
 
+|endpoint | function | format | admin |
+|----------|--------|-------|-------------|
+|/$TEAM| YES/NO | HTML* |  |
+|/$CITY$CITYTEAM| YES/NO | HTML* ||
+|/$CITYTEAM| YES/NO |HTML* | |
+|/$DATE/$TEAM | YES/NO | HTML*| |
+|/$TEAM/$DATE | YES/NO | HTML*| |
+|/get_schedule | Print Schedule| JSON | |
+|/version | Print Schedule Update Time| ISODATE | |
+|/update_schedule | Update Schedule | |Y |
+
+\*  If you use Curl, Wget or Python-Urllib then all you get is YES or NO
+
+Examples
+----------
+
 case insensitive:  
 
  * https://wtangy.se
@@ -75,8 +91,8 @@ TODO / Known issues
  * Would be cool to not have \n all over the python and still get the HTML page readable
  * Return /version in JSON too?
  * improve testing
-  * assert that we are redirected to update_schedule
-  * update schedule_testing and then verify it
+   * assert that we are redirected to update_schedule
+   * update schedule_testing and then verify it
 
 Source
 ======
