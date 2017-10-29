@@ -2,9 +2,9 @@
 
 import os
 import json # to parse URL
-from jsondiff import diff # to show difference between json content
 import urllib2 # to fetch URL
 import datetime # to compose URL
+from jsondiff import diff # to show difference between json content pylint: disable=import-error
 
 import cloudstorage as gcs # pylint: disable=import-error
 import webapp2 # pylint: disable=import-error
@@ -72,12 +72,12 @@ class MainPage(webapp2.RequestHandler):
                 try:
                     last_updated = self.read_file(updated_filename)
                 except gcs.NotFoundError:
-                    self.response.write('Could not find updated_filename so creating it with the date of today')
+                    self.response.write('Creating it with the date of today as it was not found.\n')
                     self.create_file(updated_filename, FOR_UPDATED)
                 self.response.write("Last updated: %s\n" % last_updated)
             else:
                 print "Changes: %s" % (diff(json.loads(old_content), json.loads(content)))
-                self.response.write("Changes: %s" % diff(json.loads(old_content), json.loads(content)))
+                self.response.write("Diff: %s" % diff(json.loads(old_content), json.loads(content)))
                 self.create_file(filename, content)
                 self.create_file(updated_filename, FOR_UPDATED)
 
@@ -156,7 +156,7 @@ class MainPage(webapp2.RequestHandler):
 
         with gcs.open(filename) as cloudstorage_file:
             read1 = cloudstorage_file.readline()
-            read2 = cloudstorage_file.read()
+            cloudstorage_file.read()
             return read1
 
 
