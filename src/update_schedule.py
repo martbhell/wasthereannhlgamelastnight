@@ -10,6 +10,7 @@ import cloudstorage as gcs # pylint: disable=import-error
 import webapp2 # pylint: disable=import-error
 
 from google.appengine.api import app_identity # pylint: disable=import-error
+from google.appengine.api import mail # pylint: disable=import-error
 
 DEBUG = True
 
@@ -76,9 +77,11 @@ class MainPage(webapp2.RequestHandler):
                     self.create_file(updated_filename, FOR_UPDATED)
                     last_updated = self.read_file(updated_filename)
                 self.response.write("Last updated: %s\n" % last_updated)
+                self.send_an_email("e-mails are fun woop!")
             else:
                 print "Changes: %s" % (diff(json.loads(old_content), json.loads(content)))
                 self.response.write("Diff: %s" % diff(json.loads(old_content), json.loads(content)))
+                self.send_an_email(diff(json.loads(old_content), json.loads(content)))
                 self.create_file(filename, content)
                 self.create_file(updated_filename, FOR_UPDATED)
 
@@ -161,6 +164,20 @@ class MainPage(webapp2.RequestHandler):
             cloudstorage_file.read()
             return read1
 
+
+    @classmethod
+    def send_an_email(cls, message):
+        """ send an e-mail """
+
+        sender_address = '{}@appspot.gserviceaccount.com'.format(app_identity.get_application_id())
+
+        to_email = os.environ['USER_EMAIL']
+        to_name = to_email
+
+        mail.send_mail(sender=sender_address,
+                       to="%s <%s>" % (to_name, to_email),
+                       subject="NHL schedule changed",
+                       body="changes: %s" % (message))
 
 ###### Define some variables used to compose a URL
 
