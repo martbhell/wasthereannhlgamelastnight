@@ -151,7 +151,8 @@ class MainPage(webapp2.RequestHandler):
         return json_data
 
 
-    def read_file(self, filename):
+    @classmethod
+    def read_file(cls, filename):
         """ read and return a file! """
 
         with gcs.open(filename) as cloudstorage_file:
