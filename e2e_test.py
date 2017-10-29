@@ -40,7 +40,7 @@ YESNODATES = [
 ARGS = {
     'update_schedule':  {"test": 'accounts.google.com', "type": "in"},
     'get_schedule':     {"test": 'teamdates', "type": "injson"},
-    'version':     {"test": THIS_YEAR, "type": "in"},
+    'version':     {"test": str(THIS_YEAR), "type": "in"},
 }
 
 # Add the "basic" tests where we should only get a YES or NO
