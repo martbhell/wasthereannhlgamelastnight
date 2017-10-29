@@ -77,7 +77,6 @@ class MainPage(webapp2.RequestHandler):
                     self.create_file(updated_filename, FOR_UPDATED)
                     last_updated = self.read_file(updated_filename)
                 self.response.write("Last updated: %s\n" % last_updated)
-                self.send_an_email("e-mails are fun woop!")
             else:
                 print "Changes: %s" % (diff(json.loads(old_content), json.loads(content)))
                 self.response.write("Diff: %s" % diff(json.loads(old_content), json.loads(content)))
