@@ -35,6 +35,7 @@ There's also:
 
  * https://wtangy.se/get_schedule # get the schedule this website uses in JSON
  * https://wtangy.se/update_schedule # for admins only
+ * https://wtangy.se/version # tells when the backend schedule was last updated
 
 Why?
 ====
@@ -70,6 +71,7 @@ TODO / Known issues
  * could be nice if one could get debug errors to the browser console, rather than having to run the local app_devserver
  * dynamically generate a sitemap.xml
  * Would be cool to not have \n all over the python and still get the HTML page readable
+ * Return /version in JSON too?
  * improve testing
   * assert that we are redirected to update_schedule
   * update schedule_testing and then verify it
