@@ -78,4 +78,4 @@ class VersionPage(webapp2.RequestHandler):
 GETSCHEDULE = webapp2.WSGIApplication([('/.*', GetSchedulePage)],
                                       debug=True)
 VERSION = webapp2.WSGIApplication([('/.*', VersionPage)],
-                                      debug=True)
+                                  debug=True)
