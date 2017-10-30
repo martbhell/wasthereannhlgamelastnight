@@ -3,6 +3,8 @@ wasthereannhlgamelastnight
 
 [![Build Status](https://travis-ci.org/martbhell/wasthereannhlgamelastnight.svg?branch=master)](https://travis-ci.org/martbhell/wasthereannhlgamelastnight)
 
+<a href="https://wtangy.se"><img src="demo.png"></a>
+
 Print YES or NO!
 
 This works with the new NHL.com website (2017-2018)
