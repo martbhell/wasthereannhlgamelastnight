@@ -66,14 +66,19 @@ class MainPage(webapp2.RequestHandler):
         else:
             self.response.write("Total Games: %s\n" % totalgames)
             [teamdates] = self.parse_schedule(jsondata)
-            old_content = self.read_file(filename)
             content = self.make_data_json(teamdates)
+            try:
+                old_content = self.read_file(filename)
+            except gcs.NotFoundError:
+                self.response.write('Schedule not found - creating it.\n')
+                self.create_file(filename, content)
+                old_content = self.read_file(filename)
             if old_content == content:
-                self.response.write('Not updating schedule as there are no updates.\n')
                 try:
                     last_updated = self.read_file(updated_filename)
+                    self.response.write('Not updating schedule as there are no updates.\n')
                 except gcs.NotFoundError:
-                    self.response.write('Creating it with the date of today as it was not found.\n')
+                    self.response.write('Creating updated_filaname with the date of today.\n')
                     self.create_file(updated_filename, FOR_UPDATED)
                     last_updated = self.read_file(updated_filename)
                 self.response.write("Last updated: %s\n" % last_updated)
