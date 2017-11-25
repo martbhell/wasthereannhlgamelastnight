@@ -12,16 +12,17 @@ This works with the new NHL.com website (2017-2018)
 Usage
 =====
 
-|endpoint | function | format | admin |
-|----------|--------|-------|-------------|
-|/$TEAM| YES/NO | HTML* |  |
-|/$CITY$CITYTEAM| YES/NO | HTML* ||
-|/$CITYTEAM| YES/NO |HTML* | |
-|/$DATE/$TEAM | YES/NO | HTML*| |
-|/$TEAM/$DATE | YES/NO | HTML*| |
-|/get_schedule | Print Schedule| JSON | |
-|/version | Print Schedule Update Time| ISODATE | |
-|/update_schedule | Update Schedule | |Y |
+|endpoint | function | format | example | admin |
+|----------|--------|-------|---------------|-------------|
+|/$TEAM| YES/NO | HTML* | RedWings | |
+|/$CITYTEAM| YES/NO | HTML* |DetroitRedWings | |
+|/$CITY| YES/NO |HTML* | Detroit | |
+|/$SHORT| YES/NO |HTML* | DET | |
+|/$DATE/$TEAM | YES/NO | HTML*| 20171022/RedWings| |
+|/$TEAM/$DATE | YES/NO | HTML*| RedWings/20171111| |
+|/get_schedule | Print Schedule| JSON | | |
+|/version | Print Schedule Update Time| ISODATE | | |
+|/update_schedule | Update Schedule | |Y | |
 
 \*  If you use Curl, Wget or Python-Urllib then all you get is YES or NO
 
