@@ -14,18 +14,6 @@ from google.appengine.api import mail # pylint: disable=import-error
 
 DEBUG = True
 
-# plan:
-# one, read/list file in the bucket in google cloud storage, grab checksum of file
-# two, run the parser (fetch upstream schedule, parse it). We could move the
-#  parser into this file or even better import it
-#  - moved it into this file, needed some modifications anyway
-# three, write the nhl schedule to a tempfile, calculate checksum
-# four, only if checksum is different than the existing one, write to bucket
-#  - skip four - is there a way to calculate etag? or then have to fetch file,
-#    calculate md5sum. Also have to write the JSON so that it's sorted
-# five, remove tempfiles
-#  - not using any tempfiles
-
 class MainPage(webapp2.RequestHandler):
     """Main page for GCS demo application."""
 
@@ -70,15 +58,13 @@ class MainPage(webapp2.RequestHandler):
             try:
                 old_content = self.read_file(filename)
             except gcs.NotFoundError:
-                self.response.write('Schedule not found - creating it.\n')
                 self.create_file(filename, content)
                 old_content = self.read_file(filename)
             if old_content == content:
                 try:
                     last_updated = self.read_file(updated_filename)
-                    self.response.write('Not updating schedule as there are no updates.\n')
+                    self.response.write('Not updating schedule - it is current.\n')
                 except gcs.NotFoundError:
-                    self.response.write('Creating updated_filaname with the date of today.\n')
                     self.create_file(updated_filename, FOR_UPDATED)
                     last_updated = self.read_file(updated_filename)
                 self.response.write("Last updated: %s\n" % last_updated)
@@ -100,7 +86,7 @@ class MainPage(webapp2.RequestHandler):
         write_retry_params = gcs.RetryParams(backoff_factor=1.1)
         with gcs.open(
             filename, 'w', content_type='application/json', options={
-                'x-goog-acl': 'private', 'x-goog-meta-type': 'schedule'},
+                'x-goog-acl': 'project-private', 'x-goog-meta-type': 'schedule'},
             retry_params=write_retry_params) as cloudstorage_file:
             cloudstorage_file.write(content)
 
