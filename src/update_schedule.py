@@ -77,12 +77,13 @@ class MainPage(webapp2.RequestHandler):
                     self.create_file(updated_filename, FOR_UPDATED)
                     last_updated = self.read_file(updated_filename)
                 self.response.write("Last updated: %s\n" % last_updated)
+                self.send_an_email(diff(json.loads(old_content), json.loads(content)))
             else:
                 print "Changes: %s" % (diff(json.loads(old_content), json.loads(content)))
                 self.response.write("Diff: %s" % diff(json.loads(old_content), json.loads(content)))
-                self.send_an_email(diff(json.loads(old_content), json.loads(content)))
                 self.create_file(filename, content)
                 self.create_file(updated_filename, FOR_UPDATED)
+                self.send_an_email(diff(json.loads(old_content), json.loads(content)))
 
     def create_file(self, filename, content):
         """Create a file."""
@@ -173,10 +174,15 @@ class MainPage(webapp2.RequestHandler):
         to_email = os.environ['USER_EMAIL']
         to_name = to_email
 
-        mail.send_mail(sender=sender_address,
-                       to="%s <%s>" % (to_name, to_email),
-                       subject="NHL schedule changed",
-                       body="changes: %s" % (message))
+        try:
+            mail.send_mail(sender=sender_address,
+                           to="%s <%s>" % (to_name, to_email),
+                           subject="NHL schedule changed",
+                           body="changes: %s" % (message))
+        except mail.BadRequestError:
+            print "Problem sending from %s to %s" % (sender_address, to_email)
+            return
+
 
 ###### Define some variables used to compose a URL
 
