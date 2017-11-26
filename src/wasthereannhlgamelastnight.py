@@ -73,7 +73,6 @@ class MainPage(webapp2.RequestHandler):
                 teamlongtext = ""
                 # Can't figure out what team that was, set no team chosen.
             self.response.write('%s</title>\n\
-            <meta charset="UTF-8">\n\
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">\n\
             <meta name="robots" content="index,follow">\n\
             <meta name="application-name" content="Was there an NHL game yesterday?">\n\
