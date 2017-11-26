@@ -59,9 +59,9 @@ class MainPage(webapp2.RequestHandler):
         else:
             # YES/NO prettifying..
             yes = "\
-            YES\n"
+            <a title='Was There An NHL Game Yesterday?'>YES</a>\n"
             nope = "\
-            NO\n"
+            <a title='Was There An NHL Game Yesterday?'>NO</a>\n"
 
             # Headers
             self.response.headers['Content-Type'] = 'text/html'
