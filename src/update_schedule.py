@@ -172,6 +172,7 @@ class MainPage(webapp2.RequestHandler):
                            body="changes: %s" % (message))
         except mail.BadRequestError:
             print "Problem sending from %s to %s" % (sender_address, to_email)
+            print os.environ
             return
 
 
