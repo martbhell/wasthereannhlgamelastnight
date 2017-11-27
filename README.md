@@ -22,7 +22,7 @@ Usage
 |/$TEAM/$DATE | YES/NO | HTML*| RedWings/20171111| |
 |/get_schedule | Print Schedule| JSON | | |
 |/version | Print Schedule Update Time| ISODATE | | |
-|/update_schedule | Update Schedule | |Y | |
+|/update_schedule | Update Schedule | | | Y |
 
 \*  If you use Curl, Wget or Python-Urllib then all you get is YES or NO
 
@@ -93,6 +93,7 @@ TODO / Known issues
  * dynamically generate a sitemap.xml
  * Would be cool to not have \n all over the python and still get the HTML page readable
  * Return /version in JSON too?
+ * Don't print to stdout - write logs properly - https://cloud.google.com/appengine/docs/standard/python/logs/#Python_writing_application_logs
  * improve testing
    * assert that we are redirected to update_schedule
    * update schedule_testing and then verify it
