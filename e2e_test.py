@@ -64,7 +64,7 @@ for arg in ARGS:
             sys.exit(3)
 
     else:
-        print "asserting %s/%s contains %s- response code: %s" % (HOST, arg, ARGS[arg]['test'], response.code) # pylint: disable=line-too-long
+        print "asserting %s/%s contains %s - response code: %s" % (HOST, arg, ARGS[arg]['test'], response.code) # pylint: disable=line-too-long
         try:
             if ARGS[arg]['type'] == "in" or ARGS[arg]['type'] == "injson":
                 assert ARGS[arg]['test'] in html
