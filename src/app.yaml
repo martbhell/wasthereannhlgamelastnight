@@ -27,6 +27,10 @@ handlers:
   script: get_schedule.VERSION
   secure: always
 
+- url: /menu
+  script: menu.APPLICATION
+  secure: always
+
 - url: /update_schedule
   script: update_schedule.APPLICATION
   login: admin
