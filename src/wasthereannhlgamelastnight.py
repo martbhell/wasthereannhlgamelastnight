@@ -72,18 +72,13 @@ class MainPage(webapp2.RequestHandler):
             if teamlongtext is None:
                 teamlongtext = ""
                 # Can't figure out what team that was, set no team chosen.
-            self.response.write('%s</title>\n\
-            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">\n\
-            <meta name="robots" content="index,follow">\n\
-            <meta name="application-name" content="Was there an NHL game yesterday?">\n\
-            <meta name="description" content="Indicates with a YES/NO if there was an NHL game on yesterday">\n\
-            <meta name="keywords" content="YES,NO,NHL,icehockey,hockey,games,match,wasthereannhlgamelastnight,wasthereannhlgameyesterday,wtangy,wtangln">\n\
-            <meta name="author" content="Johan Guldmyr">\n\
-            <meta name="theme-color" content="#%s">\n\
+            self.response.write('%s</title>\n' % teamlongtext)
+	    self.response.write(COMMON_META)
+            self.response.write('<meta name="theme-color" content="#%s">\n\
             <link href="stylesheets/app.css" rel="stylesheet">\n\
         </head>\n\
             <body style="text-align: center; padding-top: 5px;">\n\
-            <div class="content" style="font-weight: bold; font-size: 220px; font-size: 30vw; font-family: Arial,sans-serif; text-decoration: none; color: #%s;">\n' % (teamlongtext, fgcolor, fgcolor)) # pylint: disable=line-too-long
+            <div class="content" style="font-weight: bold; font-size: 220px; font-size: 30vw; font-family: Arial,sans-serif; text-decoration: none; color: #%s;">\n' % (fgcolor, fgcolor)) # pylint: disable=line-too-long
 
             ### The YES/NO logic:
             if yesorno(team1, teamdates, date1):
@@ -125,12 +120,8 @@ class MainPage(webapp2.RequestHandler):
             ### End github forkme
             #self.response.write(now2)
 
-            self.response.write('\n\
-            <div class="disclaimer" style="font-size:10px; ">\n\
-            <!-- NHL.com is the official web site of the National Hockey League. NHL, the NHL Shield, the word mark and image of the Stanley Cup, Center Ice name and logo, NHL Conference logos are registered trademarks. All NHL logos and marks and NHL team logos and marks depicted herein are the property of the NHL and the respective teams. This website is not affiliated with NHL. -->\n\
-            <!-- Written by Johan Guldmyr - source is available at https://github.com/martbhell/wasthereannhlgamelastnight -->\n\
-            </div>\n\
-        </body>\n\
+            self.response.write(DISCLAIMER)
+            self.response.write('</body>\n\
         </html>\n')
 
     @classmethod
@@ -545,6 +536,17 @@ def get_all_teams():
         "WSH" : "Washington Capitals",
     }
     return allteams
+
+DISCLAIMER = '<div class="disclaimer" style="font-size:10px; ">\n\
+              <!-- NHL.com is the official web site of the National Hockey League. NHL, the NHL Shield, the word mark and image of the Stanley Cup, Center Ice name and logo, NHL Conference logos are registered trademarks. All NHL logos and marks and NHL team logos and marks depicted herein are the property of the NHL and the respective teams. This website is not affiliated with NHL. -->\n\
+              <!-- Written by Johan Guldmyr - source is available at https://github.com/martbhell/wasthereannhlgamelastnight -->\n\
+              </div>'
+COMMON_META = '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">\n\
+            <meta name="robots" content="index,follow">\n\
+            <meta name="application-name" content="Was there an NHL game yesterday?">\n\
+            <meta name="description" content="Indicates with a YES/NO if there was an NHL game on yesterday">\n\
+            <meta name="keywords" content="YES,NO,NHL,icehockey,hockey,games,match,wasthereannhlgamelastnight,wasthereannhlgameyesterday,wtangy,wtangln">\n\
+            <meta name="author" content="Johan Guldmyr">'
 
 CLIAGENTS = ["curl", "Wget", "Python-urllib"]
 REMOVE_THESE = ['wtangy.se', 'https:', 'http:', '', 'localhost:8080', 'wtangy.se', 'wasthereannhlgamelastnight.appspot.com'] # pylint: disable=line-too-long
