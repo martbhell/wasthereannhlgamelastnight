@@ -34,7 +34,7 @@ class MainPage(webapp2.RequestHandler):
         for ateam in allteams:
             # https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout/Auto-placement_in_CSS_Grid_Layout
             # https://css-tricks.com/snippets/jquery/make-entire-div-clickable/
-            self.response.write('<a href="%s" class="%s"><div>%s</div></a>' % (ateam,ateam,ateam))
+            self.response.write('<a href="%s" class="%s"><div>%s</div></a>' % (ateam, ateam, ateam))
 
         self.response.write('</div>\n\
         <div class="disclaimer" style="font-size:10px; ">\n\
