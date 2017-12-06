@@ -1,12 +1,10 @@
-""" YES, oor no? """
+""" Menu, oor no? """
 
 import webapp2 # pylint: disable=import-error
 import wasthereannhlgamelastnight
 
-DEBUG = False
-
 class MainPage(webapp2.RequestHandler):
-    """ Main Page Class """
+    """ Menu Page Class"""
 
     def get(self):
         """Return a menu where one can choose a team

@@ -1,15 +1,12 @@
 """ CSS oor no? """
-
 import webapp2 # pylint: disable=import-error
 import wasthereannhlgamelastnight
 
-DEBUG = False
-
 class MainPage(webapp2.RequestHandler):
-    """ Main Page Class """
+    """ CSS Page Class """
 
     def get(self):
-        """Return CSS to color boxes """
+        """Return CSS used to color boxes """
 
         self.response.headers['Content-Type'] = 'text/css'
         # Loop through and write all the teams:
