@@ -1,6 +1,7 @@
 """ YES, oor no? """
 
 import webapp2 # pylint: disable=import-error
+import wasthereannhlgamelastnight
 
 DEBUG = False
 
@@ -28,11 +29,11 @@ class MainPage(webapp2.RequestHandler):
         <body style="text-align: center; padding-top: 5px;">\n\
         <div class="wrapper">')
         # Loop through and write all the teams like:
-        allteams = sorted(list(get_all_teams().keys()))
+        allteams = sorted(list(wasthereannhlgamelastnight.get_all_teams().keys()))
         for ateam in allteams:
-            print str(ateam)
+            # https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout/Auto-placement_in_CSS_Grid_Layout
             # https://css-tricks.com/snippets/jquery/make-entire-div-clickable/
-            self.response.write('<div><a href="%s">%s</a></div>' % (ateam,ateam))
+            self.response.write('<a href="%s"><div>%s</div></a>' % (ateam,ateam))
 
         self.response.write('</div>\n\
         <div class="disclaimer" style="font-size:10px; ">\n\
@@ -41,46 +42,6 @@ class MainPage(webapp2.RequestHandler):
         </div>\n\
     </body>\n\
     </html>\n')
-
-## how to import stuff from wasthereannhlgamelastnight.py ?
-
-def get_all_teams():
-    """Returns all teams"""
-
-    allteams = {
-        "ANA" : "Anaheim Ducks",
-        "ARI" : "Arizona Coyotes",
-        "BOS" : "Boston Bruins",
-        "BUF" : "Buffalo Sabres",
-        "CAR" : "Carolina Hurricanes",
-        "CBJ" : "Columbus Blue Jackets",
-        "CGY" : "Calgary Flames",
-        "CHI" : "Chicago Black Hawks",
-        "COL" : "Colorado Avalanche",
-        "DAL" : "Dallas Stars",
-        "DET" : "Detroit Red Wings",
-        "EDM" : "Edmonton Oilers",
-        "FLA" : "Florida Panthers",
-        "LAK" : "Los Angeles Kings",
-        "MIN" : "Minnesota Wild",
-        "MTL" : "Montreal Canadiens",
-        "NJD" : "New Jersey Devils",
-        "NSH" : "Nashville Predators",
-        "NYI" : "New York Islanders",
-        "NYR" : "New York Rangers",
-        "OTT" : "Ottawa Senators",
-        "PHI" : "Philadelphia Flyers",
-        "PIT" : "Pittsburgh Penguins",
-        "SJS" : "San Jose Sharks",
-        "STL" : "St Louis Blues",
-        "TBL" : "Tampa Bay Lightning",
-        "TOR" : "Toronto Maple Leafs",
-        "VAN" : "Vancouver Canucks",
-        "VGK" : "Vegas Golden Knights",
-        "WPG" : "Winnipeg Jets",
-        "WSH" : "Washington Capitals",
-    }
-    return allteams
 
 APPLICATION = webapp2.WSGIApplication([
     ('/.*', MainPage),

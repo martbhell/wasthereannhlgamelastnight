@@ -6,7 +6,7 @@
     background-color: #fff4e6;
 }
 
-.wrapper > div {
+.wrapper > a {
     border: 2px dotted #ffa94d;
     border-radius: 5px;
     background-color: #ffd8a8;
