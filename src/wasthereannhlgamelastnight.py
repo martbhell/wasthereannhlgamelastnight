@@ -73,7 +73,7 @@ class MainPage(webapp2.RequestHandler):
                 teamlongtext = ""
                 # Can't figure out what team that was, set no team chosen.
             self.response.write('%s</title>\n' % teamlongtext)
-	    self.response.write(COMMON_META)
+            self.response.write(COMMON_META)
             self.response.write('<meta name="theme-color" content="#%s">\n\
             <link href="stylesheets/app.css" rel="stylesheet">\n\
         </head>\n\
