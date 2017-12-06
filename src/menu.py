@@ -30,10 +30,11 @@ class MainPage(webapp2.RequestHandler):
         for ateam in allteams:
             # https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout/Auto-placement_in_CSS_Grid_Layout
             # https://css-tricks.com/snippets/jquery/make-entire-div-clickable/
+            longteamname = wasthereannhlgamelastnight.get_team(ateam)
             if ateam in darkteams:
-                self.response.write('<a href="%s" class="%s"><div><font color=white>%s</font></div></a>' % (ateam, ateam, ateam))
+                self.response.write('<a href="%s" class="%s" title="%s"><div><font color=white>%s</font></div></a>' % (ateam, ateam, longteamname, ateam))
             else:
-                self.response.write('<a href="%s" class="%s"><div>%s</div></a>' % (ateam, ateam, ateam))
+                self.response.write('<a href="%s" class="%s" title="%s"><div>%s</div></a>' % (ateam, ateam, longteamname, ateam))
 
         self.response.write('</div>\n')
         self.response.write(wasthereannhlgamelastnight.DISCLAIMER)
