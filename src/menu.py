@@ -3,6 +3,7 @@
 # pylint: disable=too-few-public-methods,line-too-long
 
 import webapp2 # pylint: disable=import-error
+import json
 import wasthereannhlgamelastnight
 
 class MainPage(webapp2.RequestHandler):
@@ -62,6 +63,10 @@ class CSSPage(webapp2.RequestHandler):
         allteams = sorted(list(wasthereannhlgamelastnight.get_all_teams().keys()))
         # Recreate give_me_a_color classmethod because I couldn't figure out how to call it
         colordict = {}
+        # If we use
+        # https://raw.githubusercontent.com/jimniels/teamcolors/master/static/data/teams.json
+        # we would need to pick which of the colors to show. Sometimes it's 3rd, 2nd, first...
+        #longteamname = wasthereannhlgamelastnight.get_team(ateam)
         for ateam in allteams:
             colors = wasthereannhlgamelastnight.get_team_colors(ateam)
             backgroundcolor = colors[0]
