@@ -11,8 +11,9 @@
     border-radius: 5px;
     background-color: #ffd8a8;
     padding: 1em;
-    color: #d9480f;
+    color: #000000;
 }
+
 .wrapper {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

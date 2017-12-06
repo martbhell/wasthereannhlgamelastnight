@@ -27,6 +27,10 @@ handlers:
   script: get_schedule.VERSION
   secure: always
 
+- url: /menu_team.css
+  script: menu_css.MENU_CSS
+  secure: always
+
 - url: /menu
   script: menu.APPLICATION
   secure: always

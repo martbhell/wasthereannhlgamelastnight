@@ -25,6 +25,7 @@ class MainPage(webapp2.RequestHandler):
         <meta name="keywords" content="YES,NO,NHL,icehockey,hockey,games,match,wasthereannhlgamelastnight,wasthereannhlgameyesterday,wtangy,wtangln">\n\
         <meta name="author" content="Johan Guldmyr">\n\
         <link href="stylesheets/menu.css" rel="stylesheet">\n\
+        <link href="menu_team.css" rel="stylesheet">\n\
     </head>\n\
         <body style="text-align: center; padding-top: 5px;">\n\
         <div class="wrapper">')
@@ -33,7 +34,7 @@ class MainPage(webapp2.RequestHandler):
         for ateam in allteams:
             # https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout/Auto-placement_in_CSS_Grid_Layout
             # https://css-tricks.com/snippets/jquery/make-entire-div-clickable/
-            self.response.write('<a href="%s"><div>%s</div></a>' % (ateam,ateam))
+            self.response.write('<a href="%s" class="%s"><div>%s</div></a>' % (ateam,ateam,ateam))
 
         self.response.write('</div>\n\
         <div class="disclaimer" style="font-size:10px; ">\n\
