@@ -3,7 +3,6 @@
 # pylint: disable=too-few-public-methods,line-too-long
 
 import webapp2 # pylint: disable=import-error
-import json
 import wasthereannhlgamelastnight
 
 class MainPage(webapp2.RequestHandler):
