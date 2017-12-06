@@ -7,11 +7,13 @@
 }
 
 .wrapper > a {
-    border: 2px dotted #ffa94d;
-    border-radius: 5px;
+    border: 0px;
+    border-radius: 15px;
     background-color: #ffd8a8;
     padding: 1em;
     color: #000000;
+    font-weight: bold;
+    font-size: 150%;
 }
 
 .wrapper {
