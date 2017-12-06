@@ -13,12 +13,12 @@
     padding: 1em;
     color: #000000;
     font-weight: bold;
-    font-size: 150%;
+    font-size: 450%;
 }
 
 .wrapper {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-gap: 10px;
+  grid-gap: 1em;
 }
 
