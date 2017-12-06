@@ -1,6 +1,6 @@
 """ Menu, oor no? """
 
-# pylint: disable=too-few-public-methods
+# pylint: disable=too-few-public-methods,line-too-long
 
 import webapp2 # pylint: disable=import-error
 import wasthereannhlgamelastnight
@@ -25,10 +25,14 @@ class MainPage(webapp2.RequestHandler):
         <div class="wrapper">')
         # Loop through and write all the teams like:
         allteams = self.get_teams()
+        darkteams = ["BUF", "CBJ", "EDM", "NYI", "NYR", "STL", "TBL", "TOR", "VAN", "WPG"]
         for ateam in allteams:
             # https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout/Auto-placement_in_CSS_Grid_Layout
             # https://css-tricks.com/snippets/jquery/make-entire-div-clickable/
-            self.response.write('<a href="%s" class="%s"><div>%s</div></a>' % (ateam, ateam, ateam))
+            if ateam in darkteams:
+                self.response.write('<a href="%s" class="%s"><div><font color=white>%s</font></div></a>' % (ateam, ateam, ateam))
+            else:
+                self.response.write('<a href="%s" class="%s"><div>%s</div></a>' % (ateam, ateam, ateam))
 
         self.response.write('</div>\n')
         self.response.write(wasthereannhlgamelastnight.DISCLAIMER)
