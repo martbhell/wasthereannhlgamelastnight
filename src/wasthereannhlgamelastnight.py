@@ -537,6 +537,15 @@ def get_all_teams():
     }
     return allteams
 
+GOOGLE_ANALYTICS = "<!-- Global site tag (gtag.js) - Google Analytics -->\n\
+                   <script async src='https://www.googletagmanager.com/gtag/js?id=UA-1265550-3'></script>\n\
+                   <script>\n\
+                     window.dataLayer = window.dataLayer || [];\n\
+                     function gtag(){dataLayer.push(arguments);}\n\
+                     gtag('js', new Date());\n\n\
+                     gtag('config', 'UA-1265550-3');\n\
+                   </script>"
+
 DISCLAIMER = '<div class="disclaimer" style="font-size:10px; ">\n\
               <!-- wtangy.se is not affiliated with any teams or leagues that have their colors displayed. -->\n\
               <!-- Written by Johan Guldmyr - source is available at https://github.com/martbhell/wasthereannhlgamelastnight -->\n\
@@ -546,7 +555,8 @@ COMMON_META = '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8
             <meta name="application-name" content="Was there an NHL game yesterday?">\n\
             <meta name="description" content="Indicates with a YES/NO if there was an NHL game on yesterday">\n\
             <meta name="keywords" content="YES,NO,NHL,icehockey,hockey,games,match,wasthereannhlgamelastnight,wasthereannhlgameyesterday,wtangy,wtangln">\n\
-            <meta name="author" content="Johan Guldmyr">'
+            <meta name="author" content="Johan Guldmyr">\n\
+            %s' % GOOGLE_ANALYTICS
 
 CLIAGENTS = ["curl", "Wget", "Python-urllib"]
 REMOVE_THESE = ['wtangy.se', 'https:', 'http:', '', 'localhost:8080', 'wtangy.se', 'wasthereannhlgamelastnight.appspot.com'] # pylint: disable=line-too-long
