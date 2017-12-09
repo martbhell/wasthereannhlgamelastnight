@@ -113,9 +113,12 @@ class MainPage(webapp2.RequestHandler):
 
     @classmethod
     def parse_schedule(cls, jsondata):
-        """ parse the json data into a dict the app is used to. """
+        """ parse the json data into a dict the app is used to.
+            as a bonus we also sort things
+        """
 
         dict_of_keys_and_matchups = {}
+        dict_of_keys_and_matchups_s = {}
 
         dates = jsondata['dates']
         for key in dates:
@@ -127,9 +130,11 @@ class MainPage(webapp2.RequestHandler):
                 teams = game['teams']
                 twoteams.append(teams['away']['team']['name'])
                 twoteams.append(teams['home']['team']['name'])
-                dict_of_keys_and_matchups[date].append(twoteams)
+                twoteams_sorted = sorted(twoteams)
+                dict_of_keys_and_matchups[date].append(twoteams_sorted)
+                dict_of_keys_and_matchups_s[date] = sorted(dict_of_keys_and_matchups[date])
 
-        return [dict_of_keys_and_matchups]
+        return [dict_of_keys_and_matchups_s]
 
     @classmethod
     def make_data_json(cls, teamdates):
