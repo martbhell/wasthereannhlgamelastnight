@@ -108,6 +108,7 @@ TODO / Known issues
    * assert that we are redirected to update_schedule
    * update schedule_testing and then verify it / validate json
    * performance testing
+   * lint javascript,css,html
 
 Source
 ======
