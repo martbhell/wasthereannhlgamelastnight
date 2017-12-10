@@ -3,7 +3,8 @@ wasthereannhlgamelastnight
 
 [![Build Status](https://travis-ci.org/martbhell/wasthereannhlgamelastnight.svg?branch=master)](https://travis-ci.org/martbhell/wasthereannhlgamelastnight)
 
-<a href="https://wtangy.se"><img src="demo.png"></a>
+<a href="https://wtangy.se"><img src="wtangy_front.png"></a>
+<a href="https://wtangy.se/menu"><img src="wtangy_menu.png"></a>
 
 Print YES or NO!
 
@@ -55,6 +56,7 @@ What do these mean?
 
 There's also:
 
+ * https://wtangy.se/menu # select a team
  * https://wtangy.se/get_schedule # get the schedule this website uses in JSON
  * https://wtangy.se/update_schedule # for admins only
  * https://wtangy.se/version # tells when the backend schedule was last updated
@@ -62,12 +64,12 @@ There's also:
 Features
 ========
 
- * Persistent team selection using HTML5 Web Storage
+ * Persistent team selection using HTML5 Web Storage. If you choose a team in the menu and you later revisit https://wtangy.se (from the same browser) you'll see the result for that team.
 
 Why?
 ====
 
-So I(author) live in a timezone where the NHL games are often over at 5am in the morning, sometimes they start then. I tend to watch replays. I'm not always sure if there was a game yesterday. Schedules online often have the results, news or "yes it went to overtime" to spoil the game.
+So I(author) live in a timezone where the NHL games are often over at 5am in the morning, sometimes they start then. I tend to watch replays. I'm not always sure if there was a game yesterday. Schedules online often have the results, news or "yes, also it went to overtime" to spoil the game.
 
 It would be really nice if I could just browse to $URL/team and it would tell me if my team played yesterday or during Stanley Cup (or regular season) $URL would be enough to just tell me if there was a game at all.
 
@@ -76,35 +78,36 @@ Now there is! :)
 How to update the schedule inside the scripts?
 ====
 
-Updating the playoff list in wasthereannhlgamelastnight.py is done by:
+The schedule used by this web site is stored in the backend.
 
- - Adding cron.yaml to <a href="gcloud.md">gcloud</a>
+As an admin you can update it manually or configure a <a href="gcloud.md">cronjob</a>:
 
 What about regular season and playoffs?
 ==================================================
 
 Currently the script doesn't differentiate between playoffs and regular seasons.
 
-It just takes the dates from NHL.com's API which can be accessed on https://statsapi.web.nhl.com/api/v1/schedule?startDate=2017-10-04&endDate=2018-04-09 - now there are more arguments to this API that I have not found any documentation for. Here's another example: 
+It just takes the dates from NHL.com's <a href="https://statsapi.web.nhl.com/api/v1/schedule?startDate=2017-10-04&endDate=2017-10-22">API</a>. There are more arguments to this API that I have not found any documentation for. Here's one result from google searches:
 <pre>
-https://www.google.fi/url?sa=t&rct=j&q=&esrc=s&source=web&cd=7&cad=rja&uact=8&ved=0ahUKEwidtqvvn9fWAhWlApoKHd_VBVUQFghJMAY&url=https%3A%2F%2Fstatsapi.web.nhl.com%2Fapi%2Fv1%2Fschedule%3FstartDate%3D2016-01-31%26endDate%3D2016-02-05%26expand%3Dschedule.teams%2Cschedule.linescore%2Cschedule.broadcasts%2Cschedule.ticket%2Cschedule.game.content.media.epg%26leaderCategories%3D%26site%3Den_nhl%26teamId%3D&usg=AOvVaw293oxkI9Kgt_VuxY0dLmjf 
+https://statsapi.web.nhl.com/api/v1/schedule/startDate=2016-01-31&endDate=2016-02-05?expand=schedule.teams,schedule.linescore,schedule.broadcasts,schedule.ticket,schedule.game.content.media.epg&leaderCategories=&site=en_nhl&teamId=&
 </pre>
 
 TODO / Known issues
 ====================
 
- * flowchart for parameters? =)
  * games include preseason - if this is a problem let me know!
  * add a calendar selection too near the menu?
  * an app!
- * could be nice if one could get debug errors to the browser console, rather than having to run the local app_devserver
+ * proper logging
+    * Don't print to stdout - https://cloud.google.com/appengine/docs/standard/python/logs/#Python_writing_application_logs
+    * could be nice if one could get debug errors to the browser console, rather than having to run the local app_devserver
  * dynamically generate a sitemap.xml
  * Would be cool to not have \n all over the python and still get the HTML page readable
- * Return /version in JSON too?
- * Don't print to stdout - write logs properly - https://cloud.google.com/appengine/docs/standard/python/logs/#Python_writing_application_logs
+ * Return /version in JSON too
  * improve testing
    * assert that we are redirected to update_schedule
-   * update schedule_testing and then verify it
+   * update schedule_testing and then verify it / validate json
+   * performance testing
 
 Source
 ======
