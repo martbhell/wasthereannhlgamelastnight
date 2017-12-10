@@ -18,8 +18,9 @@ class MainPage(webapp2.RequestHandler):
     <html lang ="en">\n\
     <head><title>Which NHL team do you choose?</title>\n')
         self.response.write(wasthereannhlgamelastnight.COMMON_META)
-        self.response.write('<link href="stylesheets/menu.css" rel="stylesheet">\n\
-        <link href="menu_team.css" rel="stylesheet">\n\
+        self.response.write('<link href="/stylesheets/menu.css" rel="stylesheet">\n\
+        <link type="text/css" href="/menu_team.css" rel="stylesheet">\n\
+        <script src="/preferences.js"></script>\n\
     </head>\n\
         <body style="text-align: center; padding-top: 5px;">\n\
         <div class="wrapper">')
@@ -31,10 +32,13 @@ class MainPage(webapp2.RequestHandler):
             # https://css-tricks.com/snippets/jquery/make-entire-div-clickable/
             longteamname = wasthereannhlgamelastnight.get_team(ateam)
             if ateam in darkteams:
-                self.response.write('<a href="%s" class="%s" title="%s"><div><font color=white>%s</font></div></a>' % (ateam, ateam, longteamname, ateam))
+                # https://davidwalsh.name/html5-storage
+                # Note the use of %r instead of %s in the onClick to have it print 'DET' instead of " det" ..
+                # Used store the chosen team in a local browser variable
+                self.response.write('<a href="/%s" class="%s" title="%s" onClick="saveTeam(%r)")><div><font color=white>%s</font></div></a>' % (ateam, ateam, longteamname, ateam, ateam))
             else:
-                self.response.write('<a href="%s" class="%s" title="%s"><div>%s</div></a>' % (ateam, ateam, longteamname, ateam))
-
+                self.response.write('<a href="/%s" class="%s" title="%s" onClick="saveTeam(%r)")><div>%s</div></a>' % (ateam, ateam, longteamname, ateam, ateam))
+        self.response.write('<a href="/" title="CLEAR Team Selection" onClick="localStorage.clear()")><div>Clear Team Selection</div></a>')
         self.response.write('</div>\n')
         self.response.write(wasthereannhlgamelastnight.DISCLAIMER)
 

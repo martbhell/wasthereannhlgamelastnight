@@ -22,6 +22,7 @@ Usage
 |/$TEAM/$DATE | YES/NO | HTML*| RedWings/20171111| |
 |/get_schedule | Print Schedule| JSON | | |
 |/version | Print Schedule Update Time| ISODATE | | |
+|/menu | Present user with a clickable menu | HTML | | |
 |/update_schedule | Update Schedule | | | Y |
 
 \*  If you use Curl, Wget or Python-Urllib then all you get is YES or NO
@@ -57,6 +58,11 @@ There's also:
  * https://wtangy.se/get_schedule # get the schedule this website uses in JSON
  * https://wtangy.se/update_schedule # for admins only
  * https://wtangy.se/version # tells when the backend schedule was last updated
+
+Features
+========
+
+ * Persistent team selection using HTML5 Web Storage
 
 Why?
 ====
