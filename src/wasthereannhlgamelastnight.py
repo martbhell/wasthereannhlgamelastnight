@@ -547,12 +547,12 @@ GOOGLE_ANALYTICS = "<!-- Global site tag (gtag.js) - Google Analytics -->\n\
                      function gtag(){dataLayer.push(arguments);}\n\
                      gtag('js', new Date());\n\n\
                      gtag('config', 'UA-1265550-3');\n\
-                   </script>"
+                   </script>\n"
 
 DISCLAIMER = '<div class="disclaimer" style="font-size:10px; ">\n\
               <!-- wtangy.se is not affiliated with any teams or leagues that have their colors displayed. -->\n\
               <!-- Written by Johan Guldmyr - source is available at https://github.com/martbhell/wasthereannhlgamelastnight -->\n\
-              </div>'
+              </div>\n'
 COMMON_META = '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">\n\
             <meta name="robots" content="index,follow">\n\
             <meta name="application-name" content="Was there an NHL game yesterday?">\n\
