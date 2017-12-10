@@ -26,18 +26,14 @@ class MainPage(webapp2.RequestHandler):
         <div class="wrapper">')
         # Loop through and write all the teams like:
         allteams = self.get_teams()
-        darkteams = ["BUF", "CBJ", "EDM", "NYI", "NYR", "STL", "TBL", "TOR", "VAN", "WPG"]
         for ateam in allteams:
             # https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout/Auto-placement_in_CSS_Grid_Layout
             # https://css-tricks.com/snippets/jquery/make-entire-div-clickable/
             longteamname = wasthereannhlgamelastnight.get_team(ateam)
-            if ateam in darkteams:
-                # https://davidwalsh.name/html5-storage
-                # Note the use of %r instead of %s in the onClick to have it print 'DET' instead of " det" ..
-                # Used store the chosen team in a local browser variable
-                self.response.write('<a href="/%s" class="%s" title="%s" onClick="saveTeam(%r)"><div><font color=white>%s</font></div></a>' % (ateam, ateam, longteamname, ateam, ateam))
-            else:
-                self.response.write('<a href="/%s" class="%s" title="%s" onClick="saveTeam(%r)"><div>%s</div></a>' % (ateam, ateam, longteamname, ateam, ateam))
+            # https://davidwalsh.name/html5-storage
+            # Note the use of %r instead of %s in the onClick to have it print 'DET' instead of " det" ..
+            # Used store the chosen team in a local browser variable
+            self.response.write('<a href="/%s" class="%s" title="%s" onClick="saveTeam(%r)"><div>%s</div></a>' % (ateam, ateam, longteamname, ateam, ateam))
         self.response.write('<a href="/" title="CLEAR Team Selection" onClick="localStorage.clear()"><div>Clear Team Selection</div></a>')
         self.response.write('</div>\n')
         self.response.write(wasthereannhlgamelastnight.DISCLAIMER)
@@ -70,8 +66,8 @@ class CSSPage(webapp2.RequestHandler):
         # If we use
         # https://raw.githubusercontent.com/jimniels/teamcolors/master/static/data/teams.json
         # we would need to pick which of the colors to show. Sometimes it's 3rd, 2nd, first...
-        #longteamname = wasthereannhlgamelastnight.get_team(ateam)
         for ateam in allteams:
+            # Loop through colors and don't pick black as background for the box
             colors = wasthereannhlgamelastnight.get_team_colors(ateam)
             backgroundcolor = colors[0]
             try:
@@ -82,12 +78,23 @@ class CSSPage(webapp2.RequestHandler):
                 backgroundcolor = backgroundcolor2
             colordict[ateam] = backgroundcolor
         # Make CSS
+        # Default font color is black.
+        # With some backgrounds black is not so readable so we change it to white.
+        # https://en.wikipedia.org/wiki/Template:NHL_team_color might be good, it talks about contrast at least..
+        whitetext = ["ARI", "BUF", "CBJ", "DET", "EDM", "NSH", "NYI", "NYR", "TBL", "TOR", "VAN", "WPG"]
+        yellowtext = ["STL"]
         for ateam in allteams:
             # https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout/Auto-placement_in_CSS_Grid_Layout
             self.response.write('.wrapper > a.%s { \n\
-                background-color: #%s; \n\
-            }\n' % (ateam, colordict[ateam]))
+                background-color: #%s; \n' % (ateam, colordict[ateam]))
+            if ateam in whitetext:
+                self.response.write('\t\tcolor: white \n }\n')
+            elif ateam in yellowtext:
+                self.response.write('\t\tcolor: yellow \n }\n')
+            else:
+                self.response.write('}\n')
 
+########
 
 MENU_CSS = webapp2.WSGIApplication([
     ('/.*', CSSPage),
