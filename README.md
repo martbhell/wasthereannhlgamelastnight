@@ -1,14 +1,12 @@
-wasthereannhlgamelastnight
+wasthereannhlgameyesterday?
 ==========================
 
 [![Build Status](https://travis-ci.org/martbhell/wasthereannhlgamelastnight.svg?branch=master)](https://travis-ci.org/martbhell/wasthereannhlgamelastnight)
 
-<a href="https://wtangy.se"><img src="wtangy_front.png"></a>
-<a href="https://wtangy.se/menu"><img src="wtangy_menu.png"></a>
-
 Print YES or NO!
 
-This works with the new NHL.com website (2017-2018)
+<a href="https://wtangy.se"><img src="wtangy_front.png"></a>
+<a href="https://wtangy.se/menu"><img src="wtangy_menu.png"></a>
 
 Usage
 =====
@@ -65,6 +63,7 @@ Features
 ========
 
  * Persistent team selection using HTML5 Web Storage. If you choose a team in the menu and you later revisit https://wtangy.se (from the same browser) you'll see the result for that team.
+ * This works with the new NHL.com website (2017-2018)
 
 Why?
 ====
