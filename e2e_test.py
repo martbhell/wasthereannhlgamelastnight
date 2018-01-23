@@ -39,8 +39,8 @@ YESNODATES = [
 
 # First we define two special URIs where we do some extra testing
 ARGS = {
-    'update_schedule':  {"test": 'accounts.google.com', "type": "in"},
-    'get_schedule':     {"test": 'teamdates', "type": "injson"},
+    'update_schedule':  {"test": ['accounts.google.com'], "type": "in"},
+    'get_schedule':     {"test": ['teamdates'], "type": "injson"},
     'version':     {"test": BOTH_YEARS, "type": "in"},
 }
 
