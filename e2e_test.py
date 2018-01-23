@@ -49,7 +49,6 @@ for date in YESNODATES:
     ARGS[date] = {"test": YESNO}
 
 for arg in ARGS:
-    print "Testing %s with %s" % (arg, ARGS[arg]['test'])
     try:
         response = urllib2.urlopen("{}/%s".format(HOST) % arg)
     except urllib2.HTTPError as urlliberror:
@@ -69,17 +68,11 @@ for arg in ARGS:
         print "asserting %s/%s contains %s - response code: %s" % (HOST, arg, ARGS[arg]['test'], response.code) # pylint: disable=line-too-long
         try:
             if ARGS[arg]['type'] == "in" or ARGS[arg]['type'] == "injson":
+                # this any loops over tests in ARGS[arg]['test']). There's also an all()
                 assert any(anarg in html for anarg in ARGS[arg]['test'])
-                #assert ARGS[arg]['test'] in html
         except AssertionError:
             print "%s/%s does not contain %s" % (HOST, arg, ARGS[arg])
             sys.exit(4)
-#        try:
-#            if ARGS[arg]['type'] == "years":
-#                assert any(anarg in html for anarg in ARGS[arg]['test'])
-#        except AssertionError:
-#            print "%s/%s does not contain %s" % (HOST, arg, ARGS[arg])
-#            sys.exit(5)
         if ARGS[arg]['type'] == "injson":
             try:
                 assert json.loads(html)['teamdates'].popitem()
