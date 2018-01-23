@@ -39,9 +39,9 @@ YESNODATES = [
 
 # First we define two special URIs where we do some extra testing
 ARGS = {
-    'update_schedule':  {"test": ['accounts.google.com'], "type": "in"},
-    'get_schedule':     {"test": ['teamdates'], "type": "injson"},
-    'version':     {"test": BOTH_YEARS, "type": "in"},
+    'update_schedule':  {"test": 'accounts.google.com', "type": "in"},
+    'get_schedule':     {"test": 'teamdates', "type": "injson"},
+    'version':     {"test": BOTH_YEARS, "type": "years"},
 }
 
 # Add the "basic" tests where we should only get a YES or NO
@@ -68,13 +68,19 @@ for arg in ARGS:
         print "asserting %s/%s contains %s - response code: %s" % (HOST, arg, ARGS[arg]['test'], response.code) # pylint: disable=line-too-long
         try:
             if ARGS[arg]['type'] == "in" or ARGS[arg]['type'] == "injson":
+                assert ARGS[arg]['test'] in html
+        except AssertionError:
+            print "%s/%s does not contain %s" % (HOST, arg, ARGS[arg])
+            sys.exit(4)
+        try:
+            if ARGS[arg]['type'] == "years":
                 assert any(anarg in html for anarg in ARGS[arg]['test'])
         except AssertionError:
             print "%s/%s does not contain %s" % (HOST, arg, ARGS[arg])
-            sys.exit(1)
+            sys.exit(5)
         if ARGS[arg]['type'] == "injson":
             try:
                 assert json.loads(html)['teamdates'].popitem()
             except KeyError:
                 print "popitem of JSON on %s/%s key %s failed" % (HOST, arg, ARGS[arg]['test'])
-                sys.exit(1)
+                sys.exit(6)
