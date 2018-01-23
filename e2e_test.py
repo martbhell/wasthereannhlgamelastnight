@@ -22,7 +22,7 @@ NOW = datetime.datetime.now()
 THIS_YEAR = NOW.year
 LAST_YEAR = NOW.year - 1
 NEXT_YEAR = NOW.year + 1
-BOTH_YEARS = [THIS_YEAR, LAST_YEAR]
+BOTH_YEARS = [str(THIS_YEAR), str(LAST_YEAR)]
 
 # This is a list of the basic tests / arguments.
 YESNODATES = [
@@ -49,6 +49,7 @@ for date in YESNODATES:
     ARGS[date] = {"test": YESNO}
 
 for arg in ARGS:
+    print "Testing %s with %s" % (arg, ARGS[arg]['test'])
     try:
         response = urllib2.urlopen("{}/%s".format(HOST) % arg)
     except urllib2.HTTPError as urlliberror:
