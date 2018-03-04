@@ -63,14 +63,16 @@ class VersionPage(webapp2.RequestHandler):
         self.read_file(filename)
 
     def read_file(self, filename):
-        """ read a file! """
+        """ read a file!
+            return it as json!
+        """
 
         with gcs.open(filename) as cloudstorage_file:
-            content = cloudstorage_file.read()
+            content = {"version": cloudstorage_file.read()}
             #parsed = json.loads(content)
-            #self.response.headers['Content-Type'] = 'application/json'
+            self.response.headers['Content-Type'] = 'application/json'
             #self.response.write(json.dumps(parsed, indent=4, sort_keys=True))
-            self.response.write(content)
+            self.response.write(json.dumps(content))
 
 
 ########## This variable is referenced from app.yaml

@@ -20,7 +20,7 @@ Usage
 |/$DATE/$TEAM | YES/NO | HTML*| 20171022/RedWings| |
 |/$TEAM/$DATE | YES/NO | HTML*| RedWings/20171111| |
 |/get_schedule | Print Schedule| JSON | | |
-|/version | Print Schedule Update Time| ISODATE | | |
+|/version | Print Schedule Update Time| JSON/ISODATE | { "version": "2018-01-27T08:57:00.372800" } | |
 |/menu | Present user with a clickable menu | HTML | | |
 |/update_schedule | Update Schedule | | | Y |
 
@@ -102,7 +102,6 @@ TODO / Known issues
     * could be nice if one could get debug errors to the browser console, rather than having to run the local app_devserver
  * dynamically generate a sitemap.xml
  * Would be cool to not have \n all over the python and still get the HTML page readable
- * Return /version in JSON too
  * improve testing
    * assert that we are redirected to update_schedule
    * update schedule_testing and then verify it / validate json
