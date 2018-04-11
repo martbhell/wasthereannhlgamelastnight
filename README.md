@@ -101,7 +101,6 @@ TODO / Known issues
     * Don't print to stdout - https://cloud.google.com/appengine/docs/standard/python/logs/#Python_writing_application_logs
     * could be nice if one could get debug errors to the browser console, rather than having to run the local app_devserver
  * dynamically generate a sitemap.xml
- * Would be cool to not have \n all over the python and still get the HTML page readable
  * improve testing
    * assert that we are redirected to update_schedule
    * update schedule_testing and then verify it / validate json
