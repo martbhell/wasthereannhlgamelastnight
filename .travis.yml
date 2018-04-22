@@ -17,7 +17,7 @@ before_install:
   - gcloud auth activate-service-account --key-file wasthereannhlgamelastnight-c0aea3438a34.json
 install:
   - travis_retry pip install --user pylint==1.7.5
-  - travis_retry pip install --user -r requirements.txt
+  - travis_retry pip install --user -r src/requirements.txt
   - gcloud config set project wasthereannhlgamelastnight
   - gcloud config list
 before_script:
