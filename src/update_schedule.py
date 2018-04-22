@@ -73,7 +73,10 @@ class MainPage(webapp2.RequestHandler):
                 self.response.write("Diff: %s" % diff(json.loads(old_content), json.loads(content)))
                 self.create_file(filename, content)
                 self.create_file(updated_filename, FOR_UPDATED)
-                self.send_an_email(diff(json.loads(old_content), json.loads(content)), True)
+                # Only send e-mails outside playoffs
+                #  (potential spoilers - games are removed from the schedule)
+                if CURRENT_MONTH < 4 and CURRENT_MONTH > 6:
+                    self.send_an_email(diff(json.loads(old_content), json.loads(content)), True)
 
     def create_file(self, filename, content):
         """Create a file."""
