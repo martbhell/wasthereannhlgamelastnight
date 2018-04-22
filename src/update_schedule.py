@@ -4,13 +4,13 @@ import os
 import json # to parse URL
 import urllib2 # to fetch URL
 import datetime # to compose URL
-from jsondiff import diff # to show difference between json content pylint: disable=import-error
+from jsondiff import diff # to show difference between json content
 
 import cloudstorage as gcs
-import webapp2
+import webapp2 # pylint: disable=import-error
 
-from google.appengine.api import app_identity
-from google.appengine.api import mail
+from google.appengine.api import app_identity # pylint: disable=import-error
+from google.appengine.api import mail # pylint: disable=import-error
 
 DEBUG = True
 

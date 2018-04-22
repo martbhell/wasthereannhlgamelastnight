@@ -3,7 +3,7 @@
 import os
 import json
 
-import cloudstorage as gcs # pylint: disable=import-error
+import cloudstorage as gcs
 import webapp2 # pylint: disable=import-error
 
 from google.appengine.api import app_identity # pylint: disable=import-error
