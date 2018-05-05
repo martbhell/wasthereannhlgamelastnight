@@ -32,8 +32,8 @@ class MainPage(webapp2.RequestHandler):
             longteamname = wasthereannhlgamelastnight.get_team(ateam)
             # https://davidwalsh.name/html5-storage
             # Note the use of %r instead of %s in the onClick to have it print 'DET' instead of " det" ..
-            # Used store the chosen team in a local browser variable
-            self.response.write('<a href="/%s" class="%s" title="%s" onClick="saveTeam(%r)"><div>%s</div></a>' % (ateam, ateam, longteamname, ateam, ateam))
+            # Used to store the chosen team in a local browser variable
+            self.response.write('<a href="/%s" class="%s" title="%s" onClick="saveTeam(%r)"><div>%s</div></a>' % (longteamname.replace(" ", ""), ateam, longteamname, ateam, ateam))
         self.response.write('<a href="/" title="CLEAR Team Selection" onClick="localStorage.clear()"><div>Clear Team Selection</div></a>')
         self.response.write('</div>\n')
         self.response.write(wasthereannhlgamelastnight.DISCLAIMER)
