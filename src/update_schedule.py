@@ -75,7 +75,7 @@ class MainPage(webapp2.RequestHandler):
                 self.create_file(updated_filename, FOR_UPDATED)
                 # Only send e-mails outside playoffs
                 #  (potential spoilers - games are removed from the schedule)
-                if CURRENT_MONTH < 4 and CURRENT_MONTH > 6:
+                if CURRENT_MONTH < 4 or CURRENT_MONTH > 6:
                     self.send_an_email(diff(json.loads(old_content), json.loads(content)), True)
 
     def create_file(self, filename, content):
