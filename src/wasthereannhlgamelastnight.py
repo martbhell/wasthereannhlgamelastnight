@@ -48,10 +48,9 @@ class MainPage(webapp2.RequestHandler):
         # Create a tomorrow
         if validatedate(date1):
             tomorrow = datetime.datetime.strptime(validatedate(date1), "%Y-%m-%d") + datetime.timedelta(days=1)
-            tomorrow = tomorrow.strftime("%Y%m%d")
         else:
             tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
-            tomorrow = tomorrow.strftime("%Y%m%d")
+        tomorrow = tomorrow.strftime("%Y%m%d")
 
         fgcolor = self.give_me_a_color(team1)
         ## Minimalistic style if from a CLI tool
@@ -228,7 +227,8 @@ def yesorno(team, teamdates, date2=None):
     return False
 
 def validatedate(date):
-    """Return the date in format %Y-%m-%d if it is a valid date otherwise None"""
+    """Return the date in format %Y-%m-%d if it is a valid date otherwise None.
+    Not accepting day in the middle"""
 
     date_formats = ['%d-%m-%Y', '%Y-%m-%d', '%d.%m.%Y', '%Y.%m.%d', '%d%m%Y', '%Y%m%d', '%A, %b %-d'] # pylint: disable=line-too-long
     dateinnhlformat = None
@@ -245,19 +245,12 @@ def dateapi(teamdates, team=None, date=None):
     """Return true if there was a game on the date
     Return false there was not and if date was unparseable
     Take a team and/or a date as arguments """
-    # Not accepting day in the middle
-    dateinnhlformat = None
-    date_formats = ['%d-%m-%Y', '%Y-%m-%d', '%d.%m.%Y', '%Y.%m.%d', '%d%m%Y', '%Y%m%d', '%A, %b %-d'] # pylint: disable=line-too-long
 
     # a date was provided
     if date:
         #### Date parsing
         # Try to make the date provided into the NHL format
-        for date_format in date_formats:
-            try:
-                dateinnhlformat = datetime.datetime.strptime(date, date_format).strftime("%Y-%m-%d")
-            except ValueError:
-                pass
+        dateinnhlformat = validatedate(date)
 
         # First assume it's only the date and no team
         if (dateinnhlformat) and (dateinnhlformat in teamdates) and (team is None):
