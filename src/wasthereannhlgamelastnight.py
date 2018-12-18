@@ -41,8 +41,17 @@ class MainPage(webapp2.RequestHandler):
         for arg in arguments:
             if get_team(arg):
                 team1 = arg
+            # TODO: use validatedate() in more places like below
             elif any(char.isdigit() for char in arg):
                 date1 = arg
+
+        # Create a tomorrow
+        if validatedate(date1):
+            tomorrow = datetime.datetime.strptime(validatedate(date1), "%Y-%m-%d") + datetime.timedelta(days=1)
+            tomorrow = tomorrow.strftime("%Y%m%d")
+        else:
+            tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
+            tomorrow = tomorrow.strftime("%Y%m%d")
 
         fgcolor = self.give_me_a_color(team1)
         ## Minimalistic style if from a CLI tool
@@ -79,12 +88,13 @@ class MainPage(webapp2.RequestHandler):
             # Write args as js vars for preferences.js. undefined var is now "None"
             self.response.write('''
             <script>
-            var argteam, argdate, argfgcolor;
+            var argteam, argdate, argfgcolor, tomorrow;
             var argteam = %r;
             var argdate = %r;
             var argfgcolor = %r;
+            var tomorrow = %r;
             </script>
-            ''' % (str(team1), str(date1), str(fgcolor)))
+            ''' % (str(team1), str(date1), str(fgcolor), str(tomorrow)))
             self.response.write(COMMON_META)
             self.response.write('''
             <meta name="theme-color" content="#%s">
@@ -136,6 +146,16 @@ class MainPage(webapp2.RequestHandler):
               <svg xmlns="http://www.w3.org/2000/svg" width="10%%" height="50%%" style="fill:#%s;
               position: absolute; top: 0; border: 0; left: 0">
               <path d="M6 36h36v-4H6v4zm0-10h36v-4H6v4zm0-14v4h36v-4H6z"/></svg></a>''' %fgcolor)
+
+            ### The right arrow sign bottom right
+            # https://css-tricks.com/snippets/css/css-triangle/
+            if team1:
+                tomorrowurl = "/%s/%s" % (team1, tomorrow)
+            else:
+                tomorrowurl = "/%s" % (tomorrow)
+
+            self.response.write('''
+              <a href="%s" title="what about tomorrow?" class="right-arrow-corner" aria-label="Is there a game tomorrow?"><div class="arrow-right" style="width:0; height:0; border-top: 60px solid transparent; border-bottom: 60px solid transparent; border-left: 60px solid #%s; right: 0px; bottom: 0px; position: absolute;"></div></a>''' % (tomorrowurl, fgcolor)) # pylint: disable=line-too-long
 
             ### End icons
             #self.response.write(now2)
@@ -206,6 +226,20 @@ def yesorno(team, teamdates, date2=None):
         return True
 
     return False
+
+def validatedate(date):
+    """Return the date in format %Y-%m-%d if it is a valid date otherwise None"""
+
+    date_formats = ['%d-%m-%Y', '%Y-%m-%d', '%d.%m.%Y', '%Y.%m.%d', '%d%m%Y', '%Y%m%d', '%A, %b %-d'] # pylint: disable=line-too-long
+    dateinnhlformat = None
+    if date:
+        for date_format in date_formats:
+            try:
+                dateinnhlformat = datetime.datetime.strptime(date, date_format).strftime("%Y-%m-%d")
+            except ValueError:
+                pass
+
+    return dateinnhlformat
 
 def dateapi(teamdates, team=None, date=None):
     """Return true if there was a game on the date
