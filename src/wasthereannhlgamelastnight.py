@@ -42,12 +42,12 @@ class MainPage(webapp2.RequestHandler):
             if get_team(arg):
                 team1 = arg
             # TODO: use validatedate() in more places like below
-            elif any(char.isdigit() for char in arg):
-                date1 = arg
+            elif validatedate(arg):
+                date1 = validatedate(arg)
 
         # Create a tomorrow
         if validatedate(date1):
-            tomorrow = datetime.datetime.strptime(validatedate(date1), "%Y-%m-%d") + datetime.timedelta(days=1)
+            tomorrow = datetime.datetime.strptime(date1, "%Y-%m-%d") + datetime.timedelta(days=1)
         else:
             tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
         tomorrow = tomorrow.strftime("%Y%m%d")
