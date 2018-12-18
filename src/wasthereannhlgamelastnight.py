@@ -37,20 +37,24 @@ class MainPage(webapp2.RequestHandler):
         # Team variable is the argument is used to call yesorno and get_team_colors functions
         team1 = None
 
+        # Set some tomorrow things for when a date or team has not been specified
+        tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
+        tomorrow1 = tomorrow.strftime("%Y%m%d")
+        tomorrowurl = "/%s" % (tomorrow1)
         # TOOD: How to handle if someone enters multiple dates etc?
         for arg in arguments:
             if get_team(arg):
                 team1 = arg
-            # TODO: use validatedate() in more places like below
+                # If we have a team set tomorrowurl like /teamname/date
+                tomorrowurl = "/%s/%s" % (team1, tomorrow1)
             elif validatedate(arg):
                 date1 = validatedate(arg)
-
-        # Create a tomorrow
-        if validatedate(date1):
-            tomorrow = datetime.datetime.strptime(date1, "%Y-%m-%d") + datetime.timedelta(days=1)
-        else:
-            tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
-        tomorrow = tomorrow.strftime("%Y%m%d")
+                # If an argument is a date we set tomorrow to one day after that
+                tomorrow = datetime.datetime.strptime(date1, "%Y-%m-%d") + datetime.timedelta(days=1) # pylint: disable=line-too-long
+                tomorrow1 = tomorrow.strftime("%Y%m%d")
+        # If we have a good team and date we have both in tomorrowurl
+        if team1 and date1:
+            tomorrowurl = "/%s/%s" % (team1, tomorrow1)
 
         fgcolor = self.give_me_a_color(team1)
         ## Minimalistic style if from a CLI tool
@@ -83,6 +87,7 @@ class MainPage(webapp2.RequestHandler):
             if teamlongtext is None:
                 teamlongtext = ""
                 # Can't figure out what team that was, set no team chosen.
+                tomorrowurl = "/%s" % (tomorrow1)
             self.response.write('%s</title>\n' % teamlongtext)
             # Write args as js vars for preferences.js. undefined var is now "None"
             self.response.write('''
@@ -148,11 +153,6 @@ class MainPage(webapp2.RequestHandler):
 
             ### The right arrow sign bottom right
             # https://css-tricks.com/snippets/css/css-triangle/
-            if team1:
-                tomorrowurl = "/%s/%s" % (team1, tomorrow)
-            else:
-                tomorrowurl = "/%s" % (tomorrow)
-
             self.response.write('''
               <a href="%s" title="what about tomorrow?" class="right-arrow-corner" aria-label="Is there a game tomorrow?"><div class="arrow-right" style="width:0; height:0; border-top: 60px solid transparent; border-bottom: 60px solid transparent; border-left: 60px solid #%s; right: 0px; bottom: 0px; position: absolute;"></div></a>''' % (tomorrowurl, fgcolor)) # pylint: disable=line-too-long
 
