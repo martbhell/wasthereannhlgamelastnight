@@ -14,6 +14,8 @@ class MainPage(webapp2.RequestHandler):
     """ Main Page Class """
 
     def get(self):
+        #pylint: disable=too-many-locals, too-many-branches, too-many-statements
+        # meaning this function can be split out into more functions/classes
         """Return a <strike>friendly</strike> binary HTTP greeting.
         teamdates dictionary is in JSON, from the update_schedule.py file in a cronjob
 
