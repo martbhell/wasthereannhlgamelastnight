@@ -40,7 +40,9 @@ class MainPage(webapp2.RequestHandler):
         team1 = None
 
         # Set some tomorrow things for when a date or team has not been specified
-        tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
+        # tomorrow set to today if none is set
+        # because today is like tomorrow if you know what I mean (wink wink)
+        tomorrow = datetime.datetime.now()
         tomorrow1 = tomorrow.strftime("%Y%m%d")
         tomorrowurl = "/%s" % (tomorrow1)
         # TOOD: How to handle if someone enters multiple dates etc?
