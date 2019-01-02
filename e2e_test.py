@@ -9,6 +9,7 @@
 
 """ Do some testing """
 
+from __future__ import print_function # python3 
 import urllib2 # we validate that a website responds properly
 import sys # control exit codes
 import json # validate json
@@ -52,30 +53,30 @@ for arg in ARGS:
     try:
         response = urllib2.urlopen("{}/%s".format(HOST) % arg)
     except urllib2.HTTPError as urlliberror:
-        print "Cannot fetch URL: %s" % urlliberror
+        print("Cannot fetch URL: %s" % urlliberror)
         sys.exit(66)
     html = response.read()
 
     if ARGS[arg]['test'] == YESNO:
-        print "asserting %s/%s - response code: %s" % (HOST, arg, response.code)
+        print("asserting %s/%s - response code: %s" % (HOST, arg, response.code))
         try:
             assert html == "NO\n" or html == "YES\n"
         except AssertionError:
-            print "%s/%s does not contain %s" % (HOST, arg, "YES\n or NO\n")
+            print("%s/%s does not contain %s" % (HOST, arg, "YES\n or NO\n"))
             sys.exit(3)
 
     else:
-        print "asserting %s/%s contains %s - response code: %s" % (HOST, arg, ARGS[arg]['test'], response.code) # pylint: disable=line-too-long
+        print("asserting %s/%s contains %s - response code: %s" % (HOST, arg, ARGS[arg]['test'], response.code)) # pylint: disable=line-too-long
         try:
             if ARGS[arg]['type'] == "in" or ARGS[arg]['type'] == "injson":
                 # this any loops over tests in ARGS[arg]['test']). There's also an all()
                 assert any(anarg in html for anarg in ARGS[arg]['test'])
         except AssertionError:
-            print "%s/%s does not contain %s" % (HOST, arg, ARGS[arg])
+            print("%s/%s does not contain %s" % (HOST, arg, ARGS[arg]))
             sys.exit(4)
         if ARGS[arg]['type'] == "injson":
             try:
                 assert json.loads(html)['teamdates'].popitem()
             except KeyError:
-                print "popitem of JSON on %s/%s key %s failed" % (HOST, arg, ARGS[arg]['test'])
+                print("popitem of JSON on %s/%s key %s failed" % (HOST, arg, ARGS[arg]['test']))
                 sys.exit(6)
