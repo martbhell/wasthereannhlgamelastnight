@@ -61,7 +61,7 @@ class MainPage(webapp2.RequestHandler):
                     date1, "%Y-%m-%d"
                 ) + datetime.timedelta(
                     days=1
-                )  # pylint: disable=line-too-long
+                )
                 tomorrow1 = tomorrow.strftime("%Y%m%d")
         # If we have a good team and date we have both in tomorrowurl
         if team1 and date1:
@@ -128,9 +128,9 @@ class MainPage(webapp2.RequestHandler):
             <link type="text/css" href="/stylesheets/app.css" rel="stylesheet">
             </head>
             <body style="text-align: center; padding-top: 5px;">
-              <div class="content" style="font-weight: bold; font-size: 220px; font-size: 30vw; font-family: Arial,sans-serif; text-decoration: none; color: #%s;">\n"""
+              <div class="content" style="font-weight: bold; font-size: 220px; font-size: 30vw; font-family: Arial,sans-serif; text-decoration: none; color: #%s;">\n"""  # pylint: disable=line-too-long
                 % (fgcolor)
-            )  # pylint: disable=line-too-long
+            )
 
             ### The YES/NO logic:
             if yesorno(team1, teamdates, date1):
@@ -167,9 +167,9 @@ class MainPage(webapp2.RequestHandler):
             # http://tholman.com/github-corners/
             self.response.write(
                 """
-              <a href="https://github.com/martbhell/wasthereannhlgamelastnight" class="github-corner" aria-label="View source on Github"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#%s; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>"""
+              <a href="https://github.com/martbhell/wasthereannhlgamelastnight" class="github-corner" aria-label="View source on Github"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#%s; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>""" #  pylint: disable=line-too-long
                 % fgcolor
-            )  # pylint: disable=line-too-long
+            )
             ### The menu icon to the left
             # https://github.com/google/material-design-icons/blob/master/navigation/svg/production/ic_menu_48px.svg
             # Double %% because unsupported-format-character-0x22-at-in-python-string
@@ -186,9 +186,9 @@ class MainPage(webapp2.RequestHandler):
             # https://css-tricks.com/snippets/css/css-triangle/
             self.response.write(
                 """
-              <a href="%s" title="what about tomorrow?" class="right-arrow-corner" aria-label="Is there a game tomorrow?"><div class="arrow-right" style="width:0; height:0; border-top: 60px solid transparent; border-bottom: 60px solid transparent; border-left: 60px solid #%s; right: 0px; bottom: 0px; position: absolute;"></div></a>"""
+              <a href="%s" title="what about tomorrow?" class="right-arrow-corner" aria-label="Is there a game tomorrow?"><div class="arrow-right" style="width:0; height:0; border-top: 60px solid transparent; border-bottom: 60px solid transparent; border-left: 60px solid #%s; right: 0px; bottom: 0px; position: absolute;"></div></a>"""  # pylint: disable=line-too-long
                 % (tomorrowurl, fgcolor)
-            )  # pylint: disable=line-too-long
+            )
 
             ### End icons
             # self.response.write(now2)
@@ -280,7 +280,7 @@ def validatedate(date):
         "%d%m%Y",
         "%Y%m%d",
         "%A, %b %-d",
-    ]  # pylint: disable=line-too-long
+    ]
     dateinnhlformat = None
     if date:
         for date_format in date_formats:
@@ -679,6 +679,6 @@ REMOVE_THESE = [
     "localhost:8080",
     "wtangy.se",
     "wasthereannhlgamelastnight.appspot.com",
-]  # pylint: disable=line-too-long
+]
 
 APPLICATION = webapp2.WSGIApplication([("/.*", MainPage)], debug=True)
