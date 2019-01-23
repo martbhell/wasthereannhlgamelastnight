@@ -64,7 +64,8 @@ Features
 ========
 
  * Persistent team selection using HTML5 Web Storage. If you choose a team in the menu and you later revisit https://wtangy.se (from the same browser) you'll see the result for that team.
- * This works with the new NHL.com website (2017-2018)
+ * This works with the new NHL.com website (2017-)
+ * <a href="https://github.com/rikschennink/shiny">rikschennink/shiny</a> answer on capable mobile devices
 
 Why?
 ====

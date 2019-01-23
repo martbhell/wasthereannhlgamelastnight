@@ -79,10 +79,10 @@ class MainPage(webapp2.RequestHandler):
         else:
             # YES/NO prettifying..
             yes = """
-              <a title='Was There An NHL Game Yesterday?'>YES</a>
+              <div class='shiny'><a title='Was There An NHL Game Yesterday?'>YES</a></div>
             """
             nope = """
-              <a title='Was There An NHL Game Yesterday?'>NO</a>
+              <div class='shiny'><a title='Was There An NHL Game Yesterday?'>NO</a></div>
             """
 
             # Headers
@@ -117,9 +117,12 @@ class MainPage(webapp2.RequestHandler):
             self.response.write(
                 """
             <meta name="theme-color" content="#%s">
-            <script src="/preferences.js"></script>"""
+            <script src="/preferences.js"></script>
+            <script src="/shiny.umd.js"></script>
+            <script src="/wtangymyshiny.js"></script>"""
                 % fgcolor
             )
+
             self.response.write(
                 """
             <script> loadTeam(); </script>
@@ -130,7 +133,6 @@ class MainPage(webapp2.RequestHandler):
                 % (fgcolor)
             )
 
-            ### The YES/NO logic:
             if yesorno(team1, teamdates, date1):
                 self.response.write(yes)
                 therewasagame = "YES"
