@@ -2,7 +2,7 @@
 shiny('.shiny', {
     // type of shiny to render,
     // 'background', 'border', or 'text'
-    type: 'background',
+    type: 'text',
     gradient: {
 
         // type of gradient

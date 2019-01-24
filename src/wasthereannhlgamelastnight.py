@@ -119,7 +119,8 @@ class MainPage(webapp2.RequestHandler):
             <meta name="theme-color" content="#%s">
             <script src="/preferences.js"></script>
             <script src="/shiny.umd.js"></script>
-            <script src="/wtangymyshiny.js"></script>"""
+            <link type="text/css" href="/stylesheets/shiny.css" rel="stylesheet">
+                """
                 % fgcolor
             )
 
