@@ -129,8 +129,7 @@ class MainPage(webapp2.RequestHandler):
             <link type="text/css" href="/stylesheets/app.css" rel="stylesheet">
             </head>
             <body style="text-align: center; padding-top: 5px;">
-              <div class="content" style="font-weight: bold; font-size: 220px; font-size: 30vw; font-family: Arial,sans-serif; text-decoration: none; color: #%s;">\n"""  # pylint: disable=line-too-long
-                % (fgcolor)
+              <div class="content" style="font-weight: bold; font-size: 220px; font-size: 30vw; font-family: Arial,sans-serif; text-decoration: none;">\n"""  # pylint: disable=line-too-long
             )
 
             if yesorno(team1, teamdates, date1):
