@@ -7,10 +7,10 @@ shiny('.shiny', {
 
         // type of gradient
         // 'linear' or 'radial'
-        type: 'radial',
+        type: 'linear',
 
         // angle of gradient when type is linear
-        angle: '110deg',
+        angle: '120deg',
 
         // flip axis movement
         flip: {
@@ -22,8 +22,13 @@ shiny('.shiny', {
         colors: [
             // offset, color, opacity
             // ! don't pass rgba or hsla colors, supply the opacity seperately
-            [0, '#fff', 1], // white at 0%
-            [1, '#fff', 0], // to fully transparent white at 100%
+            [.1, '#eee'],
+            [.25, '#888'],
+            [.35, '#999'],
+            [.35, '#fff'],
+            [.35, '#fff'],
+            [.75, '#999'],
+            [.75, '#fff']
         ]
 
     },
