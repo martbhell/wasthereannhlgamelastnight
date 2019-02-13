@@ -79,10 +79,10 @@ class MainPage(webapp2.RequestHandler):
         else:
             # YES/NO prettifying..
             yes = """
-              <div class='shiny'><a title='Was There An NHL Game Yesterday?'>YES</a></div>
+              <div class="shiny" id="shiny"><a title='Was There An NHL Game Yesterday?'>YES</a></div>
             """
             nope = """
-              <div class='shiny'><a title='Was There An NHL Game Yesterday?'>NO</a></div>
+              <div class="shiny" id="shiny"><a title='Was There An NHL Game Yesterday?'>NO</a></div>
             """
 
             # Headers
@@ -119,7 +119,8 @@ class MainPage(webapp2.RequestHandler):
             <meta name="theme-color" content="#%s">
             <script src="/preferences.js"></script>
             <script src="/shiny.umd.js"></script>
-            <script src="/wtangymyshiny.js"></script>"""
+            <link type="text/css" href="/stylesheets/shiny.css" rel="stylesheet">
+                """
                 % fgcolor
             )
 
@@ -129,7 +130,7 @@ class MainPage(webapp2.RequestHandler):
             <link type="text/css" href="/stylesheets/app.css" rel="stylesheet">
             </head>
             <body style="text-align: center; padding-top: 5px;">
-              <div class="content" style="font-weight: bold; font-size: 220px; font-size: 30vw; font-family: Arial,sans-serif; text-decoration: none; color: #%s;">\n"""  # pylint: disable=line-too-long
+              <div id="content" class="content" style="font-weight: bold; font-size: 220px; font-size: 30vw; font-family: Arial,sans-serif; text-decoration: none; color: #%s;">\n"""  # pylint: disable=line-too-long
                 % (fgcolor)
             )
 
@@ -196,6 +197,8 @@ class MainPage(webapp2.RequestHandler):
             self.response.write(DISCLAIMER)
             self.response.write(
                 """
+                <script src="/colorpreferences.js"></script>
+                <script> loadBgColor(); </script>
             </body>
             </html>"""
             )

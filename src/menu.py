@@ -25,9 +25,10 @@ class MainPage(webapp2.RequestHandler):
             '<link href="/stylesheets/menu.css" rel="stylesheet">\n\
         <link type="text/css" href="/menu_team.css" rel="stylesheet">\n\
         <script src="/preferences.js"></script>\n\
+        <script src="/colorpreferences.js"></script>\n\
     </head>\n\
         <body style="text-align: center; padding-top: 5px;">\n\
-        <div class="wrapper">'
+        <div id="wrapper" class="wrapper">'
         )
         # Loop through and write all the teams like:
         allteams = self.get_teams()
@@ -43,14 +44,20 @@ class MainPage(webapp2.RequestHandler):
                 % (longteamname.replace(" ", ""), ateam, longteamname, ateam, ateam)
             )
         self.response.write(
-            '<a href="/" title="CLEAR Team Selection" onClick="localStorage.clear()"><div>Clear Team Selection</div></a>'
+            """<a href="/" title="CLEAR Team Selection" onClick="localStorage.clear()"><div>Clear Team <br />& Color Selection</div></a>"""
+        )
+        self.response.write(
+            """<a href="/" title="Black BG Color" onClick="saveBgColor('#1e1e1e')"><div>Black BG Color</div></a>"""
         )
         self.response.write("</div>\n")
         self.response.write(wasthereannhlgamelastnight.DISCLAIMER)
 
         self.response.write(
-            "</body>\n\
-        </html>\n"
+            """
+                <script src="/colorpreferences.js"></script>
+                <script> loadBgColor(); </script>
+            </body>
+        </html>"""
         )
 
     @staticmethod
