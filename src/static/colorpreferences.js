@@ -15,8 +15,10 @@ function loadBgColor() {
     var isHex = function (str) {
         // because security
         // https://stackoverflow.com/questions/8027423/how-to-check-if-a-string-is-a-valid-hex-color-representation/8027444
-	console.log(str.toUpperCase());
         return /^#[0-9A-F]{6}$/.test(str);
+    }
+    var isMenu = function (str) {
+        return /menu$/.test(str);
     }
 
     if (Storage === undefined) {
@@ -25,11 +27,14 @@ function loadBgColor() {
         var localbgcolor = localStorage.bgcolor;
         var isitAlpha = isAlpha(localbgcolor);
         var isitHex = isHex(localbgcolor);
+        var isitMenu = isMenu(window.location.href);
            if (isitHex || isitAlpha){
                // example how to only adjust one div with id "content"
 	       // document.getElementById("content").style.backgroundColor = localbgcolor;
 	       document.body.style.backgroundColor = localbgcolor;
-	       document.getElementById('wrapper').style.backgroundColor = localbgcolor;
+	       if (isitMenu){
+	           document.getElementById('wrapper').style.backgroundColor = localbgcolor;
+	       }
            }
 
     }
