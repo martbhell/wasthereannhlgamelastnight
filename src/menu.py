@@ -44,10 +44,10 @@ class MainPage(webapp2.RequestHandler):
                 % (longteamname.replace(" ", ""), ateam, longteamname, ateam, ateam)
             )
         self.response.write(
-            """<a href="/" title="CLEAR Team Selection" onClick="localStorage.clear()"><div>Clear Team <br />& Color Selection</div></a>"""
+            """<a href="/" title="Black Background Color" onClick="saveBgColor('#1e1e1e')"><div>Black BG Color</div></a>"""
         )
         self.response.write(
-            """<a href="/" title="Black BG Color" onClick="saveBgColor('#1e1e1e')"><div>Black BG Color</div></a>"""
+            """<a href="/" title="CLEAR Team&Color Selection" onClick="localStorage.clear()"><div>Clear Team <br />& Color Selection</div></a>"""
         )
         self.response.write("</div>\n")
         self.response.write(wasthereannhlgamelastnight.DISCLAIMER)
