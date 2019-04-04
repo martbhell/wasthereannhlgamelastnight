@@ -146,8 +146,11 @@ class MainPage(webapp2.RequestHandler):
             for game in games:
                 twoteams = []
                 teams = game["teams"]
-                twoteams.append(teams["away"]["team"]["name"])
-                twoteams.append(teams["home"]["team"]["name"])
+                # sorry, you can't query montréalcanadiens, all the hard coded bits in the main parser
+                #  wasthereannhlgamelastnight.py has MTL without the acute accent
+                # without the encode('utf-8') the replace of a unicode gives a unicode error
+                twoteams.append(teams["away"]["team"]["name"].encode('utf-8').replace('Montr\xc3\xa9al', 'Montreal'))
+                twoteams.append(teams["home"]["team"]["name"].encode('utf-8').replace('Montr\xc3\xa9al', 'Montreal'))
                 twoteams_sorted = sorted(twoteams)
                 dict_of_keys_and_matchups[date].append(twoteams_sorted)
                 dict_of_keys_and_matchups_s[date] = sorted(
