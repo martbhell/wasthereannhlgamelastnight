@@ -1,4 +1,5 @@
 """ imports for GCS """
+# coding=utf-8
 
 from __future__ import print_function  # python3
 import os
