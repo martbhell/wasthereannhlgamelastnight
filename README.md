@@ -23,7 +23,7 @@ Usage
 |/get_schedule | Print Schedule| JSON | | |
 |/version | Print Schedule Update Time| JSON/ISODATE | { "version": "2018-01-27T08:57:00.372800" } | |
 |/menu | Present user with a clickable menu | HTML | | |
-|/update_schedule | Update Schedule | | | Y |
+|/update_schedule | Update Schedule | | 202 on changed | Y |
 
 \*  If you use Curl, Wget or Python-Urllib then all you get is YES or NO
 
@@ -65,7 +65,6 @@ Features
 
  * Persistent team selection using HTML5 Web Storage. If you choose a team in the menu and you later revisit https://wtangy.se (from the same browser) you'll see the result for that team.
  * This works with the new NHL.com website (2017-)
- * <a href="https://github.com/rikschennink/shiny">rikschennink/shiny</a> answer on capable mobile devices
 
 Why?
 ====
@@ -81,7 +80,7 @@ How to update the schedule inside the scripts?
 
 The schedule used by this web site is stored in the backend.
 
-As an admin you can update it manually or configure a <a href="gcloud.md">cronjob</a>:
+As an admin you can update it manually or configure a <a href="gcloud.md">cronjob</a>. It will send an e-mail with schedule changes outside playoffs.
 
 What about regular season and playoffs?
 ==================================================
