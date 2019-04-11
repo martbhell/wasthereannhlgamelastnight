@@ -90,6 +90,7 @@ class MainPage(webapp2.RequestHandler):
                     self.send_an_email(
                         diff(json.loads(old_content), json.loads(content)), True
                     )
+                self.response.set_status(202)
 
     def create_file(self, filename, content):
         """Create a file."""
@@ -147,7 +148,7 @@ class MainPage(webapp2.RequestHandler):
             for game in games:
                 twoteams = []
                 teams = game["teams"]
-                # sorry, you can't query montréalcanadiens, all the hard coded bits in the main parser
+                # sorry, you can't query montre(withaccent)alcanadiens, all the hard coded bits in the main parser
                 #  wasthereannhlgamelastnight.py has MTL without the acute accent
                 # without the encode('utf-8') the replace of a unicode gives a unicode error
                 twoteams.append(teams["away"]["team"]["name"].encode('utf-8').replace('Montr\xc3\xa9al', 'Montreal'))
