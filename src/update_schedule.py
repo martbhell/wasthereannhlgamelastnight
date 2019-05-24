@@ -151,11 +151,9 @@ class MainPage(webapp2.RequestHandler):
                 # sorry, you can't query montre(withaccent)alcanadiens, all the hard coded bits in the main parser
                 #  wasthereannhlgamelastnight.py has MTL without the acute accent
                 # without the encode('utf-8') the replace of a unicode gives a unicode error
-                twoteams.append(teams["away"]["team"]["name"].encode('utf-8').replace('Montr\xc3\xa9al', 'Montreal'))
-                twoteams.append(teams["home"]["team"]["name"].encode('utf-8').replace('Montr\xc3\xa9al', 'Montreal'))
                 # Silmarillionly, mainparser has St Louis Blues, not St. Louis Blues as in the NHL schema
-                twoteams.append(teams["away"]["team"]["name"].encode('utf-8').replace('St. Louis Blues', 'St Louis Blues'))
-                twoteams.append(teams["home"]["team"]["name"].encode('utf-8').replace('St. Louis Blues', 'St Louis Blues'))
+                twoteams.append(teams["away"]["team"]["name"].encode('utf-8').replace('Montr\xc3\xa9al', 'Montreal').replace('St. Louis Blues', 'St Louis Blues'))
+                twoteams.append(teams["home"]["team"]["name"].encode('utf-8').replace('Montr\xc3\xa9al', 'Montreal').replace('St. Louis Blues', 'St Louis Blues'))
                 twoteams_sorted = sorted(twoteams)
                 dict_of_keys_and_matchups[date].append(twoteams_sorted)
                 dict_of_keys_and_matchups_s[date] = sorted(
