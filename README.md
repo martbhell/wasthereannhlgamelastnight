@@ -105,7 +105,10 @@ TODO / Known issues
     * Don't print to stdout - https://cloud.google.com/appengine/docs/standard/python/logs/#Python_writing_application_logs
     * could be nice if one could get debug errors to the browser console, rather than having to run the local app_devserver
  * dynamically generate a sitemap.xml
- * querying Montréal Canadiens (so with the acute accent) is not currently working. Before #9 it MTL did not work at all
+ * Réal Names of cities:
+   * querying Montréal Canadiens (so with the acute accent) is not currently working. Before #9 it MTL did not work at all
+   * querying St. Louis Blues (so with the .) is not currently working.
+   * Ideally we would use the real names and not remove bad chars in the schedule ( in update_schedule.py )
  * improve testing
    * assert that we are redirected to update_schedule
    * update schedule_testing and then verify it / validate json
