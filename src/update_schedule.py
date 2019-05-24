@@ -153,6 +153,9 @@ class MainPage(webapp2.RequestHandler):
                 # without the encode('utf-8') the replace of a unicode gives a unicode error
                 twoteams.append(teams["away"]["team"]["name"].encode('utf-8').replace('Montr\xc3\xa9al', 'Montreal'))
                 twoteams.append(teams["home"]["team"]["name"].encode('utf-8').replace('Montr\xc3\xa9al', 'Montreal'))
+                # Silmarillionly, mainparser has St Louis Blues, not St. Louis Blues as in the NHL schema
+                twoteams.append(teams["away"]["team"]["name"].encode('utf-8').replace('St. Louis Blues', 'St Louis Blues'))
+                twoteams.append(teams["home"]["team"]["name"].encode('utf-8').replace('St. Louis Blues', 'St Louis Blues'))
                 twoteams_sorted = sorted(twoteams)
                 dict_of_keys_and_matchups[date].append(twoteams_sorted)
                 dict_of_keys_and_matchups_s[date] = sorted(
