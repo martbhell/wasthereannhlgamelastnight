@@ -88,9 +88,9 @@ for team in MUSTGETAYES:
             yescnt = yescnt + 1
         if allcnt == len(MUSTGETAYES[team]):
 
-            print("asserting that one of %s is YES for %s" % (str(MUSTGETAYES[team]), team))
+            print("asserting that at least ( %s ) one of %s is YES for %s" % (yescnt, str(MUSTGETAYES[team]), team))
             try:
-                assert yescnt != 0
+                assert yescnt > 0
                 #print(str(yescnt) + " for " + team)
             except AssertionError:
                 print("No games found in schedule for %s" % (team))
