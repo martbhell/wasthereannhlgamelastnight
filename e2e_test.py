@@ -16,12 +16,11 @@ import sys  # control exit codes
 import json  # validate json
 import datetime  # figure out year to have dynamic year testing
 
-# this bit should be improvable 
+# this bit should be improvable
 #  https://docs.python.org/3/reference/import.html#regular-packages
-import sys
 import os
 sys.path.append(os.path.realpath('src/'))
-from helpers import get_all_teams
+from helpers import get_all_teams # pylint: disable=import-error
 
 HOST = "https://testing-dot-wasthereannhlgamelastnight.appspot.com"
 
@@ -120,7 +119,7 @@ for arg in ARGS:
         print(
             "asserting %s/%s contains %s - response code: %s"
             % (HOST, arg, ARGS[arg]["test"], response.code)
-        )  # pylint: disable=line-too-long
+        )
         try:
             if ARGS[arg]["type"] == "in" or ARGS[arg]["type"] == "injson":
                 # this any loops over tests in ARGS[arg]['test']). There's also an all()
