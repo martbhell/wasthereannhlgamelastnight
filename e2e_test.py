@@ -9,11 +9,19 @@
 
 """ Do some testing """
 
+from __future__ import absolute_import #
 from __future__ import print_function  # python3
 import urllib2  # we validate that a website responds properly
 import sys  # control exit codes
 import json  # validate json
 import datetime  # figure out year to have dynamic year testing
+
+# this bit should be improvable 
+#  https://docs.python.org/3/reference/import.html#regular-packages
+import sys
+import os
+sys.path.append(os.path.realpath('src/'))
+from helpers import get_all_teams
 
 HOST = "https://testing-dot-wasthereannhlgamelastnight.appspot.com"
 
@@ -45,6 +53,48 @@ ARGS = {
     "get_schedule": {"test": ["teamdates"], "type": "injson"},
     "version": {"test": BOTH_YEARS, "type": "in"},
 }
+
+ALLTEAMS = sorted(list(get_all_teams().keys()))
+
+MUSTGETAYES = {}
+
+for team in ALLTEAMS:
+    MUSTGETAYES[team] = []
+    MUSTGETAYES[team].append(str(THIS_YEAR) + "1014")
+    MUSTGETAYES[team].append(str(THIS_YEAR) + "1015")
+    MUSTGETAYES[team].append(str(THIS_YEAR) + "1016")
+    MUSTGETAYES[team].append(str(THIS_YEAR) + "1017")
+    MUSTGETAYES[team].append(str(THIS_YEAR) + "1018")
+    MUSTGETAYES[team].append(str(LAST_YEAR) + "1014")
+    MUSTGETAYES[team].append(str(LAST_YEAR) + "1015")
+    MUSTGETAYES[team].append(str(LAST_YEAR) + "1016")
+    MUSTGETAYES[team].append(str(LAST_YEAR) + "1017")
+    MUSTGETAYES[team].append(str(LAST_YEAR) + "1018")
+
+# Add the tests where we want to check that we get at least one yes
+#  for each team
+for team in MUSTGETAYES:
+    yescnt = 0
+    allcnt = 0
+    for dstring in MUSTGETAYES[team]:
+        estring = team + "/" + dstring
+        try:
+            response = urllib2.urlopen("{}/%s".format(HOST) % estring)
+        except urllib2.HTTPError as urlliberror:
+            print("Cannot fetch URL: %s" % urlliberror)
+            sys.exit(67)
+        html = response.read()
+        allcnt = allcnt + 1
+        if html == "YES\n":
+            yescnt = yescnt + 1
+        if allcnt == len(MUSTGETAYES[team]):
+
+            try:
+                assert yescnt != 0
+                #print(str(yescnt) + " for " + team)
+            except AssertionError:
+                print("No games found in schedule for %s" % (team))
+                sys.exit(5)
 
 # Add the "basic" tests where we should only get a YES or NO
 for date in YESNODATES:

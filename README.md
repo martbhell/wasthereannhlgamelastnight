@@ -97,6 +97,8 @@ https://statsapi.web.nhl.com/api/v1/schedule/startDate=2016-01-31&endDate=2016-0
 TODO / Known issues
 ====================
 
+ * Deduplicate more code. We moved some helper functions out of wasthereannhlgamelastnight.py into helper.py
+    * Now we should also use them in all the places.
  * Choosing background color - would be sweet if it could do HTML5 so users can choose themselves too like in https://www.w3schools.com/colors/colors_picker.asp
  * games include preseason - if this is a problem let me know!
  * add a calendar selection too near the menu?
@@ -106,8 +108,8 @@ TODO / Known issues
     * could be nice if one could get debug errors to the browser console, rather than having to run the local app_devserver
  * dynamically generate a sitemap.xml
  * Réal Names of cities:
-   * querying Montréal Canadiens (so with the acute accent) is not currently working. Before #9 it MTL did not work at all
-   * querying St. Louis Blues (so with the .) is not currently working.
+   * querying Montréal Canadiens (so with the acute accent) is not currently working. Before https://github.com/martbhell/wasthereannhlgamelastnight/issues/9 MTL did not work at all
+   * querying St. Louis Blues (so with the .) is not currently working. Without the dot and spaces work.
    * Ideally we would use the real names and not remove bad chars in the schedule ( in update_schedule.py )
  * improve testing
    * assert that we are redirected to update_schedule
