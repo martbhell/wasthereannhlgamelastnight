@@ -4,6 +4,7 @@
 
 import webapp2  # pylint: disable=import-error
 import wasthereannhlgamelastnight
+import Helpers
 
 
 class MainPage(webapp2.RequestHandler):
@@ -35,7 +36,7 @@ class MainPage(webapp2.RequestHandler):
         for ateam in allteams:
             # https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout/Auto-placement_in_CSS_Grid_Layout
             # https://css-tricks.com/snippets/jquery/make-entire-div-clickable/
-            longteamname = wasthereannhlgamelastnight.get_team(ateam)
+            longteamname = Helpers.get_team(ateam)
             # https://davidwalsh.name/html5-storage
             # Note the use of %r instead of %s in the onClick to have it print 'DET' instead of " det" ..
             # Used to store the chosen team in a local browser variable
@@ -63,7 +64,7 @@ class MainPage(webapp2.RequestHandler):
     @staticmethod
     def get_teams():
         """ Return a sorted list of teams """
-        allteams = sorted(list(wasthereannhlgamelastnight.get_all_teams().keys()))
+        allteams = sorted(list(Helpers.get_all_teams().keys()))
         return allteams
 
 
@@ -80,7 +81,7 @@ class CSSPage(webapp2.RequestHandler):
 
         self.response.headers["Content-Type"] = "text/css"
         # Loop through and write all the teams:
-        allteams = sorted(list(wasthereannhlgamelastnight.get_all_teams().keys()))
+        allteams = sorted(list(Helpers.get_all_teams().keys()))
         # Recreate give_me_a_color classmethod because I couldn't figure out how to call it
         colordict = {}
         # If we use
@@ -88,7 +89,7 @@ class CSSPage(webapp2.RequestHandler):
         # we would need to pick which of the colors to show. Sometimes it's 3rd, 2nd, first...
         for ateam in allteams:
             # Loop through colors and don't pick black as background for the box
-            colors = wasthereannhlgamelastnight.get_team_colors(ateam)
+            colors = Helpers.get_team_colors(ateam)
             backgroundcolor = colors[0]
             try:
                 backgroundcolor2 = colors[1]
