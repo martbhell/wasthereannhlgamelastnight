@@ -1,10 +1,9 @@
 """ YES, oor no? """
 
 from __future__ import print_function  # python3
-import os
 import datetime
-import json  # data is stored in json
 
+DEBUG = False
 
 def yesorno(team, teamdates, date2=None):
 
