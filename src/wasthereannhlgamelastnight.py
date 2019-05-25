@@ -56,8 +56,8 @@ class MainPage(webapp2.RequestHandler):
                 team1 = arg
                 # If we have a team set tomorrowurl like /teamname/date
                 tomorrowurl = "/%s/%s" % (team1, tomorrow1)
-            elif validatedate(arg):
-                date1 = validatedate(arg)
+            elif Helpers.validatedate(arg):
+                date1 = Helpers.validatedate(arg)
                 # If an argument is a date we set tomorrow to one day after that
                 tomorrow = datetime.datetime.strptime(
                     date1, "%Y-%m-%d"
@@ -267,69 +267,10 @@ def yesorno(team, teamdates, date2=None):
     if date2 is None:
         # If no date set - set it to yesterday
         date2 = yesterday
-    if dateapi(teamdates, chosen_team, date2):
+    if Helpers.dateapi(teamdates, chosen_team, date2):
         return True
 
     return False
-
-
-def validatedate(date):
-    """Return the date in format %Y-%m-%d if it is a valid date otherwise None.
-    Not accepting day in the middle"""
-
-    date_formats = [
-        "%d-%m-%Y",
-        "%Y-%m-%d",
-        "%d.%m.%Y",
-        "%Y.%m.%d",
-        "%d%m%Y",
-        "%Y%m%d",
-        "%A, %b %-d",
-    ]
-    dateinnhlformat = None
-    if date:
-        for date_format in date_formats:
-            try:
-                dateinnhlformat = datetime.datetime.strptime(
-                    date, date_format
-                ).strftime("%Y-%m-%d")
-            except ValueError:
-                pass
-
-    return dateinnhlformat
-
-
-def dateapi(teamdates, team=None, date=None):
-    """Return true if there was a game on the date
-    Return false there was not and if date was unparseable
-    Take a team and/or a date as arguments """
-
-    # a date was provided
-    if date:
-        #### Date parsing
-        # Try to make the date provided into the NHL format
-        dateinnhlformat = validatedate(date)
-
-        # First assume it's only the date and no team
-        if (dateinnhlformat) and (dateinnhlformat in teamdates) and (team is None):
-            if DEBUG:
-                print("F1")
-                print("datenhl: %s" % dateinnhlformat)
-                print("chosen: %s" % team)
-            return True
-        elif dateinnhlformat and (dateinnhlformat in teamdates) and team:
-            # if dateinnhlformat exists a date has been chosen
-            # for each list (matchup) at the date chosen
-            for matchup in teamdates[dateinnhlformat]:
-                for combatant in matchup:
-                    if combatant == team:
-                        return True
-    else:
-        if DEBUG:
-            print("datenhl: %s" % dateinnhlformat)
-            print("chosen: %s" % team)
-            print("G1")
-        return False
 
 
 # https://developers.google.com/analytics/devguides/collection/gtagjs/ip-anonymization
