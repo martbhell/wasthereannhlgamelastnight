@@ -20,7 +20,7 @@ import datetime  # figure out year to have dynamic year testing
 #  https://docs.python.org/3/reference/import.html#regular-packages
 import os
 sys.path.append(os.path.realpath('src/'))
-from helpers import get_all_teams # pylint: disable=import-error
+from helpers import get_all_teams # pylint: disable=import-error,wrong-import-position
 
 HOST = "https://testing-dot-wasthereannhlgamelastnight.appspot.com"
 
