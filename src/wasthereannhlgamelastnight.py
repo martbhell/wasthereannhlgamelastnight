@@ -72,7 +72,7 @@ class MainPage(webapp2.RequestHandler):
         if useragent in CLIAGENTS:
 
             ### The YES/NO logic:
-            if yesorno(team1, teamdates, date1):
+            if Helpers.yesorno(team1, teamdates, date1):
                 self.response.write(yes)
             else:
                 self.response.write(nope)
@@ -136,7 +136,7 @@ class MainPage(webapp2.RequestHandler):
                 % (fgcolor)
             )
 
-            if yesorno(team1, teamdates, date1):
+            if Helpers.yesorno(team1, teamdates, date1):
                 self.response.write(yes)
                 therewasagame = "YES"
             else:
@@ -239,39 +239,6 @@ def read_file():
         jsondata = cloudstorage_file.read()
 
     return jsondata
-
-
-def yesorno(team, teamdates, date2=None):
-
-    """
-    Input: team/city/etc, teamdates and date
-    Returns: True/False
-    """
-
-    yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
-    yesterday = yesterday.strftime("%Y-%m-%d")
-
-    chosen_team = Helpers.get_team(
-        team
-    )  # returns "New York Rangers" on http://URL/NYR or "" on no match
-
-    ### The YES/NO logic:
-    # Check if yesterday's date is a key in teamdates, continue on first hit (not ordered..).
-    if chosen_team is None and date2 is None:
-        for date in teamdates:
-            if yesterday == date:
-                if DEBUG:
-                    print("D1")
-                return True
-
-    if date2 is None:
-        # If no date set - set it to yesterday
-        date2 = yesterday
-    if Helpers.dateapi(teamdates, chosen_team, date2):
-        return True
-
-    return False
-
 
 # https://developers.google.com/analytics/devguides/collection/gtagjs/ip-anonymization
 GOOGLE_ANALYTICS = """<!-- Global site tag (gtag.js) - Google Analytics -->
