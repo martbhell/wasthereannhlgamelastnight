@@ -88,6 +88,7 @@ for team in MUSTGETAYES:
             yescnt = yescnt + 1
         if allcnt == len(MUSTGETAYES[team]):
 
+            print("asserting that one of %s is YES for %s" % (str(MUSTGETAYES[team]), team))
             try:
                 assert yescnt != 0
                 #print(str(yescnt) + " for " + team)
