@@ -8,7 +8,7 @@ import json  # data is stored in json
 import webapp2  # pylint: disable=import-error
 import cloudstorage as gcs  # we fetch the schedule from gcs
 
-import Helpers # a file of our own that has some help functions used by several scripts
+import NHLHelpers # a file of our own that has some help functions used by several scripts
 
 from google.appengine.api import app_identity  # pylint: disable=import-error
 
@@ -52,12 +52,12 @@ class MainPage(webapp2.RequestHandler):
         tomorrowurl = "/%s" % (tomorrow1)
         # TOOD: How to handle if someone enters multiple dates etc?
         for arg in arguments:
-            if Helpers.get_team(arg):
+            if NHLHelpers.get_team(arg):
                 team1 = arg
                 # If we have a team set tomorrowurl like /teamname/date
                 tomorrowurl = "/%s/%s" % (team1, tomorrow1)
-            elif Helpers.validatedate(arg):
-                date1 = Helpers.validatedate(arg)
+            elif NHLHelpers.validatedate(arg):
+                date1 = NHLHelpers.validatedate(arg)
                 # If an argument is a date we set tomorrow to one day after that
                 tomorrow = datetime.datetime.strptime(
                     date1, "%Y-%m-%d"
@@ -72,7 +72,7 @@ class MainPage(webapp2.RequestHandler):
         if useragent in CLIAGENTS:
 
             ### The YES/NO logic:
-            if Helpers.yesorno(team1, teamdates, date1):
+            if NHLHelpers.yesorno(team1, teamdates, date1):
                 self.response.write(yes)
             else:
                 self.response.write(nope)
@@ -96,7 +96,7 @@ class MainPage(webapp2.RequestHandler):
             <head><title>Was there an NHL game yesterday?
             """
             )
-            teamlongtext = Helpers.get_team(team1)
+            teamlongtext = NHLHelpers.get_team(team1)
             if teamlongtext is None:
                 teamlongtext = ""
                 # Can't figure out what team that was, set no team chosen.
@@ -136,7 +136,7 @@ class MainPage(webapp2.RequestHandler):
                 % (fgcolor)
             )
 
-            if Helpers.yesorno(team1, teamdates, date1):
+            if NHLHelpers.yesorno(team1, teamdates, date1):
                 self.response.write(yes)
                 therewasagame = "YES"
             else:
@@ -209,7 +209,7 @@ class MainPage(webapp2.RequestHandler):
     def give_me_a_color(cls, team1):
         """ Select a color, take second color if the first is black. """
 
-        color = Helpers.get_team_colors(team1)
+        color = NHLHelpers.get_team_colors(team1)
         fgcolor = color[0]
         try:
             fgcolor2 = color[1]
