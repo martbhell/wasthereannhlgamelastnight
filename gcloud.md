@@ -5,6 +5,14 @@ https://cloud.google.com/sdk/docs/quickstart-debian-ubuntu
 
 because I forget:
 
+not keeping the testing instance running when it's not necessary, for manual development:
+<pre>
+gcloud init ## to change to wtangy project
+# recreate testing instance? see .travis.yml
+gcloud app deploy -v testing --no-promote
+# 
+</pre>
+and just deploying
 <pre>
 gcloud app deploy cron.yaml # deploy the cron to update gs:/bucket/schedule which is a JSON
 gcloud app deploy -v master # name the version rather than dynamic to not hit the limit
