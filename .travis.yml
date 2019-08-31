@@ -36,5 +36,6 @@ deploy:
     config: src/app.yaml
 after_deploy:
   - curl -q https://wtangy.se
-  # only need the testing instance while testing
+after_script:
+  # only need the testing google appengine instance called testing while testing
   - gcloud app versions delete testing -q
