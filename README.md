@@ -97,6 +97,7 @@ https://statsapi.web.nhl.com/api/v1/schedule/startDate=2016-01-31&endDate=2016-0
 TODO / Known issues
 ====================
 
+ * "BadRequestError: Admin message exceeds size limits" in update_schedule when there's a huge update
  * Choosing background color - would be sweet if it could do HTML5 so users can choose themselves too like in https://www.w3schools.com/colors/colors_picker.asp
  * games include preseason - if this is a problem let me know!
  * add a calendar selection too near the menu?
