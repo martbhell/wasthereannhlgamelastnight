@@ -50,6 +50,15 @@ class MainPage(webapp2.RequestHandler):
         self.response.write(
             """<a href="/" title="CLEAR Team&Color Selection" onClick="localStorage.clear()"><div>Clear Team <br />& Color Selection</div></a>"""
         )
+        self.response.write(
+            """<a href="/get_schedule" title="Get Schedule"><div>Get Schedule<br /></div></a>"""
+        )
+        self.response.write(
+            """<a href="/version" title="Version"><div>Last Update <br />of Schedule<br /></div></a>"""
+        )
+        self.response.write(
+            """<a href="/update_schedule" title="Update Schedule"><div>Update Schedule<br />(admin)<br /></div></a>"""
+        )
         self.response.write("</div>\n")
         self.response.write(wasthereannhlgamelastnight.DISCLAIMER)
 
