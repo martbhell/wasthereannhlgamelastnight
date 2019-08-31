@@ -29,11 +29,10 @@ class MainPage(webapp2.RequestHandler):
 
         self.response.headers["Content-Type"] = "text/plain"
         self.response.write(
-            "Demo GCS Application running from Version: "
+            "Wtangy AppEngine GCS running from Version: "
             + os.environ["CURRENT_VERSION_ID"]
             + "\n"
         )
-        self.response.write("Using bucket name: " + bucket_name + "\n\n")
 
         version = os.environ["CURRENT_VERSION_ID"].split(".")[0]
         bucket = "/" + bucket_name
@@ -43,6 +42,8 @@ class MainPage(webapp2.RequestHandler):
         else:
             filename = bucket + "/schedule_" + version
             updated_filename = bucket + "/updated_schedule_" + version
+
+        self.response.write("Using object: " + filename + "\n\n")
 
         # This _etag is currently unused, could be used to reduce writes to
         #  only when the schedule is updated (and to notify of updates)
