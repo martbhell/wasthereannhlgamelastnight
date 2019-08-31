@@ -29,6 +29,8 @@ Usage
 
 \*  If you use Curl, Wget or Python-Urllib then all you get is YES or NO
 
+<img src="demo.gif" title="made with asciinema and the docker asciicast2gif docker - note to self: just add .gif to the asciinema recording to get the docker oneliner">
+
 Examples
 ----------
 
