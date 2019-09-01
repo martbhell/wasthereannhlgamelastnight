@@ -197,18 +197,28 @@ class MainPage(webapp2.RequestHandler):
         to_email = os.environ["USER_EMAIL"]
         to_name = to_email
 
+        real_message = message
+        # output from jsondiff could also have insert, delete & more
+        #  until now nothing else in here uses send_an_email method so
+        try:
+            if len(real_message["teamdates"]["replace"]) > 500:
+                real_message = ">500 changes to email, see /get_schedule - Hello new season!"
+        except KeyError as reale:
+            # still try to send message even if we don't have teamdates replace keys
+            real_message = "ERROR: KeyError [teamdates][replace]: %s" % reale + "\n\n" + message
+
         if admin or to_email is None or to_email == "":
             mail.send_mail_to_admins(
                 sender=sender_address,
                 subject="NHL schedule changed A",
-                body="changes: %s" % (message),
+                body="changes: %s" % (real_message),
             )
         else:
             mail.send_mail(
                 sender=sender_address,
                 to="%s <%s>" % (to_name, to_email),
                 subject="NHL schedule changed",
-                body="changes: %s" % (message),
+                body="changes: %s" % (real_message),
             )
 
 
