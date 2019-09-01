@@ -73,7 +73,7 @@ class MainPage(webapp2.RequestHandler):
                 try:
                     last_updated = self.read_file(updated_filename)
                     _msg = "Not updating schedule - it is current."
-                    self.response.write(msg + "\n")
+                    self.response.write(_msg + "\n")
                     logging.info(_msg)
                 except gcs.NotFoundError:
                     self.create_file(updated_filename, FOR_UPDATED)
@@ -81,7 +81,7 @@ class MainPage(webapp2.RequestHandler):
                 self.response.write("Last updated: %s\n" % last_updated)
             else:
                 changes = diff(json.loads(old_content), json.loads(content))
-                logging.info("Changes: %s" % changes)
+                logging.info("Changes: %s", changes)
                 self.response.write(
                     "Diff: %s\n" % changes
                 )
