@@ -186,8 +186,8 @@ class MainPage(webapp2.RequestHandler):
             cloudstorage_file.read()
             return read1
 
-    @staticmethod
-    def get_size(obj, seen=None):
+    @classmethod
+    def get_size(cls, obj, seen=None):
         """Recursively finds size of objects
         https://goshippo.com/blog/measure-real-size-any-python-object/
 
@@ -208,12 +208,12 @@ class MainPage(webapp2.RequestHandler):
         # self-referential objects
         seen.add(obj_id)
         if isinstance(obj, dict):
-            size += sum([get_size(v, seen) for v in obj.values()])
-            size += sum([get_size(k, seen) for k in obj.keys()])
+            size += sum([cls.get_size(v, seen) for v in obj.values()])
+            size += sum([cls.get_size(k, seen) for k in obj.keys()])
         elif hasattr(obj, '__dict__'):
-            size += get_size(obj.__dict__, seen)
+            size += cls.get_size(obj.__dict__, seen)
         elif hasattr(obj, '__iter__') and not isinstance(obj, (str, bytes, bytearray)):
-            size += sum([get_size(i, seen) for i in obj])
+            size += sum([cls.get_size(i, seen) for i in obj])
         return size
 
 
@@ -230,7 +230,7 @@ class MainPage(webapp2.RequestHandler):
         to_name = to_email
 
         real_message = message
-        msgsize = get_size(real_message)
+        msgsize = cls.get_size(real_message)
         # size of 2019-2020 schedule was 530016, unclear how large the jsondiff was 2018->2019
         #  50000 is less than 65490 which was in the log of the update
         if msgsize > 50000:
