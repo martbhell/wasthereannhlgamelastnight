@@ -7,6 +7,7 @@ import json  # to parse URL
 import urllib2  # to fetch URL
 import datetime  # to compose URL
 import sys # for get_size
+import logging
 from jsondiff import diff  # to show difference between json content
 
 import cloudstorage as gcs
@@ -73,6 +74,8 @@ class MainPage(webapp2.RequestHandler):
                 try:
                     last_updated = self.read_file(updated_filename)
                     self.response.write("Not updating schedule - it is current.\n")
+                    # dedup
+                    logging.info("Not updating schedule - it is current.")
                 except gcs.NotFoundError:
                     self.create_file(updated_filename, FOR_UPDATED)
                     last_updated = self.read_file(updated_filename)
