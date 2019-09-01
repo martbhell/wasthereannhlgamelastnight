@@ -201,11 +201,12 @@ class MainPage(webapp2.RequestHandler):
         # output from jsondiff could also have insert, delete & more
         #  until now nothing else in here uses send_an_email method so
         try:
-            if len(real_message["teamdates"]["replace"]) > 500:
-                real_message = ">500 changes to email, see /get_schedule - Hello new season!"
+            for key in real_message["teamdates"]:
+                if len(real_message["teamdates"][key]) > 500:
+                    real_message = ">500 changes to email, see /get_schedule - Hello new season!"
         except KeyError as reale:
             # still try to send message even if we don't have teamdates replace keys
-            real_message = "ERROR: KeyError [teamdates][replace]: %s" % reale + "\n\n" + message
+            real_message = "ERROR KeyError [teamdates][replace]: %s" % reale + "\n\n" + str(message)
 
         if admin or to_email is None or to_email == "":
             mail.send_mail_to_admins(
