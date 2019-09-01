@@ -6,6 +6,7 @@ import os
 import json  # to parse URL
 import urllib2  # to fetch URL
 import datetime  # to compose URL
+import sys # for get_size
 from jsondiff import diff  # to show difference between json content
 
 import cloudstorage as gcs
@@ -81,7 +82,7 @@ class MainPage(webapp2.RequestHandler):
                     "Changes: %s" % (diff(json.loads(old_content), json.loads(content)))
                 )
                 self.response.write(
-                    "Diff: %s" % diff(json.loads(old_content), json.loads(content))
+                    "Diff: %s\n" % diff(json.loads(old_content), json.loads(content))
                 )
                 self.create_file(filename, content)
                 self.create_file(updated_filename, FOR_UPDATED)
@@ -185,6 +186,37 @@ class MainPage(webapp2.RequestHandler):
             cloudstorage_file.read()
             return read1
 
+    @staticmethod
+    def get_size(obj, seen=None):
+        """Recursively finds size of objects
+        https://goshippo.com/blog/measure-real-size-any-python-object/
+
+        >>> get_size({ "hello": [2,3,[1,2,[2,3]]] })
+        674
+        >>> get_size({ "hello": [2,3,[1,2,[2,3]]], "hello2": [2,3,4,5] })
+        869
+        >>> get_size({})
+        280
+        """
+        size = sys.getsizeof(obj)
+        if seen is None:
+            seen = set()
+        obj_id = id(obj)
+        if obj_id in seen:
+            return 0
+        # Important mark as seen *before* entering recursion to gracefully handle
+        # self-referential objects
+        seen.add(obj_id)
+        if isinstance(obj, dict):
+            size += sum([get_size(v, seen) for v in obj.values()])
+            size += sum([get_size(k, seen) for k in obj.keys()])
+        elif hasattr(obj, '__dict__'):
+            size += get_size(obj.__dict__, seen)
+        elif hasattr(obj, '__iter__') and not isinstance(obj, (str, bytes, bytearray)):
+            size += sum([get_size(i, seen) for i in obj])
+        return size
+
+
     @classmethod
     def send_an_email(cls, message, admin=False):
         """ send an e-mail, optionally to the admin """
@@ -198,15 +230,11 @@ class MainPage(webapp2.RequestHandler):
         to_name = to_email
 
         real_message = message
-        # output from jsondiff could also have insert, delete & more
-        #  until now nothing else in here uses send_an_email method so
-        try:
-            for key in real_message["teamdates"]:
-                if len(real_message["teamdates"][key]) > 500:
-                    real_message = ">500 changes to email, see /get_schedule - Hello new season!"
-        except KeyError as reale:
-            # still try to send message even if we don't have teamdates replace keys
-            real_message = "ERROR KeyError [teamdates][replace]: %s" % reale + "\n\n" + str(message)
+        msgsize = get_size(real_message)
+        # size of 2019-2020 schedule was 530016, unclear how large the jsondiff was 2018->2019
+        #  50000 is less than 65490 which was in the log of the update
+        if msgsize > 50000:
+            real_message = "Msgsize is %s, see /get_schedule - Hello new season?" % msgsize
 
         if admin or to_email is None or to_email == "":
             mail.send_mail_to_admins(
@@ -221,7 +249,6 @@ class MainPage(webapp2.RequestHandler):
                 subject="NHL schedule changed",
                 body="changes: %s" % (real_message),
             )
-
 
 ###### Define some variables used to compose a URL
 
