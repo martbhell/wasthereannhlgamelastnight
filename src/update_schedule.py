@@ -233,21 +233,22 @@ class MainPage(webapp2.RequestHandler):
         msgsize = cls.get_size(real_message)
         # size of 2019-2020 schedule was 530016, unclear how large the jsondiff was 2018->2019
         #  50000 is less than 65490 which was in the log of the update
-        if msgsize > 50000:
+        #  if we change all "Rangers" to "Freeezers" the changes to restore 2019-2020 was 106288
+        if msgsize > 150000:
             real_message = "Msgsize is %s, see /get_schedule - Hello new season?" % msgsize
 
         if admin or to_email is None or to_email == "":
             mail.send_mail_to_admins(
                 sender=sender_address,
                 subject="NHL schedule changed A",
-                body="changes: %s" % (real_message),
+                body="msgsize: %s \n changes: %s" % (msgsize, real_message),
             )
         else:
             mail.send_mail(
                 sender=sender_address,
                 to="%s <%s>" % (to_name, to_email),
                 subject="NHL schedule changed",
-                body="changes: %s" % (real_message),
+                body="msgsize: %s \n changes: %s" % (msgsize, real_message),
             )
 
 ###### Define some variables used to compose a URL
