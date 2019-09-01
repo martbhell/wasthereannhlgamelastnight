@@ -54,8 +54,7 @@ class MainPage(webapp2.RequestHandler):
             if DEBUG:
                 self.response.write("etag: %s \n" % filename_etag)
         except gcs.NotFoundError:
-            if DEBUG:
-                print("P1")
+            logging.debug("P1")
 
         [totalgames, jsondata] = self.fetch_upstream_schedule(URL)
 
@@ -73,19 +72,18 @@ class MainPage(webapp2.RequestHandler):
             if old_content == content:
                 try:
                     last_updated = self.read_file(updated_filename)
-                    self.response.write("Not updating schedule - it is current.\n")
-                    # dedup
-                    logging.info("Not updating schedule - it is current.")
+                    _msg = "Not updating schedule - it is current."
+                    self.response.write(msg + "\n")
+                    logging.info(_msg)
                 except gcs.NotFoundError:
                     self.create_file(updated_filename, FOR_UPDATED)
                     last_updated = self.read_file(updated_filename)
                 self.response.write("Last updated: %s\n" % last_updated)
             else:
-                print(
-                    "Changes: %s" % (diff(json.loads(old_content), json.loads(content)))
-                )
+                changes = diff(json.loads(old_content), json.loads(content))
+                logging.info("Changes: %s" % changes)
                 self.response.write(
-                    "Diff: %s\n" % diff(json.loads(old_content), json.loads(content))
+                    "Diff: %s\n" % changes
                 )
                 self.create_file(filename, content)
                 self.create_file(updated_filename, FOR_UPDATED)
@@ -239,6 +237,7 @@ class MainPage(webapp2.RequestHandler):
         #  if we change all "Rangers" to "Freeezers" the changes to restore 2019-2020 was 106288
         if msgsize > 150000:
             real_message = "Msgsize is %s, see /get_schedule - Hello new season?" % msgsize
+            logging.info(real_message)
 
         if admin or to_email is None or to_email == "":
             mail.send_mail_to_admins(
