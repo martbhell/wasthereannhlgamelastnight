@@ -1,6 +1,6 @@
-name: Python application
+name: Testing WTANGY.SE
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
