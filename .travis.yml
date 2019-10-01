@@ -14,6 +14,7 @@ before_install:
     #    | bash
     #  - source $HOME/google-cloud-sdk/path.bash.inc
   - gcloud version
+  - gcloud components update
   - gcloud auth activate-service-account --key-file wasthereannhlgamelastnight-c0aea3438a34.json
 install:
   - travis_retry pip install --user pylint==1.7.5
