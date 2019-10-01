@@ -9,7 +9,7 @@ not keeping the testing instance running when it's not necessary, for manual dev
 <pre>
 gcloud init ## to change to wtangy project
 # recreate testing instance? see .travis.yml
-# if deploying to a clean datastore/appengine remember to create env_variables.yml and upload it manually to the datastore
+# if deploying to a clean datastore/appengine remember to modify env_variables.yml and upload it manually to the datastore (you'll need to exclude it from .gcloudignore file)
 gcloud app deploy -v testing --no-promote
 # 
 </pre>
