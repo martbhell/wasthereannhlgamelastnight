@@ -8,6 +8,7 @@ import urllib2  # to fetch URL
 import datetime  # to compose URL
 import sys # for get_size
 import logging
+import tweepy # for tweeting schedule updates
 from jsondiff import diff  # to show difference between json content
 
 import cloudstorage as gcs
@@ -91,7 +92,7 @@ class MainPage(webapp2.RequestHandler):
                 #  (potential spoilers - games are removed from the schedule)
                 if CURRENT_MONTH < 4 or CURRENT_MONTH > 6:
                     self.send_an_email(
-                        diff(json.loads(old_content), json.loads(content)), True
+                        diff(json.loads(old_content), json.loads(content)), True, True
                     )
                 self.response.set_status(202)
 
@@ -219,7 +220,7 @@ class MainPage(webapp2.RequestHandler):
 
 
     @classmethod
-    def send_an_email(cls, message, admin=False):
+    def send_an_email(cls, message, admin=False, twitter=False):
         """ send an e-mail, optionally to the admin """
         # https://cloud.google.com/appengine/docs/standard/python/refdocs/google.appengine.api.mail
 
@@ -252,6 +253,27 @@ class MainPage(webapp2.RequestHandler):
                 subject="NHL schedule changed",
                 body="msgsize: %s \n changes: %s" % (msgsize, real_message),
             )
+        if twitter:
+            api_key = os.environ['API_KEY']
+            api_secret_key = os.environ['API_SECRET_KEY']
+            access_token = os.environ['ACCESS_TOKEN']
+            access_token_secret = os.environ['ACCESS_TOKEN_SECRET']
+
+            # Authenticate to Twitter
+            auth = tweepy.OAuthHandler(api_key, api_secret_key)
+            auth.set_access_token(access_token, access_token_secret)
+
+            # Create API object
+            api = tweepy.API(auth)
+
+            # Create a tweet
+            # msgsize: 1577
+            #  changes: {u'teamdates': {u'2019-09-29': {delete: [2]}}}
+            if msgsize > 1600:
+                api.update_status(real_message)
+            else:
+                api.update_status("#NHL schedule updated on https://wtangy.se - did you team play last night? Try out https://wtangy.se/DETROIT")
+            logging.info("Tweeted and message size was %s", msgsize)
 
 ###### Define some variables used to compose a URL
 

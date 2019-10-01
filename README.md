@@ -100,6 +100,7 @@ TODO / Known issues
 ====================
 
  * "BadRequestError: Admin message exceeds size limits" in update_schedule when there's a huge update
+    * This is made so that if the size of the message body is too large we don't send it. One could perhaps email it as an attachment instead...
  * Choosing background color - would be sweet if it could do HTML5 so users can choose themselves too like in https://www.w3schools.com/colors/colors_picker.asp
  * games include preseason - if this is a problem let me know!
  * add a calendar selection too near the menu?
@@ -108,7 +109,9 @@ TODO / Known issues
     * Needs a better new icon, better resolution on the phones and I want it to display the URL somewhere
  * proper logging
     * Don't print to stdout - https://cloud.google.com/appengine/docs/standard/python/logs/#Python_writing_application_logs
+    * We no longer print to stdout, so some imports could be removed?
     * could be nice if one could get debug errors to the browser console, rather than having to run the local app_devserver
+    * Right now there's a few in the cloud console logs. More could be added
  * dynamically generate a sitemap.xml
  * Réal Names of cities:
    * querying Montréal Canadiens (so with the acute accent) is not currently working. Before https://github.com/martbhell/wasthereannhlgamelastnight/issues/9 MTL did not work at all
