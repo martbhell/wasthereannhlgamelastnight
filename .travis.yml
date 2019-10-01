@@ -9,10 +9,10 @@ before_install:
   - openssl aes-256-cbc -K $encrypted_ae95481c2257_key -iv $encrypted_ae95481c2257_iv
     -in wasthereannhlgamelastnight-c0aea3438a34.json.enc -out wasthereannhlgamelastnight-c0aea3438a34.json
     -d
-    # Uncommenting this part would make us use greatest and latest sdk, not the cached one from travis.
-    #  - rm -rf $HOME/google-cloud-sdk; export CLOUDSDK_CORE_DISABLE_PROMPTS=1; curl https://sdk.cloud.google.com
-    #    | bash
-    #  - source $HOME/google-cloud-sdk/path.bash.inc
+  # Uncommenting this part would make us use greatest and latest sdk, not the cached one from travis.
+  - rm -rf $HOME/google-cloud-sdk; export CLOUDSDK_CORE_DISABLE_PROMPTS=1; curl https://sdk.cloud.google.com
+    | bash
+  - source $HOME/google-cloud-sdk/path.bash.inc
   - gcloud version
   - gcloud auth activate-service-account --key-file wasthereannhlgamelastnight-c0aea3438a34.json
 install:
@@ -23,7 +23,7 @@ install:
 before_script:
   - pylint --version
   - pylint src/!(appengine_config).py *.py -r y
-  - gcloud -q app deploy src/app.yaml --no-promote -v testing
+  - travis_retry gcloud -q app deploy src/app.yaml --no-promote -v testing
 script:
   - python e2e_test.py
 deploy:

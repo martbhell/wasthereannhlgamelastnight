@@ -4,6 +4,13 @@ runtime: python27
 api_version: 1
 threadsafe: false
 
+includes:
+- env_variables.yaml
+
+libraries:
+- name: ssl
+  version: latest
+
 handlers:
 - url: /(robots\.txt|favicon\.ico|sitemap\.xml|preferences\.js|shiny\.umd\.js|shiny\.umd\.js\.map|colorpreferences\.js)
   static_files: static/\1
