@@ -23,8 +23,7 @@ install:
 before_script:
   - pylint --version
   - pylint src/!(appengine_config).py *.py -r y
-  - gcloud deployment-manager deployments list
-  - gcloud -q app deploy src/app.yaml --no-promote -v testing
+  - travis_retry gcloud -q app deploy src/app.yaml --no-promote -v testing
 script:
   - python e2e_test.py
 deploy:
