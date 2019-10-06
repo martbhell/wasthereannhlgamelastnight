@@ -1,15 +1,17 @@
 #application: wasthereannhlgamelastnight
 #version: 1
-runtime: python27
-api_version: 1
-threadsafe: false
+runtime: python37
+#api_version: 1
+#threadsafe: false
 
 includes:
 - env_variables.yaml
 
-libraries:
-- name: ssl
-  version: latest
+#libraries:
+#- name: ssl
+#  version: latest
+#
+entrypoint: gunicorn -b :$PORT wasthereannhlgamelastnight:app
 
 handlers:
 - url: /(robots\.txt|favicon\.ico|sitemap\.xml|preferences\.js|shiny\.umd\.js|shiny\.umd\.js\.map|colorpreferences\.js)

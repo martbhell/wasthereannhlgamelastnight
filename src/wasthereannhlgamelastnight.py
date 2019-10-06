@@ -277,3 +277,4 @@ REMOVE_THESE = [
 ]
 
 APPLICATION = webapp2.WSGIApplication([("/.*", MainPage)], debug=True)
+app = webapp2.WSGIApplication([("/.*", MainPage)], debug=True)
