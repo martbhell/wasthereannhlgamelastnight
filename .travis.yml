@@ -38,6 +38,7 @@ deploy:
     on: master
     no_promote: False
     config: src/app.yaml
+    skip_cleanup: True
 after_deploy:
   - curl -q https://wtangy.se
   # only need the testing google appengine instance called testing while testing
