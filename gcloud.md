@@ -9,7 +9,6 @@ not keeping the testing instance running when it's not necessary, for manual dev
 <pre>
 gcloud init ## to change to wtangy project
 # recreate testing instance? see .travis.yml
-# if deploying to a clean datastore/appengine remember to modify env_variables.yml and upload it manually to the datastore (you'll need to exclude it from .gcloudignore file)
 gcloud app deploy -v testing --no-promote
 # 
 </pre>
@@ -37,3 +36,8 @@ https://github.com/GoogleCloudPlatform/continuous-deployment-demo
 
 not all is relevant anymore or has changed, but do pay attention to:
  - gcloud config set project $name
+## Twitter
+
+if deploying to a clean datastore/appengine remember to modify env_variables.yml.enc and upload it manually to the datastore (you'll need to exclude it from .gcloudignore file)
+
+it should be extracted to env_variables.yml into src/ directory as that's where app.yaml tries to include it to get some twitter API keys
