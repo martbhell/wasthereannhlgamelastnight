@@ -1,6 +1,5 @@
 wasthere*.json
 api_key.py
-#src/env_variables.yaml
 credentials.tar.gz
 *.pyc
 *.pyo
