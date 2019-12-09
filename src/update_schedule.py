@@ -269,10 +269,10 @@ class MainPage(webapp2.RequestHandler):
             # Create a tweet
             # msgsize: 1577
             #  changes: {u'teamdates': {u'2019-09-29': {delete: [2]}}}
-            if msgsize > 1600:
-                api.update_status(real_message)
-            else:
-                api.update_status("#NHL schedule updated on https://wtangy.se - did you team play last night? Try out https://wtangy.se/DETROIT")
+            #if msgsize > 1600:
+            #    api.update_status(real_message)
+            #else:
+            api.update_status("#NHL schedule updated on https://wtangy.se - did you team play last night? Try out https://wtangy.se/DETROIT")
             logging.info("Tweeted and message size was %s", msgsize)
 
 ###### Define some variables used to compose a URL
