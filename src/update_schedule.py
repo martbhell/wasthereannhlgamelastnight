@@ -272,7 +272,7 @@ class MainPage(webapp2.RequestHandler):
             #if msgsize > 1600:
             #    api.update_status(real_message)
             #else:
-            api.update_status("#NHL schedule updated on https://wtangy.se - did you team play last night? Try out https://wtangy.se/DETROIT")
+            api.update_status("#NHL schedule updated on https://wtangy.se - did your team play last night? Try out https://wtangy.se/DETROIT")
             logging.info("Tweeted and message size was %s", msgsize)
 
 ###### Define some variables used to compose a URL
