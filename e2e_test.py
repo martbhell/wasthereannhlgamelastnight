@@ -11,7 +11,8 @@
 
 from __future__ import absolute_import #
 from __future__ import print_function  # python3
-import urllib2  # we validate that a website responds properly
+import urllib  # we validate that a website responds properly
+from urllib.request import urlopen
 import sys  # control exit codes
 import json  # validate json
 import datetime  # figure out year to have dynamic year testing
@@ -78,8 +79,8 @@ for team in MUSTGETAYES:
     for dstring in MUSTGETAYES[team]:
         estring = team + "/" + dstring
         try:
-            response = urllib2.urlopen("{}/%s".format(HOST) % estring)
-        except urllib2.HTTPError as urlliberror:
+            response = urlopen("{}/%s".format(HOST) % estring)
+        except urllib.error.HTTPError as urlliberror:
             print("Cannot fetch URL: %s" % urlliberror)
             sys.exit(67)
         html = response.read()
@@ -102,8 +103,8 @@ for date in YESNODATES:
 
 for arg in ARGS:
     try:
-        response = urllib2.urlopen("{}/%s".format(HOST) % arg)
-    except urllib2.HTTPError as urlliberror:
+        response = urlopen("{}/%s".format(HOST) % arg)
+    except urllib.error.HTTPError as urlliberror:
         print("Cannot fetch URL: %s" % urlliberror)
         sys.exit(66)
     html = response.read()
