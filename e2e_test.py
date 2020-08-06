@@ -54,12 +54,15 @@ ARGS = {
     "version": {"test": BOTH_YEARS, "type": "in"},
 }
 
-ALLTEAMS = sorted(list(get_all_teams().keys()))
+#ALLTEAMS = sorted(list(get_all_teams().keys()))
+ALLTEAMS = [ "PIT" ]
 
 MUSTGETAYES = {}
 
 for team in ALLTEAMS:
     MUSTGETAYES[team] = []
+    MUSTGETAYES[team].append(str(THIS_YEAR) + "0805")
+    MUSTGETAYES[team].append(str(THIS_YEAR) + "0806")
     MUSTGETAYES[team].append(str(THIS_YEAR) + "1014")
     MUSTGETAYES[team].append(str(THIS_YEAR) + "1015")
     MUSTGETAYES[team].append(str(THIS_YEAR) + "1016")
