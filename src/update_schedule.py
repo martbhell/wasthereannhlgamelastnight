@@ -130,7 +130,8 @@ class MainPage(webapp2.RequestHandler):
         totalgames = jsondata["totalGames"]
 
         if totalgames == 0:
-            self.response.write("ERROR parsing data, 0 games found")
+            self.response.write("ERROR parsing data, 0 games found.\n")
+            self.response.write("URL: %s" % url)
             self.response.set_status(500)
             return (totalgames, False)
         return (totalgames, jsondata)
@@ -284,11 +285,11 @@ LAST_YEAR = CURRENT_YEAR - 1
 NEXT_YEAR = CURRENT_YEAR + 1
 # if now is before August we get last year from September until July
 if CURRENT_MONTH < 8:
-    START_DATE = "%s-09-01" % LAST_YEAR
+    START_DATE = "%s-08-01" % LAST_YEAR
     END_DATE = "%s-07-01" % CURRENT_YEAR
 # if now is in or after August we get this year from September until July
 else:
-    START_DATE = "%s-09-01" % CURRENT_YEAR
+    START_DATE = "%s-08-01" % CURRENT_YEAR
     END_DATE = "%s-07-01" % NEXT_YEAR
 
 URL = "https://statsapi.web.nhl.com/api/v1/schedule?startDate=%s&endDate=%s" % (
