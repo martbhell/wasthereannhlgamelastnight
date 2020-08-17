@@ -1,2 +1,4 @@
+# Suggest to robots to not go to any URLs with 20 in them
+#  an attempt to prevent some crawlers from visiting all teams' dates in infinity
 User-agent: *
-Disallow:
+Disallow: /*20*
