@@ -90,6 +90,8 @@ As an admin you can update it manually or configure a <a href="gcloud.md">cronjo
 What about regular season and playoffs?
 ==================================================
 
+It also worked for 2020-21 playoffs :)
+
 Currently the script doesn't differentiate between playoffs and regular seasons.
 
 It just takes the dates from NHL.com's <a href="https://statsapi.web.nhl.com/api/v1/schedule?startDate=2017-10-04&endDate=2017-10-22">API</a>. There are more arguments to this API that I have not found any documentation for. Here's one result from google searches:
