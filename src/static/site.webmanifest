@@ -16,5 +16,5 @@
     "theme_color": "#aaa1a1",
     "background_color": "#aaa1a1",
     "start_url": "https://wtangy.se",
-    "display": "standalone"
+    "display": "fullscreen"
 }
