@@ -61,6 +61,9 @@ MUSTGETAYES = {}
 
 for team in ALLTEAMS:
     MUSTGETAYES[team] = []
+    MUSTGETAYES[team].append(str(THIS_YEAR) + "0327")
+    MUSTGETAYES[team].append(str(THIS_YEAR) + "0328")
+    MUSTGETAYES[team].append(str(THIS_YEAR) + "1014")
     MUSTGETAYES[team].append(str(THIS_YEAR) + "0805")
     MUSTGETAYES[team].append(str(THIS_YEAR) + "0806")
     MUSTGETAYES[team].append(str(THIS_YEAR) + "1014")
@@ -68,6 +71,8 @@ for team in ALLTEAMS:
     MUSTGETAYES[team].append(str(THIS_YEAR) + "1016")
     MUSTGETAYES[team].append(str(THIS_YEAR) + "1017")
     MUSTGETAYES[team].append(str(THIS_YEAR) + "1018")
+    MUSTGETAYES[team].append(str(LAST_YEAR) + "0327")
+    MUSTGETAYES[team].append(str(LAST_YEAR) + "0328")
     MUSTGETAYES[team].append(str(LAST_YEAR) + "1014")
     MUSTGETAYES[team].append(str(LAST_YEAR) + "1015")
     MUSTGETAYES[team].append(str(LAST_YEAR) + "1016")
@@ -88,7 +93,7 @@ for team in MUSTGETAYES:
             sys.exit(67)
         html = response.read()
         allcnt = allcnt + 1
-        if html == "YES\n":
+        if "YES" in str(html):
             yescnt = yescnt + 1
         if allcnt == len(MUSTGETAYES[team]):
 
@@ -115,7 +120,8 @@ for arg in ARGS:
     if ARGS[arg]["test"] == YESNO:
         print("asserting %s/%s - response code: %s" % (HOST, arg, response.code))
         try:
-            assert html == "NO\n" or html == "YES\n"
+            print(str(html))
+            assert "NO" in str(html) or "YES" in str(html)
         except AssertionError:
             print("%s/%s does not contain %s" % (HOST, arg, "YES\n or NO\n"))
             sys.exit(3)
@@ -128,7 +134,7 @@ for arg in ARGS:
         try:
             if ARGS[arg]["type"] == "in" or ARGS[arg]["type"] == "injson":
                 # this any loops over tests in ARGS[arg]['test']). There's also an all()
-                assert any(anarg in html for anarg in ARGS[arg]["test"])
+                assert any(anarg in str(html) for anarg in ARGS[arg]["test"])
         except AssertionError:
             print("%s/%s does not contain %s" % (HOST, arg, ARGS[arg]))
             sys.exit(4)

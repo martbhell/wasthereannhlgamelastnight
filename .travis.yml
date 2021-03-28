@@ -31,7 +31,8 @@ before_script:
 #  - pylint src/!(appengine_config).py *.py -r y
   - travis_retry gcloud -q app deploy src/app.yaml --no-promote -v testing
 script:
-  - echo "disabled to push new schedule" # python e2e_test.py
+#  - echo "disabled to push new schedule" # python e2e_test.py
+  - python e2e_test.py
 deploy:
   - provider: gae
     project: wasthereannhlgamelastnight
