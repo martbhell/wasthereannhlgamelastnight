@@ -3,7 +3,7 @@ wasthereannhlgameyesterday?
 
 **W**as**T**here**A**n**N**hl**G**ame**Y**esterday?
 
-[![Build Status](https://travis-ci.org/martbhell/wasthereannhlgamelastnight.svg?branch=master)](https://travis-ci.org/martbhell/wasthereannhlgamelastnight)
+[![Build Status](https://travis-ci.com/martbhell/wasthereannhlgamelastnight.svg?branch=master)](https://travis-ci.com/martbhell/wasthereannhlgamelastnight)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 [![Twitter](https://camo.githubusercontent.com/7cf10772eb6ccebe92d678c452a971e6e2778653/687474703a2f2f692e696d6775722e636f6d2f7458536f5468462e706e67)](https://twitter.com/wtangy_app)
 
