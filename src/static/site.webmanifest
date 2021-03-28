@@ -1,0 +1,20 @@
+{
+    "name": "wtangy",
+    "short_name": "wtangy",
+    "icons": [
+        {
+            "src": "static/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "static/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#aaa1a1",
+    "background_color": "#aaa1a1",
+    "start_url": "https://wtangy.se",
+    "display": "standalone"
+}
