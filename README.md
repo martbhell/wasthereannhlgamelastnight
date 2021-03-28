@@ -107,9 +107,6 @@ TODO / Known issues
  * Choosing background color - would be sweet if it could do HTML5 so users can choose themselves too like in https://www.w3schools.com/colors/colors_picker.asp
  * games include preseason - if this is a problem let me know!
  * add a calendar selection too near the menu?
- * an app!
-    * Started on this in https://github.com/martbhell/webview/tree/new_icon
-    * Needs a better new icon, better resolution on the phones and I want it to display the URL somewhere
  * proper logging
     * Don't print to stdout - https://cloud.google.com/appengine/docs/standard/python/logs/#Python_writing_application_logs
     * We no longer print to stdout, so some imports could be removed?
