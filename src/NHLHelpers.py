@@ -139,6 +139,7 @@ def get_city_from_team(cityteam):
         "goldenknights": "Vegas Golden Knights",
         "jets": "Winnipeg Jets",
         "capitals": "Washington Capitals",
+        "kraken": "Seattle Kraken",
     }
 
     # Flip because I'm lazy
@@ -179,6 +180,7 @@ def get_team_from_city(city):
         "PHI": "PHILADELPHIA",
         "PIT": "PITTSBURGH",
         "SJS": "SANJOSE",
+        "SEA": "SEATTLE",
         "STL": "STLOUIS",
         "TBL": "TAMPABAY",
         "TOR": "TORONTO",
@@ -231,6 +233,7 @@ def get_team(team):
         "OTT": "Ottawa Senators",
         "PHI": "Philadelphia Flyers",
         "PIT": "Pittsburgh Penguins",
+        "SEA": "Seattle Kraken",
         "SJS": "San Jose Sharks",
         "STL": "St Louis Blues",
         "TBL": "Tampa Bay Lightning",
@@ -271,6 +274,7 @@ def get_team(team):
         "OTT": "SENATORS",
         "PHI": "FLYERS",
         "PIT": "PENGUINS",
+        "SEA": "KRAKEN",
         "SJS": "SHARKS",
         "STL": "BLUES",
         "TBL": "LIGHTNING",
@@ -361,6 +365,7 @@ def get_team_colors(team):
         "Philadelphia Flyers": ["F47940", "000000"],
         "Pittsburgh Penguins": ["000000", "D1BD80"],
         "San Jose Sharks": ["05535D", "F38F20", "000000"],
+        "Seattle Kraken": ["355464", "99D9D9", "001628"],
         "St Louis Blues": ["0546A0", "FFC325", "101F48"],
         "Tampa Bay Lightning": ["013E7D", "000000", "C0C0C0"],
         "Toronto Maple Leafs": ["003777"],
@@ -402,6 +407,7 @@ def get_all_teams():
         "OTT": "Ottawa Senators",
         "PHI": "Philadelphia Flyers",
         "PIT": "Pittsburgh Penguins",
+        "SEA": "Seattle Kraken",
         "SJS": "San Jose Sharks",
         "STL": "St Louis Blues",
         "TBL": "Tampa Bay Lightning",
