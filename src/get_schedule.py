@@ -4,7 +4,7 @@ import os
 import json
 
 import cloudstorage as gcs
-import webapp2  # pylint: disable=import-error
+from flask import Flask, render_template, request
 
 from google.appengine.api import app_identity  # pylint: disable=import-error
 

@@ -5,7 +5,7 @@ import os
 import datetime
 import json  # data is stored in json
 
-import webapp2  # pylint: disable=import-error
+from flask import Flask, render_template, request
 import cloudstorage as gcs  # we fetch the schedule from gcs
 
 import NHLHelpers # a file of our own that has some help functions used by several scripts
@@ -283,4 +283,4 @@ REMOVE_THESE = [
     "wasthereannhlgamelastnight.appspot.com",
 ]
 
-APPLICATION = webapp2.WSGIApplication([("/.*", MainPage)], debug=True)
+APPLICATION = Flask(__name__)
