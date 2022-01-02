@@ -2,7 +2,7 @@
 
 # pylint: disable=too-few-public-methods,line-too-long
 
-import webapp2  # pylint: disable=import-error
+from flask import Flask, render_template, request
 import wasthereannhlgamelastnight
 import NHLHelpers
 

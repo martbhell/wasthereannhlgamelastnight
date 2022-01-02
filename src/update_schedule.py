@@ -12,7 +12,7 @@ import tweepy # for tweeting schedule updates
 from jsondiff import diff  # to show difference between json content
 
 import cloudstorage as gcs
-import webapp2  # pylint: disable=import-error
+from flask import Flask, render_template, request
 
 from google.appengine.api import app_identity  # pylint: disable=import-error
 from google.appengine.api import mail  # pylint: disable=import-error
