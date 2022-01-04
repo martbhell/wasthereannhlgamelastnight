@@ -7,46 +7,46 @@ threadsafe: false
 includes:
 - env_variables.yaml
 
-libraries:
-- name: ssl
-  version: latest
-
 handlers:
 - url: /(robots\.txt|favicon\.ico|sitemap\.xml|preferences\.js|shiny\.umd\.js|shiny\.umd\.js\.map|colorpreferences\.js|android-chrome-192x192\.png|android-chrome-512x512\.png|apple-touch-icon\.png|browserconfig\.xml|favicon-16x16\.png|favicon-32x32\.png|mstile-150x150\.png|safari-pinned-tab\.svg|site\.webmanifest)
   static_files: static/\1
   upload: static/.*
   secure: always
 
-- url: /stylesheets
-  static_dir: stylesheets
-  secure: always
+  #- url: /stylesheets
+  #  static_dir: stylesheets
+  #  secure: always
 
 - url: /google9273e1dd86a36f05.html
   static_files: google_verification/google9273e1dd86a36f05.html
   upload: google_verification/google9273e1dd86a36f05.html
   secure: always
 
-- url: /get_schedule
-  script: get_schedule.GETSCHEDULE
-  secure: always
-
-- url: /version
-  script: get_schedule.VERSION
-  secure: always
-
-- url: /menu_team.css
-  script: menu.MENU_CSS
-  secure: always
-
-- url: /menu
-  script: menu.APPLICATION
-  secure: always
-
-- url: /update_schedule
-  script: update_schedule.APPLICATION
-  login: admin
-  secure: always
-
+  #- url: /get_schedule
+  #  script: get_schedule.GETSCHEDULE
+  #  secure: always
+  #
+  #- url: /version
+  #  script: get_schedule.VERSION
+  #  secure: always
+  #
+  #- url: /menu_team.css
+  #  script: menu.MENU_CSS
+  #  secure: always
+  #
+  #- url: /menu
+  #  script: menu.APPLICATION
+  #  secure: always
+  #
+  #- url: /update_schedule
+  #  script: update_schedule.APPLICATION
+  #  login: admin
+  #  secure: always
+  #
+  #- url: /.*
+  #  script: wasthereannhlgamelastnight.APPLICATION
+  #  secure: always
+  #
 - url: /.*
-  script: wasthereannhlgamelastnight.APPLICATION
+  script: auto
   secure: always

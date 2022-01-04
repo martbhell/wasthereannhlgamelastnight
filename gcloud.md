@@ -25,6 +25,9 @@ sudo apt-get install google-cloud-sdk-app-engine-python
 
 /usr/lib/google-cloud-sdk/bin/dev_appserver.py
 
+# or like this to bind to an IP and port you can reach from outside WSL
+$ dev_appserver.py app.yaml --host ip_from_wsl --port=9999
+
 curl http://localhost:8080
 </pre>
 
