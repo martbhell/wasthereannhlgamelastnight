@@ -18,6 +18,11 @@ def root():
     else:
         return render_template('index.html', yesorno=yesorno, agent=agent)
 
+@app.route('/update_schedule')
+def update_schedule():
+
+    return render_template('update_schedule.html')
+
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True)
 
