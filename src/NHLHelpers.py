@@ -246,7 +246,7 @@ def get_team(team):
 
     # To make DETROITREDWINGS return DET
     teamdict1nospaces = {
-        key: value.replace(" ", "").upper() for key, value in teamdict1.iteritems()
+        key: value.replace(" ", "").upper() for key, value in teamdict1.items()
     }
     teamdict1nospaces = {value: key for key, value in teamdict1nospaces.items()}
 
