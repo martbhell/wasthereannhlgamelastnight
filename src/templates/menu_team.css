@@ -1,0 +1,13 @@
+{% for team in allteams -%}
+.wrapper > a.{{ team }} {
+                background-color: #{{ colordict[team] }};
+                {% if team in whitetext -%}
+                color: white 
+}
+                {% elif team in yellowtext -%}
+                color: yellow 
+}
+                {% else -%}
+}
+                {% endif %}
+{% endfor %}

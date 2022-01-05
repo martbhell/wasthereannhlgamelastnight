@@ -1,0 +1,61 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+            <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
+            <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+            <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+            <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+            <link rel="manifest" href="/site.webmanifest">
+            <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+            <meta name="msapplication-TileColor" content="#603cba">
+            <meta name="robots" content="index,follow">
+            <meta name="application-name" content="Was there an NHL game yesterday?">
+            <meta name="description" content="Indicates with a YES/NO if there was an NHL game on yesterday">
+            <meta name="keywords" content="YES,NO,NHL,icehockey,hockey,games,match,wasthereannhlgamelastnight,wasthereannhlgameyesterday,wtangy,wtangln">
+            <meta name="author" content="Johan Guldmyr">
+
+            <!-- Global site tag (gtag.js) - Google Analytics -->
+            <script async src='https://www.googletagmanager.com/gtag/js?id=UA-1265550-3'></script>
+            <script>
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'UA-1265550-3', { 'anonymize_ip': true });
+            </script>
+
+		<title>Which NHL team do you choose?</title>
+        <link href="/static/menu.css" rel="stylesheet">
+        <link type="text/css" href="/css/menu_team.css" rel="stylesheet">
+        <script src="/preferences.js"></script>
+        <script src="/colorpreferences.js"></script>
+	</head>
+    <body style="text-align: center; padding-top: 5px;">
+    <div id="wrapper" class="wrapper">'
+	{% for team in allteams %}
+    <!--
+    # TODO:
+    # also get longteam?
+    # saveTeam should get %r??
+    -->
+	<a href="/{{ team }}" class="{{ team }}" title="{{ team }}" onClick="saveTeam({{ team }})"><div>{{ team }}</div></a>
+	{% endfor %}
+    <!-- Some Extra Boxes -->
+
+    <a href="/" title="Black Background Color" onClick="saveBgColor('#1e1e1e')"><div>Black BG Color</div></a>
+    <a href="/" title="CLEAR Team&Color Selection" onClick="localStorage.clear()"><div>Clear Team <br />& Color Selection</div></a>
+    <a href="/get_schedule" title="Get Schedule"><div>Get Schedule<br /></div></a>
+    <a href="/version" title="Version"><div>Last Update <br />of Schedule<br /></div></a>
+    <a href="/update_schedule" title="Update Schedule"><div>Update Schedule<br />(admin)<br /></div></a>
+    </div>
+
+    <div class="disclaimer" style="font-size:10px; ">
+        <!-- wtangy.se is not affiliated with any teams or leagues that have their colors displayed. -->
+        <!-- Written by Johan Guldmyr - source is available at https://github.com/martbhell/wasthereannhlgamelastnight -->
+    </div>
+
+    <script src="/colorpreferences.js"></script>
+    <script> loadBgColor(); </script>
+    </body>
+
+</html>
