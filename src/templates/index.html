@@ -43,13 +43,15 @@
       <script> loadTeam(); </script>
       <link type="text/css" href="/static/app.css" rel="stylesheet">
 
-      <title>Was There An NHL Game Yesterday?</title>
+	  ## TITLE
+	  <title>Was There An NHL Game Yesterday? {% if teamlongtext is not none %} {{ teamlongtext }} {% endif %}</title>
+      ##
       <script> loadBgColor(); </script>
 	</head>
     <body style="text-align: center; padding-top: 5px;">
     <div id="content" class="content" style="font-weight: bold; font-size: 220px; font-size: 30vw; font-family: Arial,sans-serif; text-decoration: none; color: #{{ fgcolor }};">
 
-    {{ yesorno }}
+	<div class="shiny" id="shiny"><a title='Was There An NHL Game Yesterday?'>{{ yesorno }}</a></div>
 
     <script type="application/ld+json">
     {
@@ -61,7 +63,7 @@
       "potentialAction": {
         "name": "N/A",
         "result": "{{ yesorno }}",
-        "agent": "{{ team }}" # TODO: teamlongtext
+        "agent": "{{ teamlongtext }}"
       }
     }
     </script>
