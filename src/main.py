@@ -4,9 +4,42 @@ import NHLHelpers
 
 app = Flask(__name__)
 
+#http://exploreflask.com/en/latest/views.html
 @app.route('/')
-def root():
-    
+def view_root():
+    return the_root()
+
+@app.route('/<string:var1>/')
+def view_team(var1):
+    return the_root(var1, var2=False)
+
+@app.route('/<string:var1>/<string:var2>/')
+def view_teamdate(var1, var2):
+    return the_root(var1, var2)
+
+# Use the_root for both /DETROIT and /DETROIT/20220122
+def the_root(var1=False, var2=False):
+
+    team = False
+    date = False
+
+    # check if var1 or var2 is a date
+    var1_date = NHLHelpers.validatedate(var1)
+    var2_date = NHLHelpers.validatedate(var2)
+    if var1_date:
+        date = var1_date
+    if var2_date and not var1_date:
+        date = var2_date
+    # check if var1 or var2 is a team
+    var1_team = NHLHelpers.get_team(var1)
+    var2_team = NHLHelpers.get_team(var2)
+    if var1_team:
+        team = var1_team
+    if var2_team and not var1_team:
+        team = var2_team
+
+    ########
+
     agent=request.headers.get('User-Agent')
     try:
         short_agent=agent.split("/")[0]
@@ -16,8 +49,7 @@ def root():
 
     if short_agent in CLIAGENTS:
         return render_template('cli.html', yesorno=yesorno, agent=agent)
-    else:
-        return render_template('index.html', yesorno=yesorno, agent=agent)
+    return render_template('index.html', yesorno=yesorno, agent=agent, team=team, date=date)
 
 @app.route('/update_schedule')
 def update_schedule():
