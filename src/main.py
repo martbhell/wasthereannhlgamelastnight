@@ -1,5 +1,5 @@
 from flask import request
-from flask import Flask, render_template
+from flask import Flask, render_template, make_response
 import NHLHelpers
 
 app = Flask(__name__)
@@ -74,8 +74,10 @@ def menu_css():
     # https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout/Auto-placement_in_CSS_Grid_Layout
     # TODO: Why isn't it css if we grab file directly? Looks OK in dev console..
     # TODO: Put meta/disclaimer/google analytics in some variable.
-    return render_template('menu_team.css', allteams=allteams, colordict=colordict, whitetext=whitetext, yellowtext=yellowtext, mimetype="text/css")
-
+   
+    resp = make_response(render_template('menu_team.css', allteams=allteams, colordict=colordict, whitetext=whitetext, yellowtext=yellowtext, mimetype="text/css"))
+    resp.headers['Content-Type'] = 'text/css'
+    return resp 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True)
 
