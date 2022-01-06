@@ -1,3 +1,4 @@
+import datetime
 from flask import request
 from flask import Flask, render_template, make_response
 import NHLHelpers
@@ -20,23 +21,40 @@ def view_teamdate(var1, var2):
 # Use the_root for both /DETROIT and /DETROIT/20220122
 def the_root(var1=False, var2=False):
 
-    team = False
-    date = False
+    # Set some tomorrow things for when a date or team has not been specified
+    # tomorrow set to today if none is set
+    # because today is like tomorrow if you know what I mean (wink wink)
+    tomorrow = datetime.datetime.now()
+    tomorrow1 = tomorrow.strftime("%Y%m%d")
+    tomorrowurl = "/%s" % (tomorrow1)
 
-    # check if var1 or var2 is a date
-    var1_date = NHLHelpers.validatedate(var1)
-    var2_date = NHLHelpers.validatedate(var2)
-    if var1_date:
-        date = var1_date
-    if var2_date and not var1_date:
-        date = var2_date
-    # check if var1 or var2 is a team
-    var1_team = NHLHelpers.get_team(var1)
-    var2_team = NHLHelpers.get_team(var2)
-    if var1_team:
-        team = var1_team
-    if var2_team and not var1_team:
-        team = var2_team
+    ########
+
+    team1 = None
+    date1 = None
+
+    arguments = [ var1, var2 ]
+    for arg in arguments:
+        if NHLHelpers.get_team(arg):
+            team1 = arg
+            # If we have a team set tomorrowurl like /teamname/date
+            tomorrowurl = "/%s/%s" % (team1, tomorrow1)
+        elif NHLHelpers.validatedate(arg):
+            date1 = NHLHelpers.validatedate(arg)
+            # If an argument is a date we set tomorrow to one day after that
+            tomorrow = datetime.datetime.strptime(
+                date1, "%Y-%m-%d"
+            ) + datetime.timedelta(days=1)
+            tomorrow1 = tomorrow.strftime("%Y%m%d")
+    # If we have a good team and date we have both in tomorrowurl
+    if team1 and date1:
+        tomorrowurl = "/%s/%s" % (team1, tomorrow1)
+
+    ########
+
+    fgcolor = give_me_a_color(team1)
+
+    ########
 
     ########
 
@@ -49,7 +67,7 @@ def the_root(var1=False, var2=False):
 
     if short_agent in CLIAGENTS:
         return render_template('cli.html', yesorno=yesorno, agent=agent)
-    return render_template('index.html', yesorno=yesorno, agent=agent, team=team, date=date)
+    return render_template('index.html', yesorno=yesorno, agent=agent, team=team1, date=date1, fgcolor=fgcolor, tomorrow=tomorrow, tomorrowurl=tomorrowurl)
 
 @app.route('/update_schedule')
 def update_schedule():
@@ -110,6 +128,24 @@ def menu_css():
     resp = make_response(render_template('menu_team.css', allteams=allteams, colordict=colordict, whitetext=whitetext, yellowtext=yellowtext, mimetype="text/css"))
     resp.headers['Content-Type'] = 'text/css'
     return resp 
+
+
+def give_me_a_color(team):
+    """ Select a color, take second color if the first is black. """
+
+    color = NHLHelpers.get_team_colors(team)
+    fgcolor = color[0]
+    try:
+        fgcolor2 = color[1]
+    except IndexError:
+        fgcolor2 = color[0]
+    if fgcolor == "000000":
+        fgcolor = fgcolor2
+
+    return fgcolor
+
+
+
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True)
 
