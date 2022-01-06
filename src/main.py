@@ -50,6 +50,10 @@ def the_root(var1=False, var2=False):
     if team1 and date1:
         tomorrowurl = "/%s/%s" % (team1, tomorrow1)
 
+    teamlongtext = None
+    if team1:
+        teamlongtext = NHLHelpers.get_team(team1)
+
     ########
 
     fgcolor = give_me_a_color(team1)
@@ -67,7 +71,7 @@ def the_root(var1=False, var2=False):
 
     if short_agent in CLIAGENTS:
         return render_template('cli.html', yesorno=yesorno, agent=agent)
-    return render_template('index.html', yesorno=yesorno, agent=agent, team=team1, date=date1, fgcolor=fgcolor, tomorrow=tomorrow, tomorrowurl=tomorrowurl)
+    return render_template('index.html', yesorno=yesorno, agent=agent, team=team1, teamlongtext=teamlongtext, date=date1, fgcolor=fgcolor, tomorrow=tomorrow, tomorrowurl=tomorrowurl)
 
 @app.route('/update_schedule')
 def update_schedule():
