@@ -15,8 +15,6 @@
       <meta name="keywords" content="YES,NO,NHL,icehockey,hockey,games,match,wasthereannhlgamelastnight,was    thereannhlgameyesterday,wtangy,wtangln">
       <meta name="author" content="Johan Guldmyr">
 	  <meta name="theme-color" content="#{{ fgcolor }}">
-	  <script src="/shiny.umd.js"></script>
-      <link type="text/css" href="/static/shiny.css" rel="stylesheet">
       <script src="/preferences.js"></script>
       <script src="/colorpreferences.js"></script>
 
@@ -29,9 +27,6 @@
         gtag('config', 'UA-1265550-3', { 'anonymize_ip': true });
       </script>
 
-	  # TODO: teamlongtext to make nicer title
-	  # TODO: tomorrowurl for something
-
       <script>
             var argteam, argdate, argfgcolor, tomorrow;
             var argteam = {{ team }};
@@ -43,16 +38,16 @@
       <script> loadTeam(); </script>
       <link type="text/css" href="/static/app.css" rel="stylesheet">
 
-	  ## TITLE
 	  <title>Was There An NHL Game Yesterday? {% if teamlongtext is not none %} {{ teamlongtext }} {% endif %}</title>
-      ##
       <script> loadBgColor(); </script>
 	</head>
     <body style="text-align: center; padding-top: 5px;">
     <div id="content" class="content" style="font-weight: bold; font-size: 220px; font-size: 30vw; font-family: Arial,sans-serif; text-decoration: none; color: #{{ fgcolor }};">
 
-	<div class="shiny" id="shiny"><a title='Was There An NHL Game Yesterday?'>{{ yesorno }}</a></div>
+	<!-- YES/NO -->
+	<a title='Was There An NHL Game Yesterday?'>{{ yesorno }}</a>
 
+	<!-- Structured Data -->
     <script type="application/ld+json">
     {
       "@context": "http://schema.org/",
