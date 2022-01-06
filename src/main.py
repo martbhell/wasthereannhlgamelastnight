@@ -82,8 +82,9 @@ def update_schedule():
 def menu():
 
     allteams = sorted(list(NHLHelpers.get_all_teams().keys()))
+    reallyallteams = NHLHelpers.get_all_teams()
 
-    return render_template('menu.html', allteams=allteams)
+    return render_template('menu.html', allteams=allteams, reallyallteams=reallyallteams)
 
 @app.route('/css/menu_team.css')
 def menu_css():
