@@ -133,3 +133,4 @@ Forked from https://github.com/amanjeev/isitfridaythe13th because it had the goo
 wasthereannhlgamelastnight(..) has been re-written a few times - it's no longer even close to the isitfridaythe13th, for example:
  - it now uses webapp2 for example instead of python print to stdout.
  - it used to have a manual NHL_schedule.py with a set and a list, now it reads and writes to gcloud object store!
+ - used to be python2, now it's python3 and Flask!
