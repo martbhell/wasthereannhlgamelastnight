@@ -1,7 +1,12 @@
 import datetime
+import os
 from flask import request
-from flask import Flask, render_template, make_response
+from flask import Flask, render_template, make_response, jsonify
 import NHLHelpers
+from google.cloud import storage
+from google.auth.exceptions import DefaultCredentialsError
+
+# https://cloud.google.com/datastore/docs/reference/libraries#client-libraries-usage-python
 
 app = Flask(__name__)
 
@@ -133,6 +138,36 @@ def menu_css():
     resp = make_response(render_template('menu_team.css', allteams=allteams, colordict=colordict, whitetext=whitetext, yellowtext=yellowtext, mimetype="text/css"))
     resp.headers['Content-Type'] = 'text/css'
     return resp 
+
+@app.route('/version')
+def version():
+    """ Fetch a file and render it """
+
+    try:
+        client = storage.Client()
+        storage_client = storage.Client()
+    except DefaultCredentialsError:
+        print("Could not setup Storage Client, How to Do Logging?")
+
+    bucket_name = os.environ.get(
+        "GOOGLE_CLOUD_PROJECT", "no_GOOGLE_CLOUD_PROJECT_found"
+    )
+
+    bucket = "/" + bucket_name
+    version = os.environ.get(
+            "GAE_VERSION", "no_GAE_VERSION_env_found"
+            )
+    if version == "None":
+        filename = bucket + "/updated_schedule"
+    else:
+        filename = bucket + "/updated_schedule_" + version
+
+    jsondata = {
+      "version": version,
+      "filename": filename
+    }
+
+    return jsonify(jsondata)
 
 
 def give_me_a_color(team):
