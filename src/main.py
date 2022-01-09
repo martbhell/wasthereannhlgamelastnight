@@ -143,16 +143,12 @@ def menu_css():
 def version():
     """ Fetch a file and render it """
 
-    try:
-        client = storage.Client()
-        storage_client = storage.Client()
-    except DefaultCredentialsError:
-        print("Could not setup Storage Client, How to Do Logging?")
-
     bucket_name = os.environ.get(
         "GOOGLE_CLOUD_PROJECT", "no_GOOGLE_CLOUD_PROJECT_found"
     )
 
+    # default bucket is in this format: project-id.appspot.com
+    # https://cloud.google.com/appengine/docs/standard/python3/using-cloud-storage
     bucket = "/" + bucket_name
     version = os.environ.get(
             "GAE_VERSION", "no_GAE_VERSION_env_found"
@@ -162,9 +158,28 @@ def version():
     else:
         filename = bucket + "/updated_schedule_" + version
 
+    try:
+        client = storage.Client()
+        storage_client = storage.Client()
+    except DefaultCredentialsError:
+        print("Could not setup Storage Client, How to Do Logging?")
+        return jsonify({
+            "version": version,
+            "filename": filename,
+            "status": "unhealthy"
+            }
+            )
+
+    # Let's read a file https://cloud.google.com/storage/docs/downloading-objects#code-samples
+    mybucket = storage_client.bucket(bucket_name)
+    blob = mybucket.get_blob(filename)
+    downloaded_blob = blob.download_as_text(encoding="utf-8")
+
     jsondata = {
       "version": version,
-      "filename": filename
+      "filename": filename,
+      "status": "healthy",
+      "blob": downloaded_blob
     }
 
     return jsonify(jsondata)
