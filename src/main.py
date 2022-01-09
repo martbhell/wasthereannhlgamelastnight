@@ -172,7 +172,7 @@ def version():
 
     # Let's read a file https://cloud.google.com/storage/docs/downloading-objects#code-samples
     mybucket = storage_client.bucket(bucket_name)
-    blob = mybucket.get_blob(filename)
+    blob = mybucket.blob(filename)
     downloaded_blob = blob.download_as_text(encoding="utf-8")
 
     jsondata = {
