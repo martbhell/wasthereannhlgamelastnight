@@ -305,6 +305,7 @@ def create_file(filename, content):
 
     mybucket = storage_client.bucket(bucket_name)
     blob = mybucket.blob(filename)
+    logging.info("Trying to create filename %s in bucket_name %s, content size is %s" % (filename, bucket_name, get_size(content)))
     blob.upload_from_string(content, content_type='application/json')
     # TODO How to retry / add backoff
     # TODO How to add acl ?     https://cloud.google.com/storage/docs/access-control/create-manage-lists#json-api says default is project-private..
@@ -327,6 +328,7 @@ def stat_file(filename):
     )
 
     mybucket = storage_client.bucket(bucket_name)
+    logging.info("Trying to stat filename %s in bucket_name %s" % (filename, bucket_name))
     return mybucket.get_blob(filename)
 
 def read_file(filename):
