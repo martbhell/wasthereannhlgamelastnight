@@ -10,12 +10,17 @@ from flask import request
 from flask import Flask, render_template, make_response, jsonify
 import NHLHelpers
 from google.cloud import storage
+import google.cloud.logging
 from google.auth.exceptions import DefaultCredentialsError
 from google.api_core.exceptions import NotFound
 
 # https://cloud.google.com/datastore/docs/reference/libraries#client-libraries-usage-python
 
 app = Flask(__name__)
+
+# Setup logging https://cloud.google.com/logging/docs/setup/python
+CLIENT = google.cloud.logging.Client()
+CLIENT.setup_logging()
 
 #http://exploreflask.com/en/latest/views.html
 @app.route('/')
