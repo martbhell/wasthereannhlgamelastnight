@@ -10,6 +10,7 @@ from flask import Flask, render_template, make_response, jsonify
 import NHLHelpers
 from google.cloud import storage
 from google.auth.exceptions import DefaultCredentialsError
+from google.api_core.exceptions import NotFound
 
 # https://cloud.google.com/datastore/docs/reference/libraries#client-libraries-usage-python
 
@@ -86,6 +87,7 @@ def the_root(var1=False, var2=False):
 @app.route('/update_schedule')
 def update_schedule():
 
+    ### TODO: Dedup this
     bucket_name = os.environ.get(
         "GOOGLE_CLOUD_PROJECT", "no_GOOGLE_CLOUD_PROJECT_found"
     )
@@ -97,29 +99,15 @@ def update_schedule():
             "GAE_VERSION", "no_GAE_VERSION_env_found"
             )
     if version == "None":
-        filename = bucket + "/updated_schedule"
+        filename = bucket + "/schedule"
+        updated_filename = bucket + "/updated_schedule"
     else:
-        filename = bucket + "/updated_schedule_" + version
+        filename = bucket + "/schedule_" + version
+        updated_filename = bucket + "/updated_schedule_" + version
 
-    try:
-        client = storage.Client()
-        storage_client = storage.Client()
-    except DefaultCredentialsError:
-        print("Could not setup Storage Client, How to Do Logging?")
-        return jsonify({
-            "version": version,
-            "filename": filename,
-            "status": "unhealthy"
-            }
-            )
+    logging.info("Using filename %s and updated_filename %s" % (filename, updated_filename))
 
-    # Let's read a file https://cloud.google.com/storage/docs/downloading-objects#code-samples
-    mybucket = storage_client.bucket(bucket_name)
-    blob = mybucket.blob(filename)
-
-    jsondata = {
-      "version": version
-    }
+    ####
 
     [totalgames, jsondata] = fetch_upstream_schedule(URL)
 
@@ -130,7 +118,7 @@ def update_schedule():
         content = make_data_json(teamdates)
         try:
             old_content = read_file(filename)
-        except gcs.NotFoundError:
+        except NotFound:
             create_file(filename, content)
             old_content = read_file(filename)
         if old_content == content:
@@ -139,7 +127,7 @@ def update_schedule():
                 _msg = "Not updating schedule - it is current."
                 #self.response.write(_msg + "\n")
                 logging.info(_msg)
-            except gcs.NotFoundError:
+            except NotFound:
                 create_file(updated_filename, FOR_UPDATED)
                 last_updated = read_file(updated_filename)
             #self.response.write("Last updated: %s\n" % last_updated)
@@ -242,29 +230,7 @@ def get_version():
     else:
         filename = bucket + "/updated_schedule_" + version
 
-    try:
-        client = storage.Client()
-        storage_client = storage.Client()
-    except DefaultCredentialsError:
-        print("Could not setup Storage Client, How to Do Logging?")
-        return jsonify({
-            "version": version,
-            "filename": filename,
-            "status": "unhealthy"
-            }
-            )
-
-    # Let's read a file https://cloud.google.com/storage/docs/downloading-objects#code-samples
-    mybucket = storage_client.bucket(bucket_name)
-    blob = mybucket.blob(filename)
-    downloaded_blob = blob.download_as_text(encoding="utf-8")
-
-    jsondata = {
-      "version": version,
-      "filename": filename,
-      "status": "healthy",
-      "blob": downloaded_blob
-    }
+    jsondata = read_file(filename)
 
     return jsonify(jsondata)
 
@@ -290,15 +256,15 @@ def create_file(filename, content):
 
     # The retry_params specified in the open call will override the default
     # retry params for this particular file handle.
-    write_retry_params = gcs.RetryParams(backoff_factor=1.1)
-    with gcs.open(
-        filename,
-        "w",
-        content_type="application/json",
-        options={"x-goog-acl": "project-private", "x-goog-meta-type": "schedule"},
-        retry_params=write_retry_params,
-    ) as cloudstorage_file:
-        cloudstorage_file.write(content)
+    #write_retry_params = gcs.RetryParams(backoff_factor=1.1)
+    #with gcs.open(
+    #    filename,
+    #    "w",
+    #    content_type="application/json",
+    #    options={"x-goog-acl": "project-private", "x-goog-meta-type": "schedule"},
+    #    retry_params=write_retry_params,
+    #) as cloudstorage_file:
+    #    cloudstorage_file.write(content)
 
     try:
         client = storage.Client()
@@ -313,9 +279,9 @@ def create_file(filename, content):
 
     mybucket = storage_client.bucket(bucket_name)
     blob = mybucket.blob(filename)
-    blob.upload_from_string(content, content_type='application/json', predefined_acl='None')
+    blob.upload_from_string(content, content_type='application/json')
     # TODO How to retry / add backoff
-    # TODO How to add acl ?
+    # TODO How to add acl ?     https://cloud.google.com/storage/docs/access-control/create-manage-lists#json-api says default is project-private..
 
 
 def stat_file(filename):
@@ -450,9 +416,8 @@ def fetch_upstream_schedule(url):
     """ geturl a file and do some health checking
     """
 
-    # TODO: Use with
-    page = urlopen(url)
-    jsondata = json.loads(page.read())
+    with urlopen(url) as page:
+        jsondata = json.loads(page.read())
     totalgames = jsondata["totalGames"]
 
     if totalgames == 0:
