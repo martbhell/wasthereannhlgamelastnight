@@ -148,6 +148,32 @@ def update_schedule():
 
     return render_template('update_schedule.html', version=version, filename=filename, total_games=total_games, last_updated=last_updated, changes=changes)
 
+
+@app.route('/get_schedule')
+def get_schedule():
+
+    ### TODO: Dedup this
+    bucket_name = os.environ.get(
+        "GOOGLE_CLOUD_PROJECT", "no_GOOGLE_CLOUD_PROJECT_found"
+    )
+
+    # default bucket is in this format: project-id.appspot.com
+    # https://cloud.google.com/appengine/docs/standard/python3/using-cloud-storage
+    bucket = "/" + bucket_name
+    version = os.environ.get(
+            "GAE_VERSION", "no_GAE_VERSION_env_found"
+            )
+    if version == "None":
+        filename = bucket + "/schedule"
+    else:
+        filename = bucket + "/schedule_" + version
+
+    logging.info("Using filename %s and updated_filename %s" % (filename, updated_filename))
+
+    content = read_file(filename)
+    parsed = json.loads(content)
+    return jsonify(parsed)
+
 @app.route('/menu')
 def menu():
 
@@ -448,8 +474,9 @@ def parse_schedule(jsondata):
             #  wasthereannhlgamelastnight.py has MTL without the acute accent
             # without the encode('utf-8') the replace of a unicode gives a unicode error
             # Silmarillionly, mainparser has St Louis Blues, not St. Louis Blues as in the NHL schema
-            twoteams.append(teams["away"]["team"]["name"].encode('utf-8').replace('Montr\xc3\xa9al', 'Montreal').replace('St. Louis Blues', 'St Louis Blues'))
-            twoteams.append(teams["home"]["team"]["name"].encode('utf-8').replace('Montr\xc3\xa9al', 'Montreal').replace('St. Louis Blues', 'St Louis Blues'))
+            # TODO: Fix TypeError
+            #twoteams.append(teams["away"]["team"]["name"].encode('utf-8').replace('Montr\xc3\xa9al', 'Montreal').replace('St. Louis Blues', 'St Louis Blues'))
+            #twoteams.append(teams["home"]["team"]["name"].encode('utf-8').replace('Montr\xc3\xa9al', 'Montreal').replace('St. Louis Blues', 'St Louis Blues'))
             twoteams_sorted = sorted(twoteams)
             dict_of_keys_and_matchups[date].append(twoteams_sorted)
             dict_of_keys_and_matchups_s[date] = sorted(
