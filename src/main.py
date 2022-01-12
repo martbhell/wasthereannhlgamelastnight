@@ -1,5 +1,10 @@
 import datetime
 import os
+import json
+import logging
+import tweepy
+from jsondiff import diff
+from urllib.request import urlopen
 from flask import request
 from flask import Flask, render_template, make_response, jsonify
 import NHLHelpers
@@ -81,7 +86,79 @@ def the_root(var1=False, var2=False):
 @app.route('/update_schedule')
 def update_schedule():
 
-    return render_template('update_schedule.html')
+    bucket_name = os.environ.get(
+        "GOOGLE_CLOUD_PROJECT", "no_GOOGLE_CLOUD_PROJECT_found"
+    )
+
+    # default bucket is in this format: project-id.appspot.com
+    # https://cloud.google.com/appengine/docs/standard/python3/using-cloud-storage
+    bucket = "/" + bucket_name
+    version = os.environ.get(
+            "GAE_VERSION", "no_GAE_VERSION_env_found"
+            )
+    if version == "None":
+        filename = bucket + "/updated_schedule"
+    else:
+        filename = bucket + "/updated_schedule_" + version
+
+    try:
+        client = storage.Client()
+        storage_client = storage.Client()
+    except DefaultCredentialsError:
+        print("Could not setup Storage Client, How to Do Logging?")
+        return jsonify({
+            "version": version,
+            "filename": filename,
+            "status": "unhealthy"
+            }
+            )
+
+    # Let's read a file https://cloud.google.com/storage/docs/downloading-objects#code-samples
+    mybucket = storage_client.bucket(bucket_name)
+    blob = mybucket.blob(filename)
+
+    jsondata = {
+      "version": version
+    }
+
+    [totalgames, jsondata] = fetch_upstream_schedule(URL)
+
+    if totalgames == 0:
+        pass
+    else:
+        [teamdates] = parse_schedule(jsondata)
+        content = make_data_json(teamdates)
+        try:
+            old_content = read_file(filename)
+        except gcs.NotFoundError:
+            create_file(filename, content)
+            old_content = read_file(filename)
+        if old_content == content:
+            try:
+                last_updated = read_file(updated_filename)
+                _msg = "Not updating schedule - it is current."
+                #self.response.write(_msg + "\n")
+                logging.info(_msg)
+            except gcs.NotFoundError:
+                create_file(updated_filename, FOR_UPDATED)
+                last_updated = read_file(updated_filename)
+            #self.response.write("Last updated: %s\n" % last_updated)
+        else:
+            changes = diff(json.loads(old_content), json.loads(content))
+            logging.info("Changes: %s", changes)
+            create_file(filename, content)
+            create_file(updated_filename, FOR_UPDATED)
+            # Only send e-mails outside playoffs
+            #  (potential spoilers - games are removed from the schedule)
+            if CURRENT_MONTH < 4 or CURRENT_MONTH > 6:
+                send_an_email(
+                    diff(json.loads(old_content), json.loads(content)), True, False # False - without twitter
+                )
+            return render_template('update_schedule.html', version=version, filename=filename, total_games=total_games, last_updated=last_updated, changes=changes), 202
+
+    #return jsonify(jsondata)
+
+    return render_template('update_schedule.html', version=version, filename=filename, total_games=total_games, last_updated=last_updated, changes=changes)
 
 @app.route('/menu')
 def menu():
@@ -143,6 +220,13 @@ def menu_css():
 def version():
     """ Fetch a file and render it """
 
+    return get_version()
+
+# We set_version in update_schedule.py
+
+def get_version():
+    """ Fetch a file and return JSON """
+
     bucket_name = os.environ.get(
         "GOOGLE_CLOUD_PROJECT", "no_GOOGLE_CLOUD_PROJECT_found"
     )
@@ -184,7 +268,6 @@ def version():
 
     return jsonify(jsondata)
 
-
 def give_me_a_color(team):
     """ Select a color, take second color if the first is black. """
 
@@ -199,9 +282,252 @@ def give_me_a_color(team):
 
     return fgcolor
 
+def create_file(filename, content):
+    """Create a file."""
+
+# TODO: Change to log?
+#    self.response.write("Creating file {}\n".format(filename))
+
+    # The retry_params specified in the open call will override the default
+    # retry params for this particular file handle.
+    write_retry_params = gcs.RetryParams(backoff_factor=1.1)
+    with gcs.open(
+        filename,
+        "w",
+        content_type="application/json",
+        options={"x-goog-acl": "project-private", "x-goog-meta-type": "schedule"},
+        retry_params=write_retry_params,
+    ) as cloudstorage_file:
+        cloudstorage_file.write(content)
+
+    try:
+        client = storage.Client()
+        storage_client = storage.Client()
+    except DefaultCredentialsError:
+        print("Could not setup Storage Client, How to Do Logging?")
+        return False
+
+    bucket_name = os.environ.get(
+        "GOOGLE_CLOUD_PROJECT", "no_GOOGLE_CLOUD_PROJECT_found"
+    )
+
+    mybucket = storage_client.bucket(bucket_name)
+    blob = mybucket.blob(filename)
+    blob.upload_from_string(content, content_type='application/json', predefined_acl='None')
+    # TODO How to retry / add backoff
+    # TODO How to add acl ?
+
+
+def stat_file(filename):
+    """ stat a file
+    This returns a CLASS, fetch properties in the results with var.id, not var['id'] ???
+    https://cloud.google.com/storage/docs/viewing-editing-metadata#code-samples
+    """
+    try:
+        client = storage.Client()
+        storage_client = storage.Client()
+    except DefaultCredentialsError:
+        print("Could not setup Storage Client, How to Do Logging?")
+        return False
+
+    bucket_name = os.environ.get(
+        "GOOGLE_CLOUD_PROJECT", "no_GOOGLE_CLOUD_PROJECT_found"
+    )
+
+    mybucket = storage_client.bucket(bucket_name)
+    return mybucket.get_blob(filename)
+
+def read_file(filename):
+    """ read and return a file! """
+
+    try:
+        client = storage.Client()
+        storage_client = storage.Client()
+    except DefaultCredentialsError:
+        print("Could not setup Storage Client, How to Do Logging?")
+        return False
+
+    bucket_name = os.environ.get(
+        "GOOGLE_CLOUD_PROJECT", "no_GOOGLE_CLOUD_PROJECT_found"
+    )
+
+    mybucket = storage_client.bucket(bucket_name)
+    blob = mybucket.blob(filename)
+    downloaded_blob = blob.download_as_text(encoding="utf-8")
+
+    return downloaded_blob
+
+def get_size(obj, seen=None):
+    """Recursively finds size of objects
+    https://goshippo.com/blog/measure-real-size-any-python-object/
+
+    >>> get_size({ "hello": [2,3,[1,2,[2,3]]] })
+    674
+    >>> get_size({ "hello": [2,3,[1,2,[2,3]]], "hello2": [2,3,4,5] })
+    869
+    >>> get_size({})
+    280
+    """
+    size = sys.getsizeof(obj)
+    if seen is None:
+        seen = set()
+    obj_id = id(obj)
+    if obj_id in seen:
+        return 0
+    # Important mark as seen *before* entering recursion to gracefully handle
+    # self-referential objects
+    seen.add(obj_id)
+    if isinstance(obj, dict):
+        size += sum([get_size(v, seen) for v in obj.values()])
+        size += sum([get_size(k, seen) for k in obj.keys()])
+    elif hasattr(obj, '__dict__'):
+        size += get_size(obj.__dict__, seen)
+    elif hasattr(obj, '__iter__') and not isinstance(obj, (str, bytes, bytearray)):
+        size += sum([get_size(i, seen) for i in obj])
+    return size
+
+def send_an_email(message, admin=False, twitter=False):
+    """ send an e-mail, optionally to the admin """
+    # https://cloud.google.com/appengine/docs/standard/python/refdocs/google.appengine.api.mail
+    # TODO: Mail is not available in python3 -- only twitter!
+
+    # https://cloud.google.com/appengine/docs/standard/python3/runtime#environment_variables
+    sender_address = "{}@appspot.gserviceaccount.com".format(
+       os.environ['GAE_APPLICATION']
+    )
+
+    to_email = os.environ["USER_EMAIL"]
+    to_name = to_email
+
+    real_message = message
+    msgsize = get_size(real_message)
+    # size of 2019-2020 schedule was 530016, unclear how large the jsondiff was 2018->2019
+    #  50000 is less than 65490 which was in the log of the update
+    #  if we change all "Rangers" to "Freeezers" the changes to restore 2019-2020 was 106288
+    if msgsize > 150000:
+        real_message = "Msgsize is %s, see /get_schedule - Hello new season?" % msgsize
+        logging.info(real_message)
+
+# TODO: No e-mail In Python 3 GAE ?
+# https://cloud.google.com/appengine/docs/standard/python/migrate-to-python3#mail
+###
+#    if admin or to_email is None or to_email == "":
+#        mail.send_mail_to_admins(
+#            sender=sender_address,
+#            subject="NHL schedule changed A",
+#            body="msgsize: %s \n changes: %s" % (msgsize, real_message),
+#        )
+#    else:
+#        mail.send_mail(
+#            sender=sender_address,
+#            to="%s <%s>" % (to_name, to_email),
+#            subject="NHL schedule changed",
+#            body="msgsize: %s \n changes: %s" % (msgsize, real_message),
+#        )
+    if twitter:
+        api_key = os.environ['API_KEY']
+        api_secret_key = os.environ['API_SECRET_KEY']
+        access_token = os.environ['ACCESS_TOKEN']
+        access_token_secret = os.environ['ACCESS_TOKEN_SECRET']
+
+        # Authenticate to Twitter
+        auth = tweepy.OAuthHandler(api_key, api_secret_key)
+        auth.set_access_token(access_token, access_token_secret)
+
+        # Create API object
+        api = tweepy.API(auth)
+
+        # Create a tweet
+        # msgsize: 1577
+        #  changes: {u'teamdates': {u'2019-09-29': {delete: [2]}}}
+        #if msgsize > 1600:
+        #    api.update_status(real_message)
+        #else:
+        api.update_status("#NHL schedule updated on https://wtangy.se - did your team play last night? Try out https://wtangy.se/DETROIT")
+        logging.info("Tweeted and message size was %s", msgsize)
+
+def fetch_upstream_schedule(url):
+    """ geturl a file and do some health checking
+    """
+
+    # TODO: Use with
+    page = urlopen(url)
+    jsondata = json.loads(page.read())
+    totalgames = jsondata["totalGames"]
+
+    if totalgames == 0:
+        #self.response.write("ERROR parsing data, 0 games found.\n")
+        #self.response.write("URL: %s" % url)
+        #self.response.set_status(500)
+        return (totalgames, False)
+    return (totalgames, jsondata)
+
+
+def parse_schedule(jsondata):
+    """ parse the json data into a dict the app is used to.
+        as a bonus we also sort things
+    """
+ 
+    dict_of_keys_and_matchups = {}
+    dict_of_keys_and_matchups_s = {}
+ 
+    dates = jsondata["dates"]
+    for key in dates:
+        date = key["date"]
+        dict_of_keys_and_matchups[date] = []
+        games = key["games"]
+        for game in games:
+            twoteams = []
+            teams = game["teams"]
+            # sorry, you can't query montre(withaccent)alcanadiens, all the hard coded bits in the main parser
+            #  wasthereannhlgamelastnight.py has MTL without the acute accent
+            # without the encode('utf-8') the replace of a unicode gives a unicode error
+            # Silmarillionly, mainparser has St Louis Blues, not St. Louis Blues as in the NHL schema
+            twoteams.append(teams["away"]["team"]["name"].encode('utf-8').replace('Montr\xc3\xa9al', 'Montreal').replace('St. Louis Blues', 'St Louis Blues'))
+            twoteams.append(teams["home"]["team"]["name"].encode('utf-8').replace('Montr\xc3\xa9al', 'Montreal').replace('St. Louis Blues', 'St Louis Blues'))
+            twoteams_sorted = sorted(twoteams)
+            dict_of_keys_and_matchups[date].append(twoteams_sorted)
+            dict_of_keys_and_matchups_s[date] = sorted(
+                dict_of_keys_and_matchups[date]
+            )
+ 
+    return [dict_of_keys_and_matchups_s]
+
+def make_data_json(teamdates):
+    """ turn parsed data into json, end result in JSON should look like:
+    {
+     "teamdates": { "2017-12-30": [["Boston Bruins", "Ottawa Senators"]], }
+    }
+    """
+    data = {}
+    data["teamdates"] = teamdates
+    json_data = json.dumps(data, sort_keys=True)
+
+    return json_data
 
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True)
 
+# Variables
+
 CLIAGENTS = ["curl", "Wget", "Python-urllib"]
+
+NOW = datetime.datetime.now()
+FOR_UPDATED = str(NOW.isoformat())
+[CURRENT_MONTH, CURRENT_YEAR] = NOW.month, NOW.year
+LAST_YEAR = CURRENT_YEAR - 1
+NEXT_YEAR = CURRENT_YEAR + 1
+# if now is before August we get last year from September until July
+if CURRENT_MONTH < 8:
+    START_DATE = "%s-08-01" % LAST_YEAR
+    END_DATE = "%s-07-01" % CURRENT_YEAR
+# if now is in or after August we get this year from September until July
+else:
+    START_DATE = "%s-08-01" % CURRENT_YEAR
+    END_DATE = "%s-07-01" % NEXT_YEAR
+
+URL = "https://statsapi.web.nhl.com/api/v1/schedule?startDate=%s&endDate=%s" % (
+    START_DATE,
+    END_DATE,
+)
