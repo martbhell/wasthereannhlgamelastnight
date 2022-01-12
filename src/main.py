@@ -99,11 +99,11 @@ def update_schedule():
             "GAE_VERSION", "no_GAE_VERSION_env_found"
             )
     if version == "None":
-        filename = bucket + "/schedule"
-        updated_filename = bucket + "/updated_schedule"
+        filename = bucket + "/py3_schedule"
+        updated_filename = bucket + "/py3_updated_schedule"
     else:
-        filename = bucket + "/schedule_" + version
-        updated_filename = bucket + "/updated_schedule_" + version
+        filename = bucket + "/py3_schedule_" + version
+        updated_filename = bucket + "/py3_updated_schedule_" + version
 
     logging.info("Using filename %s and updated_filename %s" % (filename, updated_filename))
 
@@ -164,9 +164,9 @@ def get_schedule():
             "GAE_VERSION", "no_GAE_VERSION_env_found"
             )
     if version == "None":
-        filename = bucket + "/schedule"
+        filename = bucket + "/py3_schedule"
     else:
-        filename = bucket + "/schedule_" + version
+        filename = bucket + "/py3_schedule_" + version
 
     logging.info("Using filename %s and updated_filename %s" % (filename, updated_filename))
 
@@ -252,9 +252,9 @@ def get_version():
             "GAE_VERSION", "no_GAE_VERSION_env_found"
             )
     if version == "None":
-        filename = bucket + "/updated_schedule"
+        filename = bucket + "/py3_updated_schedule"
     else:
-        filename = bucket + "/updated_schedule_" + version
+        filename = bucket + "/py3_updated_schedule_" + version
 
     jsondata = read_file(filename)
 
@@ -345,6 +345,7 @@ def read_file(filename):
 
     mybucket = storage_client.bucket(bucket_name)
     blob = mybucket.blob(filename)
+    logging.info("Trying to read filename %s in bucket_name %s" % (filename, bucket_name))
     downloaded_blob = blob.download_as_text(encoding="utf-8")
 
     return downloaded_blob
