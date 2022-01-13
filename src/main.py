@@ -10,7 +10,7 @@ from flask import request
 from flask import Flask, render_template, make_response, jsonify
 import NHLHelpers
 from google.cloud import storage
-from google.cloud import logging
+import google.cloud.logging
 from google.auth.exceptions import DefaultCredentialsError
 from google.api_core.exceptions import NotFound
 
