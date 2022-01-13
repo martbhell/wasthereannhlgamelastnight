@@ -283,26 +283,11 @@ def give_me_a_color(team):
 def create_file(filename, content):
     """Create a file."""
 
-# TODO: Change to log?
-#    self.response.write("Creating file {}\n".format(filename))
-
-    # The retry_params specified in the open call will override the default
-    # retry params for this particular file handle.
-    #write_retry_params = gcs.RetryParams(backoff_factor=1.1)
-    #with gcs.open(
-    #    filename,
-    #    "w",
-    #    content_type="application/json",
-    #    options={"x-goog-acl": "project-private", "x-goog-meta-type": "schedule"},
-    #    retry_params=write_retry_params,
-    #) as cloudstorage_file:
-    #    cloudstorage_file.write(content)
-
     try:
         client = storage.Client()
         storage_client = storage.Client()
     except DefaultCredentialsError:
-        print("Could not setup Storage Client, How to Do Logging?")
+        logging.error("Could not setup storage client for create_file")
         return False
 
     bucket_name = os.environ.get(
@@ -326,7 +311,7 @@ def stat_file(filename):
         client = storage.Client()
         storage_client = storage.Client()
     except DefaultCredentialsError:
-        print("Could not setup Storage Client, How to Do Logging?")
+        logging.error("Could not setup storage client for stat_file")
         return False
 
     bucket_name = os.environ.get(
@@ -344,7 +329,7 @@ def read_file(filename):
         client = storage.Client()
         storage_client = storage.Client()
     except DefaultCredentialsError:
-        print("Could not setup Storage Client, How to Do Logging?")
+        logging.error("Could not setup storage client for read_file")
         return False
 
     bucket_name = os.environ.get(
