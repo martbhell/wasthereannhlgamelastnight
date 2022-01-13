@@ -40,10 +40,10 @@ handlers:
   #  script: menu.APPLICATION
   #  secure: always
   #
-  #- url: /update_schedule
-  #  script: update_schedule2
-  #  login: admin
-  #  secure: always
+- url: /update_schedule
+  script: update_schedule2
+  login: admin
+  secure: always
   #
   #- url: /.*
   #  script: wasthereannhlgamelastnight.APPLICATION
