@@ -93,23 +93,17 @@ def the_root(var1=False, var2=False):
 @app.route('/update_schedule')
 def update_schedule():
 
-    ### TODO: Dedup this
-    bucket_name = os.environ.get(
-        "GOOGLE_CLOUD_PROJECT", "no_GOOGLE_CLOUD_PROJECT_found"
-    )
-
     # default bucket is in this format: project-id.appspot.com
     # https://cloud.google.com/appengine/docs/standard/python3/using-cloud-storage
-    bucket = "/" + bucket_name
     version = os.environ.get(
             "GAE_VERSION", "no_GAE_VERSION_env_found"
             )
     if version == "None":
-        filename = bucket + "/py3_schedule"
-        updated_filename = bucket + "/py3_updated_schedule"
+        filename = "py3_schedule"
+        updated_filename = "py3_updated_schedule"
     else:
-        filename = bucket + "/py3_schedule_" + version
-        updated_filename = bucket + "/py3_updated_schedule_" + version
+        filename = "py3_schedule_" + version
+        updated_filename = "py3_updated_schedule_" + version
 
     logging.info("Using filename %s and updated_filename %s" % (filename, updated_filename))
 
@@ -158,21 +152,13 @@ def update_schedule():
 @app.route('/get_schedule')
 def get_schedule():
 
-    ### TODO: Dedup this
-    bucket_name = os.environ.get(
-        "GOOGLE_CLOUD_PROJECT", "no_GOOGLE_CLOUD_PROJECT_found"
-    )
-
-    # default bucket is in this format: project-id.appspot.com
-    # https://cloud.google.com/appengine/docs/standard/python3/using-cloud-storage
-    bucket = "/" + bucket_name
     version = os.environ.get(
             "GAE_VERSION", "no_GAE_VERSION_env_found"
             )
     if version == "None":
-        filename = bucket + "/py3_schedule"
+        filename = "py3_schedule"
     else:
-        filename = bucket + "/py3_schedule_" + version
+        filename = "py3_schedule_" + version
 
     logging.info("Using filename %s and updated_filename %s" % (filename, updated_filename))
 
@@ -247,20 +233,14 @@ def version():
 def get_version():
     """ Fetch a file and return JSON """
 
-    bucket_name = os.environ.get(
-        "GOOGLE_CLOUD_PROJECT", "no_GOOGLE_CLOUD_PROJECT_found"
-    )
-
-    # default bucket is in this format: project-id.appspot.com
     # https://cloud.google.com/appengine/docs/standard/python3/using-cloud-storage
-    bucket = "/" + bucket_name
     version = os.environ.get(
             "GAE_VERSION", "no_GAE_VERSION_env_found"
             )
     if version == "None":
-        filename = bucket + "/py3_updated_schedule"
+        filename = "py3_updated_schedule"
     else:
-        filename = bucket + "/py3_updated_schedule_" + version
+        filename = "py3_updated_schedule_" + version
 
     jsondata = read_file(filename)
 
@@ -290,9 +270,11 @@ def create_file(filename, content):
         logging.error("Could not setup storage client for create_file")
         return False
 
-    bucket_name = os.environ.get(
+    project_name = os.environ.get(
         "GOOGLE_CLOUD_PROJECT", "no_GOOGLE_CLOUD_PROJECT_found"
     )
+
+    bucket_name = project_name + ".appspot.com"
 
     mybucket = storage_client.bucket(bucket_name)
     blob = mybucket.blob(filename)
@@ -314,9 +296,11 @@ def stat_file(filename):
         logging.error("Could not setup storage client for stat_file")
         return False
 
-    bucket_name = os.environ.get(
+    project_name = os.environ.get(
         "GOOGLE_CLOUD_PROJECT", "no_GOOGLE_CLOUD_PROJECT_found"
     )
+
+    bucket_name = project_name + ".appspot.com"
 
     mybucket = storage_client.bucket(bucket_name)
     logging.info("Trying to stat filename %s in bucket_name %s" % (filename, bucket_name))
@@ -332,9 +316,11 @@ def read_file(filename):
         logging.error("Could not setup storage client for read_file")
         return False
 
-    bucket_name = os.environ.get(
+    project_name = os.environ.get(
         "GOOGLE_CLOUD_PROJECT", "no_GOOGLE_CLOUD_PROJECT_found"
     )
+
+    bucket_name = project_name + ".appspot.com"
 
     mybucket = storage_client.bucket(bucket_name)
     blob = mybucket.blob(filename)
