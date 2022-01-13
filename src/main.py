@@ -111,6 +111,8 @@ def update_schedule():
 
     [totalgames, jsondata] = fetch_upstream_schedule(URL)
 
+    changes = False
+
     if totalgames == 0:
         pass
     else:
@@ -125,12 +127,11 @@ def update_schedule():
             try:
                 last_updated = read_file(updated_filename)
                 _msg = "Not updating schedule - it is current."
-                #self.response.write(_msg + "\n")
                 logging.info(_msg)
             except NotFound:
                 create_file(updated_filename, FOR_UPDATED)
                 last_updated = read_file(updated_filename)
-            #self.response.write("Last updated: %s\n" % last_updated)
+            logging.info("Last updated: %s" % last_updated)
         else:
             changes = diff(json.loads(old_content), json.loads(content))
             logging.info("Changes: %s", changes)
@@ -142,11 +143,11 @@ def update_schedule():
                 send_an_email(
                     diff(json.loads(old_content), json.loads(content)), True, False # False - without twitter
                 )
-            return render_template('update_schedule.html', version=version, filename=filename, total_games=total_games, last_updated=last_updated, changes=changes), 202
+            return render_template('update_schedule.html', version=version, filename=filename, totalgames=totalgames, last_updated=last_updated, changes=changes), 202
 
     #return jsonify(jsondata)
 
-    return render_template('update_schedule.html', version=version, filename=filename, total_games=total_games, last_updated=last_updated, changes=changes)
+    return render_template('update_schedule.html', version=version, filename=filename, totalgames=totalgames, last_updated=last_updated, changes=changes)
 
 
 @app.route('/get_schedule')
@@ -427,8 +428,9 @@ def fetch_upstream_schedule(url):
     totalgames = jsondata["totalGames"]
 
     if totalgames == 0:
-        #self.response.write("ERROR parsing data, 0 games found.\n")
-        #self.response.write("URL: %s" % url)
+        logging.error("parsing data, 0 games found.")
+        logging.info("URL: %s" % url)
+        #TODO: Set 500 status code
         #self.response.set_status(500)
         return (totalgames, False)
     return (totalgames, jsondata)
@@ -463,6 +465,7 @@ def parse_schedule(jsondata):
                 dict_of_keys_and_matchups[date]
             )
  
+    logging.info("parsed schedule")
     return [dict_of_keys_and_matchups_s]
 
 def make_data_json(teamdates):
@@ -475,6 +478,7 @@ def make_data_json(teamdates):
     data["teamdates"] = teamdates
     json_data = json.dumps(data, sort_keys=True)
 
+    logging.info("made json")
     return json_data
 
 
