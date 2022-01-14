@@ -66,6 +66,19 @@ def parse_schedule(jsondata):
     return [dict_of_keys_and_matchups_s]
 
 
+def make_data_json(teamdates):
+    """ turn parsed data into json, end result in JSON should look like:
+    {
+     "teamdates": { "2017-12-30": [["Boston Bruins", "Ottawa Senators"]], }
+    }
+    """
+    data = {}
+    data["teamdates"] = teamdates
+    json_data = json.dumps(data, sort_keys=True)
+
+    return json_data
+
+
 # Below gets the data, so fetching works
 [totalgames, jsondata] = fetch_upstream_url(URL)
 
@@ -76,5 +89,6 @@ def parse_schedule(jsondata):
 
 # {'2021-09-25': [[], []], '2021-09-26': [[], [
 
-print(teamdates)
-#content = make_data_json(teamdates)
+#print(teamdates)
+content = make_data_json(teamdates)
+#print(content)
