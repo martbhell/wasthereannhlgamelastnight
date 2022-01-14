@@ -18,6 +18,9 @@ from google.api_core.exceptions import NotFound
 
 app = Flask(__name__)
 
+# /menu is now also /menu/
+app.url_map.strict_slashes = False
+
 # Setup logging https://cloud.google.com/logging/docs/setup/python
 CLIENT = google.cloud.logging.Client()
 CLIENT.setup_logging()
@@ -176,10 +179,10 @@ def get_schedule():
     else:
         filename = "py3_schedule_" + version
 
-    logging.info("Using filename %s and updated_filename %s" % (filename, updated_filename))
+    logging.info("Using filename %s" % (filename))
 
     content = read_file(filename)
-    #parsed = json.loads(content)
+    parsed = json.loads(content)
     return jsonify(content)
 
 @app.route('/menu')
