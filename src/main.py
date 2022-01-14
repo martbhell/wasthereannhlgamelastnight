@@ -21,6 +21,8 @@ app = Flask(__name__)
 # /menu is now also /menu/
 app.url_map.strict_slashes = False
 
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
+
 # Setup logging https://cloud.google.com/logging/docs/setup/python
 CLIENT = google.cloud.logging.Client()
 CLIENT.setup_logging()
@@ -162,8 +164,6 @@ def update_schedule():
                     diff(json.loads(old_content), json.loads(content)), True, False # False - without twitter
                 )
             return render_template('update_schedule.html', version=version, filename=filename, totalgames=totalgames, last_updated=last_updated, changes=changes), 202
-
-    #return jsonify(jsondata)
 
     return render_template('update_schedule.html', version=version, filename=filename, totalgames=totalgames, last_updated=last_updated, changes=changes)
 
