@@ -77,6 +77,16 @@ def the_root(var1=False, var2=False):
 
     ########
 
+    version = os.environ.get(
+            "GAE_VERSION", "no_GAE_VERSION_env_found"
+            )
+    if version == "None":
+        filename = "py3_schedule"
+    else:
+        filename = "py3_schedule_" + version
+
+    teamdates = json.loads(read_file(filename))["teamdates"]
+
     ########
 
     agent=request.headers.get('User-Agent')
@@ -84,7 +94,12 @@ def the_root(var1=False, var2=False):
         short_agent=agent.split("/")[0]
     except:
         short_agent=agent
-    yesorno="YES"
+
+    ### The YES/NO logic:
+    if NHLHelpers.yesorno(team1, teamdates, date1):
+        yesorno = "YES"
+    else:
+        yesorno = "NO"
 
     if short_agent in CLIAGENTS:
         return render_template('cli.html', yesorno=yesorno, agent=agent)
@@ -164,8 +179,8 @@ def get_schedule():
     logging.info("Using filename %s and updated_filename %s" % (filename, updated_filename))
 
     content = read_file(filename)
-    parsed = json.loads(content)
-    return jsonify(parsed)
+    #parsed = json.loads(content)
+    return jsonify(content)
 
 @app.route('/menu')
 def menu():
