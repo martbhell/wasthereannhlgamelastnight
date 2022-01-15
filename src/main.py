@@ -244,7 +244,6 @@ def menu_css():
     yellowtext = ["STL"]
 
     # https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout/Auto-placement_in_CSS_Grid_Layout
-    # TODO: Why isn't it css if we grab file directly? Looks OK in dev console..
     # TODO: Put meta/disclaimer/google analytics in some variable.
 
     resp = make_response(render_template('menu_team.css', allteams=allteams, colordict=colordict, whitetext=whitetext, yellowtext=yellowtext, mimetype="text/css"))
