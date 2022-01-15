@@ -99,10 +99,14 @@ def the_root(var1=False, var2=False):
 
     teamdates = json.loads(read_file(filename))["teamdates"]
 
-    ########
+    ######## Returning something cheap
 
     ua = request.headers.get("User-Agent")
-    device = DeviceDetector(ua).parse()
+    logging.info(f"User-Agent: {ua}")
+    if ua:
+        device = DeviceDetector(ua).parse()
+    else:
+        return render_template("cli.html", yesorno="HMM")
     if device.is_bot():
         return render_template("cli.html", yesorno="NO"), 500
 
