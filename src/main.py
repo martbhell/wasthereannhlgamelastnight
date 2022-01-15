@@ -153,6 +153,9 @@ def update_schedule():
             create_file(filename, content)
             old_content = read_file(filename)
             changes = "just_created"
+            send_an_email(
+                diff(json.loads(old_content), json.loads(content)), True, True
+            )
         if old_content == content:
             changes = "No changes needed"
             try:
@@ -171,6 +174,7 @@ def update_schedule():
             # Only send e-mails outside playoffs
             #  (potential spoilers - games are removed from the schedule)
             if CURRENT_MONTH < 4 or CURRENT_MONTH > 6:
+                logging.info("Sending an update notification")
                 send_an_email(
                     diff(json.loads(old_content), json.loads(content)), True, True
                 )
@@ -389,6 +393,8 @@ def send_an_email(message, admin=False, twitter=False):
     # Mail is not available in python3 -- only twitter!
     # Also no implemented way to send the whole change to the Admin
 
+    logging.info("Inside send an e-mail")
+
     real_message = message
     msgsize = get_size(real_message)
     # size of 2019-2020 schedule was 530016, unclear how large the jsondiff was 2018->2019
@@ -396,7 +402,7 @@ def send_an_email(message, admin=False, twitter=False):
     #  if we change all "Rangers" to "Freeezers" the changes to restore 2019-2020 was 106288
     if msgsize > 150000:
         real_message = f"Msgsize is {msgsize}, see /get_schedule - Hello new season?"
-        logging.info(real_message)
+        logging.info(f" big message: {real_message}")
 
     if twitter:
         api_key = os.environ['API_KEY']
