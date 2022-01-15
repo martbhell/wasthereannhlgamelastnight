@@ -563,7 +563,7 @@ if __name__ == "__main__":
 CLIAGENTS = ["curl", "Wget", "Python-urllib"]
 
 NOW = datetime.datetime.now()
-FOR_UPDATED = str(NOW.isoformat())
+FOR_UPDATED = { 'version': str(NOW.isoformat()) }
 [CURRENT_MONTH, CURRENT_YEAR] = NOW.month, NOW.year
 LAST_YEAR = CURRENT_YEAR - 1
 NEXT_YEAR = CURRENT_YEAR + 1
