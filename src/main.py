@@ -328,9 +328,13 @@ def get_version():
     else:
         filename = "py3_updated_schedule_" + version
 
+    # If we always store json no need to make it more json
     jsondata = read_file(filename)
 
-    return jsonify(jsondata)
+    resp = make_response(jsondata)
+    resp.headers["Content-Type"] = "application/json"
+
+    return resp
 
 
 def give_me_a_color(team):
