@@ -119,11 +119,7 @@ TODO / Known issues
    * performance testing
    * lint javascript,css,html
    * lint python <a href="https://github.com/martbhell/wasthereannhlgamelastnight/issues/16">#16</a>
- * Improve bucket ACLs
-   * https://cloud.google.com/storage/docs/access-control/
-   * https://cloud.google.com/storage/docs/cloud-console#_sharingdata
  * Some string formatting still done in uncool way, pylint is also not perfect
- * Neither is it black formatted
 
 Source
 ======
