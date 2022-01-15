@@ -99,10 +99,10 @@ def the_root(var1=False, var2=False):
 
     teamdates = json.loads(read_file(filename))["teamdates"]
 
-    ######## Returning something cheap
+    ### Returning something cheap for evil
 
     useragent = request.headers.get("User-Agent")
-    logging.info(f"User-Agent: {useragent}")
+    logging.debug(f"User-Agent: {useragent}")
     if useragent:
         device = DeviceDetector(useragent).parse()
     else:
