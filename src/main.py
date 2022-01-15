@@ -385,16 +385,9 @@ def get_size(obj, seen=None):
 
 def send_an_email(message, admin=False, twitter=False):
     """ send an e-mail, optionally to the admin """
-    # https://cloud.google.com/appengine/docs/standard/python/refdocs/google.appengine.api.mail
-    # TODO: Mail is not available in python3 -- only twitter!
 
-    # https://cloud.google.com/appengine/docs/standard/python3/runtime#environment_variables
-    sender_address = "{}@appspot.gserviceaccount.com".format(
-       os.environ['GAE_APPLICATION']
-    )
-
-    to_email = os.environ["USER_EMAIL"]
-    to_name = to_email
+    # Mail is not available in python3 -- only twitter!
+    # Also no implemented way to send the whole change to the Admin
 
     real_message = message
     msgsize = get_size(real_message)
@@ -405,22 +398,6 @@ def send_an_email(message, admin=False, twitter=False):
         real_message = f"Msgsize is {msgsize}, see /get_schedule - Hello new season?"
         logging.info(real_message)
 
-# TODO: No e-mail In Python 3 GAE ?
-# https://cloud.google.com/appengine/docs/standard/python/migrate-to-python3#mail
-###
-#    if admin or to_email is None or to_email == "":
-#        mail.send_mail_to_admins(
-#            sender=sender_address,
-#            subject="NHL schedule changed A",
-#            body="msgsize: %s \n changes: %s" % (msgsize, real_message),
-#        )
-#    else:
-#        mail.send_mail(
-#            sender=sender_address,
-#            to="%s <%s>" % (to_name, to_email),
-#            subject="NHL schedule changed",
-#            body="msgsize: %s \n changes: %s" % (msgsize, real_message),
-#        )
     if twitter:
         api_key = os.environ['API_KEY']
         api_secret_key = os.environ['API_SECRET_KEY']
