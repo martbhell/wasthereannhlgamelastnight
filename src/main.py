@@ -353,7 +353,7 @@ def read_file(filename):
 
     mybucket = storage_client.bucket(bucket_name)
     blob = mybucket.blob(filename)
-    logging.info(f"Trying to read filename {filename} in bucket_name {bucket_name}")
+    logging.debug(f"Trying to read filename {filename} in bucket_name {bucket_name}")
     downloaded_blob = blob.download_as_text(encoding="utf-8")
 
     return downloaded_blob
