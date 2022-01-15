@@ -78,8 +78,8 @@ def dateapi(teamdates, team=None, date=None):
         if (dateinnhlformat) and (dateinnhlformat in teamdates) and (team is None):
             if DEBUG:
                 print("F1")
-                print("datenhl: %s" % dateinnhlformat)
-                print("chosen: %s" % team)
+                print(f"datenhl: {dateinnhlformat}")
+                print(f"chosen: {team}")
             return True
         elif dateinnhlformat and (dateinnhlformat in teamdates) and team:
             # if dateinnhlformat exists a date has been chosen
@@ -90,8 +90,8 @@ def dateapi(teamdates, team=None, date=None):
                         return True
     else:
         if DEBUG:
-            print("datenhl: %s" % dateinnhlformat)
-            print("chosen: %s" % team)
+            print(f"datenhl: {dateinnhlformat}")
+            print(f"chosen: {team}")
             print("G1")
         return False
 
