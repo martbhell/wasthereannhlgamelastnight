@@ -137,6 +137,9 @@ def update_schedule():
 
     [totalgames, jsondata] = fetch_upstream_schedule(URL)
 
+    if not jsondata:
+        return render_template('update_schedule.html', version=version, filename=filename, totalgames=totalgames, last_updated=False, changes=False), 500
+
     changes = False
 
     if totalgames == 0:
@@ -244,8 +247,6 @@ def menu_css():
     yellowtext = ["STL"]
 
     # https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout/Auto-placement_in_CSS_Grid_Layout
-    # TODO: Put meta/disclaimer/google analytics in some variable.
-
     resp = make_response(render_template('menu_team.css', allteams=allteams, colordict=colordict, whitetext=whitetext, yellowtext=yellowtext, mimetype="text/css"))
     resp.headers['Content-Type'] = 'text/css'
     return resp
@@ -256,7 +257,7 @@ def version():
 
     return get_version()
 
-# We set_version in update_schedule.py
+    # We set_version in update_schedule.py
 
 def get_version():
     """ Fetch a file and return JSON """
@@ -307,9 +308,6 @@ def create_file(filename, content):
     blob = mybucket.blob(filename)
     logging.info("Trying to create filename %s in bucket_name %s, content size is %s" % (filename, bucket_name, get_size(content)))
     blob.upload_from_string(content, content_type='application/json')
-    # TODO How to retry / add backoff
-    # TODO How to add acl ?     https://cloud.google.com/storage/docs/access-control/create-manage-lists#json-api says default is project-private..
-
 
 def stat_file(filename):
     """ stat a file
@@ -431,8 +429,6 @@ def fetch_upstream_schedule(url):
     if totalgames == 0:
         logging.error("parsing data, 0 games found.")
         logging.info(f"URL: {url}")
-        #TODO: Set 500 status code
-        #self.response.set_status(500)
         return (totalgames, False)
     return (totalgames, jsondata)
 
