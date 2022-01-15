@@ -75,7 +75,7 @@ def the_root(var1=False, var2=False):
             tomorrow1 = tomorrow.strftime("%Y%m%d")
     # If we have a good team and date we have both in tomorrowurl
     if team1 and date1:
-        tomorrowurl = f"/{team1}/{tomorrow1}" % (team1, tomorrow1)
+        tomorrowurl = f"/{team1}/{tomorrow1}"
 
     teamlongtext = None
     if team1:
