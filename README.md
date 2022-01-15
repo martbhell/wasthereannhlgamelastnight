@@ -116,6 +116,9 @@ TODO / Known issues
    * update schedule_testing and then verify it / validate json
    * performance testing
    * lint javascript,css,html
+ * Improve bucket ACLs
+   * https://cloud.google.com/storage/docs/access-control/
+   * https://cloud.google.com/storage/docs/cloud-console#_sharingdata
 
 Source
 ======
