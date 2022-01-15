@@ -329,7 +329,7 @@ def get_version():
         filename = "py3_updated_schedule_" + version
 
     # If we always store json no need to make it more json
-    jsondata = read_file(filename)
+    jsondata = str(read_file(filename)).replace("'", '"')
 
     resp = make_response(jsondata)
     resp.headers["Content-Type"] = "application/json"
