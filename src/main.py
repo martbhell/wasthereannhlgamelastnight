@@ -293,7 +293,6 @@ def create_file(filename, content):
     """Create a file."""
 
     try:
-        client = storage.Client()
         storage_client = storage.Client()
     except DefaultCredentialsError:
         logging.error("Could not setup storage client for create_file")
@@ -319,7 +318,6 @@ def stat_file(filename):
     https://cloud.google.com/storage/docs/viewing-editing-metadata#code-samples
     """
     try:
-        client = storage.Client()
         storage_client = storage.Client()
     except DefaultCredentialsError:
         logging.error("Could not setup storage client for stat_file")
@@ -339,7 +337,6 @@ def read_file(filename):
     """ read and return a file! """
 
     try:
-        client = storage.Client()
         storage_client = storage.Client()
     except DefaultCredentialsError:
         logging.error("Could not setup storage client for read_file")
