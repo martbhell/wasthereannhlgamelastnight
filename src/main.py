@@ -182,7 +182,9 @@ def get_schedule():
     logging.info("Using filename %s" % (filename))
 
     content = read_file(filename)
-    return jsonify(data=content, indent=2)
+    resp = make_response(content)
+    resp.headers['Content-Type'] = 'application/json'
+    return resp
 
 @app.route('/menu')
 def menu():
