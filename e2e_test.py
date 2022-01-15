@@ -52,6 +52,7 @@ ARGS = {
     "update_schedule": {"test": ["accounts.google.com"], "type": "in"},
     "get_schedule": {"test": ["teamdates"], "type": "injson"},
     "version": {"test": BOTH_YEARS, "type": "in"},
+    "version": {"test": ["version"], "type": "json"},
 }
 
 #ALLTEAMS = sorted(list(get_all_teams().keys()))
@@ -147,3 +148,12 @@ for arg in ARGS:
                     % (HOST, arg, ARGS[arg]["test"])
                 )
                 sys.exit(6)
+        if ARGS[arg]["type"] == "json":
+            try:
+                assert json.loads(html)
+            except TypeError:
+                print(
+                    "json.dumps of JSON on %s/%s"
+                    % (HOST, arg)
+                )
+                sys.exit(7)
