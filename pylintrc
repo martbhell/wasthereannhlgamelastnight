@@ -16,3 +16,4 @@
 # --disable=W"
 disable=
     line-too-long,
+	logging-fstring-interpolation
