@@ -1,7 +1,9 @@
 sudo: false
 services:
   - docker
-language: python - "3.8"
+language: python
+python:
+    - "3.8"
 cache:
   directories:
     - "$HOME/google-cloud-sdk/"
@@ -21,14 +23,16 @@ before_install:
   - gcloud version
   - gcloud auth activate-service-account --key-file wasthereannhlgamelastnight-c0aea3438a34.json
 install:
-  - travis_retry pip install pylint
+  - travis_retry pip install pylint==2.12.2 black==21.12b0
   - travis_retry pip install -r src/requirements.txt
   - gcloud config set project wasthereannhlgamelastnight
   - gcloud config list
 before_script:
   - pylint --version
-# pylint disabled because it's python3 - this is still a python2 webapp
+  - black --version
+# pylint disabled because there are many errors :P
 #  - pylint src/!(appengine_config).py *.py -r y
+  - black --check src/main.py
   - travis_retry gcloud -q app deploy src/app.yaml --no-promote -v testing
 script:
 #  - echo "disabled to push new schedule" # python e2e_test.py
