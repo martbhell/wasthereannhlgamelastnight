@@ -237,10 +237,10 @@ def menu_css():
     # https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout/Auto-placement_in_CSS_Grid_Layout
     # TODO: Why isn't it css if we grab file directly? Looks OK in dev console..
     # TODO: Put meta/disclaimer/google analytics in some variable.
-   
+
     resp = make_response(render_template('menu_team.css', allteams=allteams, colordict=colordict, whitetext=whitetext, yellowtext=yellowtext, mimetype="text/css"))
     resp.headers['Content-Type'] = 'text/css'
-    return resp 
+    return resp
 
 @app.route('/version')
 def version():
@@ -459,10 +459,10 @@ def parse_schedule(jsondata):
     """ parse the json data into a dict the app is used to.
         as a bonus we also sort things
     """
- 
+
     dict_of_keys_and_matchups = {}
     dict_of_keys_and_matchups_s = {}
- 
+
     dates = jsondata["dates"]
     for key in dates:
         date = key["date"]
@@ -482,7 +482,7 @@ def parse_schedule(jsondata):
             dict_of_keys_and_matchups_s[date] = sorted(
                 dict_of_keys_and_matchups[date]
             )
- 
+
     logging.info("parsed schedule")
     return [dict_of_keys_and_matchups_s]
 
