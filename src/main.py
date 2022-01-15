@@ -111,7 +111,7 @@ def the_root(var1=False, var2=False):
     else:
         yesorno = "NO"
 
-    if device.client_type() = "library":
+    if device.client_type() == "library":
         return render_template('cli.html', yesorno=yesorno, agent=agent)
     return render_template('index.html', yesorno=yesorno, agent=agent, team=team1, teamlongtext=teamlongtext, date=date1, fgcolor=fgcolor, tomorrow=tomorrow, tomorrowurl=tomorrowurl)
 
