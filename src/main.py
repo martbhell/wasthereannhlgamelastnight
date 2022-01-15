@@ -3,16 +3,16 @@ import os
 import sys
 import json
 import logging
+from urllib.request import urlopen
 import tweepy
 from jsondiff import diff
-from urllib.request import urlopen
 from flask import request
 from flask import Flask, render_template, make_response, jsonify
-import NHLHelpers
 from google.cloud import storage
 import google.cloud.logging
 from google.auth.exceptions import DefaultCredentialsError
 from google.api_core.exceptions import NotFound
+import NHLHelpers
 
 # https://cloud.google.com/datastore/docs/reference/libraries#client-libraries-usage-python
 
