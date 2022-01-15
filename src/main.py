@@ -1,3 +1,5 @@
+""" YES, oor no? """
+
 import datetime
 import os
 import sys
@@ -30,18 +32,21 @@ CLIENT.setup_logging()
 #http://exploreflask.com/en/latest/views.html
 @app.route('/')
 def view_root():
+    """ No arguments """
     return the_root()
 
 @app.route('/<string:var1>/')
 def view_team(var1):
+    """ 1 argument, team or date """
     return the_root(var1, var2=False)
 
 @app.route('/<string:var1>/<string:var2>/')
 def view_teamdate(var1, var2):
+    """ 2 arguments, hopefully one team and one date """
     return the_root(var1, var2)
 
-# Use the_root for both /DETROIT and /DETROIT/20220122
 def the_root(var1=False, var2=False):
+    """ We use the_root for both /DETROIT and /DETROIT/20220122 """
 
     # Set some tomorrow things for when a date or team has not been specified
     # tomorrow set to today if none is set
@@ -112,6 +117,7 @@ def the_root(var1=False, var2=False):
 
 @app.route('/update_schedule')
 def update_schedule():
+    """ fetches schedule from upstream, parses it, uploads it, sets a version, outputs html for debug """
 
     # default bucket is in this format: project-id.appspot.com
     # https://cloud.google.com/appengine/docs/standard/python3/using-cloud-storage
@@ -170,6 +176,7 @@ def update_schedule():
 
 @app.route('/get_schedule')
 def get_schedule():
+    """ Get schedule from GCS and return it as JSON """
 
     version = os.environ.get(
             "GAE_VERSION", "no_GAE_VERSION_env_found"
@@ -188,6 +195,7 @@ def get_schedule():
 
 @app.route('/menu')
 def menu():
+    """ Return a menu, where one can choose team and some other settings """
 
     allteams = sorted(list(NHLHelpers.get_all_teams().keys()))
     reallyallteams = NHLHelpers.get_all_teams()
@@ -196,6 +204,7 @@ def menu():
 
 @app.route('/css/menu_team.css')
 def menu_css():
+    """ Programmatically creates CSS based on the defined teams and their colors """
 
     allteams = sorted(list(NHLHelpers.get_all_teams().keys()))
     # Recreate give_me_a_color classmethod because I couldn't figure out how to call it
