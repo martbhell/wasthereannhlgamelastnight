@@ -107,18 +107,12 @@ TODO / Known issues
  * Choosing background color - would be sweet if it could do HTML5 so users can choose themselves too like in https://www.w3schools.com/colors/colors_picker.asp
  * games include preseason - if this is a problem let me know!
  * add a calendar selection too near the menu?
- * proper logging
-    * Don't print to stdout - https://cloud.google.com/appengine/docs/standard/python/logs/#Python_writing_application_logs
-    * We no longer print to stdout, so some imports could be removed?
-    * could be nice if one could get debug errors to the browser console, rather than having to run the local app_devserver
-    * Right now there's a few in the cloud console logs. More could be added
  * dynamically generate a sitemap.xml
  * Réal Names of cities:
    * querying Montréal Canadiens (so with the acute accent) is not currently working. Before https://github.com/martbhell/wasthereannhlgamelastnight/issues/9 MTL did not work at all
    * querying St. Louis Blues (so with the .) is not currently working. Without the dot and spaces work.
    * Ideally we would use the real names and not remove bad chars in the schedule ( in update_schedule.py )
  * improve testing
-   * assert that we are redirected to update_schedule
    * update schedule_testing and then verify it / validate json
    * performance testing
    * lint javascript,css,html
@@ -133,4 +127,4 @@ Forked from https://github.com/amanjeev/isitfridaythe13th because it had the goo
 wasthereannhlgamelastnight(..) has been re-written a few times - it's no longer even close to the isitfridaythe13th, for example:
  - it now uses webapp2 for example instead of python print to stdout.
  - it used to have a manual NHL_schedule.py with a set and a list, now it reads and writes to gcloud object store!
- - used to be python2, now it's python3 and Flask!
+ - used to be python2 and webapp2 on GAE, in 2022 it's python3 and Flask on GAE! 
