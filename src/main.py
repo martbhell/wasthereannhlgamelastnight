@@ -152,7 +152,9 @@ def update_schedule():
         except NotFound:
             create_file(filename, content)
             old_content = read_file(filename)
+            changes = "just_created"
         if old_content == content:
+            changes = "No changes needed"
             try:
                 last_updated = read_file(updated_filename)
                 _msg = "Not updating schedule - it is current."
