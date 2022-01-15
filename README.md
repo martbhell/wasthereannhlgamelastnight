@@ -102,23 +102,28 @@ https://statsapi.web.nhl.com/api/v1/schedule/startDate=2016-01-31&endDate=2016-0
 TODO / Known issues
 ====================
 
+ * Add notifications with whole schedule, maybe instead uploading the diff to GCS?
+ * /get_schedule is no longer pretty
  * "BadRequestError: Admin message exceeds size limits" in update_schedule when there's a huge update
-    * This is made so that if the size of the message body is too large we don't send it. One could perhaps email it as an attachment instead...
+    * This is made so that if the size of the message body is too large we don't send it. One could perhaps send it as an attachment instead. <a href="https://github.com/martbhell/wasthereannhlgamelastnight/issues/14">#14</a>
  * Choosing background color - would be sweet if it could do HTML5 so users can choose themselves too like in https://www.w3schools.com/colors/colors_picker.asp
  * games include preseason - if this is a problem let me know!
  * add a calendar selection too near the menu?
  * dynamically generate a sitemap.xml
  * Réal Names of cities:
-   * querying Montréal Canadiens (so with the acute accent) is not currently working. Before https://github.com/martbhell/wasthereannhlgamelastnight/issues/9 MTL did not work at all
+   * querying Montréal Canadiens (so with the acute accent) is not currently working. Before <a href="https://github.com/martbhell/wasthereannhlgamelastnight/issues/9">#9</a> MTL did not work at all
    * querying St. Louis Blues (so with the .) is not currently working. Without the dot and spaces work.
    * Ideally we would use the real names and not remove bad chars in the schedule ( in update_schedule.py )
  * improve testing
    * update schedule_testing and then verify it / validate json
    * performance testing
    * lint javascript,css,html
+   * lint python <a href="https://github.com/martbhell/wasthereannhlgamelastnight/issues/16">#16</a>
  * Improve bucket ACLs
    * https://cloud.google.com/storage/docs/access-control/
    * https://cloud.google.com/storage/docs/cloud-console#_sharingdata
+ * Some string formatting still done in uncool way, pylint is also not perfect
+ * Neither is it black formatted
 
 Source
 ======
