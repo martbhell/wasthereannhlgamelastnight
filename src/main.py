@@ -53,7 +53,7 @@ def the_root(var1=False, var2=False):
     # because today is like tomorrow if you know what I mean (wink wink)
     tomorrow = datetime.datetime.now()
     tomorrow1 = tomorrow.strftime("%Y%m%d")
-    tomorrowurl = "/%s" % (tomorrow1)
+    tomorrowurl = f"/{tomorrow1}"
 
     ########
 
@@ -65,7 +65,7 @@ def the_root(var1=False, var2=False):
         if NHLHelpers.get_team(arg):
             team1 = arg
             # If we have a team set tomorrowurl like /teamname/date
-            tomorrowurl = "/%s/%s" % (team1, tomorrow1)
+            tomorrowurl = f"/{team1}/{tomorrow1}"
         elif NHLHelpers.validatedate(arg):
             date1 = NHLHelpers.validatedate(arg)
             # If an argument is a date we set tomorrow to one day after that
@@ -75,7 +75,7 @@ def the_root(var1=False, var2=False):
             tomorrow1 = tomorrow.strftime("%Y%m%d")
     # If we have a good team and date we have both in tomorrowurl
     if team1 and date1:
-        tomorrowurl = "/%s/%s" % (team1, tomorrow1)
+        tomorrowurl = f"/{team1}/{tomorrow1}" % (team1, tomorrow1)
 
     teamlongtext = None
     if team1:
@@ -131,7 +131,7 @@ def update_schedule():
         filename = "py3_schedule_" + version
         updated_filename = "py3_updated_schedule_" + version
 
-    logging.info("Using filename %s and updated_filename %s" % (filename, updated_filename))
+    logging.info(f"Using filename {filename} and updated_filename {updated_filename}")
 
     ####
 
@@ -157,10 +157,10 @@ def update_schedule():
             except NotFound:
                 create_file(updated_filename, FOR_UPDATED)
                 last_updated = read_file(updated_filename)
-            logging.info("Last updated: %s" % last_updated)
+            logging.info(f"Last updated: {last_updated}")
         else:
             changes = diff(json.loads(old_content), json.loads(content))
-            logging.info("Changes: %s", changes)
+            logging.info(f"Changes: {changes}")
             create_file(filename, content)
             create_file(updated_filename, FOR_UPDATED)
             # Only send e-mails outside playoffs
@@ -186,7 +186,7 @@ def get_schedule():
     else:
         filename = "py3_schedule_" + version
 
-    logging.info("Using filename %s" % (filename))
+    logging.info(f"Using filename {filename}")
 
     content = read_file(filename)
     resp = make_response(content)
@@ -332,7 +332,7 @@ def stat_file(filename):
     bucket_name = project_name + ".appspot.com"
 
     mybucket = storage_client.bucket(bucket_name)
-    logging.info("Trying to stat filename %s in bucket_name %s" % (filename, bucket_name))
+    logging.info(f"Trying to stat filename {filename} in bucket_name {bucket_name}")
     return mybucket.get_blob(filename)
 
 def read_file(filename):
@@ -353,7 +353,7 @@ def read_file(filename):
 
     mybucket = storage_client.bucket(bucket_name)
     blob = mybucket.blob(filename)
-    logging.info("Trying to read filename %s in bucket_name %s" % (filename, bucket_name))
+    logging.info(f"Trying to read filename {filename} in bucket_name {bucket_name}")
     downloaded_blob = blob.download_as_text(encoding="utf-8")
 
     return downloaded_blob
@@ -406,7 +406,7 @@ def send_an_email(message, admin=False, twitter=False):
     #  50000 is less than 65490 which was in the log of the update
     #  if we change all "Rangers" to "Freeezers" the changes to restore 2019-2020 was 106288
     if msgsize > 150000:
-        real_message = "Msgsize is %s, see /get_schedule - Hello new season?" % msgsize
+        real_message = f"Msgsize is {msgsize}, see /get_schedule - Hello new season?"
         logging.info(real_message)
 
 # TODO: No e-mail In Python 3 GAE ?
@@ -457,7 +457,7 @@ def fetch_upstream_schedule(url):
 
     if totalgames == 0:
         logging.error("parsing data, 0 games found.")
-        logging.info("URL: %s" % url)
+        logging.info(f"URL: {url}")
         #TODO: Set 500 status code
         #self.response.set_status(500)
         return (totalgames, False)
@@ -523,14 +523,11 @@ LAST_YEAR = CURRENT_YEAR - 1
 NEXT_YEAR = CURRENT_YEAR + 1
 # if now is before August we get last year from September until July
 if CURRENT_MONTH < 8:
-    START_DATE = "%s-08-01" % LAST_YEAR
-    END_DATE = "%s-07-01" % CURRENT_YEAR
+    START_DATE = f"{LAST_YEAR}-08-01"
+    END_DATE = f"{CURRENT_YEAR}-07-01"
 # if now is in or after August we get this year from September until July
 else:
-    START_DATE = "%s-08-01" % CURRENT_YEAR
-    END_DATE = "%s-07-01" % NEXT_YEAR
+    START_DATE = f"{CURRENT_YEAR}-08-01"
+    END_DATE = f"{NEXT_YEAR}-07-01"
 
-URL = "https://statsapi.web.nhl.com/api/v1/schedule?startDate=%s&endDate=%s" % (
-    START_DATE,
-    END_DATE,
-)
+URL = f"https://statsapi.web.nhl.com/api/v1/schedule?startDate={START_DATE}&endDate={END_DATE}"
