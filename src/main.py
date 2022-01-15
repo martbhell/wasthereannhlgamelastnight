@@ -101,10 +101,10 @@ def the_root(var1=False, var2=False):
 
     ######## Returning something cheap
 
-    ua = request.headers.get("User-Agent")
-    logging.info(f"User-Agent: {ua}")
-    if ua:
-        device = DeviceDetector(ua).parse()
+    useragent = request.headers.get("User-Agent")
+    logging.info(f"User-Agent: {useragent}")
+    if useragent:
+        device = DeviceDetector(useragent).parse()
     else:
         return render_template("cli.html", yesorno="HMM")
     if device.is_bot():
@@ -117,11 +117,10 @@ def the_root(var1=False, var2=False):
         yesorno = "NO"
 
     if device.client_type() == "library":
-        return render_template("cli.html", yesorno=yesorno, agent=agent)
+        return render_template("cli.html", yesorno=yesorno)
     return render_template(
         "index.html",
         yesorno=yesorno,
-        agent=agent,
         team=team1,
         teamlongtext=teamlongtext,
         date=date1,
