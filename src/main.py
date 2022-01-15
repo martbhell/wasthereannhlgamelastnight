@@ -167,7 +167,7 @@ def update_schedule():
             #  (potential spoilers - games are removed from the schedule)
             if CURRENT_MONTH < 4 or CURRENT_MONTH > 6:
                 send_an_email(
-                    diff(json.loads(old_content), json.loads(content)), True, False # False - without twitter
+                    diff(json.loads(old_content), json.loads(content)), True, True
                 )
             return render_template('update_schedule.html', version=version, filename=filename, totalgames=totalgames, last_updated=last_updated, changes=changes), 202
 
