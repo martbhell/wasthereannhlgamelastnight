@@ -14,6 +14,7 @@ from google.cloud import storage
 import google.cloud.logging
 from google.auth.exceptions import DefaultCredentialsError
 from google.api_core.exceptions import NotFound
+from device_detector import DeviceDetector
 import NHLHelpers
 
 # https://cloud.google.com/datastore/docs/reference/libraries#client-libraries-usage-python
@@ -99,11 +100,10 @@ def the_root(var1=False, var2=False):
 
     ########
 
-    agent=request.headers.get('User-Agent')
-    try:
-        short_agent=agent.split("/")[0]
-    except:
-        short_agent=agent
+    ua = request.headers.get('User-Agent')
+    device = DeviceDetector(ua).parse()
+    if device.is_bot():
+        return render_template('cli.html', yesorno="NO"), 500
 
     ### The YES/NO logic:
     if NHLHelpers.yesorno(team1, teamdates, date1):
@@ -111,7 +111,7 @@ def the_root(var1=False, var2=False):
     else:
         yesorno = "NO"
 
-    if short_agent in CLIAGENTS:
+    if device.client_type() = "library":
         return render_template('cli.html', yesorno=yesorno, agent=agent)
     return render_template('index.html', yesorno=yesorno, agent=agent, team=team1, teamlongtext=teamlongtext, date=date1, fgcolor=fgcolor, tomorrow=tomorrow, tomorrowurl=tomorrowurl)
 
