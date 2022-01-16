@@ -91,8 +91,8 @@ for team in ALLTEAMS:
 # Add the tests where we want to check that we get at least one yes
 #  for each team
 for team in MUSTGETAYES:
-    yescnt = 0
-    allcnt = 0
+    YESCNT = 0
+    ALLCNT = 0
     for dstring in MUSTGETAYES[team]:
         estring = team + "/" + dstring
         try:
@@ -101,18 +101,18 @@ for team in MUSTGETAYES:
             print("Cannot fetch URL: %s" % urlliberror)
             sys.exit(67)
         html = response.read()
-        allcnt = allcnt + 1
+        ALLCNT = ALLCNT + 1
         if "YES" in str(html):
-            yescnt = yescnt + 1
-        if allcnt == len(MUSTGETAYES[team]):
+            YESCNT = YESCNT + 1
+        if ALLCNT == len(MUSTGETAYES[team]):
 
             print(
                 "asserting that at least ( %s ) one of %s is YES for %s"
-                % (yescnt, str(MUSTGETAYES[team]), team)
+                % (YESCNT, str(MUSTGETAYES[team]), team)
             )
             try:
-                assert yescnt > 0
-                # print(str(yescnt) + " for " + team)
+                assert YESCNT > 0
+                # print(str(YESCNT) + " for " + team)
             except AssertionError:
                 print("No games found in schedule for %s" % (team))
                 sys.exit(5)
