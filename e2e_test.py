@@ -22,9 +22,6 @@ import datetime  # figure out year to have dynamic year testing
 import os
 
 sys.path.append(os.path.realpath("src/"))
-from NHLHelpers import (
-    get_all_teams,
-)  # pylint: disable=import-error,wrong-import-position
 
 HOST = "https://testing-dot-wasthereannhlgamelastnight.appspot.com"
 
@@ -63,7 +60,6 @@ ARGS = {
 }
 
 
-# ALLTEAMS = sorted(list(get_all_teams().keys()))
 ALLTEAMS = ["PIT"]
 
 MUSTGETAYES = {}
