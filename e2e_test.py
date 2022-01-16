@@ -49,11 +49,13 @@ YESNODATES = [
 
 # First we define two special URIs where we do some extra testing
 ARGS = {
-    "update_schedule": {"test": ["accounts.google.com"], "type": "in"},
-    "get_schedule": {"test": ["teamdates"], "type": "injson"},
-    "version": {"test": BOTH_YEARS, "type": "in"},
-    "version": {"test": ["version"], "type": "json"},
+    "00-update_schedule": {"url": "update_schedule", "test": ["accounts.google.com"], "type": "in"},
+    "00-get_schedule": {"url": "get_schedule", "test": ["teamdates"], "type": "injson"},
+    "00-version": {"url": "version", "test": BOTH_YEARS, "type": "in"},
+    "01-version": {"url": "version", "test": ["version"], "type": "json"},
 }
+
+
 
 #ALLTEAMS = sorted(list(get_all_teams().keys()))
 ALLTEAMS = [ "PIT" ]
@@ -108,11 +110,11 @@ for team in MUSTGETAYES:
 
 # Add the "basic" tests where we should only get a YES or NO
 for date in YESNODATES:
-    ARGS[date] = {"test": YESNO}
+    ARGS[date] = {"url": date, "test": YESNO}
 
 for arg in ARGS:
     try:
-        response = urlopen("{}/%s".format(HOST) % arg)
+        response = urlopen("{}/%s".format(HOST) % ARGS[arg]['url'])
     except urllib.error.HTTPError as urlliberror:
         print("Cannot fetch URL: %s" % urlliberror)
         sys.exit(66)
