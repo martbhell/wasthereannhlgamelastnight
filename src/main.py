@@ -24,8 +24,6 @@ app = Flask(__name__)
 # /menu is now also /menu/
 app.url_map.strict_slashes = False
 
-app.config["JSONIFY_PRETTYPRINT_REGULAR"] = True
-
 # Setup logging https://cloud.google.com/logging/docs/setup/python
 CLIENT = google.cloud.logging.Client()
 CLIENT.setup_logging()
@@ -235,8 +233,8 @@ def get_schedule():
 
     logging.info(f"Using filename {filename}")
 
-    content = read_file(filename)
-    resp = make_response(content)
+    content = json.loads(read_file(filename))
+    resp = make_response(json.dumps(content, indent=2))
     resp.headers["Content-Type"] = "application/json"
     return resp
 
