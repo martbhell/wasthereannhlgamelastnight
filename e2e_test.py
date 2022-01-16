@@ -9,7 +9,7 @@
 
 """ Do some testing """
 
-from __future__ import absolute_import #
+from __future__ import absolute_import  #
 from __future__ import print_function  # python3
 import urllib  # we validate that a website responds properly
 from urllib.request import urlopen
@@ -20,8 +20,11 @@ import datetime  # figure out year to have dynamic year testing
 # this bit should be improvable
 #  https://docs.python.org/3/reference/import.html#regular-packages
 import os
-sys.path.append(os.path.realpath('src/'))
-from NHLHelpers import get_all_teams # pylint: disable=import-error,wrong-import-position
+
+sys.path.append(os.path.realpath("src/"))
+from NHLHelpers import (
+    get_all_teams,
+)  # pylint: disable=import-error,wrong-import-position
 
 HOST = "https://testing-dot-wasthereannhlgamelastnight.appspot.com"
 
@@ -49,16 +52,19 @@ YESNODATES = [
 
 # First we define two special URIs where we do some extra testing
 ARGS = {
-    "00-update_schedule": {"url": "update_schedule", "test": ["accounts.google.com"], "type": "in"},
+    "00-update_schedule": {
+        "url": "update_schedule",
+        "test": ["accounts.google.com"],
+        "type": "in",
+    },
     "00-get_schedule": {"url": "get_schedule", "test": ["teamdates"], "type": "injson"},
     "00-version": {"url": "version", "test": BOTH_YEARS, "type": "in"},
     "01-version": {"url": "version", "test": ["version"], "type": "json"},
 }
 
 
-
-#ALLTEAMS = sorted(list(get_all_teams().keys()))
-ALLTEAMS = [ "PIT" ]
+# ALLTEAMS = sorted(list(get_all_teams().keys()))
+ALLTEAMS = ["PIT"]
 
 MUSTGETAYES = {}
 
@@ -100,10 +106,13 @@ for team in MUSTGETAYES:
             yescnt = yescnt + 1
         if allcnt == len(MUSTGETAYES[team]):
 
-            print("asserting that at least ( %s ) one of %s is YES for %s" % (yescnt, str(MUSTGETAYES[team]), team))
+            print(
+                "asserting that at least ( %s ) one of %s is YES for %s"
+                % (yescnt, str(MUSTGETAYES[team]), team)
+            )
             try:
                 assert yescnt > 0
-                #print(str(yescnt) + " for " + team)
+                # print(str(yescnt) + " for " + team)
             except AssertionError:
                 print("No games found in schedule for %s" % (team))
                 sys.exit(5)
@@ -114,7 +123,7 @@ for date in YESNODATES:
 
 for arg in ARGS:
     try:
-        response = urlopen("{}/%s".format(HOST) % ARGS[arg]['url'])
+        response = urlopen("{}/%s".format(HOST) % ARGS[arg]["url"])
     except urllib.error.HTTPError as urlliberror:
         print("Cannot fetch URL: %s" % urlliberror)
         sys.exit(66)
@@ -154,8 +163,5 @@ for arg in ARGS:
             try:
                 assert json.loads(html)
             except TypeError:
-                print(
-                    "json.dumps of JSON on %s/%s"
-                    % (HOST, arg)
-                )
+                print("json.dumps of JSON on %s/%s" % (HOST, arg))
                 sys.exit(7)
