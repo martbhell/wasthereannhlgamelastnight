@@ -13,8 +13,9 @@ START_DATE = f"{LAST_YEAR}-08-01"
 END_DATE = f"{CURRENT_YEAR}-07-01"
 URL = f"https://statsapi.web.nhl.com/api/v1/schedule?startDate={START_DATE}&endDate={END_DATE}"
 
+
 def fetch_upstream_url(url):
-    """ Fetch Upstream Schedule """
+    """Fetch Upstream Schedule"""
 
     with urlopen(url) as page:
         jsondata = json.loads(page.read())
@@ -26,7 +27,7 @@ def fetch_upstream_url(url):
 
 
 def parse_schedule(jsondata):
-    """ Parse it """
+    """Parse it"""
 
     dict_of_keys_and_matchups = {}
     dict_of_keys_and_matchups_s = {}

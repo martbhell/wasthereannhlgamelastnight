@@ -508,6 +508,12 @@ def fetch_upstream_schedule(url):
 def parse_schedule(jsondata):
     """parse the json data into a dict the app is used to.
     as a bonus we also sort things
+
+    The JSON data looks something like this under "dates":
+
+    {'date': '2022-04-28',
+      'games': ['teams': {'away': {'team': {'id': 7, 'name': 'Buffalo Sabres'}},
+                          'home': {'team': {'id': 6, 'name': 'Boston Bruins'}}}}
     """
 
     dict_of_keys_and_matchups = {}
@@ -523,7 +529,6 @@ def parse_schedule(jsondata):
             teams = game["teams"]
             # sorry, you can't query montre(withaccent)alcanadiens, all the hard coded bits in the main parser
             #  wasthereannhlgamelastnight.py has MTL without the acute accent
-            # without the encode('utf-8') the replace of a unicode gives a unicode error
             # Silmarillionly, mainparser has St Louis Blues, not St. Louis Blues as in the NHL schema
             twoteams.append(
                 teams["away"]["team"]["name"]
