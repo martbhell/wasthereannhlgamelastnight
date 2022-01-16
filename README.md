@@ -17,15 +17,15 @@ Usage
 
 |endpoint | function | format | example | admin |
 |----------|--------|-------|---------------|-------------|
-|/$TEAM| YES/NO | HTML* | RedWings | |
-|/$CITYTEAM| YES/NO | HTML* |DetroitRedWings | |
-|/$CITY| YES/NO |HTML* | Detroit | |
-|/$SHORT| YES/NO |HTML* | DET | |
-|/$DATE/$TEAM | YES/NO | HTML*| 20171022/RedWings| |
-|/$TEAM/$DATE | YES/NO | HTML*| RedWings/20171111| |
+|/$TEAM| YES/NO | HTML* | <a href="https://wtangy.se/RedWings">RedWings</a> | |
+|/$CITYTEAM| YES/NO | HTML* |<a href="https://wtangy.se/DetroitRedWings">DetroitRedWings</a> | |
+|/$CITY| YES/NO |HTML* | <a href="https://wtangy.se/Detroit">Detroit</a> | |
+|/$SHORT| YES/NO |HTML* | <a href="https://wtangy.se/DET">DET</a> | |
+|/$DATE/$TEAM | YES/NO | HTML*| <a href="https://wtangy.se/20171022/RedWings">20171022/RedWings</a>| |
+|/$TEAM/$DATE | YES/NO | HTML*| <a href="https://wtangy.se/RedWings/20171111">RedWings/20171111</a>| |
 |/get_schedule | Print Schedule| JSON | | |
-|/version | Print Schedule Update Time| JSON/ISODATE | { "version": "2018-01-27T08:57:00.372800" } | |
-|/menu | Present user with a clickable menu | HTML | | |
+|/version | Print Schedule Update Time| JSON/ISODATE | { "<a href="https://wtangy.se/version">version</a>": "2018-01-27T08:57:00.372800" } | |
+|/menu | Present user with a clickable menu | HTML | <a href="https://wtangy.se/menu">menu</a> | |
 |/update_schedule | Update Schedule | | 202 on changed | Y |
 
 \*  If you use Curl, Wget or Python-Urllib then all you get is YES or NO
