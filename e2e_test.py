@@ -96,9 +96,9 @@ for team in MUSTGETAYES:
     for dstring in MUSTGETAYES[team]:
         estring = team + "/" + dstring
         try:
-            response = urlopen("{}/%s".format(HOST) % estring)
+            response = urlopen(f"{HOST}/{estring}")
         except urllib.error.HTTPError as urlliberror:
-            print("Cannot fetch URL: %s" % urlliberror)
+            print(f"Cannot fetch URL: {urlliberror}")
             sys.exit(67)
         html = response.read()
         ALLCNT = ALLCNT + 1
@@ -107,14 +107,13 @@ for team in MUSTGETAYES:
         if ALLCNT == len(MUSTGETAYES[team]):
 
             print(
-                "asserting that at least ( %s ) one of %s is YES for %s"
-                % (YESCNT, str(MUSTGETAYES[team]), team)
+                f"asserting that at least ( {YESCNT} ) one of {str(MUSTGETAYES[team])} is YES for {team}"
             )
             try:
                 assert YESCNT > 0
                 # print(str(YESCNT) + " for " + team)
             except AssertionError:
-                print("No games found in schedule for %s" % (team))
+                print(f"No games found in schedule for {team}")
                 sys.exit(5)
 
 # Add the "basic" tests where we should only get a YES or NO
@@ -123,45 +122,41 @@ for date in YESNODATES:
 
 for arg in ARGS:
     try:
-        response = urlopen("{}/%s".format(HOST) % ARGS[arg]["url"])
+        response = urlopen(f"{HOST}/{ARGS[arg]['url']}")
     except urllib.error.HTTPError as urlliberror:
-        print("Cannot fetch URL: %s" % urlliberror)
+        print(f"Cannot fetch URL: {urlliberror}")
         sys.exit(66)
     html = response.read()
 
     if ARGS[arg]["test"] == YESNO:
-        print("asserting %s/%s - response code: %s" % (HOST, arg, response.code))
+        print(f"asserting {HOST}/{arg} - response code: {response.code}")
         try:
             print(str(html))
             assert "NO" in str(html) or "YES" in str(html)
         except AssertionError:
-            print("%s/%s does not contain %s" % (HOST, arg, "YES\n or NO\n"))
+            print(f"{HOST}/{arg} does not contain 'YES\n or NO\n'")
             sys.exit(3)
 
     else:
         print(
-            "asserting %s/%s contains %s - response code: %s"
-            % (HOST, arg, ARGS[arg]["test"], response.code)
+            f"asserting {HOST}/{arg} contains {ARGS[arg]['test']} - response code: {response.code}"
         )
         try:
             if ARGS[arg]["type"] == "in" or ARGS[arg]["type"] == "injson":
                 # this any loops over tests in ARGS[arg]['test']). There's also an all()
                 assert any(anarg in str(html) for anarg in ARGS[arg]["test"])
         except AssertionError:
-            print("%s/%s does not contain %s" % (HOST, arg, ARGS[arg]))
+            print("{HOST}/{arg} does not contain {ARGS[arg]}")
             sys.exit(4)
         if ARGS[arg]["type"] == "injson":
             try:
                 assert json.loads(html)["teamdates"].popitem()
             except KeyError:
-                print(
-                    "popitem of JSON on %s/%s key %s failed"
-                    % (HOST, arg, ARGS[arg]["test"])
-                )
+                print(f"popitem of JSON on {HOST}/{arg} key {ARGS[arg]['test']} failed")
                 sys.exit(6)
         if ARGS[arg]["type"] == "json":
             try:
                 assert json.loads(html)
             except TypeError:
-                print("json.dumps of JSON on %s/%s" % (HOST, arg))
+                print("json.dumps of JSON on {HOST}/{arg}")
                 sys.exit(7)
