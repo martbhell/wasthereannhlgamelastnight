@@ -173,7 +173,7 @@ def update_schedule():
             old_content = read_file(filename)
             changes = "just_created"
             send_an_email(
-                diff(json.loads(old_content), json.loads(content)), True, True
+                diff(json.loads(old_content), json.loads(content)), True
             )
         if old_content == content:
             changes = "No changes needed"
@@ -195,7 +195,7 @@ def update_schedule():
             if CURRENT_MONTH < 4 or CURRENT_MONTH > 6:
                 logging.info("Sending an update notification")
                 send_an_email(
-                    diff(json.loads(old_content), json.loads(content)), True, True
+                    diff(json.loads(old_content), json.loads(content)), True
                 )
             return (
                 render_template(
@@ -444,7 +444,7 @@ def get_size(obj, seen=None):
     return size
 
 
-def send_an_email(message, admin=False, twitter=False):
+def send_an_email(message, twitter=False):
     """send an e-mail, optionally to the admin"""
 
     # Mail is not available in python3 -- only twitter!
