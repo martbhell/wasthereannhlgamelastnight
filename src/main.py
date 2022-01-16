@@ -53,8 +53,7 @@ def the_root(var1=False, var2=False):
     # Set some tomorrow things for when a date or team has not been specified
     # tomorrow set to today if none is set
     # because today is like tomorrow if you know what I mean (wink wink)
-    tomorrow = datetime.datetime.now()
-    tomorrow1 = tomorrow.strftime("%Y%m%d")
+    tomorrow1 = datetime.datetime.now().strftime("%Y%m%d")
     tomorrowurl = f"/{tomorrow1}"
 
     ########
@@ -89,9 +88,8 @@ def the_root(var1=False, var2=False):
 
     ########
 
-    if VERSION == "None":
-        filename = "py3_schedule"
-    else:
+    filename = "py3_schedule"
+    if VERSION != "None":
         filename = "py3_schedule_" + VERSION
 
     teamdates = json.loads(read_file(filename))["teamdates"]
@@ -172,9 +170,7 @@ def update_schedule():
             create_file(filename, content)
             old_content = read_file(filename)
             changes = "just_created"
-            send_an_email(
-                diff(json.loads(old_content), json.loads(content)), True
-            )
+            send_an_email(diff(json.loads(old_content), json.loads(content)), True)
         if old_content == content:
             changes = "No changes needed"
             try:
@@ -194,9 +190,7 @@ def update_schedule():
             #  (potential spoilers - games are removed from the schedule)
             if CURRENT_MONTH < 4 or CURRENT_MONTH > 6:
                 logging.info("Sending an update notification")
-                send_an_email(
-                    diff(json.loads(old_content), json.loads(content)), True
-                )
+                send_an_email(diff(json.loads(old_content), json.loads(content)), True)
             return (
                 render_template(
                     "update_schedule.html",
