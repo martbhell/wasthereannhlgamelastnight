@@ -89,11 +89,10 @@ def the_root(var1=False, var2=False):
 
     ########
 
-    version = os.environ.get("GAE_VERSION", "no_GAE_VERSION_env_found")
-    if version == "None":
+    if VERSION == "None":
         filename = "py3_schedule"
     else:
-        filename = "py3_schedule_" + version
+        filename = "py3_schedule_" + VERSION
 
     teamdates = json.loads(read_file(filename))["teamdates"]
 
@@ -134,13 +133,12 @@ def update_schedule():
 
     # default bucket is in this format: project-id.appspot.com
     # https://cloud.google.com/appengine/docs/standard/python3/using-cloud-storage
-    version = os.environ.get("GAE_VERSION", "no_GAE_VERSION_env_found")
-    if version == "None":
+    if VERSION == "None":
         filename = "py3_schedule"
         updated_filename = "py3_updated_schedule"
     else:
-        filename = "py3_schedule_" + version
-        updated_filename = "py3_updated_schedule_" + version
+        filename = "py3_schedule_" + VERSION
+        updated_filename = "py3_updated_schedule_" + VERSION
 
     logging.info(f"Using filename {filename} and updated_filename {updated_filename}")
 
@@ -152,7 +150,7 @@ def update_schedule():
         return (
             render_template(
                 "update_schedule.html",
-                version=version,
+                version=VERSION,
                 filename=filename,
                 totalgames=totalgames,
                 last_updated=False,
@@ -202,7 +200,7 @@ def update_schedule():
             return (
                 render_template(
                     "update_schedule.html",
-                    version=version,
+                    version=VERSION,
                     filename=filename,
                     totalgames=totalgames,
                     last_updated=last_updated,
@@ -213,7 +211,7 @@ def update_schedule():
 
     return render_template(
         "update_schedule.html",
-        version=version,
+        version=VERSION,
         filename=filename,
         totalgames=totalgames,
         last_updated=last_updated,
@@ -225,11 +223,10 @@ def update_schedule():
 def get_schedule():
     """Get schedule from GCS and return it as JSON"""
 
-    version = os.environ.get("GAE_VERSION", "no_GAE_VERSION_env_found")
-    if version == "None":
+    if VERSION == "None":
         filename = "py3_schedule"
     else:
-        filename = "py3_schedule_" + version
+        filename = "py3_schedule_" + VERSION
 
     logging.info(f"Using filename {filename}")
 
@@ -320,11 +317,10 @@ def get_version():
     """Fetch a file and return JSON"""
 
     # https://cloud.google.com/appengine/docs/standard/python3/using-cloud-storage
-    version = os.environ.get("GAE_VERSION", "no_GAE_VERSION_env_found")
-    if version == "None":
+    if VERSION == "None":
         filename = "py3_updated_schedule"
     else:
-        filename = "py3_updated_schedule_" + version
+        filename = "py3_updated_schedule_" + VERSION
 
     # If we always store json no need to make it more json
     jsondata = str(read_file(filename)).replace("'", '"')
@@ -567,6 +563,7 @@ if __name__ == "__main__":
 # Variables
 
 CLIAGENTS = ["curl", "Wget", "Python-urllib"]
+VERSION = os.environ.get("GAE_VERSION", "no_GAE_VERSION_env_found")
 
 NOW = datetime.datetime.now()
 FOR_UPDATED = str({"version": str(NOW.isoformat())})
