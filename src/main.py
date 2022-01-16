@@ -368,6 +368,8 @@ def create_file(filename, content):
     )
     blob.upload_from_string(content, content_type="application/json")
 
+    return True
+
 
 def stat_file(filename):
     """stat a file
@@ -484,6 +486,9 @@ def send_an_email(message, twitter=False):
             "#NHL schedule updated on https://wtangy.se - did your team play last night? Try out https://wtangy.se/DETROIT"
         )
         logging.info("Tweeted and message size was %s", msgsize)
+
+        return True
+    return False
 
 
 def fetch_upstream_schedule(url):
