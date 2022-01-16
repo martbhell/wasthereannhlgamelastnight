@@ -368,8 +368,7 @@ def create_file(filename, content):
     mybucket = storage_client.bucket(bucket_name)
     blob = mybucket.blob(filename)
     logging.info(
-        "Trying to create filename %s in bucket_name %s, content size is %s"
-        % (filename, bucket_name, get_size(content))
+        f"Trying to create filename {filename} in bucket_name {bucket_name}, content size is {get_size(content)}"
     )
     blob.upload_from_string(content, content_type="application/json")
 
