@@ -9,7 +9,7 @@ from urllib.request import urlopen
 import tweepy
 from jsondiff import diff
 from flask import request
-from flask import Flask, render_template, make_response, jsonify
+from flask import Flask, render_template, make_response
 from google.cloud import storage
 import google.cloud.logging
 from google.auth.exceptions import DefaultCredentialsError
