@@ -94,11 +94,11 @@ for team, value in MUSTGETAYES.items():
     for dstring in value:
         estring = team + "/" + dstring
         try:
-            response = urlopen(f"{HOST}/{estring}")
+            with urlopen(f"{HOST}/{estring}") as response:
+                html = response.read()
         except urllib.error.HTTPError as urlliberror:
             print(f"Cannot fetch URL: {urlliberror}")
             sys.exit(67)
-        html = response.read()
         ALLCNT = ALLCNT + 1
         if "YES" in str(html):
             YESCNT = YESCNT + 1
@@ -120,11 +120,11 @@ for date in YESNODATES:
 
 for arg, value in ARGS.items():
     try:
-        response = urlopen(f"{HOST}/{value['url']}")
+        with urlopen(f"{HOST}/{value['url']}") as response:
+            html = response.read()
     except urllib.error.HTTPError as urlliberror:
         print(f"Cannot fetch URL: {urlliberror}")
         sys.exit(66)
-    html = response.read()
 
     if value["test"] == YESNO:
         print(f"asserting {HOST}/{arg} - response code: {response.code}")
