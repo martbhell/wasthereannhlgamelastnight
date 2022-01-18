@@ -3,8 +3,6 @@
 from __future__ import print_function  # python3
 import datetime
 
-DEBUG = False
-
 def yesorno(team, teamdates, date2=None):
 
     """
@@ -24,8 +22,7 @@ def yesorno(team, teamdates, date2=None):
     if chosen_team is None and date2 is None:
         for date in teamdates:
             if yesterday == date:
-                if DEBUG:
-                    print("D1")
+                #print("D1")
                 return True
 
     if date2 is None:
@@ -75,25 +72,23 @@ def dateapi(teamdates, team=None, date=None):
         dateinnhlformat = validatedate(date)
 
         # First assume it's only the date and no team
-        if (dateinnhlformat) and (dateinnhlformat in teamdates) and (team is None):
-            if DEBUG:
-                print("F1")
-                print(f"datenhl: {dateinnhlformat}")
+        if (dateinnhlformat) and (dateinnhlformat in teamdates):
+            if team is None:
+                #print("F1")
+                #print(f"datenhl: {dateinnhlformat}")
                 print(f"chosen: {team}")
-            return True
-        elif dateinnhlformat and (dateinnhlformat in teamdates) and team:
+                return True
             # if dateinnhlformat exists a date has been chosen
             # for each list (matchup) at the date chosen
             for matchup in teamdates[dateinnhlformat]:
                 for combatant in matchup:
                     if combatant == team:
                         return True
-    else:
-        if DEBUG:
-            print(f"datenhl: {dateinnhlformat}")
-            print(f"chosen: {team}")
-            print("G1")
-        return False
+        return True
+    #print(f"datenhl: {dateinnhlformat}")
+    #print(f"chosen: {team}")
+    #print("G1")
+    return False
 
 
 def get_city_from_team(cityteam):
