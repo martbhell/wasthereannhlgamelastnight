@@ -86,10 +86,12 @@ for team in ALLTEAMS:
 
 # Add the tests where we want to check that we get at least one yes
 #  for each team
-for team in MUSTGETAYES:
+for team, value in MUSTGETAYES.items():
+    print(team)
+    print(value)
     YESCNT = 0
     ALLCNT = 0
-    for dstring in MUSTGETAYES[team]:
+    for dstring in value:
         estring = team + "/" + dstring
         try:
             response = urlopen(f"{HOST}/{estring}")
@@ -100,10 +102,10 @@ for team in MUSTGETAYES:
         ALLCNT = ALLCNT + 1
         if "YES" in str(html):
             YESCNT = YESCNT + 1
-        if ALLCNT == len(MUSTGETAYES[team]):
+        if ALLCNT == len(value):
 
             print(
-                f"asserting that at least ( {YESCNT} ) one of {str(MUSTGETAYES[team])} is YES for {team}"
+                f"asserting that at least ( {YESCNT} ) one of {str(value)} is YES for {team}"
             )
             try:
                 assert YESCNT > 0
@@ -116,15 +118,15 @@ for team in MUSTGETAYES:
 for date in YESNODATES:
     ARGS[date] = {"url": date, "test": YESNO}
 
-for arg in ARGS:
+for arg, value in ARGS.items():
     try:
-        response = urlopen(f"{HOST}/{ARGS[arg]['url']}")
+        response = urlopen(f"{HOST}/{value['url']}")
     except urllib.error.HTTPError as urlliberror:
         print(f"Cannot fetch URL: {urlliberror}")
         sys.exit(66)
     html = response.read()
 
-    if ARGS[arg]["test"] == YESNO:
+    if value["test"] == YESNO:
         print(f"asserting {HOST}/{arg} - response code: {response.code}")
         try:
             print(str(html))
@@ -135,22 +137,22 @@ for arg in ARGS:
 
     else:
         print(
-            f"asserting {HOST}/{arg} contains {ARGS[arg]['test']} - response code: {response.code}"
+            f"asserting {HOST}/{arg} contains {value['test']} - response code: {response.code}"
         )
         try:
-            if ARGS[arg]["type"] == "in" or ARGS[arg]["type"] == "injson":
+            if value["type"] == "in" or value["type"] == "injson":
                 # this any loops over tests in ARGS[arg]['test']). There's also an all()
-                assert any(anarg in str(html) for anarg in ARGS[arg]["test"])
+                assert any(anarg in str(html) for anarg in value["test"])
         except AssertionError:
             print("{HOST}/{arg} does not contain {ARGS[arg]}")
             sys.exit(4)
-        if ARGS[arg]["type"] == "injson":
+        if value["type"] == "injson":
             try:
                 assert json.loads(html)["teamdates"].popitem()
             except KeyError:
-                print(f"popitem of JSON on {HOST}/{arg} key {ARGS[arg]['test']} failed")
+                print(f"popitem of JSON on {HOST}/{arg} key {value['test']} failed")
                 sys.exit(6)
-        if ARGS[arg]["type"] == "json":
+        if value["type"] == "json":
             try:
                 assert json.loads(html)
             except TypeError:
