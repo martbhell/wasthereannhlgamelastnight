@@ -15,7 +15,7 @@ import google.cloud.logging
 from google.auth.exceptions import DefaultCredentialsError
 from google.api_core.exceptions import NotFound
 from device_detector import DeviceDetector
-import NHLHelpers
+import nhlhelpers
 
 # https://cloud.google.com/datastore/docs/reference/libraries#client-libraries-usage-python
 
@@ -62,12 +62,12 @@ def the_root(var1=False, var2=False):
     date1 = None
 
     for arg in [var1, var2]:
-        if NHLHelpers.get_team(arg):
+        if nhlhelpers.get_team(arg):
             team1 = arg
             # If we have a team set tomorrowurl like /teamname/date
             tomorrowurl = f"/{team1}/{tomorrow1}"
-        elif NHLHelpers.validatedate(arg):
-            date1 = NHLHelpers.validatedate(arg)
+        elif nhlhelpers.validatedate(arg):
+            date1 = nhlhelpers.validatedate(arg)
             # If an argument is a date we set tomorrow to one day after that
             tomorrow = datetime.datetime.strptime(
                 date1, "%Y-%m-%d"
@@ -79,7 +79,7 @@ def the_root(var1=False, var2=False):
 
     teamlongtext = None
     if team1:
-        teamlongtext = NHLHelpers.get_team(team1)
+        teamlongtext = nhlhelpers.get_team(team1)
 
     ########
 
@@ -105,7 +105,7 @@ def the_root(var1=False, var2=False):
         return render_template("cli.html", yesorno="NO"), 500
 
     ### The YES/NO logic:
-    if NHLHelpers.yesorno(team1, teamdates, date1):
+    if nhlhelpers.yesorno(team1, teamdates, date1):
         yesorno = "YES"
     else:
         yesorno = "NO"
@@ -233,8 +233,8 @@ def get_schedule():
 def menu():
     """Return a menu, where one can choose team and some other settings"""
 
-    allteams = sorted(list(NHLHelpers.get_all_teams().keys()))
-    reallyallteams = NHLHelpers.get_all_teams()
+    allteams = sorted(list(nhlhelpers.get_all_teams().keys()))
+    reallyallteams = nhlhelpers.get_all_teams()
 
     return render_template(
         "menu.html", allteams=allteams, reallyallteams=reallyallteams
@@ -245,7 +245,7 @@ def menu():
 def menu_css():
     """Programmatically creates CSS based on the defined teams and their colors"""
 
-    allteams = sorted(list(NHLHelpers.get_all_teams().keys()))
+    allteams = sorted(list(nhlhelpers.get_all_teams().keys()))
     # Recreate give_me_a_color classmethod because I couldn't figure out how to call it
     colordict = {}
     # If we use
@@ -253,7 +253,7 @@ def menu_css():
     # we would need to pick which of the colors to show. Sometimes it's 3rd, 2nd, first...
     for ateam in allteams:
         # Loop through colors and don't pick black as background for the box
-        colors = NHLHelpers.get_team_colors(ateam)
+        colors = nhlhelpers.get_team_colors(ateam)
         backgroundcolor = colors[0]
         try:
             backgroundcolor2 = colors[1]
@@ -327,7 +327,7 @@ def get_version():
 def give_me_a_color(team):
     """Select a color, take second color if the first is black."""
 
-    color = NHLHelpers.get_team_colors(team)
+    color = nhlhelpers.get_team_colors(team)
     fgcolor = color[0]
     try:
         fgcolor2 = color[1]
