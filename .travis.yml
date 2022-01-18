@@ -30,8 +30,7 @@ install:
 before_script:
   - pylint --version
   - black --version
-# pylint disabled because there are many errors :P
-#  - pylint src/!(appengine_config).py *.py -r y
+  - pylint --rcfile=pylintrc src/main.py -r y
   - black --check src/main.py
   - travis_retry gcloud -q app deploy src/app.yaml --no-promote -v testing
 script:
