@@ -30,7 +30,7 @@ install:
 before_script:
   - pylint --version
   - black --version
-  - pylint --rcfile=pylintrc src/main.py -r y
+  - pylint --rcfile=pylintrc src/!(test_update).py *.py
   - black --check src/main.py
   - travis_retry gcloud -q app deploy src/app.yaml --no-promote -v testing
 script:
