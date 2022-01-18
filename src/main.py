@@ -61,8 +61,7 @@ def the_root(var1=False, var2=False):
     team1 = None
     date1 = None
 
-    arguments = [var1, var2]
-    for arg in arguments:
+    for arg in [var1, var2]:
         if NHLHelpers.get_team(arg):
             team1 = arg
             # If we have a team set tomorrowurl like /teamname/date
