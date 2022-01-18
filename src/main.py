@@ -53,7 +53,8 @@ def the_root(var1=False, var2=False):
     # Set some tomorrow things for when a date or team has not been specified
     # tomorrow set to today if none is set
     # because today is like tomorrow if you know what I mean (wink wink)
-    tomorrow1 = datetime.datetime.now().strftime("%Y%m%d")
+    tomorrow = datetime.datetime.now()
+    tomorrow1 = tomorrow.strftime("%Y%m%d")
     tomorrowurl = f"/{tomorrow1}"
 
     ########
