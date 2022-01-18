@@ -3,6 +3,7 @@
 from __future__ import print_function  # python3
 import datetime
 
+
 def yesorno(team, teamdates, date2=None):
 
     """
@@ -22,7 +23,7 @@ def yesorno(team, teamdates, date2=None):
     if chosen_team is None and date2 is None:
         for date in teamdates:
             if yesterday == date:
-                #print("D1")
+                # print("D1")
                 return True
 
     if date2 is None:
@@ -63,7 +64,7 @@ def validatedate(date):
 def dateapi(teamdates, team=None, date=None):
     """Return true if there was a game on the date
     Return false there was not and if date was unparseable
-    Take a team and/or a date as arguments """
+    Take a team and/or a date as arguments"""
 
     # a date was provided
     if date:
@@ -74,8 +75,8 @@ def dateapi(teamdates, team=None, date=None):
         # First assume it's only the date and no team
         if (dateinnhlformat) and (dateinnhlformat in teamdates):
             if team is None:
-                #print("F1")
-                #print(f"datenhl: {dateinnhlformat}")
+                # print("F1")
+                # print(f"datenhl: {dateinnhlformat}")
                 print(f"chosen: {team}")
                 return True
             # if dateinnhlformat exists a date has been chosen
@@ -85,9 +86,9 @@ def dateapi(teamdates, team=None, date=None):
                     if combatant == team:
                         return True
         return True
-    #print(f"datenhl: {dateinnhlformat}")
-    #print(f"chosen: {team}")
-    #print("G1")
+    # print(f"datenhl: {dateinnhlformat}")
+    # print(f"chosen: {team}")
+    # print("G1")
     return False
 
 
@@ -147,8 +148,7 @@ def get_city_from_team(cityteam):
 
 
 def get_team_from_city(city):
-    """Returns a team abbreviation from cityname.
-    """
+    """Returns a team abbreviation from cityname."""
 
     citydict = {
         "ANA": "ANAHEIM",
@@ -331,7 +331,7 @@ def get_team(team):
 
 def get_team_colors(team):
     """Return a color and True/False if we found a team
-    List is from https://github.com/jimniels/teamcolors.github.io """
+    List is from https://github.com/jimniels/teamcolors.github.io"""
 
     teamname = get_team(team)
 

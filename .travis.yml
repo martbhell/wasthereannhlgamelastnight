@@ -31,7 +31,7 @@ before_script:
   - pylint --version
   - black --version
   - pylint --rcfile=pylintrc src/!(test_update).py *.py
-  - black --check src/main.py
+  - black --check src/*.py *.py
   - travis_retry gcloud -q app deploy src/app.yaml --no-promote -v testing
 script:
 #  - echo "disabled to push new schedule" # python e2e_test.py
