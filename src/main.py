@@ -92,7 +92,13 @@ def the_root(var1=False, var2=False):
     if VERSION != "None":
         filename = "py3_schedule_" + VERSION
 
-    teamdates = json.loads(read_file(filename))["teamdates"]
+    try:
+        teamdates = json.loads(read_file(filename))["teamdates"]
+    except NotFound:
+        # In case there is no schedule stored for the backend, try to make it
+        logging.info("Viewing Root but no schedule found, let's try to parse and store it")
+        update_schedule()
+        teamdates = json.loads(read_file(filename))["teamdates"]
 
     ### Returning something cheap for evil
 
@@ -106,10 +112,9 @@ def the_root(var1=False, var2=False):
         return render_template("cli.html", yesorno="NO"), 500
 
     ### The YES/NO logic:
+    yesorno = "NO"
     if nhlhelpers.yesorno(team1, teamdates, date1):
         yesorno = "YES"
-    else:
-        yesorno = "NO"
 
     if device.client_type() == "library":
         return render_template("cli.html", yesorno=yesorno)
@@ -168,9 +173,19 @@ def update_schedule():
             old_content = read_file(filename)
         except NotFound:
             create_file(filename, content)
-            old_content = read_file(filename)
-            changes = "just_created"
-            send_an_email(diff(json.loads(old_content), json.loads(content)), True)
+            changes = "just created"
+            logging.info("No schedule found, created it")
+            return (
+                render_template(
+                    "update_schedule.html",
+                    version=VERSION,
+                    filename=filename,
+                    totalgames=totalgames,
+                    last_updated=FOR_UPDATED,
+                    changes=changes,
+                ),
+                202,
+            )
         if old_content == content:
             changes = "No changes needed"
             try:
@@ -186,7 +201,7 @@ def update_schedule():
             logging.info(f"Changes: {changes}")
             create_file(filename, content)
             create_file(updated_filename, FOR_UPDATED)
-            # Only send e-mails outside playoffs
+            # Only send notifications outside playoffs
             #  (potential spoilers - games are removed from the schedule)
             if CURRENT_MONTH < 4 or CURRENT_MONTH > 6:
                 logging.info("Sending an update notification")
