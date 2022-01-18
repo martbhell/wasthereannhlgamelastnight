@@ -44,3 +44,23 @@ not all is relevant anymore or has changed, but do pay attention to:
 if deploying to a clean datastore/appengine remember to modify env_variables.yml.enc and upload it manually to the datastore (you'll need to exclude it from .gcloudignore file)
 
 it should be extracted to env_variables.yml into src/ directory as that's where app.yaml tries to include it to get some twitter API keys
+
+The format of env_variables.yaml is:
+
+Does this work with python3?
+
+https://cloud.google.com/appengine/docs/standard/python3/configuration-files does not mention includes: ...
+
+```
+env_variables:
+  API_KEY: "key"
+  API_SECRET_KEY:
+  ACCESS_TOKEN:
+  ACCESS_SECRET_TOKEN:
+```
+
+To test the notifications:
+- download the schedule
+- modify it
+- upload it
+- run /update_schedule
