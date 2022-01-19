@@ -473,10 +473,12 @@ def send_an_email(message, twitter=False):
         logging.info(f" big message: {real_message}")
 
     if twitter:
-        api_key = os.environ["API_KEY"]
-        api_secret_key = os.environ["API_SECRET_KEY"]
-        access_token = os.environ["ACCESS_TOKEN"]
-        access_token_secret = os.environ["ACCESS_TOKEN_SECRET"]
+        # Files uploaded manually, content unquoted
+        # These are strings
+        api_key = read_file("API_KEY.TXT")
+        api_secret_key = read_file("API_SECRET_KEY.TXT")
+        access_token = read_file("ACCESS_TOKEN.TXT")
+        access_token_secret = read_file("ACCESS_TOKEN_SECRET.TXT")
 
         # Authenticate to Twitter
         auth = tweepy.OAuthHandler(api_key, api_secret_key)
