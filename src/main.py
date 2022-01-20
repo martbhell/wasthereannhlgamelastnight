@@ -96,7 +96,9 @@ def the_root(var1=False, var2=False):
         teamdates = json.loads(read_file(filename))["teamdates"]
     except NotFound:
         # In case there is no schedule stored for the backend, try to make it
-        logging.info("Viewing Root but no schedule found, let's try to parse and store it")
+        logging.info(
+            "Viewing Root but no schedule found, let's try to parse and store it"
+        )
         update_schedule()
         teamdates = json.loads(read_file(filename))["teamdates"]
 
