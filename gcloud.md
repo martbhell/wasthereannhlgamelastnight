@@ -41,29 +41,18 @@ not all is relevant anymore or has changed, but do pay attention to:
  - gcloud config set project $name
 ## Twitter
 
-### Python2
+Create these files in the bucket
 
-if deploying to a clean datastore/appengine remember to modify env_variables.yml.enc and upload it manually to the datastore (you'll need to exclude it from .gcloudignore file)
-
-it should be extracted to env_variables.yml into src/ directory as that's where app.yaml tries to include it to get some twitter API keys
-
-The format of env_variables.yaml is:
-
-```
-env_variables:
-  API_KEY: "key"
-  API_SECRET_KEY:
-  ACCESS_TOKEN:
-  ACCESS_SECRET_TOKEN:
-```
-
-### Python3
+  - API_KEY.TXT
+  - API_SECRET_KEY.TXT
+  - ACCESS_TOKEN.TXT
+  - ACCESS_SECRET_TOKEN.TXT
 
 https://cloud.google.com/appengine/docs/standard/python3/configuration-files does not mention includes: 
 
 Googling told me using GCS or one could even play with Google KMS https://cloud.google.com/security-key-management for extra Fun!
 
-Files created in GCS with names "API_KEY.TXT" and that specific file extensions turns them into "text/plain" content type
+Files created in GCS with names "API_KEY.TXT" and that specific file extensions turns them into "text/plain" content type. Make sure you create the files like `echo -n SECRET > API_KEY.TXT` or you might end up with newlines in the file.
 
 To test the notifications:
 - download the schedule

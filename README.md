@@ -116,8 +116,8 @@ TODO / Known issues
    * performance testing
    * lint javascript,css,html
    * lint python <a href="https://github.com/martbhell/wasthereannhlgamelastnight/issues/16">#16</a>
- * Some string formatting still done in uncool way
- * Use <a href="https://cloud.google.com/security-key-management">Google KMS</a> For storing Secrets </a>
+ * Use <a href="https://cloud.google.com/security-key-management">Google KMS</a> For Encrypting Secrets </a>
+   * Twitter Keys are stored in a private bucket
 
 Source
 ======
