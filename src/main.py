@@ -478,6 +478,7 @@ def send_an_email(message, twitter=False):
     if twitter:
         # Files uploaded manually, content unquoted
         # These are strings
+        # Beware of newlines
         foo = read_file("FOO.TXT")
         logging.info(foo)
         logging.info(type(foo))
@@ -487,10 +488,9 @@ def send_an_email(message, twitter=False):
             logging.error(
                 "There's a newline in your twitter API_KEY, doubt that should be in there"
             )
-            return False
-        api_secret_key = read_file("API_SECRET_KEY.TXT").strip()
-        access_token = read_file("ACCESS_TOKEN.TXT").strip()
-        access_token_secret = read_file("ACCESS_TOKEN_SECRET.TXT").strip()
+        api_secret_key = read_file("API_SECRET_KEY.TXT")
+        access_token = read_file("ACCESS_TOKEN.TXT")
+        access_token_secret = read_file("ACCESS_TOKEN_SECRET.TXT")
 
         # Authenticate to Twitter
         auth = tweepy.OAuthHandler(api_key, api_secret_key)
