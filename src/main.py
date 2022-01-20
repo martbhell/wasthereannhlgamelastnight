@@ -203,6 +203,7 @@ def update_schedule():
             logging.info(f"Changes: {changes}")
             create_file(filename, content)
             create_file(updated_filename, FOR_UPDATED)
+            last_updated = read_file(updated_filename)
             # Only send notifications outside playoffs
             #  (potential spoilers - games are removed from the schedule)
             if CURRENT_MONTH < 4 or CURRENT_MONTH > 6:
@@ -477,10 +478,19 @@ def send_an_email(message, twitter=False):
     if twitter:
         # Files uploaded manually, content unquoted
         # These are strings
+        foo = read_file("FOO.TXT")
+        logging.info(foo)
+        logging.info(type(foo))
+        logging.info(str(foo))
         api_key = read_file("API_KEY.TXT")
-        api_secret_key = read_file("API_SECRET_KEY.TXT")
-        access_token = read_file("ACCESS_TOKEN.TXT")
-        access_token_secret = read_file("ACCESS_TOKEN_SECRET.TXT")
+        if "\n" in api_key:
+            logging.error(
+                "There's a newline in your twitter API_KEY, doubt that should be in there"
+            )
+            return False
+        api_secret_key = read_file("API_SECRET_KEY.TXT").strip()
+        access_token = read_file("ACCESS_TOKEN.TXT").strip()
+        access_token_secret = read_file("ACCESS_TOKEN_SECRET.TXT").strip()
 
         # Authenticate to Twitter
         auth = tweepy.OAuthHandler(api_key, api_secret_key)
