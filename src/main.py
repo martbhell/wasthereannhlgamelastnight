@@ -479,10 +479,9 @@ def send_an_email(message, twitter=False):
         # Files uploaded manually, content unquoted
         # These are strings
         # Beware of newlines
-        foo = read_file("FOO.TXT")
-        logging.info(foo)
-        logging.info(type(foo))
-        logging.info(str(foo))
+        testfile = read_file("FOO.TXT")
+        logging.info(testfile)
+        logging.info(type(testfile))
         api_key = read_file("API_KEY.TXT")
         if "\n" in api_key:
             logging.error(
