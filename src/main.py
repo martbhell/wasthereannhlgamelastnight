@@ -138,12 +138,8 @@ def update_schedule():
 
     # default bucket is in this format: project-id.appspot.com
     # https://cloud.google.com/appengine/docs/standard/python3/using-cloud-storage
-    if VERSION == "None":
-        filename = "py3_schedule"
-        updated_filename = "py3_updated_schedule"
-    else:
-        filename = "py3_schedule_" + VERSION
-        updated_filename = "py3_updated_schedule_" + VERSION
+    filename = "py3_schedule_" + VERSION
+    updated_filename = "py3_updated_schedule_" + VERSION
 
     logging.info(f"Using filename {filename} and updated_filename {updated_filename}")
 
@@ -505,7 +501,7 @@ def send_an_email(message, twitter=False):
         #    api.update_status(real_message)
         # else:
         api.update_status(
-            "#NHL schedule updated on https://wtangy.se - did your team play last night? Try out https://wtangy.se/DETROIT"
+            "#NHL {{ VERSION }} schedule updated on https://wtangy.se - did your team play last night? Try out https://wtangy.se/DETROIT"
         )
         logging.info("Tweeted and message size was %s", msgsize)
 
