@@ -124,7 +124,7 @@ Source
 
 <a href="gcloud.md">gcloud</a> - reminders for myself.
 
-Forked from https://github.com/amanjeev/isitfridaythe13th because it had the google appspot already in it and python :) Thanks!
+Forked from https://github.com/amanjeev/isitfridaythe13th because it had the google appspot already in it and python :) Thanks! In 2022 this fork was extracted/detached because the upstream Friday 13 had been archived and because one couldn't change pull requests to by default target the wtangy repo.
 
 wasthereannhlgamelastnight(..) has been re-written a few times - it's no longer even close to the isitfridaythe13th, for example:
  - it now uses webapp2 for example instead of python print to stdout.
