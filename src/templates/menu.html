@@ -34,7 +34,7 @@
     <body style="text-align: center; padding-top: 5px;">
 
 		<!-- The Boxes -->
-        <div id="wrapper" class="wrapper">'
+        <div id="wrapper" class="wrapper">
 	    {% for team in allteams -%}
 	        <a href="/{{ team }}" class="{{ team }}" title="{{ reallyallteams[team] }}" onClick="saveTeam('{{ team }}')"><div>{{ team }}</div></a>
 	    {% endfor %}
