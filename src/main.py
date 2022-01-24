@@ -61,8 +61,10 @@ def the_root(var1=False, var2=False):
 
     team1 = None
     date1 = None
+    logging.info(f"var1 {var1} var2 {var2}")
 
     for arg in [var1, var2]:
+        # NHLHelpers we in some dicts replace spaces (%20) with "" .. hmm.
         if nhlhelpers.get_team(arg):
             team1 = arg
             # If we have a team set tomorrowurl like /teamname/date
@@ -74,6 +76,7 @@ def the_root(var1=False, var2=False):
                 date1, "%Y-%m-%d"
             ) + datetime.timedelta(days=1)
             tomorrow1 = tomorrow.strftime("%Y%m%d")
+            tomorrowurl = f"/{tomorrow1}"  # Used by the right-arrow on index.html
     # If we have a good team and date we have both in tomorrowurl
     if team1 and date1:
         tomorrowurl = f"/{team1}/{tomorrow1}"
