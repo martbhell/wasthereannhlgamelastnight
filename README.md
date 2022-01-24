@@ -111,6 +111,7 @@ TODO / Known issues
  * dynamically generate a sitemap.xml
  * Réal Names of cities:
    * querying St. Louis Blues (so with the .) is currently working. Without the dot and spaces does not work.
+   * also entering teams or cities with spaces does not work, like <a href="/New York Islanders">New York Islanders</a>
  * improve testing
    * update schedule_testing and then verify it / validate json
    * performance testing
