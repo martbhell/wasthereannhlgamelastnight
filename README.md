@@ -94,7 +94,9 @@ It also worked for 2020-21 playoffs :)
 
 Currently the script doesn't differentiate between playoffs and regular seasons.
 
-It just takes the dates from NHL.com's <a href="https://statsapi.web.nhl.com/api/v1/schedule?startDate=2017-10-04&endDate=2017-10-22">API</a>. There are more arguments to this API that I have not found any documentation for. Here's one result from google searches:
+It just takes the dates from NHL.com's <a href="https://statsapi.web.nhl.com/api/v1/schedule?startDate=2017-10-04&endDate=2017-10-22">API</a>. There are more arguments to this API that I have not found any official documentation for. There is however This great resource: https://gitlab.com/dword4/nhlapi
+
+ Here's one result from google searches:
 <pre>
 https://statsapi.web.nhl.com/api/v1/schedule/startDate=2016-01-31&endDate=2016-02-05?expand=schedule.teams,schedule.linescore,schedule.broadcasts,schedule.ticket,schedule.game.content.media.epg&leaderCategories=&site=en_nhl&teamId=&
 </pre>
