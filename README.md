@@ -110,9 +110,7 @@ TODO / Known issues
  * add a calendar selection too near the menu?
  * dynamically generate a sitemap.xml
  * Réal Names of cities:
-   * querying Montréal Canadiens (so with the acute accent) is not currently working. Before <a href="https://github.com/martbhell/wasthereannhlgamelastnight/issues/9">#9</a> MTL did not work at all
-   * querying St. Louis Blues (so with the .) is not currently working. Without the dot and spaces work.
-   * Ideally we would use the real names and not remove bad chars in the schedule ( in update_schedule.py )
+   * querying St. Louis Blues (so with the .) is currently working. Without the dot and spaces does not work.
  * improve testing
    * update schedule_testing and then verify it / validate json
    * performance testing

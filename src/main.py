@@ -7,6 +7,7 @@ import json
 import logging
 from urllib.request import urlopen
 import tweepy
+from device_detector import DeviceDetector
 from jsondiff import diff
 from flask import request
 from flask import Flask, render_template, make_response
@@ -14,7 +15,6 @@ from google.cloud import storage
 import google.cloud.logging
 from google.auth.exceptions import DefaultCredentialsError
 from google.api_core.exceptions import NotFound
-from device_detector import DeviceDetector
 import nhlhelpers
 
 # https://cloud.google.com/datastore/docs/reference/libraries#client-libraries-usage-python
@@ -545,9 +545,10 @@ def parse_schedule(jsondata):
         for game in games:
             twoteams = []
             teams = game["teams"]
-            # sorry, you can't query montre(withaccent)alcanadiens, all the hard coded bits in the main parser
-            #  wasthereannhlgamelastnight.py has MTL without the acute accent
-            # Silmarillionly, mainparser has St Louis Blues, not St. Louis Blues as in the NHL schema
+            # Montréal and St. Louis Blues are added into the get_team() function
+            #  So if someone enters it, it works
+            # But the lookups are then later done with "MTL" or "STL" respectively,
+            #  and in some places with "Montreal Canadiens".
             twoteams.append(
                 teams["away"]["team"]["name"]
                 .replace("Montréal", "Montreal")
