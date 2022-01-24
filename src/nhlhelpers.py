@@ -2,6 +2,7 @@
 
 from __future__ import print_function  # python3
 import datetime
+import logging
 
 
 def yesorno(team, teamdates, date2=None):
@@ -66,29 +67,23 @@ def dateapi(teamdates, team=None, date=None):
     Return false there was not and if date was unparseable
     Take a team and/or a date as arguments"""
 
-    # a date was provided
-    if date:
-        #### Date parsing
-        # Try to make the date provided into the NHL format
-        dateinnhlformat = validatedate(date)
+    # Try to make the date provided into the NHL format
+    dateinnhlformat = validatedate(date)
 
-        # First assume it's only the date and no team
-        if (dateinnhlformat) and (dateinnhlformat in teamdates):
-            if team is None:
-                # print("F1")
-                # print(f"datenhl: {dateinnhlformat}")
-                print(f"chosen: {team}")
-                return True
-            # if dateinnhlformat exists a date has been chosen
-            # for each list (matchup) at the date chosen
-            for matchup in teamdates[dateinnhlformat]:
-                for combatant in matchup:
-                    if combatant == team:
-                        return True
+    if (dateinnhlformat) and (dateinnhlformat in teamdates) and (team is None):
+        # OK there is a game on that date!
+        logging.info(f"no team: {team} but on date: {date} there was a game")
         return True
-    # print(f"datenhl: {dateinnhlformat}")
-    # print(f"chosen: {team}")
-    # print("G1")
+    if (dateinnhlformat) and (dateinnhlformat in teamdates) and (team is not None):
+        # OK there was a team and good date provided!
+        # if dateinnhlformat exists a date has been chosen
+        # for each list (matchup) at the date chosen
+        for matchup in teamdates[dateinnhlformat]:
+            for combatant in matchup:
+                if combatant == team:
+                    logging.info(f"{team} played on {date}")
+                    return True
+    logging.info(f"boo - no game found for team {team} or date {date}")
     return False
 
 
@@ -140,6 +135,7 @@ def get_city_from_team(cityteam):
 
     # Flip because I'm lazy
     citydict1flip = {value: key for key, value in citydict1.items()}
+    # This means the dict has keys of "Dallas Stars": "dallas"
 
     try:
         return citydict1flip[cityteam]
@@ -301,6 +297,10 @@ def get_team(team):
         "SJ": "SJS",
         "LV": "VGK",
         "LASVEGAS": "VGK",
+        "MONTRÉAL": "MTL",
+        "MONTRÉALCANADIENS": "MTL",
+        "ST. LOUIS": "STL",
+        "ST. LOUIS BLUES": "STL",
     }
 
     # First check if someone put in the proper abbreviation
