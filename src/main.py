@@ -61,15 +61,14 @@ def the_root(var1=False, var2=False):
 
     team1 = None
     date1 = None
-    logging.info(f"var1 {var1} var2 {var2}")
 
     for arg in [var1, var2]:
         # NHLHelpers we in some dicts replace spaces (%20) with "" .. hmm.
-        if nhlhelpers.get_team(arg):
-            team1 = arg
+        if arg and nhlhelpers.get_team(arg.upper().replace(" ", "").replace("%20", "")):
+            team1 = arg.upper().replace(" ", "").replace("%20", "")
             # If we have a team set tomorrowurl like /teamname/date
             tomorrowurl = f"/{team1}/{tomorrow1}"
-        elif nhlhelpers.validatedate(arg):
+        elif arg and nhlhelpers.validatedate(arg):
             date1 = nhlhelpers.validatedate(arg)
             # If an argument is a date we set tomorrow to one day after that
             tomorrow = datetime.datetime.strptime(
@@ -77,6 +76,8 @@ def the_root(var1=False, var2=False):
             ) + datetime.timedelta(days=1)
             tomorrow1 = tomorrow.strftime("%Y%m%d")
             tomorrowurl = f"/{tomorrow1}"  # Used by the right-arrow on index.html
+
+    logging.debug(f"var1: {var1} var2: {var2} team1: {team1} date1: {date1}")
     # If we have a good team and date we have both in tomorrowurl
     if team1 and date1:
         tomorrowurl = f"/{team1}/{tomorrow1}"
@@ -463,8 +464,6 @@ def send_an_email(message, twitter=False):
     # Mail is not available in python3 -- only twitter!
     # Also no implemented way to send the whole change to the Admin
 
-    logging.info("Inside send an e-mail")
-
     real_message = message
     msgsize = get_size(real_message)
     # size of 2019-2020 schedule was 530016, unclear how large the jsondiff was 2018->2019
@@ -478,9 +477,6 @@ def send_an_email(message, twitter=False):
         # Files uploaded manually, content unquoted
         # These are strings
         # Beware of newlines
-        testfile = read_file("FOO.TXT")
-        logging.info(testfile)
-        logging.info(type(testfile))
         api_key = read_file("API_KEY.TXT")
         if "\n" in api_key:
             logging.error(
