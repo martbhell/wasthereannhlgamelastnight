@@ -1,6 +1,5 @@
 """ YES, oor no? """
 
-from __future__ import print_function  # python3
 import datetime
 import logging
 
@@ -24,7 +23,6 @@ def yesorno(team, teamdates, date2=None):
     if chosen_team is None and date2 is None:
         for date in teamdates:
             if yesterday == date:
-                # print("D1")
                 return True
 
     if date2 is None:
@@ -72,7 +70,7 @@ def dateapi(teamdates, team=None, date=None):
 
     if (dateinnhlformat) and (dateinnhlformat in teamdates) and (team is None):
         # OK there is a game on that date!
-        logging.info(f"no team: {team} but on date: {date} there was a game")
+        logging.debug(f"no team: {team} but on date: {date} there was a game")
         return True
     if (dateinnhlformat) and (dateinnhlformat in teamdates) and (team is not None):
         # OK there was a team and good date provided!
@@ -81,9 +79,9 @@ def dateapi(teamdates, team=None, date=None):
         for matchup in teamdates[dateinnhlformat]:
             for combatant in matchup:
                 if combatant == team:
-                    logging.info(f"{team} played on {date}")
+                    logging.debug(f"{team} played on {date}")
                     return True
-    logging.info(f"boo - no game found for team {team} or date {date}")
+    logging.debug(f"boo - no game found for team {team} or date {date}")
     return False
 
 
