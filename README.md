@@ -43,6 +43,10 @@ case insensitive:
  * https://wtangy.se/nyrangers
  * https://wtangy.se/Vgk
  * https://wtangy.se/newyorkrangers
+ * https://wtangy.se/new york rangers
+ * https://wtangy.se/New%20Jersey%20Devils
+ * https://wtangy.se/Montréal
+ * https://wtangy.se/St. Louis Blues
  * https://wtangy.se/20171222
  * https://wtangy.se/22-12-2017
  * https://wtangy.se/22-12-2017/DET
@@ -57,6 +61,7 @@ What do these mean?
  * *Choosing a date means you only get YES if there is a game on _that_ date.*
  * *Choosing a team and a date you only get YES if the chosen team plays/played on that date.*
  * *Choosing a team incorrectly and a date correctly you only get YES if there was/is a game on that date*
+ * *Choosing a team correctly and a date incorrectly you get a big NO*
 
 There's also:
 
@@ -109,9 +114,6 @@ TODO / Known issues
  * games include preseason - if this is a problem let me know!
  * add a calendar selection too near the menu?
  * dynamically generate a sitemap.xml
- * Réal Names of cities:
-   * querying St. Louis Blues (so with the .) is currently working. Without the dot and spaces does not work.
-   * also entering teams or cities with spaces does not work, like <a href="/New York Islanders">New York Islanders</a>
  * improve testing
    * update schedule_testing and then verify it / validate json
    * performance testing
