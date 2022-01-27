@@ -1,4 +1,4 @@
 cron:
 - description: update schedule
-  url: /update_schedule
+  url: /update_schedule?cron
   schedule: every 6 hours
