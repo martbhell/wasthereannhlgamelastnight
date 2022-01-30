@@ -500,7 +500,7 @@ def send_an_email(message, twitter=False):
         #    api.update_status(real_message)
         # else:
         veri = "testing"
-        if VERSION == 'master':
+        if VERSION == "master":
             veri = "main"
         api.update_status(
             f"#NHL {veri} schedule updated on https://wtangy.se - did your team play last night? Try out https://wtangy.se/DETROIT"
