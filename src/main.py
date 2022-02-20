@@ -115,7 +115,7 @@ def the_root(var1=False, var2=False):
     else:
         return render_template("cli.html", yesorno="HMM")
     if device.is_bot():
-        return render_template("cli.html", yesorno="NO"), 500
+        return render_template("cli.html", yesorno="NO"), 406
 
     ### The YES/NO logic:
     yesorno = "NO"
