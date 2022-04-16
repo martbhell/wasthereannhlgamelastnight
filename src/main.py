@@ -209,6 +209,10 @@ def update_schedule():
             if CURRENT_MONTH < 4 or CURRENT_MONTH > 6:
                 logging.info("Sending an update notification")
                 send_an_email(diff(json.loads(old_content), json.loads(content)), True)
+            else:
+                logging.info(
+                    "Would have sent an update notification, but it might be playoff folks!"
+                )
             return (
                 render_template(
                     "update_schedule.html",
