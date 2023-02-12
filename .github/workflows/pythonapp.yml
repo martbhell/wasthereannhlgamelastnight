@@ -1,6 +1,6 @@
 name: Testing WTANGY.SE
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   build:
@@ -22,7 +22,7 @@ jobs:
     - name: Lint with pylint
       run: |
         pylint --version
-        pylint --rcfile=pylintrc src/!(test_update).py *.py
+        pylint --rcfile=pylintrc src/*.py *.py
     - name: Format with black
       run: |
         black --version
