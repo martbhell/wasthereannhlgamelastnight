@@ -1,0 +1,28 @@
+name: Testing WTANGY.SE
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.8
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r src/requirements.txt
+    - run: pip test
+    - name: Lint with pylint
+      run: |
+        pylint --version
+        pylint --rcfile=pylintrc src/!(test_update).py *.py
+    - name: Format with black
+      run: |
+        black --version
+        black --diff --check src/*.py *.py
