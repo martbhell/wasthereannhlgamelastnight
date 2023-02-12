@@ -9,6 +9,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      # TODO: Migrate to 3.10 after succesful redeploy with GitHub Actions
     - name: Set up Python 3.8
       uses: actions/setup-python@v4
       with:
@@ -27,3 +28,51 @@ jobs:
       run: |
         black --version
         black --diff --check src/*.py *.py
+    - name: Run e2e_test.py
+      run: python e2e_test.py
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    steps:
+    - uses: actions/checkout@v3
+    - name: Test that it is not completely broken 1
+      run: curl -q https://wtangy.se
+    # TODO: Auth with workload identity federation
+    # https://github.com/google-github-actions/auth#with-workload-identity-federation
+    #
+    #    - id: 'auth'
+    #      name: 'Authenticate to Google Cloud'
+    #      uses: 'google-github-actions/auth@v1'
+    #      with:
+    #        workload_identity_provider:
+    #        service_account:
+    # NOTE: Not decrypting env_variables.yaml.enc only had some twitter secrets?
+    # TODO:
+    #- id: 'deploy_to_test'
+    #  uses: 'google-github-actions/deploy-appengine@v1'
+    #  project_id: wasthereannhlgamelastnight
+    #  deliverables: src/app.yaml src/cron.yaml
+    #  version: testing
+    #  promote: True
+    #  env:
+    #    CLOUDSDK_APP_CLOUD_BUILD_TIMEOUT: 1800 # 30 minutes
+    #
+    # TODO:
+    #- id: 'deploy'
+    #  uses: 'google-github-actions/deploy-appengine@v1'
+    #  project_id: wasthereannhlgamelastnight
+    #  deliverables: src/app.yaml src/cron.yaml
+    #  version: master
+    #  promote: True
+    #  env:
+    #    CLOUDSDK_APP_CLOUD_BUILD_TIMEOUT: 1800 # 30 minutes
+    - name: Test that it is not completely broken 2
+      run: curl -q https://wtangy.se
+    - id: 'test'
+      run: 'curl "${{ steps.deploy.outputs.url }}"'
+    # TODO: Remove testing after testing
+    ## gcloud app versions delete testing -q
