@@ -17,7 +17,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r src/requirements.txt
-    - run: pip test
+    - run: pip check
     - name: Lint with pylint
       run: |
         pylint --version
