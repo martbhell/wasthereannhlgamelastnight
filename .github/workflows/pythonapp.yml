@@ -51,36 +51,48 @@ jobs:
 
     - name: 'Set up Cloud SDK so we can run gcloud commands'
       uses: 'google-github-actions/setup-gcloud@v1'
-    - id: 'gcloud'
-      name: 'gcloud'
-      run: |
-        gcloud config list
-    - name: 'Print project id'
-      run: 'echo "${{ steps.auth.outputs.project_id }}"'
-    # NOTE: Not decrypting env_variables.yaml.enc only had some twitter secrets?
+    - run: "gcloud config list"
+    - run: 'echo "${{ steps.auth.outputs.project_id }}"'
+
+    # Test
+
     - id: 'deploy_to_test'
+      name: 'Deploy to Test'
+      uses: 'google-github-actions/deploy-appengine@v1'
+      with:
+        project_id: wasthereannhlgamelastnight
+        deliverables: "src/app.yaml src/cron.yaml"
+        version: testing
+        promote: False
+    - run: 'echo "TESTING version_url: ${{ steps.deploy_to_test.outputs.version_url }} is ${{ steps.deploy_to_test.outputs.serving_status }}"'
+
+    # master
+
+    - id: 'deploy'
+      name: 'Deploy to Prod'
       uses: 'google-github-actions/deploy-appengine@v1'
       with:
         project_id: wasthereannhlgamelastnight
         deliverables: src/app.yaml src/cron.yaml
-        version: testing
-        promote: False
+        version: master
+        promote: True
+    - name: "Test that it is not completely broken after deployment"
+      run: "curl -q https://wtangy.se"
+    - run: 'echo "PROD version_url: ${{ steps.deploy.outputs.version_url }} is ${{ steps.deploy.outputs.serving_status }}"'
 
-    # TODO:
-    #- id: 'deploy'
-    #  uses: 'google-github-actions/deploy-appengine@v1'
-    #  with:
-    #    project_id: wasthereannhlgamelastnight
-    #    deliverables: src/app.yaml src/cron.yaml
-    #    version: master
-    #    promote: True
-    #  env:
-    #    CLOUDSDK_APP_CLOUD_BUILD_TIMEOUT: 1800 # 30 minutes
-    - name: Test that it is not completely broken 2
-      run: curl -q https://wtangy.se
-    - name: 'Print version_url'
-      run: 'echo "${{ steps.deploy_to_test.outputs.version_url }}"'
-    - name: 'Print serving_status'
-      run: 'echo "${{ steps.deploy_to_test.outputs.serving_status }}"'
-    # TODO: Remove testing after testing
-    ## gcloud app versions delete testing -q
+    - name: Remove testing ater testing to reduce cost
+      run: "gcloud app versions delete --project wasthereannhlgamelastnight testing"
+
+  final_final_test:
+    needs: deploy
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.10
+    - name: Run e2e_test.py
+      run: python e2e_test.py
+
