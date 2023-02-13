@@ -16,6 +16,7 @@ from urllib.request import urlopen
 import sys  # control exit codes
 import json  # validate json
 import datetime  # figure out year to have dynamic year testing
+import argparse
 
 # this bit should be improvable
 #  https://docs.python.org/3/reference/import.html#regular-packages
@@ -24,6 +25,16 @@ import os
 sys.path.append(os.path.realpath("src/"))
 
 HOST = "https://testing-dot-wasthereannhlgamelastnight.appspot.com"
+
+PARSER = argparse.ArgumentParser(
+    prog="e2e_test",
+    description="Run some requests to wtangy checking that it is still OK",
+)
+
+PARSER.add_argument("--host", help="URL to test, like https://wtangy.se", default=None)
+ARGS = PARSER.parse_args()
+if ARGS.host:
+    HOST = ARGS.host
 
 YESNO = ["YES\n", "NO\n"]
 
