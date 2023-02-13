@@ -39,11 +39,8 @@ jobs:
       id-token: 'write'
     steps:
     - uses: actions/checkout@v3
-    - name: Test that it is not completely broken 1
-      run: curl -q https://wtangy.se
-    # TODO: Auth with workload identity federation
+
     # https://github.com/google-github-actions/auth#with-workload-identity-federation
-    #
     - id: 'auth'
       name: 'Authenticate to Google Cloud'
       uses: 'google-github-actions/auth@v1'
@@ -52,11 +49,8 @@ jobs:
         service_account: "wasthereannhlgamelastnight@appspot.gserviceaccount.com"
         project_id: "wasthereannhlgamelastnight"
 
-    # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
-    - name: 'Set up Cloud SDK'
+    - name: 'Set up Cloud SDK so we can run gcloud commands'
       uses: 'google-github-actions/setup-gcloud@v1'
-
-    # Now you can run gcloud commands authenticated as the impersonated service account.
     - id: 'gcloud'
       name: 'gcloud'
       run: |
@@ -64,16 +58,13 @@ jobs:
     - name: 'Print project id'
       run: 'echo "${{ steps.auth.outputs.project_id }}"'
     # NOTE: Not decrypting env_variables.yaml.enc only had some twitter secrets?
-    # TODO:
-    #- id: 'deploy_to_test'
-    #  uses: 'google-github-actions/deploy-appengine@v1'
-    #  project_id: wasthereannhlgamelastnight
-    #  deliverables: src/app.yaml src/cron.yaml
-    #  version: testing
-    #  promote: True
-    #  env:
-    #    CLOUDSDK_APP_CLOUD_BUILD_TIMEOUT: 1800 # 30 minutes
-    #
+    - id: 'deploy_to_test'
+      uses: 'google-github-actions/deploy-appengine@v1'
+      project_id: wasthereannhlgamelastnight
+      deliverables: src/app.yaml src/cron.yaml
+      version: testing
+      promote: False
+
     # TODO:
     #- id: 'deploy'
     #  uses: 'google-github-actions/deploy-appengine@v1'
@@ -85,7 +76,9 @@ jobs:
     #    CLOUDSDK_APP_CLOUD_BUILD_TIMEOUT: 1800 # 30 minutes
     - name: Test that it is not completely broken 2
       run: curl -q https://wtangy.se
-    - id: 'test'
-      run: 'curl "${{ steps.deploy.outputs.url }}"'
+    - name: 'Print version_url'
+      run: 'echo "${{ steps.deploy_to_test.outputs.version_url }}"'
+    - name: 'Print serving_status'
+      run: 'echo "${{ steps.deploy_to_test.outputs.serving_status }}"'
     # TODO: Remove testing after testing
     ## gcloud app versions delete testing -q
