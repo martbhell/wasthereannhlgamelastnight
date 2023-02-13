@@ -31,6 +31,8 @@ jobs:
     - name: Run e2e_test.py
       run: python e2e_test.py
 
+  #
+
   deploy_test:
     needs: build
     runs-on: ubuntu-latest
@@ -63,6 +65,8 @@ jobs:
         version: testing
         promote: False
     - run: 'echo "TESTING version_url: ${{ steps.deploy_to_test.outputs.version_url }} is ${{ steps.deploy_to_test.outputs.serving_status }}"'
+
+  #
 
   deploy_prod_on_merge:
     needs: deploy_test
@@ -102,11 +106,26 @@ jobs:
       run: "curl -q https://wtangy.se"
     - run: 'echo "PROD version_url: ${{ steps.deploy.outputs.version_url }} is ${{ steps.deploy.outputs.serving_status }}"'
 
-    - name: Remove testing after testing to reduce cost
+    - name: Remove testing after prod deployment to reduce cost
       run: "gcloud app versions delete --project wasthereannhlgamelastnight testing"
+
+  # Some e2e tests at the end
 
   final_final_test:
     needs: deploy_test
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+    - name: e2e_test.py testing at the end
+      run: "python e2e_test.py"
+
+  final_final_prod:
+    needs: deploy_prod
     runs-on: ubuntu-latest
 
     steps:
