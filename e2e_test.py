@@ -44,7 +44,7 @@ YESNODATES = [
     "",
     "WINGS",
     "Lak",
-    "travis_e2e_test",
+    "github_action_e2e_test",
 ]
 
 # First we define two special URIs where we do some extra testing

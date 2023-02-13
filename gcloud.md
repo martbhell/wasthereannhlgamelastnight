@@ -3,6 +3,12 @@ Backend / Development notes
 
 https://cloud.google.com/sdk/docs/quickstart-debian-ubuntu
 
+Authenticating inside WSL2 needed:
+
+`DISPLAY=":0" gcloud auth login`
+
+https://stackoverflow.com/questions/71531247/error-while-trying-to-authenticate-with-gcloud-init
+
 because I forget:
 
 not keeping the testing instance running when it's not necessary, for manual development:
@@ -61,3 +67,13 @@ To test the notifications:
 - run /update_schedule
 
 Or use test_tweepy.py and set bash environment variables
+
+## GitHub actions
+
+Setup auth:
+
+https://github.com/google-github-actions/auth#setup
+
+- Enable Credentials API
+
+Add stuff in .github/workflows
