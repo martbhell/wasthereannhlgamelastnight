@@ -71,7 +71,7 @@ jobs:
   #
 
   deploy_prod_on_merge:
-    needs: deploy_test
+    needs: final_final_test
     runs-on: ubuntu-latest
     permissions:
       contents: 'read'
