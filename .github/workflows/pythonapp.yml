@@ -40,17 +40,7 @@ jobs:
       contents: 'read'
       id-token: 'write'
     uses: "./.github/workflows/reusable-workflow.yml"
-
-    steps:
-    - id: 'deploy_to_test'
-      name: 'Deploy to Test'
-      uses: 'google-github-actions/deploy-appengine@v1'
-      with:
-        project_id: wasthereannhlgamelastnight
-        deliverables: "src/app.yaml src/cron.yaml"
-        version: testing
-        promote: False
-    - run: 'echo "TESTING version_url: ${{ steps.deploy_to_test.outputs.version_url }} is ${{ steps.deploy_to_test.outputs.serving_status }}"'
+    uses: "./.github/workflows/reusable-workflow_deploy_test.yml"
 
   #
 
@@ -61,27 +51,9 @@ jobs:
       contents: 'read'
       id-token: 'write'
     uses: "./.github/workflows/reusable-workflow.yml"
+    uses: "./.github/workflows/reusable-workflow_deploy_prod.yml"
 
     if: github.event.pull_request.merged == true
-
-    # master
-
-    steps:
-
-    - id: 'deploy'
-      name: 'Deploy to Prod'
-      uses: 'google-github-actions/deploy-appengine@v1'
-      with:
-        project_id: wasthereannhlgamelastnight
-        deliverables: src/app.yaml src/cron.yaml
-        version: master
-        promote: True
-    - name: "Test that it is not completely broken after deployment"
-      run: "curl -q https://wtangy.se"
-    - run: 'echo "PROD version_url: ${{ steps.deploy.outputs.version_url }} is ${{ steps.deploy.outputs.serving_status }}"'
-
-    - name: Remove testing after prod deployment to reduce cost
-      run: "gcloud app versions delete --project wasthereannhlgamelastnight testing"
 
   # Some e2e tests at the end
 

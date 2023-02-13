@@ -1,0 +1,24 @@
+name: Reusable Workflow with Test Deployment
+
+on:
+  workflow_call:
+
+jobs:
+  reusable_workflow_job_test_deploy:
+
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+    - id: 'deploy_to_test'
+      name: 'Deploy to Test'
+      uses: 'google-github-actions/deploy-appengine@v1'
+      with:
+        project_id: wasthereannhlgamelastnight
+        deliverables: "src/app.yaml src/cron.yaml"
+        version: testing
+        promote: False
+    - run: 'echo "TESTING version_url: ${{ steps.deploy_to_test.outputs.version_url }} is ${{ steps.deploy_to_test.outputs.serving_status }}"'
