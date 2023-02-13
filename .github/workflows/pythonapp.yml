@@ -50,6 +50,7 @@ jobs:
       with:
         workload_identity_provider: "projects/210229919199/locations/global/workloadIdentityPools/wtangy-pool/providers/my-provider"
         service_account: "wasthereannhlgamelastnight@appspot.gserviceaccount.com"
+        project_id: "wasthereannhlgamelastnight"
 
     # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
     - name: 'Set up Cloud SDK'
