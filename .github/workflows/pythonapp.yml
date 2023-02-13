@@ -40,7 +40,21 @@ jobs:
       contents: 'read'
       id-token: 'write'
     steps:
-    - uses: "./.github/workflows/reusable-workflow.yml"
+    - uses: actions/checkout@v3
+
+    # https://github.com/google-github-actions/auth#with-workload-identity-federation
+    - id: 'auth'
+      name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v1'
+      with:
+        workload_identity_provider: "projects/210229919199/locations/global/workloadIdentityPools/wtangy-pool/providers/my-provider"
+        service_account: "wasthereannhlgamelastnight@appspot.gserviceaccount.com"
+        project_id: "wasthereannhlgamelastnight"
+
+    - name: 'Set up Cloud SDK so we can run gcloud commands'
+      uses: 'google-github-actions/setup-gcloud@v1'
+    - run: "gcloud config list"
+    - run: 'echo "${{ steps.auth.outputs.project_id }}"'
 
     - id: 'deploy_to_test'
       name: 'Deploy to Test'
@@ -64,7 +78,19 @@ jobs:
     if: github.event.pull_request.merged == true
 
     steps:
-    - uses: "./.github/workflows/reusable-workflow.yml"
+    - uses: actions/checkout@v3
+
+    - id: 'auth'
+      name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v1'
+      with:
+        workload_identity_provider: "projects/210229919199/locations/global/workloadIdentityPools/wtangy-pool/providers/my-provider"
+        service_account: "wasthereannhlgamelastnight@appspot.gserviceaccount.com"
+        project_id: "wasthereannhlgamelastnight"
+
+    - name: 'Set up Cloud SDK so we can run gcloud commands'
+      uses: 'google-github-actions/setup-gcloud@v1'
+    - run: "gcloud config list"
 
     # master
 
@@ -99,7 +125,7 @@ jobs:
       run: "python e2e_test.py"
 
   final_final_prod:
-    needs: deploy_prod_on_merge
+    needs: deploy_prod
     runs-on: ubuntu-latest
 
     steps:
