@@ -19,12 +19,12 @@ These are *not* part of the API.
 
 import base64
 from hashlib import md5
-from datetime import datetime
 import os
+from urllib.parse import urlsplit
+from uuid import uuid4
 
-from six import string_types
-from six.moves.urllib.parse import urlsplit
 from google import resumable_media
+from google.auth import environment_vars
 from google.cloud.storage.constants import _DEFAULT_TIMEOUT
 from google.cloud.storage.retry import DEFAULT_RETRY
 from google.cloud.storage.retry import DEFAULT_RETRY_IF_METAGENERATION_SPECIFIED
@@ -33,7 +33,19 @@ from google.cloud.storage.retry import DEFAULT_RETRY_IF_METAGENERATION_SPECIFIED
 STORAGE_EMULATOR_ENV_VAR = "STORAGE_EMULATOR_HOST"
 """Environment variable defining host for Storage emulator."""
 
-_DEFAULT_STORAGE_HOST = u"https://storage.googleapis.com"
+_API_ENDPOINT_OVERRIDE_ENV_VAR = "API_ENDPOINT_OVERRIDE"
+"""This is an experimental configuration variable. Use api_endpoint instead."""
+
+_API_VERSION_OVERRIDE_ENV_VAR = "API_VERSION_OVERRIDE"
+"""This is an experimental configuration variable used for internal testing."""
+
+_DEFAULT_STORAGE_HOST = os.getenv(
+    _API_ENDPOINT_OVERRIDE_ENV_VAR, "https://storage.googleapis.com"
+)
+"""Default storage host for JSON API."""
+
+_API_VERSION = os.getenv(_API_VERSION_OVERRIDE_ENV_VAR, "v1")
+"""API version of the default storage host"""
 
 # etag match parameters in snake case and equivalent header
 _ETAG_MATCH_PARAMETERS = (
@@ -62,6 +74,13 @@ _NUM_RETRIES_MESSAGE = (
 
 def _get_storage_host():
     return os.environ.get(STORAGE_EMULATOR_ENV_VAR, _DEFAULT_STORAGE_HOST)
+
+
+def _get_environ_project():
+    return os.getenv(
+        environment_vars.PROJECT,
+        os.getenv(environment_vars.LEGACY_PROJECT),
+    )
 
 
 def _validate_name(name):
@@ -453,20 +472,6 @@ def _base64_md5hash(buffer_object):
     return base64.b64encode(digest_bytes)
 
 
-def _convert_to_timestamp(value):
-    """Convert non-none datetime to timestamp.
-
-    :type value: :class:`datetime.datetime`
-    :param value: The datetime to convert.
-
-    :rtype: int
-    :returns: The timestamp.
-    """
-    utc_naive = value.replace(tzinfo=None) - value.utcoffset()
-    mtime = (utc_naive - datetime(1970, 1, 1)).total_seconds()
-    return mtime
-
-
 def _add_etag_match_headers(headers, **match_parameters):
     """Add generation match parameters into the given parameters list.
 
@@ -480,7 +485,7 @@ def _add_etag_match_headers(headers, **match_parameters):
         value = match_parameters.get(snakecase_name)
 
         if value is not None:
-            if isinstance(value, string_types):
+            if isinstance(value, str):
                 value = [value]
             headers[header_name] = ", ".join(value)
 
@@ -522,14 +527,12 @@ def _raise_if_more_than_one_set(**kwargs):
     :raises: :class:`~ValueError` containing the fields that were set
     """
     if sum(arg is not None for arg in kwargs.values()) > 1:
-        escaped_keys = ["'%s'" % name for name in kwargs.keys()]
+        escaped_keys = [f"'{name}'" for name in kwargs.keys()]
 
         keys_but_last = ", ".join(escaped_keys[:-1])
         last_key = escaped_keys[-1]
 
-        msg = "Pass at most one of {keys_but_last} and {last_key}".format(
-            keys_but_last=keys_but_last, last_key=last_key
-        )
+        msg = f"Pass at most one of {keys_but_last} and {last_key}"
 
         raise ValueError(msg)
 
@@ -551,7 +554,7 @@ def _bucket_bound_hostname_url(host, scheme=None):
     if url_parts.scheme and url_parts.netloc:
         return host
 
-    return "{scheme}://{host}/".format(scheme=scheme, host=host)
+    return f"{scheme}://{host}"
 
 
 def _api_core_retry_to_resumable_media_retry(retry, num_retries=None):
@@ -586,3 +589,29 @@ def _api_core_retry_to_resumable_media_retry(retry, num_retries=None):
         return resumable_media.RetryStrategy(max_retries=num_retries)
     else:
         return resumable_media.RetryStrategy(max_retries=0)
+
+
+def _get_invocation_id():
+    return "gccl-invocation-id/" + str(uuid4())
+
+
+def _get_default_headers(
+    user_agent,
+    content_type="application/json; charset=UTF-8",
+    x_upload_content_type=None,
+):
+    """Get the headers for a request.
+
+    Args:
+        user_agent (str): The user-agent for requests.
+    Returns:
+        Dict: The headers to be used for the request.
+    """
+    return {
+        "Accept": "application/json",
+        "Accept-Encoding": "gzip, deflate",
+        "User-Agent": user_agent,
+        "X-Goog-API-Client": f"{user_agent} {_get_invocation_id()}",
+        "content-type": content_type,
+        "x-upload-content-type": x_upload_content_type or content_type,
+    }

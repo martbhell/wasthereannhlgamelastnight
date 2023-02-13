@@ -18,10 +18,8 @@ import base64
 import copy
 import datetime
 import json
+from urllib.parse import urlsplit
 import warnings
-
-import six
-from six.moves.urllib.parse import urlsplit
 
 from google.api_core import datetime_helpers
 from google.cloud._helpers import _datetime_to_rfc3339
@@ -165,10 +163,18 @@ class LifecycleRuleConditions(dict):
                     rule action to versioned items with at least one newer
                     version.
 
+    :type matches_prefix: list(str)
+    :param matches_prefix: (Optional) Apply rule action to items which
+                                  any prefix matches the beginning of the item name.
+
     :type matches_storage_class: list(str), one or more of
                                  :attr:`Bucket.STORAGE_CLASSES`.
-    :param matches_storage_class: (Optional) Apply rule action to items which
+    :param matches_storage_class: (Optional) Apply rule action to items
                                   whose storage class matches this value.
+
+    :type matches_suffix: list(str)
+    :param matches_suffix: (Optional) Apply rule action to items which
+                                  any suffix matches the end of the item name.
 
     :type number_of_newer_versions: int
     :param number_of_newer_versions: (Optional) Apply rule action to versioned
@@ -213,6 +219,8 @@ class LifecycleRuleConditions(dict):
         custom_time_before=None,
         days_since_noncurrent_time=None,
         noncurrent_time_before=None,
+        matches_prefix=None,
+        matches_suffix=None,
         _factory=False,
     ):
         conditions = {}
@@ -238,14 +246,20 @@ class LifecycleRuleConditions(dict):
         if custom_time_before is not None:
             conditions["customTimeBefore"] = custom_time_before.isoformat()
 
-        if not _factory and not conditions:
-            raise ValueError("Supply at least one condition")
-
         if days_since_noncurrent_time is not None:
             conditions["daysSinceNoncurrentTime"] = days_since_noncurrent_time
 
         if noncurrent_time_before is not None:
             conditions["noncurrentTimeBefore"] = noncurrent_time_before.isoformat()
+
+        if matches_prefix is not None:
+            conditions["matchesPrefix"] = matches_prefix
+
+        if matches_suffix is not None:
+            conditions["matchesSuffix"] = matches_suffix
+
+        if not _factory and not conditions:
+            raise ValueError("Supply at least one condition")
 
         super(LifecycleRuleConditions, self).__init__(conditions)
 
@@ -281,9 +295,19 @@ class LifecycleRuleConditions(dict):
         return self.get("isLive")
 
     @property
+    def matches_prefix(self):
+        """Conditon's 'matches_prefix' value."""
+        return self.get("matchesPrefix")
+
+    @property
     def matches_storage_class(self):
         """Conditon's 'matches_storage_class' value."""
         return self.get("matchesStorageClass")
+
+    @property
+    def matches_suffix(self):
+        """Conditon's 'matches_suffix' value."""
+        return self.get("matchesSuffix")
 
     @property
     def number_of_newer_versions(self):
@@ -325,7 +349,7 @@ class LifecycleRuleDelete(dict):
     def __init__(self, **kw):
         conditions = LifecycleRuleConditions(**kw)
         rule = {"action": {"type": "Delete"}, "condition": dict(conditions)}
-        super(LifecycleRuleDelete, self).__init__(rule)
+        super().__init__(rule)
 
     @classmethod
     def from_api_repr(cls, resource):
@@ -358,7 +382,7 @@ class LifecycleRuleSetStorageClass(dict):
             "action": {"type": "SetStorageClass", "storageClass": storage_class},
             "condition": dict(conditions),
         }
-        super(LifecycleRuleSetStorageClass, self).__init__(rule)
+        super().__init__(rule)
 
     @classmethod
     def from_api_repr(cls, resource):
@@ -367,11 +391,43 @@ class LifecycleRuleSetStorageClass(dict):
         :type resource: dict
         :param resource: mapping as returned from API call.
 
-        :rtype: :class:`LifecycleRuleDelete`
+        :rtype: :class:`LifecycleRuleSetStorageClass`
         :returns: Instance created from resource.
         """
         action = resource["action"]
         instance = cls(action["storageClass"], _factory=True)
+        instance.update(resource)
+        return instance
+
+
+class LifecycleRuleAbortIncompleteMultipartUpload(dict):
+    """Map a rule aborting incomplete multipart uploads of matching items.
+
+    The "age" lifecycle condition is the only supported condition for this rule.
+
+    :type kw: dict
+    :params kw: arguments passed to :class:`LifecycleRuleConditions`.
+    """
+
+    def __init__(self, **kw):
+        conditions = LifecycleRuleConditions(**kw)
+        rule = {
+            "action": {"type": "AbortIncompleteMultipartUpload"},
+            "condition": dict(conditions),
+        }
+        super().__init__(rule)
+
+    @classmethod
+    def from_api_repr(cls, resource):
+        """Factory:  construct instance from resource.
+
+        :type resource: dict
+        :param resource: mapping as returned from API call.
+
+        :rtype: :class:`LifecycleRuleAbortIncompleteMultipartUpload`
+        :returns: Instance created from resource.
+        """
+        instance = cls(_factory=True)
         instance.update(resource)
         return instance
 
@@ -617,7 +673,7 @@ class Bucket(_PropertyMixin):
         self._user_project = user_project
 
     def __repr__(self):
-        return "<Bucket: %s>" % (self.name,)
+        return f"<Bucket: {self.name}>"
 
     @property
     def client(self):
@@ -632,6 +688,29 @@ class Bucket(_PropertyMixin):
         """
         self._label_removals.clear()
         return super(Bucket, self)._set_properties(value)
+
+    @property
+    def rpo(self):
+        """Get the RPO (Recovery Point Objective) of this bucket
+
+        See: https://cloud.google.com/storage/docs/managing-turbo-replication
+
+        "ASYNC_TURBO" or "DEFAULT"
+        :rtype: str
+        """
+        return self._properties.get("rpo")
+
+    @rpo.setter
+    def rpo(self, value):
+        """
+        Set the RPO (Recovery Point Objective) of this bucket.
+
+        See: https://cloud.google.com/storage/docs/managing-turbo-replication
+
+        :type value: str
+        :param value: "ASYNC_TURBO" or "DEFAULT"
+        """
+        self._patch_property("rpo", value)
 
     @property
     def user_project(self):
@@ -651,6 +730,13 @@ class Bucket(_PropertyMixin):
     def from_string(cls, uri, client=None):
         """Get a constructor for bucket object by URI.
 
+        .. code-block:: python
+
+            from google.cloud import storage
+            from google.cloud.storage.bucket import Bucket
+            client = storage.Client()
+            bucket = Bucket.from_string("gs://bucket", client=client)
+
         :type uri: str
         :param uri: The bucket uri pass to get bucket object.
 
@@ -661,14 +747,6 @@ class Bucket(_PropertyMixin):
 
         :rtype: :class:`google.cloud.storage.bucket.Bucket`
         :returns: The bucket object created.
-
-        Example:
-            Get a constructor for bucket object by URI..
-
-            >>> from google.cloud import storage
-            >>> from google.cloud.storage.bucket import Bucket
-            >>> client = storage.Client()
-            >>> bucket = Bucket.from_string("gs://bucket", client=client)
         """
         scheme, netloc, path, query, frag = urlsplit(uri)
 
@@ -1113,16 +1191,12 @@ class Bucket(_PropertyMixin):
         if_metageneration_not_match=None,
         timeout=_DEFAULT_TIMEOUT,
         retry=DEFAULT_RETRY,
-        **kwargs
+        **kwargs,
     ):
         """Get a blob object by name.
 
-        This will return None if the blob doesn't exist:
-
-        .. literalinclude:: snippets.py
-          :start-after: [START get_blob]
-          :end-before: [END get_blob]
-          :dedent: 4
+        See a [code sample](https://cloud.google.com/storage/docs/samples/storage-get-metadata#storage_get_metadata-python)
+        on how to retrieve metadata of an object.
 
         If :attr:`user_project` is set, bills the API request to that project.
 
@@ -1188,7 +1262,7 @@ class Bucket(_PropertyMixin):
             name=blob_name,
             encryption_key=encryption_key,
             generation=generation,
-            **kwargs
+            **kwargs,
         )
         try:
             # NOTE: This will not fail immediately in a batch. However, when
@@ -1306,15 +1380,6 @@ class Bucket(_PropertyMixin):
         :rtype: :class:`~google.api_core.page_iterator.Iterator`
         :returns: Iterator of all :class:`~google.cloud.storage.blob.Blob`
                   in this bucket matching the arguments.
-
-        Example:
-            List blobs in the bucket with user_project.
-
-            >>> from google.cloud import storage
-            >>> client = storage.Client()
-
-            >>> bucket = storage.Bucket(client, "my-bucket-name", user_project="my-project")
-            >>> all_blobs = list(client.list_blobs(bucket))
         """
         client = self._require_client(client)
         return client.list_blobs(
@@ -1362,7 +1427,10 @@ class Bucket(_PropertyMixin):
         client = self._require_client(client)
         path = self.path + "/notificationConfigs"
         iterator = client._list_resource(
-            path, _item_to_notification, timeout=timeout, retry=retry,
+            path,
+            _item_to_notification,
+            timeout=timeout,
+            retry=retry,
         )
         iterator.bucket = self
         return iterator
@@ -1376,8 +1444,8 @@ class Bucket(_PropertyMixin):
     ):
         """Get Pub / Sub notification for this bucket.
 
-        See:
-        https://cloud.google.com/storage/docs/json_api/v1/notifications/get
+        See [API reference docs](https://cloud.google.com/storage/docs/json_api/v1/notifications/get)
+        and a [code sample](https://cloud.google.com/storage/docs/samples/storage-print-pubsub-bucket-notification#storage_print_pubsub_bucket_notification-python).
 
         If :attr:`user_project` is set, bills the API request to that project.
 
@@ -1399,15 +1467,6 @@ class Bucket(_PropertyMixin):
 
         :rtype: :class:`.BucketNotification`
         :returns: notification instance.
-
-        Example:
-            Get notification using notification id.
-
-            >>> from google.cloud import storage
-            >>> client = storage.Client()
-            >>> bucket = client.get_bucket('my-bucket-name')  # API request.
-            >>> notification = bucket.get_notification(notification_id='id')  # API request.
-
         """
         notification = self.notification(notification_id=notification_id)
         notification.reload(client=client, timeout=timeout, retry=retry)
@@ -1530,16 +1589,6 @@ class Bucket(_PropertyMixin):
     ):
         """Deletes a blob from the current bucket.
 
-        If the blob isn't found (backend 404), raises a
-        :class:`google.cloud.exceptions.NotFound`.
-
-        For example:
-
-        .. literalinclude:: snippets.py
-          :start-after: [START delete_blob]
-          :end-before: [END delete_blob]
-          :dedent: 4
-
         If :attr:`user_project` is set, bills the API request to that project.
 
         :type blob_name: str
@@ -1579,15 +1628,10 @@ class Bucket(_PropertyMixin):
         :param retry:
             (Optional) How to retry the RPC. See: :ref:`configuring_retries`
 
-        :raises: :class:`google.cloud.exceptions.NotFound` (to suppress
-                 the exception, call ``delete_blobs``, passing a no-op
-                 ``on_error`` callback, e.g.:
-
-        .. literalinclude:: snippets.py
-            :start-after: [START delete_blobs]
-            :end-before: [END delete_blobs]
-            :dedent: 4
-
+        :raises: :class:`google.cloud.exceptions.NotFound` Raises a NotFound
+                 if the blob isn't found. To suppress
+                 the exception, use :meth:`delete_blobs` by passing a no-op
+                 ``on_error`` callback.
         """
         client = self._require_client(client)
         blob = Blob(blob_name, bucket=self, generation=generation)
@@ -1616,6 +1660,7 @@ class Bucket(_PropertyMixin):
         blobs,
         on_error=None,
         client=None,
+        preserve_generation=False,
         timeout=_DEFAULT_TIMEOUT,
         if_generation_match=None,
         if_generation_not_match=None,
@@ -1627,6 +1672,10 @@ class Bucket(_PropertyMixin):
 
         Uses :meth:`delete_blob` to delete each individual blob.
 
+        By default, any generation information in the list of blobs is ignored, and the
+        live versions of all blobs are deleted. Set `preserve_generation` to True
+        if blob generation should instead be propagated from the list of blobs.
+
         If :attr:`user_project` is set, bills the API request to that project.
 
         :type blobs: list
@@ -1634,14 +1683,20 @@ class Bucket(_PropertyMixin):
                       blob names to delete.
 
         :type on_error: callable
-        :param on_error: (Optional) Takes single argument: ``blob``. Called
-                         called once for each blob raising
+        :param on_error: (Optional) Takes single argument: ``blob``.
+                         Called once for each blob raising
                          :class:`~google.cloud.exceptions.NotFound`;
                          otherwise, the exception is propagated.
 
         :type client: :class:`~google.cloud.storage.client.Client`
         :param client: (Optional) The client to use.  If not passed, falls back
                        to the ``client`` stored on the current bucket.
+
+        :type preserve_generation: bool
+        :param preserve_generation: (Optional) Deletes only the generation specified on the blob object,
+                                    instead of the live version, if set to True. Only :class:~google.cloud.storage.blob.Blob
+                                    objects can have their generation set in this way.
+                                    Default: False.
 
         :type if_generation_match: list of long
         :param if_generation_match:
@@ -1675,20 +1730,6 @@ class Bucket(_PropertyMixin):
 
         :raises: :class:`~google.cloud.exceptions.NotFound` (if
                  `on_error` is not passed).
-
-        Example:
-            Delete blobs using generation match preconditions.
-
-            >>> from google.cloud import storage
-
-            >>> client = storage.Client()
-            >>> bucket = client.bucket("bucket-name")
-
-            >>> blobs = [bucket.blob("blob-name-1"), bucket.blob("blob-name-2")]
-            >>> if_generation_match = [None] * len(blobs)
-            >>> if_generation_match[0] = "123"  # precondition for "blob-name-1"
-
-            >>> bucket.delete_blobs(blobs, if_generation_match=if_generation_match)
         """
         _raise_if_len_differs(
             len(blobs),
@@ -1705,11 +1746,15 @@ class Bucket(_PropertyMixin):
         for blob in blobs:
             try:
                 blob_name = blob
-                if not isinstance(blob_name, six.string_types):
+                generation = None
+                if not isinstance(blob_name, str):
                     blob_name = blob.name
+                    generation = blob.generation if preserve_generation else None
+
                 self.delete_blob(
                     blob_name,
                     client=client,
+                    generation=generation,
                     if_generation_match=next(if_generation_match, None),
                     if_generation_not_match=next(if_generation_not_match, None),
                     if_metageneration_match=next(if_metageneration_match, None),
@@ -1745,6 +1790,9 @@ class Bucket(_PropertyMixin):
         """Copy the given blob to the given bucket, optionally with a new name.
 
         If :attr:`user_project` is set, bills the API request to that project.
+
+        See [API reference docs](https://cloud.google.com/storage/docs/json_api/v1/objects/copy)
+        and a [code sample](https://cloud.google.com/storage/docs/samples/storage-copy-file#storage_copy_file-python).
 
         :type blob: :class:`google.cloud.storage.blob.Blob`
         :param blob: The blob to be copied.
@@ -1825,20 +1873,6 @@ class Bucket(_PropertyMixin):
 
         :rtype: :class:`google.cloud.storage.blob.Blob`
         :returns: The new Blob.
-
-        Example:
-            Copy a blob including ACL.
-
-            >>> from google.cloud import storage
-
-            >>> client = storage.Client(project="project")
-
-            >>> bucket = client.bucket("bucket")
-            >>> dst_bucket = client.bucket("destination-bucket")
-
-            >>> blob = bucket.blob("file.ext")
-            >>> new_blob = bucket.copy_blob(blob, dst_bucket)
-            >>> new_blob.acl.save(blob.acl)
         """
         client = self._require_client(client)
         query_params = {}
@@ -2191,20 +2225,20 @@ class Bucket(_PropertyMixin):
 
         .. note::
 
-           The getter for this property returns a list which contains
+           The getter for this property returns a generator which yields
            *copies* of the bucket's lifecycle rules mappings.  Mutating the
-           list or one of its dicts has no effect unless you then re-assign
-           the dict via the setter.  E.g.:
+           output dicts has no effect unless you then re-assign the dict via
+           the setter.  E.g.:
 
-           >>> rules = bucket.lifecycle_rules
+           >>> rules = list(bucket.lifecycle_rules)
            >>> rules.append({'origin': '/foo', ...})
            >>> rules[1]['rule']['action']['type'] = 'Delete'
            >>> del rules[0]
            >>> bucket.lifecycle_rules = rules
            >>> bucket.update()
 
-        :setter: Set lifestyle rules for this bucket.
-        :getter: Gets the lifestyle rules for this bucket.
+        :setter: Set lifecycle rules for this bucket.
+        :getter: Gets the lifecycle rules for this bucket.
 
         :rtype: generator(dict)
         :returns: A sequence of mappings describing each lifecycle rule.
@@ -2216,6 +2250,8 @@ class Bucket(_PropertyMixin):
                 yield LifecycleRuleDelete.from_api_repr(rule)
             elif action_type == "SetStorageClass":
                 yield LifecycleRuleSetStorageClass.from_api_repr(rule)
+            elif action_type == "AbortIncompleteMultipartUpload":
+                yield LifecycleRuleAbortIncompleteMultipartUpload.from_api_repr(rule)
             else:
                 warnings.warn(
                     "Unknown lifecycle rule type received: {}. Please upgrade to the latest version of google-cloud-storage.".format(
@@ -2227,7 +2263,7 @@ class Bucket(_PropertyMixin):
 
     @lifecycle_rules.setter
     def lifecycle_rules(self, rules):
-        """Set lifestyle rules configured for this bucket.
+        """Set lifecycle rules configured for this bucket.
 
         See https://cloud.google.com/storage/docs/lifecycle and
              https://cloud.google.com/storage/docs/json_api/v1/buckets
@@ -2239,7 +2275,7 @@ class Bucket(_PropertyMixin):
         self._patch_property("lifecycle", {"rule": rules})
 
     def clear_lifecyle_rules(self):
-        """Set lifestyle rules configured for this bucket.
+        """Clear lifecycle rules configured for this bucket.
 
         See https://cloud.google.com/storage/docs/lifecycle and
              https://cloud.google.com/storage/docs/json_api/v1/buckets
@@ -2247,15 +2283,12 @@ class Bucket(_PropertyMixin):
         self.lifecycle_rules = []
 
     def add_lifecycle_delete_rule(self, **kw):
-        """Add a "delete" rule to lifestyle rules configured for this bucket.
+        """Add a "delete" rule to lifecycle rules configured for this bucket.
 
-        See https://cloud.google.com/storage/docs/lifecycle and
-             https://cloud.google.com/storage/docs/json_api/v1/buckets
-
-        .. literalinclude:: snippets.py
-          :start-after: [START add_lifecycle_delete_rule]
-          :end-before: [END add_lifecycle_delete_rule]
-          :dedent: 4
+        This defines a [lifecycle configuration](https://cloud.google.com/storage/docs/lifecycle),
+        which is set on the bucket. For the general format of a lifecycle configuration, see the
+        [bucket resource representation for JSON](https://cloud.google.com/storage/docs/json_api/v1/buckets).
+        See also a [code sample](https://cloud.google.com/storage/docs/samples/storage-enable-bucket-lifecycle-management#storage_enable_bucket_lifecycle_management-python).
 
         :type kw: dict
         :params kw: arguments passed to :class:`LifecycleRuleConditions`.
@@ -2265,15 +2298,11 @@ class Bucket(_PropertyMixin):
         self.lifecycle_rules = rules
 
     def add_lifecycle_set_storage_class_rule(self, storage_class, **kw):
-        """Add a "delete" rule to lifestyle rules configured for this bucket.
+        """Add a "set storage class" rule to lifecycle rules.
 
-        See https://cloud.google.com/storage/docs/lifecycle and
-             https://cloud.google.com/storage/docs/json_api/v1/buckets
-
-        .. literalinclude:: snippets.py
-          :start-after: [START add_lifecycle_set_storage_class_rule]
-          :end-before: [END add_lifecycle_set_storage_class_rule]
-          :dedent: 4
+        This defines a [lifecycle configuration](https://cloud.google.com/storage/docs/lifecycle),
+        which is set on the bucket. For the general format of a lifecycle configuration, see the
+        [bucket resource representation for JSON](https://cloud.google.com/storage/docs/json_api/v1/buckets).
 
         :type storage_class: str, one of :attr:`STORAGE_CLASSES`.
         :param storage_class: new storage class to assign to matching items.
@@ -2285,6 +2314,24 @@ class Bucket(_PropertyMixin):
         rules.append(LifecycleRuleSetStorageClass(storage_class, **kw))
         self.lifecycle_rules = rules
 
+    def add_lifecycle_abort_incomplete_multipart_upload_rule(self, **kw):
+        """Add a "abort incomplete multipart upload" rule to lifecycle rules.
+
+        .. note::
+          The "age" lifecycle condition is the only supported condition
+          for this rule.
+
+        This defines a [lifecycle configuration](https://cloud.google.com/storage/docs/lifecycle),
+        which is set on the bucket. For the general format of a lifecycle configuration, see the
+        [bucket resource representation for JSON](https://cloud.google.com/storage/docs/json_api/v1/buckets).
+
+        :type kw: dict
+        :params kw: arguments passed to :class:`LifecycleRuleConditions`.
+        """
+        rules = list(self.lifecycle_rules)
+        rules.append(LifecycleRuleAbortIncompleteMultipartUpload(**kw))
+        self.lifecycle_rules = rules
+
     _location = _scalar_property("location")
 
     @property
@@ -2292,7 +2339,7 @@ class Bucket(_PropertyMixin):
         """Retrieve location configured for this bucket.
 
         See https://cloud.google.com/storage/docs/json_api/v1/buckets and
-        https://cloud.google.com/storage/docs/bucket-locations
+        https://cloud.google.com/storage/docs/locations
 
         Returns ``None`` if the property has not been set before creation,
         or if the bucket's resource has not been loaded from the server.
@@ -2319,12 +2366,26 @@ class Bucket(_PropertyMixin):
         self._location = value
 
     @property
+    def data_locations(self):
+        """Retrieve the list of regional locations for custom dual-region buckets.
+
+        See https://cloud.google.com/storage/docs/json_api/v1/buckets and
+        https://cloud.google.com/storage/docs/locations
+
+        Returns ``None`` if the property has not been set before creation,
+        if the bucket's resource has not been loaded from the server,
+        or if the bucket is not a dual-regions bucket.
+        :rtype: list of str or ``NoneType``
+        """
+        custom_placement_config = self._properties.get("customPlacementConfig", {})
+        return custom_placement_config.get("dataLocations")
+
+    @property
     def location_type(self):
-        """Retrieve or set the location type for the bucket.
+        """Retrieve the location type for the bucket.
 
         See https://cloud.google.com/storage/docs/storage-classes
 
-        :setter: Set the location type for this bucket.
         :getter: Gets the the location type for this bucket.
 
         :rtype: str or ``NoneType``
@@ -2525,8 +2586,6 @@ class Bucket(_PropertyMixin):
             or
             :attr:`~google.cloud.storage.constants.DURABLE_REDUCED_AVAILABILITY_LEGACY_STORAGE_CLASS`,
         """
-        if value not in self.STORAGE_CLASSES:
-            raise ValueError("Invalid storage class: %s" % (value,))
         self._patch_property("storageClass", value)
 
     @property
@@ -2601,34 +2660,61 @@ class Bucket(_PropertyMixin):
         """
         self._patch_property("billing", {"requesterPays": bool(value)})
 
+    @property
+    def autoclass_enabled(self):
+        """Whether Autoclass is enabled for this bucket.
+
+        See https://cloud.google.com/storage/docs/using-autoclass for details.
+
+        :setter: Update whether autoclass is enabled for this bucket.
+        :getter: Query whether autoclass is enabled for this bucket.
+
+        :rtype: bool
+        :returns: True if enabled, else False.
+        """
+        autoclass = self._properties.get("autoclass", {})
+        return autoclass.get("enabled", False)
+
+    @autoclass_enabled.setter
+    def autoclass_enabled(self, value):
+        """Enable or disable Autoclass at the bucket-level.
+
+        See https://cloud.google.com/storage/docs/using-autoclass for details.
+
+        :type value: convertible to boolean
+        :param value: If true, enable Autoclass for this bucket.
+                      If false, disable Autoclass for this bucket.
+
+        .. note::
+          To enable autoclass, you must set it at bucket creation time.
+          Currently, only patch requests that disable autoclass are supported.
+
+        """
+        self._patch_property("autoclass", {"enabled": bool(value)})
+
+    @property
+    def autoclass_toggle_time(self):
+        """Retrieve the toggle time when Autoclaass was last enabled or disabled for the bucket.
+        :rtype: datetime.datetime or ``NoneType``
+        :returns: point-in time at which the bucket's autoclass is toggled, or ``None`` if the property is not set locally.
+        """
+        autoclass = self._properties.get("autoclass")
+        if autoclass is not None:
+            timestamp = autoclass.get("toggleTime")
+            if timestamp is not None:
+                return _rfc3339_nanos_to_datetime(timestamp)
+
     def configure_website(self, main_page_suffix=None, not_found_page=None):
         """Configure website-related properties.
 
-        See https://cloud.google.com/storage/docs/hosting-static-website
+        See https://cloud.google.com/storage/docs/static-website
 
         .. note::
-          This (apparently) only works
-          if your bucket name is a domain name
-          (and to do that, you need to get approved somehow...).
-
-        If you want this bucket to host a website, just provide the name
-        of an index page and a page to use when a blob isn't found:
-
-        .. literalinclude:: snippets.py
-          :start-after: [START configure_website]
-          :end-before: [END configure_website]
-          :dedent: 4
-
-        You probably should also make the whole bucket public:
-
-        .. literalinclude:: snippets.py
-            :start-after: [START make_public]
-            :end-before: [END make_public]
-            :dedent: 4
-
-        This says: "Make the bucket public, and all the stuff already in
-        the bucket, and anything else I add to the bucket.  Just make it
-        all public."
+          This configures the bucket's website-related properties,controlling how
+          the service behaves when accessing bucket contents as a web site.
+          See [tutorials](https://cloud.google.com/storage/docs/hosting-static-website) and
+          [code samples](https://cloud.google.com/storage/docs/samples/storage-define-bucket-website-configuration#storage_define_bucket_website_configuration-python)
+          for more information.
 
         :type main_page_suffix: str
         :param main_page_suffix: The page to use as the main page
@@ -2658,8 +2744,8 @@ class Bucket(_PropertyMixin):
     ):
         """Retrieve the IAM policy for the bucket.
 
-        See
-        https://cloud.google.com/storage/docs/json_api/v1/buckets/getIamPolicy
+        See [API reference docs](https://cloud.google.com/storage/docs/json_api/v1/buckets/getIamPolicy)
+        and a [code sample](https://cloud.google.com/storage/docs/samples/storage-view-bucket-iam-members#storage_view_bucket_iam_members-python).
 
         If :attr:`user_project` is set, bills the API request to that project.
 
@@ -2692,30 +2778,6 @@ class Bucket(_PropertyMixin):
         :rtype: :class:`google.api_core.iam.Policy`
         :returns: the policy instance, based on the resource returned from
                   the ``getIamPolicy`` API request.
-
-        Example:
-
-        .. code-block:: python
-
-           from google.cloud.storage.iam import STORAGE_OBJECT_VIEWER_ROLE
-
-           policy = bucket.get_iam_policy(requested_policy_version=3)
-
-           policy.version = 3
-
-           # Add a binding to the policy via it's bindings property
-           policy.bindings.append({
-               "role": STORAGE_OBJECT_VIEWER_ROLE,
-               "members": {"serviceAccount:account@project.iam.gserviceaccount.com", ...},
-               # Optional:
-               "condition": {
-                   "title": "prefix"
-                   "description": "Objects matching prefix"
-                   "expression": "resource.name.startsWith(\"projects/project-name/buckets/bucket-name/objects/prefix\")"
-               }
-           })
-
-           bucket.set_iam_policy(policy)
         """
         client = self._require_client(client)
         query_params = {}
@@ -2727,7 +2789,7 @@ class Bucket(_PropertyMixin):
             query_params["optionsRequestedPolicyVersion"] = requested_policy_version
 
         info = client._get_resource(
-            "%s/iam" % (self.path,),
+            f"{self.path}/iam",
             query_params=query_params,
             timeout=timeout,
             retry=retry,
@@ -2776,7 +2838,7 @@ class Bucket(_PropertyMixin):
         if self.user_project is not None:
             query_params["userProject"] = self.user_project
 
-        path = "{}/iam".format(self.path)
+        path = f"{self.path}/iam"
         resource = policy.to_api_repr()
         resource["resourceId"] = self.path
 
@@ -2828,7 +2890,7 @@ class Bucket(_PropertyMixin):
         if self.user_project is not None:
             query_params["userProject"] = self.user_project
 
-        path = "%s/iam/testPermissions" % (self.path,)
+        path = f"{self.path}/iam/testPermissions"
         resp = client._get_resource(
             path,
             query_params=query_params,
@@ -2931,7 +2993,8 @@ class Bucket(_PropertyMixin):
             for blob in blobs:
                 blob.acl.all().grant_read()
                 blob.acl.save(
-                    client=client, timeout=timeout,
+                    client=client,
+                    timeout=timeout,
                 )
 
     def make_private(
@@ -3031,19 +3094,10 @@ class Bucket(_PropertyMixin):
         """Create a signed upload policy for uploading objects.
 
         This method generates and signs a policy document. You can use
-        `policy documents`_ to allow visitors to a website to upload files to
+        [`policy documents`](https://cloud.google.com/storage/docs/xml-api/post-object-forms)
+        to allow visitors to a website to upload files to
         Google Cloud Storage without giving them direct write access.
-
-        For example:
-
-        .. literalinclude:: snippets.py
-            :start-after: [START policy_document]
-            :end-before: [END policy_document]
-            :dedent: 4
-
-        .. _policy documents:
-            https://cloud.google.com/storage/docs/xml-api\
-            /post-object#policydocument
+        See a [code sample](https://cloud.google.com/storage/docs/xml-api/post-object-forms#python).
 
         :type expiration: datetime
         :param expiration: (Optional) Expiration in UTC. If not specified, the
@@ -3051,7 +3105,7 @@ class Bucket(_PropertyMixin):
 
         :type conditions: list
         :param conditions: A list of conditions as described in the
-                          `policy documents`_ documentation.
+                          `policy documents` documentation.
 
         :type client: :class:`~google.cloud.storage.client.Client`
         :param client: (Optional) The client to use.  If not passed, falls back
@@ -3132,7 +3186,7 @@ class Bucket(_PropertyMixin):
         if self.user_project is not None:
             query_params["userProject"] = self.user_project
 
-        path = "/b/{}/lockRetentionPolicy".format(self.name)
+        path = f"/b/{self.name}/lockRetentionPolicy"
         api_response = client._post_resource(
             path,
             None,
@@ -3162,13 +3216,9 @@ class Bucket(_PropertyMixin):
         .. note::
 
             If you are on Google Compute Engine, you can't generate a signed
-            URL using GCE service account. Follow `Issue 50`_ for updates on
-            this. If you'd like to be able to generate a signed URL from GCE,
-            you can use a standard service account from a JSON file rather
-            than a GCE service account.
-
-        .. _Issue 50: https://github.com/GoogleCloudPlatform/\
-                      google-auth-library-python/issues/50
+            URL using GCE service account. If you'd like to be able to generate
+            a signed URL from GCE, you can use a standard service account from a
+            JSON file rather than a GCE service account.
 
         If you have a bucket that you want to allow access to for a set
         amount of time, you can use this method to generate a URL that
@@ -3176,21 +3226,6 @@ class Bucket(_PropertyMixin):
 
         If ``bucket_bound_hostname`` is set as an argument of :attr:`api_access_endpoint`,
         ``https`` works only if using a ``CDN``.
-
-        Example:
-            Generates a signed URL for this bucket using bucket_bound_hostname and scheme.
-
-            >>> from google.cloud import storage
-            >>> client = storage.Client()
-            >>> bucket = client.get_bucket('my-bucket-name')
-            >>> url = bucket.generate_signed_url(expiration='url-expiration-time', bucket_bound_hostname='mydomain.tld',
-            >>>                                  version='v4')
-            >>> url = bucket.generate_signed_url(expiration='url-expiration-time', bucket_bound_hostname='mydomain.tld',
-            >>>                                  version='v4',scheme='https')  # If using ``CDN``
-
-        This is particularly useful if you don't want publicly
-        accessible buckets, but don't want to require users to explicitly
-        log in.
 
         :type expiration: Union[Integer, datetime.datetime, datetime.timedelta]
         :param expiration: Point in time when the signed URL should expire. If
@@ -3265,16 +3300,17 @@ class Bucket(_PropertyMixin):
         elif version not in ("v2", "v4"):
             raise ValueError("'version' must be either 'v2' or 'v4'")
 
+        # If you are on Google Compute Engine, you can't generate a signed URL
+        # using GCE service account.
+        # See https://github.com/googleapis/google-auth-library-python/issues/50
         if virtual_hosted_style:
-            api_access_endpoint = "https://{bucket_name}.storage.googleapis.com".format(
-                bucket_name=self.name
-            )
+            api_access_endpoint = f"https://{self.name}.storage.googleapis.com"
         elif bucket_bound_hostname:
             api_access_endpoint = _bucket_bound_hostname_url(
                 bucket_bound_hostname, scheme
             )
         else:
-            resource = "/{bucket_name}".format(bucket_name=self.name)
+            resource = f"/{self.name}"
 
         if virtual_hosted_style or bucket_bound_hostname:
             resource = "/"
@@ -3314,6 +3350,4 @@ def _raise_if_len_differs(expected_len, **generation_match_args):
     """
     for name, value in generation_match_args.items():
         if value is not None and len(value) != expected_len:
-            raise ValueError(
-                "'{}' length must be the same as 'blobs' length".format(name)
-            )
+            raise ValueError(f"'{name}' length must be the same as 'blobs' length")

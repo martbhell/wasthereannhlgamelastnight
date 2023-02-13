@@ -22,18 +22,27 @@ import logging
 import random
 import warnings
 
+from urllib.parse import parse_qs
+from urllib.parse import urlencode
+from urllib.parse import urlsplit
+from urllib.parse import urlunsplit
+
 from google.resumable_media import common
 
 
 RANGE_HEADER = "range"
 CONTENT_RANGE_HEADER = "content-range"
+CONTENT_ENCODING_HEADER = "content-encoding"
 
 _SLOW_CRC32C_WARNING = (
     "Currently using crcmod in pure python form. This is a slow "
     "implementation. Python 3 has a faster implementation, `google-crc32c`, "
     "which will be used if it is installed."
 )
+_GENERATION_HEADER = "x-goog-generation"
 _HASH_HEADER = "x-goog-hash"
+_STORED_CONTENT_ENCODING_HEADER = "x-goog-stored-content-encoding"
+
 _MISSING_CHECKSUM = """\
 No {checksum_type} checksum was returned from the service while downloading {}
 (which happens for composite objects), so client-side content integrity
@@ -140,12 +149,12 @@ def _get_crc32c_object():
     to use CRCMod. CRCMod might be using a 'slow' varietal. If so, warn...
     """
     try:
-        import google_crc32c
+        import google_crc32c  # type: ignore
 
         crc_obj = google_crc32c.Checksum()
     except ImportError:
         try:
-            import crcmod
+            import crcmod  # type: ignore
 
             crc_obj = crcmod.predefined.Crc("crc-32c")
             _is_fast_crcmod()
@@ -300,6 +309,84 @@ def _get_checksum_object(checksum_type):
         return None
     else:
         raise ValueError("checksum must be ``'md5'``, ``'crc32c'`` or ``None``")
+
+
+def _parse_generation_header(response, get_headers):
+    """Parses the generation header from an ``X-Goog-Generation`` value.
+
+    Args:
+        response (~requests.Response): The HTTP response object.
+        get_headers (callable: response->dict): returns response headers.
+
+    Returns:
+        Optional[long]: The object generation from the response, if it
+        can be detected from the ``X-Goog-Generation`` header; otherwise, None.
+    """
+    headers = get_headers(response)
+    object_generation = headers.get(_GENERATION_HEADER, None)
+
+    if object_generation is None:
+        return None
+    else:
+        return int(object_generation)
+
+
+def _get_generation_from_url(media_url):
+    """Retrieve the object generation query param specified in the media url.
+
+    Args:
+        media_url (str): The URL containing the media to be downloaded.
+
+    Returns:
+        long: The object generation from the media url if exists; otherwise, None.
+    """
+
+    _, _, _, query, _ = urlsplit(media_url)
+    query_params = parse_qs(query)
+    object_generation = query_params.get("generation", None)
+
+    if object_generation is None:
+        return None
+    else:
+        return int(object_generation[0])
+
+
+def add_query_parameters(media_url, query_params):
+    """Add query parameters to a base url.
+
+    Args:
+        media_url (str): The URL containing the media to be downloaded.
+        query_params (dict): Names and values of the query parameters to add.
+
+    Returns:
+        str: URL with additional query strings appended.
+    """
+
+    if len(query_params) == 0:
+        return media_url
+
+    scheme, netloc, path, query, frag = urlsplit(media_url)
+    params = parse_qs(query)
+    new_params = {**params, **query_params}
+    query = urlencode(new_params, doseq=True)
+    return urlunsplit((scheme, netloc, path, query, frag))
+
+
+def _is_decompressive_transcoding(response, get_headers):
+    """Returns True if the object was served decompressed. This happens when the
+    "x-goog-stored-content-encoding" header is "gzip" and "content-encoding" header
+    is not "gzip". See more at: https://cloud.google.com/storage/docs/transcoding#transcoding_and_gzip
+    Args:
+        response (~requests.Response): The HTTP response object.
+        get_headers (callable: response->dict): returns response headers.
+    Returns:
+        bool: Returns True if decompressive transcoding has occurred; otherwise, False.
+    """
+    headers = get_headers(response)
+    return (
+        headers.get(_STORED_CONTENT_ENCODING_HEADER) == "gzip"
+        and headers.get(CONTENT_ENCODING_HEADER) != "gzip"
+    )
 
 
 class _DoNothingHash(object):

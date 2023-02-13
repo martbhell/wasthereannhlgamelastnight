@@ -12,6 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Helpers for configuring retries with exponential back-off.
+
+See [Retry Strategy for Google Cloud Storage](https://cloud.google.com/storage/docs/retry-strategy#client-libraries)
+"""
+
 import requests
 import requests.exceptions as requests_exceptions
 
@@ -20,21 +25,16 @@ from google.api_core import retry
 from google.auth import exceptions as auth_exceptions
 
 
-# ConnectionError is a built-in exception only in Python3 and not in Python2.
-try:
-    _RETRYABLE_STDLIB_TYPES = (ConnectionError,)
-except NameError:
-    _RETRYABLE_STDLIB_TYPES = ()
-
-
-_RETRYABLE_TYPES = _RETRYABLE_STDLIB_TYPES + (
+_RETRYABLE_TYPES = (
     api_exceptions.TooManyRequests,  # 429
     api_exceptions.InternalServerError,  # 500
     api_exceptions.BadGateway,  # 502
     api_exceptions.ServiceUnavailable,  # 503
     api_exceptions.GatewayTimeout,  # 504
+    ConnectionError,
     requests.ConnectionError,
     requests_exceptions.ChunkedEncodingError,
+    requests_exceptions.Timeout,
 )
 
 
@@ -93,7 +93,8 @@ class ConditionalRetryPolicy(object):
     :type required_kwargs: list(str)
     :param required_kwargs:
         A list of keyword argument keys that will be extracted from the API call
-        and passed into the ``conditional predicate`` in order.
+        and passed into the ``conditional predicate`` in order. For example,
+        ``["query_params"]`` is commmonly used for preconditions in query_params.
     """
 
     def __init__(self, retry_policy, conditional_predicate, required_kwargs):

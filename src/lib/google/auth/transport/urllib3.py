@@ -29,13 +29,14 @@ import warnings
 try:
     import certifi
 except ImportError:  # pragma: NO COVER
-    certifi = None
+    certifi = None  # type: ignore
+
+import six
 
 try:
-    import urllib3
+    import urllib3  # type: ignore
+    import urllib3.exceptions  # type: ignore
 except ImportError as caught_exc:  # pragma: NO COVER
-    import six
-
     six.raise_from(
         ImportError(
             "The urllib3 library is not installed, please install the "
@@ -43,8 +44,6 @@ except ImportError as caught_exc:  # pragma: NO COVER
         ),
         caught_exc,
     )
-import six
-import urllib3.exceptions  # pylint: disable=ungrouped-imports
 
 from google.auth import environment_vars
 from google.auth import exceptions
@@ -169,7 +168,7 @@ def _make_mutual_tls_http(cert, key):
     """
     import certifi
     from OpenSSL import crypto
-    import urllib3.contrib.pyopenssl
+    import urllib3.contrib.pyopenssl  # type: ignore
 
     urllib3.contrib.pyopenssl.inject_into_urllib3()
     ctx = urllib3.util.ssl_.create_urllib3_context()
@@ -427,6 +426,10 @@ class AuthorizedHttp(urllib3.request.RequestMethods):
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Proxy to ``self.http``."""
         return self.http.__exit__(exc_type, exc_val, exc_tb)
+
+    def __del__(self):
+        if hasattr(self, "http") and self.http is not None:
+            self.http.clear()
 
     @property
     def headers(self):

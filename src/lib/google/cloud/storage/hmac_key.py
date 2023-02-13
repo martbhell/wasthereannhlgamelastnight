@@ -12,6 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Configure HMAC keys that can be used to authenticate requests to Google Cloud Storage.
+
+See [HMAC keys documentation](https://cloud.google.com/storage/docs/authentication/hmackeys)
+"""
+
 from google.cloud.exceptions import NotFound
 from google.cloud._helpers import _rfc3339_nanos_to_datetime
 
@@ -131,13 +136,6 @@ class HMACKeyMetadata(object):
 
     @state.setter
     def state(self, value):
-        if value not in self._SETTABLE_STATES:
-            raise ValueError(
-                "State may only be set to one of: {}".format(
-                    ", ".join(self._SETTABLE_STATES)
-                )
-            )
-
         self._properties["state"] = value
 
     @property
@@ -177,7 +175,7 @@ class HMACKeyMetadata(object):
         if project is None:
             project = self._client.project
 
-        return "/projects/{}/hmacKeys/{}".format(project, self.access_id)
+        return f"/projects/{project}/hmacKeys/{self.access_id}"
 
     @property
     def user_project(self):
@@ -211,7 +209,10 @@ class HMACKeyMetadata(object):
                 qs_params["userProject"] = self.user_project
 
             self._client._get_resource(
-                self.path, query_params=qs_params, timeout=timeout, retry=retry,
+                self.path,
+                query_params=qs_params,
+                timeout=timeout,
+                retry=retry,
             )
         except NotFound:
             return False
@@ -239,7 +240,10 @@ class HMACKeyMetadata(object):
             qs_params["userProject"] = self.user_project
 
         self._properties = self._client._get_resource(
-            self.path, query_params=qs_params, timeout=timeout, retry=retry,
+            self.path,
+            query_params=qs_params,
+            timeout=timeout,
+            retry=retry,
         )
 
     def update(self, timeout=_DEFAULT_TIMEOUT, retry=DEFAULT_RETRY_IF_ETAG_IN_JSON):
@@ -263,7 +267,11 @@ class HMACKeyMetadata(object):
 
         payload = {"state": self.state}
         self._properties = self._client._put_resource(
-            self.path, payload, query_params=qs_params, timeout=timeout, retry=retry,
+            self.path,
+            payload,
+            query_params=qs_params,
+            timeout=timeout,
+            retry=retry,
         )
 
     def delete(self, timeout=_DEFAULT_TIMEOUT, retry=DEFAULT_RETRY):
@@ -281,13 +289,13 @@ class HMACKeyMetadata(object):
         :raises :class:`~google.api_core.exceptions.NotFound`:
             if the key does not exist on the back-end.
         """
-        if self.state != self.INACTIVE_STATE:
-            raise ValueError("Cannot delete key if not in 'INACTIVE' state.")
-
         qs_params = {}
         if self.user_project is not None:
             qs_params["userProject"] = self.user_project
 
         self._client._delete_resource(
-            self.path, query_params=qs_params, timeout=timeout, retry=retry,
+            self.path,
+            query_params=qs_params,
+            timeout=timeout,
+            retry=retry,
         )

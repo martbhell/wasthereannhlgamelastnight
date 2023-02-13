@@ -31,7 +31,6 @@ of pyasn1.
 
 """
 
-import logging
 import threading
 import typing
 import warnings
@@ -43,8 +42,10 @@ import rsa.randnum
 import rsa.core
 
 
-log = logging.getLogger(__name__)
 DEFAULT_EXPONENT = 65537
+
+
+T = typing.TypeVar("T", bound="AbstractKey")
 
 
 class AbstractKey:
@@ -64,7 +65,7 @@ class AbstractKey:
         self.mutex = threading.Lock()
 
     @classmethod
-    def _load_pkcs1_pem(cls, keyfile: bytes) -> "AbstractKey":
+    def _load_pkcs1_pem(cls: typing.Type[T], keyfile: bytes) -> T:
         """Loads a key in PKCS#1 PEM format, implement in a subclass.
 
         :param keyfile: contents of a PEM-encoded file that contains
@@ -76,7 +77,7 @@ class AbstractKey:
         """
 
     @classmethod
-    def _load_pkcs1_der(cls, keyfile: bytes) -> "AbstractKey":
+    def _load_pkcs1_der(cls: typing.Type[T], keyfile: bytes) -> T:
         """Loads a key in PKCS#1 PEM format, implement in a subclass.
 
         :param keyfile: contents of a DER-encoded file that contains
@@ -102,7 +103,7 @@ class AbstractKey:
         """
 
     @classmethod
-    def load_pkcs1(cls, keyfile: bytes, format: str = "PEM") -> "AbstractKey":
+    def load_pkcs1(cls: typing.Type[T], keyfile: bytes, format: str = "PEM") -> T:
         """Loads a key in PKCS#1 DER or PEM format.
 
         :param keyfile: contents of a DER- or PEM-encoded file that contains
@@ -238,7 +239,7 @@ class PublicKey(AbstractKey):
 
     """
 
-    __slots__ = ("n", "e")
+    __slots__ = ()
 
     def __getitem__(self, key: str) -> int:
         return getattr(self, key)
@@ -403,7 +404,7 @@ class PrivateKey(AbstractKey):
 
     """
 
-    __slots__ = ("n", "e", "d", "p", "q", "exp1", "exp2", "coef")
+    __slots__ = ("d", "p", "q", "exp1", "exp2", "coef")
 
     def __init__(self, n: int, e: int, d: int, p: int, q: int) -> None:
         AbstractKey.__init__(self, n, e)
@@ -666,9 +667,7 @@ def find_p_q(
     qbits = nbits - shift
 
     # Choose the two initial primes
-    log.debug("find_p_q(%i): Finding p", nbits)
     p = getprime_func(pbits)
-    log.debug("find_p_q(%i): Finding q", nbits)
     q = getprime_func(qbits)
 
     def is_acceptable(p: int, q: int) -> bool:

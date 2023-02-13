@@ -1,4 +1,4 @@
-#!/home/mart/venv_gcloud/bin/python3
+#!/home/mart/miniconda3/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

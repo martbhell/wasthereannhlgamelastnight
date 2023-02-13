@@ -24,7 +24,6 @@ import io
 import json
 
 import requests
-import six
 
 from google.cloud import _helpers
 from google.cloud import exceptions
@@ -58,20 +57,12 @@ class MIMEApplicationHTTP(MIMEApplication):
             headers["Content-Length"] = len(body)
         if body is None:
             body = ""
-        lines = ["%s %s HTTP/1.1" % (method, uri)]
-        lines.extend(
-            ["%s: %s" % (key, value) for key, value in sorted(headers.items())]
-        )
+        lines = [f"{method} {uri} HTTP/1.1"]
+        lines.extend([f"{key}: {value}" for key, value in sorted(headers.items())])
         lines.append("")
         lines.append(body)
         payload = "\r\n".join(lines)
-        if six.PY2:
-            # email.message.Message is an old-style class, so we
-            # cannot use 'super()'.
-            MIMEApplication.__init__(self, payload, "http", encode_noop)
-        else:  # pragma: NO COVER  Python3
-            super_init = super(MIMEApplicationHTTP, self).__init__
-            super_init(payload, "http", encode_noop)
+        super().__init__(payload, "http", encode_noop)
 
 
 class _FutureDict(object):
@@ -93,7 +84,7 @@ class _FutureDict(object):
         :raises: :class:`KeyError` always since the future is intended to fail
                  as a dictionary.
         """
-        raise KeyError("Cannot get(%r, default=%r) on a future" % (key, default))
+        raise KeyError(f"Cannot get({key!r}, default={default!r}) on a future")
 
     def __getitem__(self, key):
         """Stand-in for dict[key].
@@ -104,7 +95,7 @@ class _FutureDict(object):
         :raises: :class:`KeyError` always since the future is intended to fail
                  as a dictionary.
         """
-        raise KeyError("Cannot get item %r from a future" % (key,))
+        raise KeyError(f"Cannot get item {key!r} from a future")
 
     def __setitem__(self, key, value):
         """Stand-in for dict[key] = value.
@@ -118,7 +109,7 @@ class _FutureDict(object):
         :raises: :class:`KeyError` always since the future is intended to fail
                  as a dictionary.
         """
-        raise KeyError("Cannot set %r -> %r on a future" % (key, value))
+        raise KeyError(f"Cannot set {key!r} -> {value!r} on a future")
 
 
 class _FutureResponse(requests.Response):
@@ -219,11 +210,7 @@ class Batch(Connection):
             multi.attach(subrequest)
             timeout = _timeout
 
-        # The `email` package expects to deal with "native" strings
-        if six.PY2:  # pragma: NO COVER  Python3
-            buf = io.BytesIO()
-        else:
-            buf = io.StringIO()
+        buf = io.StringIO()
         generator = Generator(buf, False, 0)
         generator.flatten(multi)
         payload = buf.getvalue()
@@ -268,7 +255,7 @@ class Batch(Connection):
         """
         headers, body, timeout = self._prepare_batch_request()
 
-        url = "%s/batch/storage/v1" % self.API_BASE_URL
+        url = f"{self.API_BASE_URL}/batch/storage/v1"
 
         # Use the private ``_base_connection`` rather than the property
         # ``_connection``, since the property may be this
@@ -315,10 +302,7 @@ def _generate_faux_mime_message(parser, response):
         [b"Content-Type: ", content_type, b"\nMIME-Version: 1.0\n\n", response.content]
     )
 
-    if six.PY2:
-        return parser.parsestr(faux_message)
-    else:  # pragma: NO COVER  Python3
-        return parser.parsestr(faux_message.decode("utf-8"))
+    return parser.parsestr(faux_message.decode("utf-8"))
 
 
 def _unpack_batch_response(response):
@@ -346,7 +330,7 @@ def _unpack_batch_response(response):
 
         subresponse = requests.Response()
         subresponse.request = requests.Request(
-            method="BATCH", url="contentid://{}".format(content_id)
+            method="BATCH", url=f"contentid://{content_id}"
         ).prepare()
         subresponse.status_code = int(status)
         subresponse.headers.update(msg_headers)
