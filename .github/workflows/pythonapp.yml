@@ -39,9 +39,9 @@ jobs:
     permissions:
       contents: 'read'
       id-token: 'write'
-    steps:
-    - uses: "./.github/workflows/reusable-workflow.yml"
+    uses: "./.github/workflows/reusable-workflow.yml"
 
+    steps:
     - id: 'deploy_to_test'
       name: 'Deploy to Test'
       uses: 'google-github-actions/deploy-appengine@v1'
@@ -60,13 +60,13 @@ jobs:
     permissions:
       contents: 'read'
       id-token: 'write'
+    uses: "./.github/workflows/reusable-workflow.yml"
 
     if: github.event.pull_request.merged == true
 
-    steps:
-    - uses: "./.github/workflows/reusable-workflow.yml"
-
     # master
+
+    steps:
 
     - id: 'deploy'
       name: 'Deploy to Prod'
