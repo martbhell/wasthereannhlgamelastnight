@@ -20,7 +20,8 @@ import datetime
 import hashlib
 import json
 
-import six
+import http
+import urllib
 
 import google.auth.credentials
 
@@ -108,9 +109,9 @@ def get_expiration_seconds_v2(expiration):
     # If it's a datetime, convert to a timestamp.
     if isinstance(expiration, datetime.datetime):
         micros = _helpers._microseconds_from_datetime(expiration)
-        expiration = micros // 10 ** 6
+        expiration = micros // 10**6
 
-    if not isinstance(expiration, six.integer_types):
+    if not isinstance(expiration, int):
         raise TypeError(
             "Expected an integer timestamp, datetime, or "
             "timedelta. Got %s" % type(expiration)
@@ -118,7 +119,7 @@ def get_expiration_seconds_v2(expiration):
     return expiration
 
 
-_EXPIRATION_TYPES = six.integer_types + (datetime.datetime, datetime.timedelta)
+_EXPIRATION_TYPES = (int, datetime.datetime, datetime.timedelta)
 
 
 def get_expiration_seconds_v4(expiration):
@@ -142,7 +143,7 @@ def get_expiration_seconds_v4(expiration):
 
     now = NOW().replace(tzinfo=_helpers.UTC)
 
-    if isinstance(expiration, six.integer_types):
+    if isinstance(expiration, int):
         seconds = expiration
 
     if isinstance(expiration, datetime.datetime):
@@ -156,9 +157,7 @@ def get_expiration_seconds_v4(expiration):
         seconds = int(expiration.total_seconds())
 
     if seconds > SEVEN_DAYS:
-        raise ValueError(
-            "Max allowed expiration interval is seven days {}".format(SEVEN_DAYS)
-        )
+        raise ValueError(f"Max allowed expiration interval is seven days {SEVEN_DAYS}")
 
     return seconds
 
@@ -250,8 +249,8 @@ def canonicalize_v2(method, resource, query_parameters, headers):
         (key.lower(), value and value.strip() or "")
         for key, value in query_parameters.items()
     )
-    encoded_qp = six.moves.urllib.parse.urlencode(normalized_qp)
-    canonical_resource = "{}?{}".format(resource, encoded_qp)
+    encoded_qp = urllib.parse.urlencode(normalized_qp)
+    canonical_resource = f"{resource}?{encoded_qp}"
     return _Canonical(method, canonical_resource, normalized_qp, headers)
 
 
@@ -283,15 +282,11 @@ def generate_signed_url_v2(
     .. note::
 
         If you are on Google Compute Engine, you can't generate a signed URL.
-        Follow `Issue 922`_ for updates on this. If you'd like to be able to
-        generate a signed URL from GCE, you can use a standard service account
-        from a JSON file rather than a GCE service account.
+        If you'd like to be able to generate a signed URL from GCE, you can use a
+        standard service account from a JSON file rather than a GCE service account.
 
-    See headers `reference`_ for more details on optional arguments.
-
-    .. _Issue 922: https://github.com/GoogleCloudPlatform/\
-                   google-cloud-python/issues/922
-    .. _reference: https://cloud.google.com/storage/docs/reference-headers
+    See headers [reference](https://cloud.google.com/storage/docs/reference-headers)
+    for more details on optional arguments.
 
     :type credentials: :class:`google.auth.credentials.Signing`
     :param credentials: Credentials object with an associated private key to
@@ -383,6 +378,8 @@ def generate_signed_url_v2(
     elements_to_sign.append(canonical.resource)
     string_to_sign = "\n".join(elements_to_sign)
 
+    # If you are on Google Compute Engine, you can't generate a signed URL.
+    # See https://github.com/googleapis/google-cloud-python/issues/922
     # Set the right query parameters.
     if access_token and service_account_email:
         signature = _sign_message(string_to_sign, access_token, service_account_email)
@@ -410,7 +407,7 @@ def generate_signed_url_v2(
     return "{endpoint}{resource}?{querystring}".format(
         endpoint=api_access_endpoint,
         resource=resource,
-        querystring=six.moves.urllib.parse.urlencode(sorted_signed_query_params),
+        querystring=urllib.parse.urlencode(sorted_signed_query_params),
     )
 
 
@@ -447,16 +444,11 @@ def generate_signed_url_v4(
     .. note::
 
         If you are on Google Compute Engine, you can't generate a signed URL.
-        Follow `Issue 922`_ for updates on this. If you'd like to be able to
-        generate a signed URL from GCE, you can use a standard service account
-        from a JSON file rather than a GCE service account.
+        If you'd like to be able to generate a signed URL from GCE,you can use a
+        standard service account from a JSON file rather than a GCE service account.
 
-    See headers `reference`_ for more details on optional arguments.
-
-    .. _Issue 922: https://github.com/GoogleCloudPlatform/\
-                   google-cloud-python/issues/922
-    .. _reference: https://cloud.google.com/storage/docs/reference-headers
-
+    See headers [reference](https://cloud.google.com/storage/docs/reference-headers)
+    for more details on optional arguments.
 
     :type credentials: :class:`google.auth.credentials.Signing`
     :param credentials: Credentials object with an associated private key to
@@ -544,13 +536,15 @@ def generate_signed_url_v4(
         request_timestamp = _request_timestamp
         datestamp = _request_timestamp[:8]
 
+    # If you are on Google Compute Engine, you can't generate a signed URL.
+    # See https://github.com/googleapis/google-cloud-python/issues/922
     client_email = service_account_email
     if not access_token or not service_account_email:
         ensure_signed_credentials(credentials)
         client_email = credentials.signer_email
 
-    credential_scope = "{}/auto/storage/goog4_request".format(datestamp)
-    credential = "{}/{}".format(client_email, credential_scope)
+    credential_scope = f"{datestamp}/auto/storage/goog4_request"
+    credential = f"{client_email}/{credential_scope}"
 
     if headers is None:
         headers = {}
@@ -563,7 +557,7 @@ def generate_signed_url_v4(
 
     header_names = [key.lower() for key in headers]
     if "host" not in header_names:
-        headers["Host"] = six.moves.urllib.parse.urlparse(api_access_endpoint).netloc
+        headers["Host"] = urllib.parse.urlparse(api_access_endpoint).netloc
 
     if method.upper() == "RESUMABLE":
         method = "POST"
@@ -686,9 +680,9 @@ def _sign_message(message, access_token, service_account_email):
     request = requests.Request()
     response = request(url=url, method=method, body=body, headers=headers)
 
-    if response.status != six.moves.http_client.OK:
+    if response.status != http.client.OK:
         raise exceptions.TransportError(
-            "Error calling the IAM signBytes API: {}".format(response.data)
+            f"Error calling the IAM signBytes API: {response.data}"
         )
 
     data = json.loads(response.data.decode("utf-8"))
@@ -705,7 +699,7 @@ def _url_encode(query_params):
     :returns: URL encoded query params.
     """
     params = [
-        "{}={}".format(_quote_param(name), _quote_param(value))
+        f"{_quote_param(name)}={_quote_param(value)}"
         for name, value in query_params.items()
     ]
 
@@ -723,4 +717,4 @@ def _quote_param(param):
     """
     if not isinstance(param, bytes):
         param = str(param)
-    return six.moves.urllib.parse.quote(param, safe="~")
+    return urllib.parse.quote(param, safe="~")

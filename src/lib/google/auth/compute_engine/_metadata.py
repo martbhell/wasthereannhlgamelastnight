@@ -161,7 +161,7 @@ def get(
             retries += 1
     else:
         raise exceptions.TransportError(
-            "Failed to retrieve {} from the Google Compute Engine"
+            "Failed to retrieve {} from the Google Compute Engine "
             "metadata service. Compute Engine Metadata server unavailable".format(url)
         )
 
@@ -172,7 +172,7 @@ def get(
                 return json.loads(content)
             except ValueError as caught_exc:
                 new_exc = exceptions.TransportError(
-                    "Received invalid JSON from the Google Compute Engine"
+                    "Received invalid JSON from the Google Compute Engine "
                     "metadata service: {:.20}".format(content)
                 )
                 six.raise_from(new_exc, caught_exc)
@@ -180,7 +180,7 @@ def get(
             return content
     else:
         raise exceptions.TransportError(
-            "Failed to retrieve {} from the Google Compute Engine"
+            "Failed to retrieve {} from the Google Compute Engine "
             "metadata service. Status: {} Response:\n{}".format(
                 url, response.status, response.data
             ),
@@ -246,7 +246,7 @@ def get_service_account_token(request, service_account="default", scopes=None):
         scopes (Optional[Union[str, List[str]]]): Optional string or list of
             strings with auth scopes.
     Returns:
-        Union[str, datetime]: The access token and its expiration.
+        Tuple[str, datetime]: The access token and its expiration.
 
     Raises:
         google.auth.exceptions.TransportError: if an error occurred while

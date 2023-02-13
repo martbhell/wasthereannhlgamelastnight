@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Module for file-like access of blobs, usually invoked via Blob.open()."""
+
 import io
 import warnings
 
@@ -35,6 +37,7 @@ VALID_DOWNLOAD_KWARGS = {
     "if_metageneration_not_match",
     "timeout",
     "retry",
+    "raw_download",
 }
 
 # Valid keyword arguments for upload methods.
@@ -98,14 +101,16 @@ class BlobReader(io.BufferedIOBase):
         - ``if_metageneration_match``
         - ``if_metageneration_not_match``
         - ``timeout``
+
+        Note that download_kwargs are also applied to blob.reload(), if a reload
+        is needed during seek().
     """
 
     def __init__(self, blob, chunk_size=None, retry=DEFAULT_RETRY, **download_kwargs):
-        """docstring note that download_kwargs also used for reload()"""
         for kwarg in download_kwargs:
             if kwarg not in VALID_DOWNLOAD_KWARGS:
                 raise ValueError(
-                    "BlobReader does not support keyword argument {}.".format(kwarg)
+                    f"BlobReader does not support keyword argument {kwarg}."
                 )
 
         self._blob = blob
@@ -122,9 +127,12 @@ class BlobReader(io.BufferedIOBase):
         # If the read request demands more bytes than are buffered, fetch more.
         remaining_size = size - len(result)
         if remaining_size > 0 or size < 0:
+            self._pos += self._buffer.tell()
+            read_size = len(result)
+
             self._buffer.seek(0)
             self._buffer.truncate(0)  # Clear the buffer to make way for new data.
-            fetch_start = self._pos + len(result)
+            fetch_start = self._pos
             if size > 0:
                 # Fetch the larger of self._chunk_size or the remaining_size.
                 fetch_end = fetch_start + max(remaining_size, self._chunk_size)
@@ -140,7 +148,7 @@ class BlobReader(io.BufferedIOBase):
                     end=fetch_end,
                     checksum=None,
                     retry=self._retry,
-                    **self._download_kwargs
+                    **self._download_kwargs,
                 )
             except RequestRangeNotSatisfiable:
                 # We've reached the end of the file. Python file objects should
@@ -153,9 +161,8 @@ class BlobReader(io.BufferedIOBase):
                 self._buffer.write(result[size:])
                 self._buffer.seek(0)
                 result = result[:size]
-
-        self._pos += len(result)
-
+            # Increment relative offset by true amount read.
+            self._pos += len(result) - read_size
         return result
 
     def read1(self, size=-1):
@@ -173,36 +180,40 @@ class BlobReader(io.BufferedIOBase):
         if self._blob.size is None:
             self._blob.reload(**self._download_kwargs)
 
-        initial_pos = self._pos
+        initial_offset = self._pos + self._buffer.tell()
 
         if whence == 0:
-            self._pos = pos
+            target_pos = pos
         elif whence == 1:
-            self._pos += pos
+            target_pos = initial_offset + pos
         elif whence == 2:
-            self._pos = self._blob.size + pos
+            target_pos = self._blob.size + pos
         if whence not in {0, 1, 2}:
             raise ValueError("invalid whence value")
 
-        if self._pos > self._blob.size:
-            self._pos = self._blob.size
+        if target_pos > self._blob.size:
+            target_pos = self._blob.size
 
         # Seek or invalidate buffer as needed.
-        difference = self._pos - initial_pos
-        new_buffer_pos = self._buffer.seek(difference, 1)
-        if new_buffer_pos != difference:  # Buffer does not contain new pos.
-            # Invalidate buffer.
+        if target_pos < self._pos:
+            # Target position < relative offset <= true offset.
+            # As data is not in buffer, invalidate buffer.
             self._buffer.seek(0)
             self._buffer.truncate(0)
-
-        return self._pos
+            new_pos = target_pos
+            self._pos = target_pos
+        else:
+            # relative offset <= target position <= size of file.
+            difference = target_pos - initial_offset
+            new_pos = self._pos + self._buffer.seek(difference, 1)
+        return new_pos
 
     def close(self):
         self._buffer.close()
 
-    def _checkClosed(self):
-        if self._buffer.closed:
-            raise ValueError("I/O operation on closed file.")
+    @property
+    def closed(self):
+        return self._buffer.closed
 
     def readable(self):
         return True
@@ -292,12 +303,12 @@ class BlobWriter(io.BufferedIOBase):
         text_mode=False,
         ignore_flush=False,
         retry=DEFAULT_RETRY_IF_GENERATION_SPECIFIED,
-        **upload_kwargs
+        **upload_kwargs,
     ):
         for kwarg in upload_kwargs:
             if kwarg not in VALID_UPLOAD_KWARGS:
                 raise ValueError(
-                    "BlobWriter does not support keyword argument {}.".format(kwarg)
+                    f"BlobWriter does not support keyword argument {kwarg}."
                 )
         self._blob = blob
         self._buffer = SlidingBuffer()
@@ -383,7 +394,7 @@ class BlobWriter(io.BufferedIOBase):
             num_retries,
             chunk_size=self._chunk_size,
             retry=retry,
-            **self._upload_kwargs
+            **self._upload_kwargs,
         )
 
     def _upload_chunks_from_buffer(self, num_chunks):
@@ -416,14 +427,13 @@ class BlobWriter(io.BufferedIOBase):
             )
 
     def close(self):
-        self._checkClosed()  # Raises ValueError if closed.
-
-        self._upload_chunks_from_buffer(1)
+        if not self._buffer.closed:
+            self._upload_chunks_from_buffer(1)
         self._buffer.close()
 
-    def _checkClosed(self):
-        if self._buffer.closed:
-            raise ValueError("I/O operation on closed file.")
+    @property
+    def closed(self):
+        return self._buffer.closed
 
     def readable(self):
         return False

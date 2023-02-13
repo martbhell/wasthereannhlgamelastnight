@@ -23,9 +23,9 @@ from __future__ import absolute_import
 import asyncio
 import functools
 
-import aiohttp
+import aiohttp  # type: ignore
 import six
-import urllib3
+import urllib3  # type: ignore
 
 from google.auth import exceptions
 from google.auth import transport
@@ -140,7 +140,7 @@ class Request(transport.Request):
     def __init__(self, session=None):
         # TODO: Use auto_decompress property for aiohttp 3.7+
         if session is not None and session._auto_decompress:
-            raise ValueError(
+            raise exceptions.InvalidOperation(
                 "Client sessions with auto_decompress=True are not supported."
             )
         self.session = session
@@ -233,6 +233,8 @@ class AuthorizedSession(aiohttp.ClientSession):
             refreshing credentials. If not passed,
             an instance of :class:`~google.auth.transport.aiohttp_requests.Request`
             is created.
+        kwargs: Additional arguments passed through to the underlying
+            ClientSession :meth:`aiohttp.ClientSession` object.
     """
 
     def __init__(
@@ -243,8 +245,9 @@ class AuthorizedSession(aiohttp.ClientSession):
         refresh_timeout=None,
         auth_request=None,
         auto_decompress=False,
+        **kwargs,
     ):
-        super(AuthorizedSession, self).__init__()
+        super(AuthorizedSession, self).__init__(**kwargs)
         self.credentials = credentials
         self._refresh_status_codes = refresh_status_codes
         self._max_refresh_attempts = max_refresh_attempts

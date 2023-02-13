@@ -27,6 +27,7 @@ import os
 import random
 import re
 import sys
+import urllib.parse
 
 from google import resumable_media
 from google.resumable_media import _helpers
@@ -462,10 +463,20 @@ class ResumableUpload(UploadBase):
 
         self._stream = stream
         self._content_type = content_type
-        headers = {
-            _CONTENT_TYPE_HEADER: "application/json; charset=UTF-8",
-            "x-upload-content-type": content_type,
-        }
+
+        # Signed URL requires content type set directly - not through x-upload-content-type
+        parse_result = urllib.parse.urlparse(self.upload_url)
+        parsed_query = urllib.parse.parse_qs(parse_result.query)
+        if "x-goog-signature" in parsed_query or "X-Goog-Signature" in parsed_query:
+            # Deconstruct **self._headers first so that content type defined here takes priority
+            headers = {**self._headers, _CONTENT_TYPE_HEADER: content_type}
+        else:
+            # Deconstruct **self._headers first so that content type defined here takes priority
+            headers = {
+                **self._headers,
+                _CONTENT_TYPE_HEADER: "application/json; charset=UTF-8",
+                "x-upload-content-type": content_type,
+            }
         # Set the total bytes if possible.
         if total_bytes is not None:
             self._total_bytes = total_bytes
@@ -476,7 +487,6 @@ class ResumableUpload(UploadBase):
             content_length = "{:d}".format(self._total_bytes)
             headers["x-upload-content-length"] = content_length
 
-        headers.update(self._headers)
         payload = json.dumps(metadata).encode("utf-8")
         return _POST, self.upload_url, payload, headers
 
@@ -611,6 +621,7 @@ class ResumableUpload(UploadBase):
         self._update_checksum(start_byte, payload)
 
         headers = {
+            **self._headers,
             _CONTENT_TYPE_HEADER: self._content_type,
             _helpers.CONTENT_RANGE_HEADER: content_range,
         }
@@ -647,7 +658,7 @@ class ResumableUpload(UploadBase):
         """
         self._invalid = True
 
-    def _process_response(self, response, bytes_sent):
+    def _process_resumable_response(self, response, bytes_sent):
         """Process the response from an HTTP request.
 
         This is everything that must be done after a request that doesn't
@@ -783,14 +794,8 @@ class ResumableUpload(UploadBase):
             The headers **do not** incorporate the ``_headers`` on the
             current instance.
 
-        Raises:
-            ValueError: If the current upload is not in an invalid state.
-
         .. _sans-I/O: https://sans-io.readthedocs.io/
         """
-        if not self.invalid:
-            raise ValueError("Upload is not in invalid state, no need to recover.")
-
         headers = {_helpers.CONTENT_RANGE_HEADER: "bytes */*"}
         return _PUT, self.resumable_url, None, headers
 

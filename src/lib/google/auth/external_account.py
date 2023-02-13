@@ -30,10 +30,12 @@ token exchange endpoint following the `OAuth 2.0 Token Exchange`_ spec.
 import abc
 import copy
 import datetime
+import io
 import json
 import re
 
 import six
+from urllib3.util import parse_url
 
 from google.auth import _helpers
 from google.auth import credentials
@@ -53,7 +55,11 @@ _CLOUD_RESOURCE_MANAGER = "https://cloudresourcemanager.googleapis.com/v1/projec
 
 
 @six.add_metaclass(abc.ABCMeta)
-class Credentials(credentials.Scoped, credentials.CredentialsWithQuotaProject):
+class Credentials(
+    credentials.Scoped,
+    credentials.CredentialsWithQuotaProject,
+    credentials.CredentialsWithTokenUri,
+):
     """Base class for all external account credentials.
 
     This is used to instantiate Credentials for exchanging external account
@@ -69,8 +75,10 @@ class Credentials(credentials.Scoped, credentials.CredentialsWithQuotaProject):
         token_url,
         credential_source,
         service_account_impersonation_url=None,
+        service_account_impersonation_options=None,
         client_id=None,
         client_secret=None,
+        token_info_url=None,
         quota_project_id=None,
         scopes=None,
         default_scopes=None,
@@ -87,6 +95,7 @@ class Credentials(credentials.Scoped, credentials.CredentialsWithQuotaProject):
                 impersonation generateAccessToken URL.
             client_id (Optional[str]): The optional client ID.
             client_secret (Optional[str]): The optional client secret.
+            token_info_url (str): The optional STS endpoint URL for token introspection.
             quota_project_id (Optional[str]): The optional quota project ID.
             scopes (Optional[Sequence[str]]): Optional scopes to request during the
                 authorization grant.
@@ -105,14 +114,26 @@ class Credentials(credentials.Scoped, credentials.CredentialsWithQuotaProject):
         self._audience = audience
         self._subject_token_type = subject_token_type
         self._token_url = token_url
+        self._token_info_url = token_info_url
         self._credential_source = credential_source
         self._service_account_impersonation_url = service_account_impersonation_url
+        self._service_account_impersonation_options = (
+            service_account_impersonation_options or {}
+        )
         self._client_id = client_id
         self._client_secret = client_secret
         self._quota_project_id = quota_project_id
         self._scopes = scopes
         self._default_scopes = default_scopes
         self._workforce_pool_user_project = workforce_pool_user_project
+
+        Credentials.validate_token_url(token_url)
+        if token_info_url:
+            Credentials.validate_token_url(token_info_url, url_type="token info")
+        if service_account_impersonation_url:
+            Credentials.validate_service_account_impersonation_url(
+                service_account_impersonation_url
+            )
 
         if self._client_id:
             self._client_auth = utils.ClientAuthentication(
@@ -130,7 +151,7 @@ class Credentials(credentials.Scoped, credentials.CredentialsWithQuotaProject):
 
         if not self.is_workforce_pool and self._workforce_pool_user_project:
             # Workload identity pools do not support workforce pool user projects.
-            raise ValueError(
+            raise exceptions.InvalidValue(
                 "workforce_pool_user_project should not be set for non-workforce pool "
                 "credentials"
             )
@@ -145,19 +166,39 @@ class Credentials(credentials.Scoped, credentials.CredentialsWithQuotaProject):
                 useful for serializing the current credentials so it can deserialized
                 later.
         """
-        config_info = {
-            "type": _EXTERNAL_ACCOUNT_JSON_TYPE,
+        config_info = self._constructor_args()
+        config_info.update(
+            type=_EXTERNAL_ACCOUNT_JSON_TYPE,
+            service_account_impersonation=config_info.pop(
+                "service_account_impersonation_options", None
+            ),
+        )
+        config_info.pop("scopes", None)
+        config_info.pop("default_scopes", None)
+        return {key: value for key, value in config_info.items() if value is not None}
+
+    def _constructor_args(self):
+        args = {
             "audience": self._audience,
             "subject_token_type": self._subject_token_type,
             "token_url": self._token_url,
+            "token_info_url": self._token_info_url,
             "service_account_impersonation_url": self._service_account_impersonation_url,
+            "service_account_impersonation_options": copy.deepcopy(
+                self._service_account_impersonation_options
+            )
+            or None,
             "credential_source": copy.deepcopy(self._credential_source),
             "quota_project_id": self._quota_project_id,
             "client_id": self._client_id,
             "client_secret": self._client_secret,
             "workforce_pool_user_project": self._workforce_pool_user_project,
+            "scopes": self._scopes,
+            "default_scopes": self._default_scopes,
         }
-        return {key: value for key, value in config_info.items() if value is not None}
+        if not self.is_workforce_pool:
+            args.pop("workforce_pool_user_project")
+        return args
 
     @property
     def service_account_email(self):
@@ -235,24 +276,17 @@ class Credentials(credentials.Scoped, credentials.CredentialsWithQuotaProject):
         except ValueError:
             return None
 
+    @property
+    def token_info_url(self):
+        """Optional[str]: The STS token introspection endpoint."""
+
+        return self._token_info_url
+
     @_helpers.copy_docstring(credentials.Scoped)
     def with_scopes(self, scopes, default_scopes=None):
-        d = dict(
-            audience=self._audience,
-            subject_token_type=self._subject_token_type,
-            token_url=self._token_url,
-            credential_source=self._credential_source,
-            service_account_impersonation_url=self._service_account_impersonation_url,
-            client_id=self._client_id,
-            client_secret=self._client_secret,
-            quota_project_id=self._quota_project_id,
-            scopes=scopes,
-            default_scopes=default_scopes,
-            workforce_pool_user_project=self._workforce_pool_user_project,
-        )
-        if not self.is_workforce_pool:
-            d.pop("workforce_pool_user_project")
-        return self.__class__(**d)
+        kwargs = self._constructor_args()
+        kwargs.update(scopes=scopes, default_scopes=default_scopes)
+        return self.__class__(**kwargs)
 
     @abc.abstractmethod
     def retrieve_subject_token(self, request):
@@ -347,22 +381,15 @@ class Credentials(credentials.Scoped, credentials.CredentialsWithQuotaProject):
     @_helpers.copy_docstring(credentials.CredentialsWithQuotaProject)
     def with_quota_project(self, quota_project_id):
         # Return copy of instance with the provided quota project ID.
-        d = dict(
-            audience=self._audience,
-            subject_token_type=self._subject_token_type,
-            token_url=self._token_url,
-            credential_source=self._credential_source,
-            service_account_impersonation_url=self._service_account_impersonation_url,
-            client_id=self._client_id,
-            client_secret=self._client_secret,
-            quota_project_id=quota_project_id,
-            scopes=self._scopes,
-            default_scopes=self._default_scopes,
-            workforce_pool_user_project=self._workforce_pool_user_project,
-        )
-        if not self.is_workforce_pool:
-            d.pop("workforce_pool_user_project")
-        return self.__class__(**d)
+        kwargs = self._constructor_args()
+        kwargs.update(quota_project_id=quota_project_id)
+        return self.__class__(**kwargs)
+
+    @_helpers.copy_docstring(credentials.CredentialsWithTokenUri)
+    def with_token_uri(self, token_uri):
+        kwargs = self._constructor_args()
+        kwargs.update(token_url=token_uri)
+        return self.__class__(**kwargs)
 
     def _initialize_impersonated_credentials(self):
         """Generates an impersonated credentials.
@@ -380,22 +407,12 @@ class Credentials(credentials.Scoped, credentials.CredentialsWithQuotaProject):
                 endpoint returned an error.
         """
         # Return copy of instance with no service account impersonation.
-        d = dict(
-            audience=self._audience,
-            subject_token_type=self._subject_token_type,
-            token_url=self._token_url,
-            credential_source=self._credential_source,
+        kwargs = self._constructor_args()
+        kwargs.update(
             service_account_impersonation_url=None,
-            client_id=self._client_id,
-            client_secret=self._client_secret,
-            quota_project_id=self._quota_project_id,
-            scopes=self._scopes,
-            default_scopes=self._default_scopes,
-            workforce_pool_user_project=self._workforce_pool_user_project,
+            service_account_impersonation_options={},
         )
-        if not self.is_workforce_pool:
-            d.pop("workforce_pool_user_project")
-        source_credentials = self.__class__(**d)
+        source_credentials = self.__class__(**kwargs)
 
         # Determine target_principal.
         target_principal = self.service_account_email
@@ -412,4 +429,111 @@ class Credentials(credentials.Scoped, credentials.CredentialsWithQuotaProject):
             target_scopes=scopes,
             quota_project_id=self._quota_project_id,
             iam_endpoint_override=self._service_account_impersonation_url,
+            lifetime=self._service_account_impersonation_options.get(
+                "token_lifetime_seconds"
+            ),
         )
+
+    @staticmethod
+    def validate_token_url(token_url, url_type="token"):
+        _TOKEN_URL_PATTERNS = [
+            "^[^\\.\\s\\/\\\\]+\\.sts(?:\\.mtls)?\\.googleapis\\.com$",
+            "^sts(?:\\.mtls)?\\.googleapis\\.com$",
+            "^sts\\.[^\\.\\s\\/\\\\]+(?:\\.mtls)?\\.googleapis\\.com$",
+            "^[^\\.\\s\\/\\\\]+\\-sts(?:\\.mtls)?\\.googleapis\\.com$",
+            "^sts\\-[^\\.\\s\\/\\\\]+\\.p(?:\\.mtls)?\\.googleapis\\.com$",
+        ]
+
+        if not Credentials.is_valid_url(_TOKEN_URL_PATTERNS, token_url):
+            raise exceptions.InvalidResource(
+                "The provided {} URL is invalid.".format(url_type)
+            )
+
+    @staticmethod
+    def validate_service_account_impersonation_url(url):
+        _SERVICE_ACCOUNT_IMPERSONATION_URL_PATTERNS = [
+            "^[^\\.\\s\\/\\\\]+\\.iamcredentials\\.googleapis\\.com$",
+            "^iamcredentials\\.googleapis\\.com$",
+            "^iamcredentials\\.[^\\.\\s\\/\\\\]+\\.googleapis\\.com$",
+            "^[^\\.\\s\\/\\\\]+\\-iamcredentials\\.googleapis\\.com$",
+            "^iamcredentials\\-[^\\.\\s\\/\\\\]+\\.p\\.googleapis\\.com$",
+        ]
+
+        if not Credentials.is_valid_url(
+            _SERVICE_ACCOUNT_IMPERSONATION_URL_PATTERNS, url
+        ):
+            raise exceptions.InvalidResource(
+                "The provided service account impersonation URL is invalid."
+            )
+
+    @staticmethod
+    def is_valid_url(patterns, url):
+        """
+        Returns True if the provided URL's scheme is HTTPS and the host comforms to at least one of the provided patterns.
+        """
+        # Check specifically for whitespcaces:
+        #   Some python3.6 will parse the space character into %20 and pass the regex check which shouldn't be passed
+        if not url or len(str(url).split()) > 1:
+            return False
+
+        try:
+            uri = parse_url(url)
+        except Exception:
+            return False
+
+        if not uri.scheme or uri.scheme != "https" or not uri.hostname:
+            return False
+
+        return any(re.compile(p).match(uri.hostname.lower()) for p in patterns)
+
+    @classmethod
+    def from_info(cls, info, **kwargs):
+        """Creates a Credentials instance from parsed external account info.
+
+        Args:
+            info (Mapping[str, str]): The external account info in Google
+                format.
+            kwargs: Additional arguments to pass to the constructor.
+
+        Returns:
+            google.auth.identity_pool.Credentials: The constructed
+                credentials.
+
+        Raises:
+            InvalidValue: For invalid parameters.
+        """
+        return cls(
+            audience=info.get("audience"),
+            subject_token_type=info.get("subject_token_type"),
+            token_url=info.get("token_url"),
+            token_info_url=info.get("token_info_url"),
+            service_account_impersonation_url=info.get(
+                "service_account_impersonation_url"
+            ),
+            service_account_impersonation_options=info.get(
+                "service_account_impersonation"
+            )
+            or {},
+            client_id=info.get("client_id"),
+            client_secret=info.get("client_secret"),
+            credential_source=info.get("credential_source"),
+            quota_project_id=info.get("quota_project_id"),
+            workforce_pool_user_project=info.get("workforce_pool_user_project"),
+            **kwargs
+        )
+
+    @classmethod
+    def from_file(cls, filename, **kwargs):
+        """Creates a Credentials instance from an external account json file.
+
+        Args:
+            filename (str): The path to the external account json file.
+            kwargs: Additional arguments to pass to the constructor.
+
+        Returns:
+            google.auth.identity_pool.Credentials: The constructed
+                credentials.
+        """
+        with io.open(filename, "r", encoding="utf-8") as json_file:
+            data = json.load(json_file)
+            return cls.from_info(data, **kwargs)

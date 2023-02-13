@@ -154,7 +154,11 @@ _DEFAULT_TOKEN_LIFETIME_SECS = 3600  # 1 hour in seconds
 _DEFAULT_TOKEN_URI = "https://www.googleapis.com/oauth2/v4/token"
 
 
-class IDTokenCredentials(credentials.CredentialsWithQuotaProject, credentials.Signing):
+class IDTokenCredentials(
+    credentials.CredentialsWithQuotaProject,
+    credentials.Signing,
+    credentials.CredentialsWithTokenUri,
+):
     """Open ID Connect ID Token-based service account credentials.
 
     These credentials relies on the default service account of a GCE instance.
@@ -217,7 +221,7 @@ class IDTokenCredentials(credentials.CredentialsWithQuotaProject, credentials.Si
 
         if use_metadata_identity_endpoint:
             if token_uri or additional_claims or service_account_email or signer:
-                raise ValueError(
+                raise exceptions.MalformedError(
                     "If use_metadata_identity_endpoint is set, token_uri, "
                     "additional_claims, service_account_email, signer arguments"
                     " must not be set"
@@ -302,6 +306,27 @@ class IDTokenCredentials(credentials.CredentialsWithQuotaProject, credentials.Si
                 quota_project_id=quota_project_id,
             )
 
+    @_helpers.copy_docstring(credentials.CredentialsWithTokenUri)
+    def with_token_uri(self, token_uri):
+
+        # since the signer is already instantiated,
+        # the request is not needed
+        if self._use_metadata_identity_endpoint:
+            raise exceptions.MalformedError(
+                "If use_metadata_identity_endpoint is set, token_uri" " must not be set"
+            )
+        else:
+            return self.__class__(
+                None,
+                service_account_email=self._service_account_email,
+                token_uri=token_uri,
+                target_audience=self._target_audience,
+                additional_claims=self._additional_claims.copy(),
+                signer=self.signer,
+                use_metadata_identity_endpoint=False,
+                quota_project_id=self.quota_project_id,
+            )
+
     def _make_authorization_grant_assertion(self):
         """Create the OAuth 2.0 assertion.
         This assertion is used during the OAuth 2.0 grant to acquire an
@@ -379,7 +404,7 @@ class IDTokenCredentials(credentials.CredentialsWithQuotaProject, credentials.Si
             self.token = access_token
             self.expiry = expiry
 
-    @property
+    @property  # type: ignore
     @_helpers.copy_docstring(credentials.Signing)
     def signer(self):
         return self._signer
@@ -398,7 +423,7 @@ class IDTokenCredentials(credentials.CredentialsWithQuotaProject, credentials.Si
                 Signer is not available if metadata identity endpoint is used.
         """
         if self._use_metadata_identity_endpoint:
-            raise ValueError(
+            raise exceptions.InvalidOperation(
                 "Signer is not available if metadata identity endpoint is used"
             )
         return self._signer.sign(message)

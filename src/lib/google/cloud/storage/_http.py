@@ -15,18 +15,9 @@
 """Create / interact with Google Cloud Storage connections."""
 
 import functools
-import os
-import pkg_resources
-
 from google.cloud import _http
-
 from google.cloud.storage import __version__
-
-
-if os.getenv("GOOGLE_API_USE_CLIENT_CERTIFICATE") == "true":  # pragma: NO COVER
-    release = pkg_resources.get_distribution("google-cloud-core").parsed_version
-    if release < pkg_resources.parse_version("1.6.0"):
-        raise ImportError("google-cloud-core >= 1.6.0 is required to use mTLS feature")
+from google.cloud.storage import _helpers
 
 
 class Connection(_http.JSONConnection):
@@ -43,7 +34,7 @@ class Connection(_http.JSONConnection):
     :param api_endpoint: (Optional) api endpoint to use.
     """
 
-    DEFAULT_API_ENDPOINT = "https://storage.googleapis.com"
+    DEFAULT_API_ENDPOINT = _helpers._DEFAULT_STORAGE_HOST
     DEFAULT_API_MTLS_ENDPOINT = "https://storage.mtls.googleapis.com"
 
     def __init__(self, client, client_info=None, api_endpoint=None):
@@ -56,11 +47,11 @@ class Connection(_http.JSONConnection):
         # TODO: When metrics all use gccl, this should be removed #9552
         if self._client_info.user_agent is None:  # pragma: no branch
             self._client_info.user_agent = ""
-        agent_version = "gcloud-python/{}".format(__version__)
+        agent_version = f"gcloud-python/{__version__}"
         if agent_version not in self._client_info.user_agent:
-            self._client_info.user_agent += " {} ".format(agent_version)
+            self._client_info.user_agent += f" {agent_version} "
 
-    API_VERSION = "v1"
+    API_VERSION = _helpers._API_VERSION
     """The version of the API, used in building the API call's URL."""
 
     API_URL_TEMPLATE = "{api_base_url}/storage/{api_version}{path}"
@@ -68,6 +59,7 @@ class Connection(_http.JSONConnection):
 
     def api_request(self, *args, **kwargs):
         retry = kwargs.pop("retry", None)
+        kwargs["extra_api_info"] = _helpers._get_invocation_id()
         call = functools.partial(super(Connection, self).api_request, *args, **kwargs)
         if retry:
             # If this is a ConditionalRetryPolicy, check conditions.

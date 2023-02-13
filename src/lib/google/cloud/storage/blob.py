@@ -15,14 +15,6 @@
 # pylint: disable=too-many-lines
 
 """Create / interact with Google Cloud Storage blobs.
-
-.. _API reference docs: https://cloud.google.com/storage/docs/\
-                        json_api/v1/objects
-.. _customer-supplied: https://cloud.google.com/storage/docs/\
-                       encryption#customer-supplied
-.. _google-resumable-media: https://googleapis.github.io/\
-                            google-resumable-media-python/latest/\
-                            google.resumable_media.requests.html
 """
 
 import base64
@@ -35,14 +27,12 @@ import logging
 import mimetypes
 import os
 import re
+from urllib.parse import parse_qsl
+from urllib.parse import quote
+from urllib.parse import urlencode
+from urllib.parse import urlsplit
+from urllib.parse import urlunsplit
 import warnings
-
-import six
-from six.moves.urllib.parse import parse_qsl
-from six.moves.urllib.parse import quote
-from six.moves.urllib.parse import urlencode
-from six.moves.urllib.parse import urlsplit
-from six.moves.urllib.parse import urlunsplit
 
 from google import resumable_media
 from google.resumable_media.requests import ChunkedDownload
@@ -64,12 +54,14 @@ from google.cloud.storage._helpers import _add_generation_match_parameters
 from google.cloud.storage._helpers import _PropertyMixin
 from google.cloud.storage._helpers import _scalar_property
 from google.cloud.storage._helpers import _bucket_bound_hostname_url
-from google.cloud.storage._helpers import _convert_to_timestamp
 from google.cloud.storage._helpers import _raise_if_more_than_one_set
 from google.cloud.storage._helpers import _api_core_retry_to_resumable_media_retry
+from google.cloud.storage._helpers import _get_default_headers
 from google.cloud.storage._signing import generate_signed_url_v2
 from google.cloud.storage._signing import generate_signed_url_v4
 from google.cloud.storage._helpers import _NUM_RETRIES_MESSAGE
+from google.cloud.storage._helpers import _DEFAULT_STORAGE_HOST
+from google.cloud.storage._helpers import _API_VERSION
 from google.cloud.storage.acl import ACL
 from google.cloud.storage.acl import ObjectACL
 from google.cloud.storage.constants import _DEFAULT_TIMEOUT
@@ -88,12 +80,14 @@ from google.cloud.storage.fileio import BlobReader
 from google.cloud.storage.fileio import BlobWriter
 
 
-_API_ACCESS_ENDPOINT = "https://storage.googleapis.com"
-_DEFAULT_CONTENT_TYPE = u"application/octet-stream"
-_DOWNLOAD_URL_TEMPLATE = u"{hostname}/download/storage/v1{path}?alt=media"
-_BASE_UPLOAD_TEMPLATE = u"{hostname}/upload/storage/v1{bucket_path}/o?uploadType="
-_MULTIPART_URL_TEMPLATE = _BASE_UPLOAD_TEMPLATE + u"multipart"
-_RESUMABLE_URL_TEMPLATE = _BASE_UPLOAD_TEMPLATE + u"resumable"
+_API_ACCESS_ENDPOINT = _DEFAULT_STORAGE_HOST
+_DEFAULT_CONTENT_TYPE = "application/octet-stream"
+_DOWNLOAD_URL_TEMPLATE = "{hostname}/download/storage/{api_version}{path}?alt=media"
+_BASE_UPLOAD_TEMPLATE = (
+    "{hostname}/upload/storage/{api_version}{bucket_path}/o?uploadType="
+)
+_MULTIPART_URL_TEMPLATE = _BASE_UPLOAD_TEMPLATE + "multipart"
+_RESUMABLE_URL_TEMPLATE = _BASE_UPLOAD_TEMPLATE + "resumable"
 # NOTE: "acl" is also writeable but we defer ACL management to
 #       the classes in the google.cloud.storage.acl module.
 _CONTENT_TYPE_FIELD = "contentType"
@@ -322,7 +316,7 @@ class Blob(_PropertyMixin):
         else:
             bucket_name = None
 
-        return "<Blob: %s, %s, %s>" % (bucket_name, self.name, self.generation)
+        return f"<Blob: {bucket_name}, {self.name}, {self.generation}>"
 
     @property
     def path(self):
@@ -389,6 +383,13 @@ class Blob(_PropertyMixin):
     def from_string(cls, uri, client=None):
         """Get a constructor for blob object by URI.
 
+        .. code-block:: python
+
+            from google.cloud import storage
+            from google.cloud.storage.blob import Blob
+            client = storage.Client()
+            blob = Blob.from_string("gs://bucket/object", client=client)
+
         :type uri: str
         :param uri: The blob uri pass to get blob object.
 
@@ -399,14 +400,6 @@ class Blob(_PropertyMixin):
 
         :rtype: :class:`google.cloud.storage.blob.Blob`
         :returns: The blob object created.
-
-        Example:
-            Get a constructor for blob object by URI.
-
-            >>> from google.cloud import storage
-            >>> from google.cloud.storage.blob import Blob
-            >>> client = storage.Client()
-            >>> blob = Blob.from_string("gs://bucket/object", client=client)
         """
         from google.cloud.storage.bucket import Bucket
 
@@ -443,36 +436,23 @@ class Blob(_PropertyMixin):
         .. note::
 
             If you are on Google Compute Engine, you can't generate a signed
-            URL using GCE service account. Follow `Issue 50`_ for updates on
-            this. If you'd like to be able to generate a signed URL from GCE,
+            URL using GCE service account.
+            If you'd like to be able to generate a signed URL from GCE,
             you can use a standard service account from a JSON file rather
             than a GCE service account.
-
-        .. _Issue 50: https://github.com/GoogleCloudPlatform/\
-                      google-auth-library-python/issues/50
 
         If you have a blob that you want to allow access to for a set
         amount of time, you can use this method to generate a URL that
         is only valid within a certain time period.
 
-        If ``bucket_bound_hostname`` is set as an argument of :attr:`api_access_endpoint`,
-        ``https`` works only if using a ``CDN``.
-
-        Example:
-            Generates a signed URL for this blob using bucket_bound_hostname and scheme.
-
-            >>> from google.cloud import storage
-            >>> client = storage.Client()
-            >>> bucket = client.get_bucket('my-bucket-name')
-            >>> blob = bucket.get_blob('my-blob-name')
-            >>> url = blob.generate_signed_url(expiration='url-expiration-time', bucket_bound_hostname='mydomain.tld',
-            >>>                                  version='v4')
-            >>> url = blob.generate_signed_url(expiration='url-expiration-time', bucket_bound_hostname='mydomain.tld',
-            >>>                                  version='v4',scheme='https')  # If using ``CDN``
+        See a [code sample](https://cloud.google.com/storage/docs/samples/storage-generate-signed-url-v4#storage_generate_signed_url_v4-python).
 
         This is particularly useful if you don't want publicly
         accessible blobs, but don't want to require users to explicitly
         log in.
+
+        If ``bucket_bound_hostname`` is set as an argument of :attr:`api_access_endpoint`,
+        ``https`` works only if using a ``CDN``.
 
         :type expiration: Union[Integer, datetime.datetime, datetime.timedelta]
         :param expiration:
@@ -584,21 +564,20 @@ class Blob(_PropertyMixin):
 
         quoted_name = _quote(self.name, safe=b"/~")
 
+        # If you are on Google Compute Engine, you can't generate a signed URL
+        # using GCE service account.
+        # See https://github.com/googleapis/google-auth-library-python/issues/50
         if virtual_hosted_style:
-            api_access_endpoint = "https://{bucket_name}.storage.googleapis.com".format(
-                bucket_name=self.bucket.name
-            )
+            api_access_endpoint = f"https://{self.bucket.name}.storage.googleapis.com"
         elif bucket_bound_hostname:
             api_access_endpoint = _bucket_bound_hostname_url(
                 bucket_bound_hostname, scheme
             )
         else:
-            resource = "/{bucket_name}/{quoted_name}".format(
-                bucket_name=self.bucket.name, quoted_name=quoted_name
-            )
+            resource = f"/{self.bucket.name}/{quoted_name}"
 
         if virtual_hosted_style or bucket_bound_hostname:
-            resource = "/{quoted_name}".format(quoted_name=quoted_name)
+            resource = f"/{quoted_name}"
 
         if credentials is None:
             client = self._require_client(client)
@@ -848,9 +827,11 @@ class Blob(_PropertyMixin):
         name_value_pairs = []
         if self.media_link is None:
             hostname = _get_host_name(client._connection)
-            base_url = _DOWNLOAD_URL_TEMPLATE.format(hostname=hostname, path=self.path)
+            base_url = _DOWNLOAD_URL_TEMPLATE.format(
+                hostname=hostname, path=self.path, api_version=_API_VERSION
+            )
             if self.generation is not None:
-                name_value_pairs.append(("generation", "{:d}".format(self.generation)))
+                name_value_pairs.append(("generation", f"{self.generation:d}"))
         else:
             base_url = self.media_link
 
@@ -1050,24 +1031,13 @@ class Blob(_PropertyMixin):
            If the server-set property, :attr:`media_link`, is not yet
            initialized, makes an additional API request to load it.
 
-        Downloading a file that has been encrypted with a `customer-supplied`_
-        encryption key:
-
-         .. literalinclude:: snippets.py
-            :start-after: [START download_to_file]
-            :end-before: [END download_to_file]
-            :dedent: 4
-
-        The ``encryption_key`` should be a str or bytes with a length of at
-        least 32.
-
         If the :attr:`chunk_size` of a current blob is `None`, will download data
         in single download request otherwise it will download the :attr:`chunk_size`
         of data in each request.
 
         For more fine-grained control over the download process, check out
-        `google-resumable-media`_. For example, this library allows
-        downloading **parts** of a blob rather than the whole thing.
+        [`google-resumable-media`](https://googleapis.dev/python/google-resumable-media/latest/index.html).
+        For example, this library allows downloading **parts** of a blob rather than the whole thing.
 
         If :attr:`user_project` is set on the bucket, bills the API request
         to that project.
@@ -1195,6 +1165,9 @@ class Blob(_PropertyMixin):
         If :attr:`user_project` is set on the bucket, bills the API request
         to that project.
 
+        See a [code sample](https://cloud.google.com/storage/docs/samples/storage-download-encrypted-file#storage_download_encrypted_file-python)
+        to download a file with a [`customer-supplied encryption key`](https://cloud.google.com/storage/docs/encryption#customer-supplied).
+
         :type filename: str
         :param filename: A filename to be passed to ``open``.
 
@@ -1303,10 +1276,7 @@ class Blob(_PropertyMixin):
 
         updated = self.updated
         if updated is not None:
-            if six.PY2:
-                mtime = _convert_to_timestamp(updated)
-            else:
-                mtime = updated.timestamp()
+            mtime = updated.timestamp()
             os.utime(file_obj.name, (mtime, mtime))
 
     def download_as_bytes(
@@ -1699,8 +1669,8 @@ class Blob(_PropertyMixin):
 
         This is intended to be used when creating a new object / blob.
 
-        See the `API reference docs`_ for more information, the fields
-        marked as writable are:
+        See the [`API reference docs`](https://cloud.google.com/storage/docs/json_api/v1/objects)
+        for more information, the fields marked as writable are:
 
         * ``acl``
         * ``cacheControl``
@@ -1726,7 +1696,7 @@ class Blob(_PropertyMixin):
 
         return object_metadata
 
-    def _get_upload_arguments(self, content_type):
+    def _get_upload_arguments(self, client, content_type):
         """Get required arguments for performing an upload.
 
         The content type returned will be determined in order of precedence:
@@ -1745,9 +1715,12 @@ class Blob(_PropertyMixin):
                   * An object metadata dictionary
                   * The ``content_type`` as a string (according to precedence)
         """
-        headers = _get_encryption_headers(self._encryption_key)
-        object_metadata = self._get_writable_metadata()
         content_type = self._get_content_type(content_type)
+        headers = {
+            **_get_default_headers(client._connection.user_agent, content_type),
+            **_get_encryption_headers(self._encryption_key),
+        }
+        object_metadata = self._get_writable_metadata()
         return headers, object_metadata, content_type
 
     def _do_multipart_upload(
@@ -1866,12 +1839,12 @@ class Blob(_PropertyMixin):
         transport = self._get_transport(client)
         if "metadata" in self._properties and "metadata" not in self._changes:
             self._changes.add("metadata")
-        info = self._get_upload_arguments(content_type)
+        info = self._get_upload_arguments(client, content_type)
         headers, object_metadata, content_type = info
 
         hostname = _get_host_name(client._connection)
         base_url = _MULTIPART_URL_TEMPLATE.format(
-            hostname=hostname, bucket_path=self.bucket.path
+            hostname=hostname, bucket_path=self.bucket.path, api_version=_API_VERSION
         )
         name_value_pairs = []
 
@@ -2051,14 +2024,14 @@ class Blob(_PropertyMixin):
         transport = self._get_transport(client)
         if "metadata" in self._properties and "metadata" not in self._changes:
             self._changes.add("metadata")
-        info = self._get_upload_arguments(content_type)
+        info = self._get_upload_arguments(client, content_type)
         headers, object_metadata, content_type = info
         if extra_headers is not None:
             headers.update(extra_headers)
 
         hostname = _get_host_name(client._connection)
         base_url = _RESUMABLE_URL_TEMPLATE.format(
-            hostname=hostname, bucket_path=self.bucket.path
+            hostname=hostname, bucket_path=self.bucket.path, api_version=_API_VERSION
         )
         name_value_pairs = []
 
@@ -2236,7 +2209,6 @@ class Blob(_PropertyMixin):
             checksum=checksum,
             retry=retry,
         )
-
         while not upload.finished:
             try:
                 response = upload.transmit_next_chunk(transport, timeout=timeout)
@@ -2244,7 +2216,6 @@ class Blob(_PropertyMixin):
                 # Attempt to delete the corrupted object.
                 self.delete()
                 raise
-
         return response
 
     def _do_upload(
@@ -2446,31 +2417,22 @@ class Blob(_PropertyMixin):
            bucket.  In the absence of those policies, upload will
            overwrite any existing contents.
 
-           See the `object versioning`_ and `lifecycle`_ API documents
-           for details.
-
-        Uploading a file with a `customer-supplied`_ encryption key:
-
-        .. literalinclude:: snippets.py
-            :start-after: [START upload_from_file]
-            :end-before: [END upload_from_file]
-            :dedent: 4
-
-        The ``encryption_key`` should be a str or bytes with a length of at
-        least 32.
+           See the [`object versioning`](https://cloud.google.com/storage/docs/object-versioning)
+           and [`lifecycle`](https://cloud.google.com/storage/docs/lifecycle)
+           API documents for details.
 
         If the size of the data to be uploaded exceeds 8 MB a resumable media
         request will be used, otherwise the content and the metadata will be
         uploaded in a single multipart upload request.
 
         For more fine-grained over the upload process, check out
-        `google-resumable-media`_.
+        [`google-resumable-media`](https://googleapis.dev/python/google-resumable-media/latest/index.html).
 
         If :attr:`user_project` is set on the bucket, bills the API request
         to that project.
 
         :type file_obj: file
-        :param file_obj: A file handle open for reading.
+        :param file_obj: A file handle opened in binary mode for reading.
 
         :type rewind: bool
         :param rewind:
@@ -2561,10 +2523,6 @@ class Blob(_PropertyMixin):
 
         :raises: :class:`~google.cloud.exceptions.GoogleCloudError`
                  if the upload response returns an error status.
-
-        .. _object versioning: https://cloud.google.com/storage/\
-                               docs/object-versioning
-        .. _lifecycle: https://cloud.google.com/storage/docs/lifecycle
         """
         if num_retries is not None:
             warnings.warn(_NUM_RETRIES_MESSAGE, DeprecationWarning, stacklevel=2)
@@ -2628,13 +2586,16 @@ class Blob(_PropertyMixin):
            bucket.  In the absence of those policies, upload will
            overwrite any existing contents.
 
-           See the `object versioning
-           <https://cloud.google.com/storage/docs/object-versioning>`_ and
-           `lifecycle <https://cloud.google.com/storage/docs/lifecycle>`_
+           See the [`object versioning`](https://cloud.google.com/storage/docs/object-versioning)
+           and [`lifecycle`](https://cloud.google.com/storage/docs/lifecycle)
            API documents for details.
 
         If :attr:`user_project` is set on the bucket, bills the API request
         to that project.
+
+        See a [code sample](https://cloud.google.com/storage/docs/samples/storage-upload-encrypted-file#storage_upload_encrypted_file-python)
+        to upload a file with a
+        [`customer-supplied encryption key`](https://cloud.google.com/storage/docs/encryption#customer-supplied).
 
         :type filename: str
         :param filename: The path to the file.
@@ -2758,9 +2719,8 @@ class Blob(_PropertyMixin):
            bucket.  In the absence of those policies, upload will
            overwrite any existing contents.
 
-           See the `object versioning
-           <https://cloud.google.com/storage/docs/object-versioning>`_ and
-           `lifecycle <https://cloud.google.com/storage/docs/lifecycle>`_
+           See the [`object versioning`](https://cloud.google.com/storage/docs/object-versioning)
+           and [`lifecycle`](https://cloud.google.com/storage/docs/lifecycle)
            API documents for details.
 
         If :attr:`user_project` is set on the bucket, bills the API request
@@ -2875,6 +2835,7 @@ class Blob(_PropertyMixin):
         client=None,
         timeout=_DEFAULT_TIMEOUT,
         checksum=None,
+        predefined_acl=None,
         if_generation_match=None,
         if_generation_not_match=None,
         if_metageneration_match=None,
@@ -2889,12 +2850,10 @@ class Blob(_PropertyMixin):
         passes the session URL to the client that will upload the binary data.
         The client performs a PUT request on the session URL to complete the
         upload. This process allows untrusted clients to upload to an
-        access-controlled bucket. For more details, see the
-        `documentation on signed URLs`_.
+        access-controlled bucket.
 
-        .. _documentation on signed URLs:
-            https://cloud.google.com/storage/\
-            docs/access-control/signed-urls#signing-resumable
+        For more details, see the
+        documentation on [`signed URLs`](https://cloud.google.com/storage/docs/access-control/signed-urls#signing-resumable).
 
         The content type of the upload will be determined in order
         of precedence:
@@ -2909,13 +2868,13 @@ class Blob(_PropertyMixin):
            bucket.  In the absence of those policies, upload will
            overwrite any existing contents.
 
-           See the `object versioning
-           <https://cloud.google.com/storage/docs/object-versioning>`_ and
-           `lifecycle <https://cloud.google.com/storage/docs/lifecycle>`_
+           See the [`object versioning`](https://cloud.google.com/storage/docs/object-versioning)
+           and [`lifecycle`](https://cloud.google.com/storage/docs/lifecycle)
            API documents for details.
 
         If :attr:`encryption_key` is set, the blob will be encrypted with
-        a `customer-supplied`_ encryption key.
+        a [`customer-supplied`](https://cloud.google.com/storage/docs/encryption#customer-supplied)
+        encryption key.
 
         If :attr:`user_project` is set on the bucket, bills the API request
         to that project.
@@ -2954,6 +2913,9 @@ class Blob(_PropertyMixin):
             a mismatch. On a validation failure, the client will attempt to
             delete the uploaded object automatically. Supported values
             are "md5", "crc32c" and None. The default is None.
+
+        :type predefined_acl: str
+        :param predefined_acl: (Optional) Predefined access control list
 
         :type if_generation_match: long
         :param if_generation_match:
@@ -3028,7 +2990,7 @@ class Blob(_PropertyMixin):
                 content_type,
                 size,
                 None,
-                predefined_acl=None,
+                predefined_acl=predefined_acl,
                 if_generation_match=if_generation_match,
                 if_generation_not_match=if_generation_not_match,
                 if_metageneration_match=if_metageneration_match,
@@ -3104,7 +3066,7 @@ class Blob(_PropertyMixin):
             query_params["optionsRequestedPolicyVersion"] = requested_policy_version
 
         info = client._get_resource(
-            "%s/iam" % (self.path,),
+            f"{self.path}/iam",
             query_params=query_params,
             timeout=timeout,
             retry=retry,
@@ -3160,7 +3122,7 @@ class Blob(_PropertyMixin):
         if self.user_project is not None:
             query_params["userProject"] = self.user_project
 
-        path = "{}/iam".format(self.path)
+        path = f"{self.path}/iam"
         resource = policy.to_api_repr()
         resource["resourceId"] = self.path
         info = client._put_resource(
@@ -3216,7 +3178,7 @@ class Blob(_PropertyMixin):
         if self.user_project is not None:
             query_params["userProject"] = self.user_project
 
-        path = "%s/iam/testPermissions" % (self.path,)
+        path = f"{self.path}/iam/testPermissions"
         resp = client._get_resource(
             path,
             query_params=query_params,
@@ -3348,6 +3310,9 @@ class Blob(_PropertyMixin):
         If :attr:`user_project` is set on the bucket, bills the API request
         to that project.
 
+        See [API reference docs](https://cloud.google.com/storage/docs/json_api/v1/objects/compose)
+        and a [code sample](https://cloud.google.com/storage/docs/samples/storage-compose-file#storage_compose_file-python).
+
         :type sources: list of :class:`Blob`
         :param sources: Blobs whose contents will be composed into this blob.
 
@@ -3367,14 +3332,11 @@ class Blob(_PropertyMixin):
             destination object's current generation matches the given value.
             Setting to 0 makes the operation succeed only if there are no live
             versions of the object.
-
-            .. note::
-
-              In a previous version, this argument worked identically to the
-              ``if_source_generation_match`` argument. For
-              backwards-compatibility reasons, if a list is passed in,
-              this argument will behave like ``if_source_generation_match``
-              and also issue a DeprecationWarning.
+            Note: In a previous version, this argument worked identically to the
+            ``if_source_generation_match`` argument. For
+            backwards-compatibility reasons, if a list is passed in,
+            this argument will behave like ``if_source_generation_match``
+            and also issue a DeprecationWarning.
 
         :type if_metageneration_match: long
         :param if_metageneration_match:
@@ -3395,20 +3357,6 @@ class Blob(_PropertyMixin):
         :type retry: google.api_core.retry.Retry or google.cloud.storage.retry.ConditionalRetryPolicy
         :param retry:
             (Optional) How to retry the RPC. See: :ref:`configuring_retries`
-
-        Example:
-            Compose blobs using source generation match preconditions.
-
-            >>> from google.cloud import storage
-            >>> client = storage.Client()
-            >>> bucket = client.bucket("bucket-name")
-
-            >>> blobs = [bucket.blob("blob-name-1"), bucket.blob("blob-name-2")]
-            >>> if_source_generation_match = [None] * len(blobs)
-            >>> if_source_generation_match[0] = "123"  # precondition for "blob-name-1"
-
-            >>> composed_blob = bucket.blob("composed-name")
-            >>> composed_blob.compose(blobs, if_source_generation_match=if_source_generation_match)
         """
         sources_len = len(sources)
         client = self._require_client(client)
@@ -3471,7 +3419,7 @@ class Blob(_PropertyMixin):
         )
 
         api_response = client._post_resource(
-            "{}/compose".format(self.path),
+            f"{self.path}/compose",
             request,
             query_params=query_params,
             timeout=timeout,
@@ -3589,7 +3537,15 @@ class Blob(_PropertyMixin):
         if source.generation:
             query_params["sourceGeneration"] = source.generation
 
-        if self.kms_key_name is not None:
+        # When a Customer Managed Encryption Key is used to encrypt Cloud Storage object
+        # at rest, object resource metadata will store the version of the Key Management
+        # Service cryptographic material. If a Blob instance with KMS Key metadata set is
+        # used to rewrite the object, then the existing kmsKeyName version
+        # value can't be used in the rewrite request and the client instead ignores it.
+        if (
+            self.kms_key_name is not None
+            and "cryptoKeyVersions" not in self.kms_key_name
+        ):
             query_params["destinationKmsKeyName"] = self.kms_key_name
 
         _add_generation_match_parameters(
@@ -3604,7 +3560,7 @@ class Blob(_PropertyMixin):
             if_source_metageneration_not_match=if_source_metageneration_not_match,
         )
 
-        path = "{}/rewriteTo{}".format(source.path, self.path)
+        path = f"{source.path}/rewriteTo{self.path}"
         api_response = client._post_resource(
             path,
             self._properties,
@@ -3720,9 +3676,6 @@ class Blob(_PropertyMixin):
         :param retry:
             (Optional) How to retry the RPC. See: :ref:`configuring_retries`
         """
-        if new_class not in self.STORAGE_CLASSES:
-            raise ValueError("Invalid storage class: %s" % (new_class,))
-
         # Update current blob's storage class prior to rewrite
         self._patch_property("storageClass", new_class)
 
@@ -3764,7 +3717,7 @@ class Blob(_PropertyMixin):
         encoding=None,
         errors=None,
         newline=None,
-        **kwargs
+        **kwargs,
     ):
         r"""Create a file handler for file-like I/O to or from this blob.
 
@@ -3783,6 +3736,36 @@ class Blob(_PropertyMixin):
         using this feature because reads are implemented using request ranges,
         which do not provide checksums to validate. See
         https://cloud.google.com/storage/docs/hashes-etags for details.
+
+        See a [code sample](https://github.com/googleapis/python-storage/blob/main/samples/snippets/storage_fileio_write_read.py).
+
+        Keyword arguments to pass to the underlying API calls.
+        For both uploads and downloads, the following arguments are
+        supported:
+
+        - ``if_generation_match``
+        - ``if_generation_not_match``
+        - ``if_metageneration_match``
+        - ``if_metageneration_not_match``
+        - ``timeout``
+        - ``retry``
+
+        For downloads only, the following additional arguments are supported:
+
+        - ``raw_download``
+
+        For uploads only, the following additional arguments are supported:
+
+        - ``content_type``
+        - ``num_retries``
+        - ``predefined_acl``
+        - ``checksum``
+
+        .. note::
+
+           ``num_retries`` is supported for backwards-compatibility
+           reasons only; please use ``retry`` with a Retry object or
+           ConditionalRetryPolicy instead.
 
         :type mode: str
         :param mode:
@@ -3838,49 +3821,9 @@ class Blob(_PropertyMixin):
             newline mode" and writes use the system default. See the Python
             'io' module documentation for 'io.TextIOWrapper' for details.
 
-        :param kwargs:
-            Keyword arguments to pass to the underlying API calls.
-            For both uploads and downloads, the following arguments are
-            supported:
-
-            - ``if_generation_match``
-            - ``if_generation_not_match``
-            - ``if_metageneration_match``
-            - ``if_metageneration_not_match``
-            - ``timeout``
-            - ``retry``
-
-            For uploads only, the following additional arguments are supported:
-
-            - ``content_type``
-            - ``num_retries``
-            - ``predefined_acl``
-            - ``checksum``
-
-            .. note::
-
-               ``num_retries`` is supported for backwards-compatibility
-               reasons only; please use ``retry`` with a Retry object or
-               ConditionalRetryPolicy instead.
-
         :returns: A 'BlobReader' or 'BlobWriter' from
             'google.cloud.storage.fileio', or an 'io.TextIOWrapper' around one
             of those classes, depending on the 'mode' argument.
-
-        Example:
-            Read from a text blob by using open() as context manager.
-
-            Using bucket.get_blob() fetches metadata such as the generation,
-            which prevents race conditions in case the blob is modified.
-
-            >>> from google.cloud import storage
-            >>> client = storage.Client()
-            >>> bucket = client.bucket("bucket-name")
-
-            >>> blob = bucket.get_blob("blob-name.txt")
-            >>> with blob.open("rt") as f:
-            >>>     print(f.read())
-
         """
         if mode == "rb":
             if encoding or errors or newline:
@@ -3931,51 +3874,47 @@ class Blob(_PropertyMixin):
     cache_control = _scalar_property("cacheControl")
     """HTTP 'Cache-Control' header for this object.
 
-    See `RFC 7234`_ and `API reference docs`_.
+    See [`RFC 7234`](https://tools.ietf.org/html/rfc7234#section-5.2)
+    and [`API reference docs`](https://cloud.google.com/storage/docs/json_api/v1/objects).
 
     :rtype: str or ``NoneType``
 
-    .. _RFC 7234: https://tools.ietf.org/html/rfc7234#section-5.2
     """
 
     content_disposition = _scalar_property("contentDisposition")
     """HTTP 'Content-Disposition' header for this object.
 
-    See `RFC 6266`_ and `API reference docs`_.
+    See [`RFC 6266`](https://tools.ietf.org/html/rfc7234#section-5.2) and
+    [`API reference docs`](https://cloud.google.com/storage/docs/json_api/v1/objects).
 
     :rtype: str or ``NoneType``
-
-    .. _RFC 6266: https://tools.ietf.org/html/rfc7234#section-5.2
     """
 
     content_encoding = _scalar_property("contentEncoding")
     """HTTP 'Content-Encoding' header for this object.
 
-    See `RFC 7231`_ and `API reference docs`_.
+    See [`RFC 7231`](https://tools.ietf.org/html/rfc7231#section-3.1.2.2) and
+    [`API reference docs`](https://cloud.google.com/storage/docs/json_api/v1/objects).
 
     :rtype: str or ``NoneType``
-
-    .. _RFC 7231: https://tools.ietf.org/html/rfc7231#section-3.1.2.2
     """
 
     content_language = _scalar_property("contentLanguage")
     """HTTP 'Content-Language' header for this object.
 
-    See `BCP47`_ and `API reference docs`_.
+    See [`BCP47`](https://tools.ietf.org/html/bcp47) and
+    [`API reference docs`](https://cloud.google.com/storage/docs/json_api/v1/objects).
 
     :rtype: str or ``NoneType``
-
-    .. _BCP47: https://tools.ietf.org/html/bcp47
     """
 
     content_type = _scalar_property(_CONTENT_TYPE_FIELD)
     """HTTP 'Content-Type' header for this object.
 
-    See `RFC 2616`_ and `API reference docs`_.
+    See [`RFC 2616`](https://tools.ietf.org/html/rfc2616#section-14.17) and
+    [`API reference docs`](https://cloud.google.com/storage/docs/json_api/v1/objects).
 
     :rtype: str or ``NoneType``
-
-    .. _RFC 2616: https://tools.ietf.org/html/rfc2616#section-14.17
     """
 
     crc32c = _scalar_property("crc32c")
@@ -3984,29 +3923,12 @@ class Blob(_PropertyMixin):
     This returns the blob's CRC32C checksum. To retrieve the value, first use a
     reload method of the Blob class which loads the blob's properties from the server.
 
-    See `RFC 4960`_ and `API reference docs`_.
+    See [`RFC 4960`](https://tools.ietf.org/html/rfc4960#appendix-B) and
+    [`API reference docs`](https://cloud.google.com/storage/docs/json_api/v1/objects).
 
     If not set before upload, the server will compute the hash.
 
     :rtype: str or ``NoneType``
-
-    .. _RFC 4960: https://tools.ietf.org/html/rfc4960#appendix-B
-
-    Example:
-            Retrieve the crc32c hash of blob.
-
-            >>> from google.cloud import storage
-            >>> client = storage.Client()
-            >>> bucket = client.get_bucket("my-bucket-name")
-            >>> blob = bucket.blob('my-blob')
-
-            >>> blob.crc32c  # return None
-            >>> blob.reload()
-            >>> blob.crc32c  # return crc32c hash
-
-            >>> # Another approach
-            >>> blob = bucket.get_blob('my-blob')
-            >>> blob.crc32c  # return crc32c hash
     """
 
     @property
@@ -4029,20 +3951,19 @@ class Blob(_PropertyMixin):
     def etag(self):
         """Retrieve the ETag for the object.
 
-        See `RFC 2616 (etags)`_ and `API reference docs`_.
+        See [`RFC 2616 (etags)`](https://tools.ietf.org/html/rfc2616#section-3.11) and
+        [`API reference docs`](https://cloud.google.com/storage/docs/json_api/v1/objects).
 
         :rtype: str or ``NoneType``
         :returns: The blob etag or ``None`` if the blob's resource has not
                   been loaded from the server.
-
-        .. _RFC 2616 (etags): https://tools.ietf.org/html/rfc2616#section-3.11
         """
         return self._properties.get("etag")
 
     event_based_hold = _scalar_property("eventBasedHold")
     """Is an event-based hold active on the object?
 
-    See `API reference docs`_.
+    See [`API reference docs`](https://cloud.google.com/storage/docs/json_api/v1/objects).
 
     If the property is not set locally, returns :data:`None`.
 
@@ -4083,29 +4004,12 @@ class Blob(_PropertyMixin):
     This returns the blob's MD5 hash. To retrieve the value, first use a
     reload method of the Blob class which loads the blob's properties from the server.
 
-    See `RFC 1321`_ and `API reference docs`_.
+    See [`RFC 1321`](https://tools.ietf.org/html/rfc1321) and
+    [`API reference docs`](https://cloud.google.com/storage/docs/json_api/v1/objects).
 
     If not set before upload, the server will compute the hash.
 
     :rtype: str or ``NoneType``
-
-    .. _RFC 1321: https://tools.ietf.org/html/rfc1321
-
-    Example:
-            Retrieve the md5 hash of blob.
-
-            >>> from google.cloud import storage
-            >>> client = storage.Client()
-            >>> bucket = client.get_bucket("my-bucket-name")
-            >>> blob = bucket.blob('my-blob')
-
-            >>> blob.md5_hash  # return None
-            >>> blob.reload()
-            >>> blob.md5_hash  # return md5 hash
-
-            >>> # Another approach
-            >>> blob = bucket.get_blob('my-blob')
-            >>> blob.md5_hash  # return md5 hash
     """
 
     @property
@@ -4265,7 +4169,7 @@ class Blob(_PropertyMixin):
     temporary_hold = _scalar_property("temporaryHold")
     """Is a temporary hold active on the object?
 
-    See `API reference docs`_.
+    See [`API reference docs`](https://cloud.google.com/storage/docs/json_api/v1/objects).
 
     If the property is not set locally, returns :data:`None`.
 
@@ -4459,9 +4363,7 @@ def _raise_from_invalid_response(error):
     else:
         error_message = str(error)
 
-    message = u"{method} {url}: {error}".format(
-        method=response.request.method, url=response.request.url, error=error_message
-    )
+    message = f"{response.request.method} {response.request.url}: {error_message}"
 
     raise exceptions.from_http_status(response.status_code, message, response=response)
 

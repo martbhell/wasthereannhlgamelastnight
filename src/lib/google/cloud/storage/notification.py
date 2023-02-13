@@ -12,7 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Support for bucket notification resources."""
+"""Configure bucket notification resources to interact with Google Cloud Pub/Sub.
+
+See [Cloud Pub/Sub Notifications for Google Cloud Storage](https://cloud.google.com/storage/docs/pubsub-notifications)
+"""
 
 import re
 
@@ -156,26 +159,22 @@ class BucketNotification(object):
 
     @property
     def topic_project(self):
-        """Project ID of topic to which notifications are published.
-        """
+        """Project ID of topic to which notifications are published."""
         return self._topic_project
 
     @property
     def custom_attributes(self):
-        """Custom attributes passed with notification events.
-        """
+        """Custom attributes passed with notification events."""
         return self._properties.get("custom_attributes")
 
     @property
     def event_types(self):
-        """Event types for which notification events are published.
-        """
+        """Event types for which notification events are published."""
         return self._properties.get("event_types")
 
     @property
     def blob_name_prefix(self):
-        """Prefix of blob names for which notification events are published.
-        """
+        """Prefix of blob names for which notification events are published."""
         return self._properties.get("object_name_prefix")
 
     @property
@@ -206,9 +205,7 @@ class BucketNotification(object):
     @property
     def path(self):
         """The URL path for this notification."""
-        return "/b/{}/notificationConfigs/{}".format(
-            self.bucket.name, self.notification_id
-        )
+        return f"/b/{self.bucket.name}/notificationConfigs/{self.notification_id}"
 
     def _require_client(self, client):
         """Check client or verify over-ride.
@@ -258,7 +255,7 @@ class BucketNotification(object):
         """
         if self.notification_id is not None:
             raise ValueError(
-                "Notification already exists w/ id: {}".format(self.notification_id)
+                f"Notification already exists w/ id: {self.notification_id}"
             )
 
         client = self._require_client(client)
@@ -267,7 +264,7 @@ class BucketNotification(object):
         if self.bucket.user_project is not None:
             query_params["userProject"] = self.bucket.user_project
 
-        path = "/b/{}/notificationConfigs".format(self.bucket.name)
+        path = f"/b/{self.bucket.name}/notificationConfigs"
         properties = self._properties.copy()
 
         if self.topic_name is None:
@@ -278,7 +275,11 @@ class BucketNotification(object):
             )
 
         self._properties = client._post_resource(
-            path, properties, query_params=query_params, timeout=timeout, retry=retry,
+            path,
+            properties,
+            query_params=query_params,
+            timeout=timeout,
+            retry=retry,
         )
 
     def exists(self, client=None, timeout=_DEFAULT_TIMEOUT, retry=DEFAULT_RETRY):
@@ -308,7 +309,7 @@ class BucketNotification(object):
         :raises ValueError: if the notification has no ID.
         """
         if self.notification_id is None:
-            raise ValueError("Notification not intialized by server")
+            raise ValueError("Notification ID not set: set an explicit notification_id")
 
         client = self._require_client(client)
 
@@ -318,7 +319,10 @@ class BucketNotification(object):
 
         try:
             client._get_resource(
-                self.path, query_params=query_params, timeout=timeout, retry=retry,
+                self.path,
+                query_params=query_params,
+                timeout=timeout,
+                retry=retry,
             )
         except NotFound:
             return False
@@ -351,7 +355,7 @@ class BucketNotification(object):
         :raises ValueError: if the notification has no ID.
         """
         if self.notification_id is None:
-            raise ValueError("Notification not intialized by server")
+            raise ValueError("Notification ID not set: set an explicit notification_id")
 
         client = self._require_client(client)
 
@@ -360,7 +364,10 @@ class BucketNotification(object):
             query_params["userProject"] = self.bucket.user_project
 
         response = client._get_resource(
-            self.path, query_params=query_params, timeout=timeout, retry=retry,
+            self.path,
+            query_params=query_params,
+            timeout=timeout,
+            retry=retry,
         )
         self._set_properties(response)
 
@@ -391,7 +398,7 @@ class BucketNotification(object):
         :raises ValueError: if the notification has no ID.
         """
         if self.notification_id is None:
-            raise ValueError("Notification not intialized by server")
+            raise ValueError("Notification ID not set: set an explicit notification_id")
 
         client = self._require_client(client)
 
@@ -400,18 +407,15 @@ class BucketNotification(object):
             query_params["userProject"] = self.bucket.user_project
 
         client._delete_resource(
-            self.path, query_params=query_params, timeout=timeout, retry=retry,
+            self.path,
+            query_params=query_params,
+            timeout=timeout,
+            retry=retry,
         )
 
 
 def _parse_topic_path(topic_path):
     """Verify that a topic path is in the correct format.
-
-    .. _resource manager docs: https://cloud.google.com/resource-manager/\
-                               reference/rest/v1beta1/projects#\
-                               Project.FIELDS.project_id
-    .. _topic spec: https://cloud.google.com/storage/docs/json_api/v1/\
-                    notifications/insert#topic
 
     Expected to be of the form:
 
@@ -419,10 +423,11 @@ def _parse_topic_path(topic_path):
 
     where the ``project`` value must be "6 to 30 lowercase letters, digits,
     or hyphens. It must start with a letter. Trailing hyphens are prohibited."
-    (see `resource manager docs`_) and ``topic`` must have length at least two,
+    (see [`resource manager docs`](https://cloud.google.com/resource-manager/reference/rest/v1beta1/projects#Project.FIELDS.project_id))
+    and ``topic`` must have length at least two,
     must start with a letter and may only contain alphanumeric characters or
     ``-``, ``_``, ``.``, ``~``, ``+`` or ``%`` (i.e characters used for URL
-    encoding, see `topic spec`_).
+    encoding, see [`topic spec`](https://cloud.google.com/storage/docs/json_api/v1/notifications/insert#topic)).
 
     Args:
         topic_path (str): The topic path to be verified.
