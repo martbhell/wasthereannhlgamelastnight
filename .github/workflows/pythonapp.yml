@@ -125,7 +125,7 @@ jobs:
       run: "python e2e_test.py"
 
   final_final_prod:
-    needs: deploy_prod
+    needs: deploy_prod_on_merge
     runs-on: ubuntu-latest
 
     steps:
