@@ -44,12 +44,24 @@ jobs:
     # TODO: Auth with workload identity federation
     # https://github.com/google-github-actions/auth#with-workload-identity-federation
     #
-    #    - id: 'auth'
-    #      name: 'Authenticate to Google Cloud'
-    #      uses: 'google-github-actions/auth@v1'
-    #      with:
-    #        workload_identity_provider:
-    #        service_account:
+    - id: 'auth'
+      name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v1'
+      with:
+        workload_identity_provider: "projects/210229919199/locations/global/workloadIdentityPools/wtangy-pool/providers/my-provider"
+        service_account: "wasthereannhlgamelastnight@appspot.gserviceaccount.com"
+
+    # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v1'
+
+    # Now you can run gcloud commands authenticated as the impersonated service account.
+    - id: 'gcloud'
+      name: 'gcloud'
+      run: |-
+        gcloud config list
+    - id: 'print project_id'
+      run: 'echo "${{ steps.auth.outputs.project_id }}"'
     # NOTE: Not decrypting env_variables.yaml.enc only had some twitter secrets?
     # TODO:
     #- id: 'deploy_to_test'
