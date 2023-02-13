@@ -1,0 +1,34 @@
+name: Reusable Workflow with Deployment to Prod
+
+on:
+  workflow_call:
+
+jobs:
+  reusable_workflow_job_prod:
+
+    needs: deploy_test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    if: github.event.pull_request.merged == true
+
+    # master
+
+    steps:
+
+    - id: 'deploy'
+      name: 'Deploy to Prod'
+      uses: 'google-github-actions/deploy-appengine@v1'
+      with:
+        project_id: wasthereannhlgamelastnight
+        deliverables: src/app.yaml src/cron.yaml
+        version: master
+        promote: True
+    - name: "Test that it is not completely broken after deployment"
+      run: "curl -q https://wtangy.se"
+    - run: 'echo "PROD version_url: ${{ steps.deploy.outputs.version_url }} is ${{ steps.deploy.outputs.serving_status }}"'
+
+    - name: Remove testing after prod deployment to reduce cost
+      run: "gcloud app versions delete --project wasthereannhlgamelastnight testing"
