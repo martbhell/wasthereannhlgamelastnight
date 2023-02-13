@@ -1,4 +1,4 @@
-runtime: python38
+runtime: python310
 
 # comment out while developing
 # F1 - https://cloud.google.com/appengine/quotas#Instances 28h/day free
