@@ -2,7 +2,6 @@
 
 import datetime
 import os
-import sys
 import json
 import logging
 from urllib.request import urlopen
@@ -432,33 +431,17 @@ def read_file(filename):
     return downloaded_blob
 
 
-def get_size(obj, seen=None):
-    """Recursively finds size of objects
-    https://goshippo.com/blog/measure-real-size-any-python-object/
+def get_size(obj):
+    """It's just characters baby
 
     >>> get_size({ "hello": [2,3,[1,2,[2,3]]] })
-    674
+    33
     >>> get_size({ "hello": [2,3,[1,2,[2,3]]], "hello2": [2,3,4,5] })
-    869
+    57
     >>> get_size({})
-    280
+    2
     """
-    size = sys.getsizeof(obj)
-    if seen is None:
-        seen = set()
-    obj_id = id(obj)
-    if obj_id in seen:
-        return 0
-    # Important mark as seen *before* entering recursion to gracefully handle
-    # self-referential objects
-    seen.add(obj_id)
-    if isinstance(obj, dict):
-        size += sum([get_size(v, seen) for v in obj.values()])
-        size += sum([get_size(k, seen) for k in obj.keys()])
-    elif hasattr(obj, "__dict__"):
-        size += get_size(obj.__dict__, seen)
-    elif hasattr(obj, "__iter__") and not isinstance(obj, (str, bytes, bytearray)):
-        size += sum([get_size(i, seen) for i in obj])
+    size = len(str(obj))
     return size
 
 
@@ -473,7 +456,8 @@ def send_an_email(message, twitter=False):
     # size of 2019-2020 schedule was 530016, unclear how large the jsondiff was 2018->2019
     #  50000 is less than 65490 which was in the log of the update
     #  if we change all "Rangers" to "Freeezers" the changes to restore 2019-2020 was 106288
-    if msgsize > 150000:
+    #  for 2023 - we now count length. Whole schedule in 2022-23 was 64147 chars.
+    if msgsize > 60000:
         real_message = f"Msgsize is {msgsize}, see /get_schedule - Hello new season?"
         logging.info(f" big message: {real_message}")
 
