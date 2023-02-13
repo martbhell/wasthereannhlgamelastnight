@@ -58,9 +58,9 @@ jobs:
     # Now you can run gcloud commands authenticated as the impersonated service account.
     - id: 'gcloud'
       name: 'gcloud'
-      run: |-
+      run: |
         gcloud config list
-    - id: 'print project_id'
+    - name: 'Print project id'
       run: 'echo "${{ steps.auth.outputs.project_id }}"'
     # NOTE: Not decrypting env_variables.yaml.enc only had some twitter secrets?
     # TODO:
