@@ -43,10 +43,10 @@ case insensitive:
  * https://wtangy.se/nyrangers
  * https://wtangy.se/Vgk
  * https://wtangy.se/newyorkrangers
- * https://wtangy.se/new york rangers
+ * <a href="https://wtangy.se/new york rangers">https://wtangy.se/new york rangers</a>
  * https://wtangy.se/New%20Jersey%20Devils
  * https://wtangy.se/Montréal
- * https://wtangy.se/St. Louis Blues
+ * <a href="https://wtangy.se/St Louis Blues">https://wtangy.se/St Louis Blues</a>
  * https://wtangy.se/20171222
  * https://wtangy.se/22-12-2017
  * https://wtangy.se/22-12-2017/DET
