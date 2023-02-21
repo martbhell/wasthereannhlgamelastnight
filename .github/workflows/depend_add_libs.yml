@@ -6,8 +6,6 @@ on:
     - opened
     branches:
     - 'dependabot/pip/**'
-    paths:
-    - 'src/requirements.txt'
     paths-ignore:
     - 'src/libs/**'
 
