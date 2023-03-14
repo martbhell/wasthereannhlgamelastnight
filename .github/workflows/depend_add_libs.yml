@@ -6,8 +6,6 @@ on:
     - opened
     branches:
     - 'dependabot/pip/**'
-    paths-ignore:
-    - 'src/libs/**'
 
 
 jobs:
