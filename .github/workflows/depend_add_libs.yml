@@ -33,17 +33,17 @@ jobs:
       run: echo "last commit message = ${{ github.event.commits[0].message }}"
     - name: Display Github event variable "github.event.commits[0].author.name"
       run: echo "last commit author = ${{ github.event.commits[0].author.name }}"
-    - name: Wipe out src/libs
-      run: git rm -f src/libs
-    - name: Fresh install of pip libraries to src/libs to update and clean up old crud
-      run: pip install -r src/requirements.txt -t src/libs
+    - name: Wipe out src/lib
+      run: git rm -f src/lib
+    - name: Fresh install of pip libraries to src/lib to update and clean up old crud
+      run: pip install -r src/requirements.txt -t src/lib
     - name: Setup Git and commit and push
       env:
-        CI_COMMIT_MESSAGE: "Rebuild src/libs after commit from dependabot"
+        CI_COMMIT_MESSAGE: "Rebuild src/lib after commit from dependabot"
         CI_COMMIT_AUTHOR: "Continuous Integration"
       run: |
         git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
         git config --global user.email "martbhell@users.noreply.github.com"
-        git add src/libs
+        git add src/lib
         git commit -m "${{ env.CI_COMMIT_MESSAGE }}"
         git push
