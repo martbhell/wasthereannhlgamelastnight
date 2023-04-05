@@ -1,11 +1,7 @@
 name: Add Libs to Dependabot PRs
 
 on:
-  pull_request:
-    types:
-    - opened
-    branches:
-    - 'dependabot/pip/**'
+  workflow_dispatch:
 
 
 jobs:
