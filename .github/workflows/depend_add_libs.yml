@@ -34,7 +34,7 @@ jobs:
     - name: Display Github event variable "github.event.commits[0].author.name"
       run: echo "last commit author = ${{ github.event.commits[0].author.name }}"
     - name: Wipe out src/lib
-      run: git rm -f src/lib
+      run: git rm -rf src/lib
     - name: Fresh install of pip libraries to src/lib to update and clean up old crud
       run: pip install -r src/requirements.txt -t src/lib
     - name: Setup Git and commit and push
