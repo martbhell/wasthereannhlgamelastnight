@@ -1,4 +1,4 @@
-#!/home/mart/miniconda3/bin/python
+#!/opt/hostedtoolcache/Python/3.10.10/x64/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

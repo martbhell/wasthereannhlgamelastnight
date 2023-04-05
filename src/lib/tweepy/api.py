@@ -1,5 +1,5 @@
 # Tweepy
-# Copyright 2009-2022 Joshua Roesslein
+# Copyright 2009-2023 Joshua Roesslein
 # See LICENSE for details.
 
 import contextlib
@@ -3684,7 +3684,11 @@ class API:
         media =  self.chunked_upload_finalize(media_id, **kwargs)
 
         if wait_for_async_finalize and hasattr(media, 'processing_info'):
-            while media.processing_info['state'] in ('pending', 'in_progress'):
+            while (
+                media.processing_info['state'] in (
+                    'pending', 'in_progress'
+                ) and 'error' not in media.processing_info
+            ):
                 time.sleep(media.processing_info['check_after_secs'])
                 media = self.get_media_upload_status(media.media_id, **kwargs)
 

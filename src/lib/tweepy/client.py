@@ -1,5 +1,5 @@
 # Tweepy
-# Copyright 2009-2022 Joshua Roesslein
+# Copyright 2009-2023 Joshua Roesslein
 # See LICENSE for details.
 
 from collections import namedtuple
@@ -2812,8 +2812,9 @@ class Client(BaseClient):
             The ``participant_id`` of the user that the authenicating user is
             having a 1-1 conversation with.
         dm_event_fields : list[str] | str | None
-            Extra fields to include in the event payload. ``id``, ``text``, and
-            ``event_type`` are returned by default.
+            Extra fields to include in the event payload. ``id`` and
+            ``event_type`` are returned by default. The ``text`` value isn't
+            included for ``ParticipantsJoin`` and ``ParticipantsLeave`` events.
         event_types : str
             The type of Direct Message event to returm. If not included, all
             types are returned.

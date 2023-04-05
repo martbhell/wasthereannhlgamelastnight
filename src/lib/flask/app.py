@@ -384,7 +384,7 @@ class Flask(Scaffold):
     _json_decoder: t.Union[t.Type[json.JSONDecoder], None] = None
 
     @property  # type: ignore[override]
-    def json_encoder(self) -> t.Type[json.JSONEncoder]:  # type: ignore[override]
+    def json_encoder(self) -> t.Type[json.JSONEncoder]:
         """The JSON encoder class to use. Defaults to
         :class:`~flask.json.JSONEncoder`.
 
@@ -423,7 +423,7 @@ class Flask(Scaffold):
         self._json_encoder = value
 
     @property  # type: ignore[override]
-    def json_decoder(self) -> t.Type[json.JSONDecoder]:  # type: ignore[override]
+    def json_decoder(self) -> t.Type[json.JSONDecoder]:
         """The JSON decoder class to use. Defaults to
         :class:`~flask.json.JSONDecoder`.
 
@@ -558,7 +558,7 @@ class Flask(Scaffold):
         static_host: t.Optional[str] = None,
         host_matching: bool = False,
         subdomain_matching: bool = False,
-        template_folder: t.Optional[str] = "templates",
+        template_folder: t.Optional[t.Union[str, os.PathLike]] = "templates",
         instance_path: t.Optional[str] = None,
         instance_relative_config: bool = False,
         root_path: t.Optional[str] = None,
@@ -961,11 +961,14 @@ class Flask(Scaffold):
         """Returns ``True`` if autoescaping should be active for the given
         template name. If no template name is given, returns `True`.
 
+        .. versionchanged:: 2.2
+            Autoescaping is now enabled by default for ``.svg`` files.
+
         .. versionadded:: 0.5
         """
         if filename is None:
             return True
-        return filename.endswith((".html", ".htm", ".xml", ".xhtml"))
+        return filename.endswith((".html", ".htm", ".xml", ".xhtml", ".svg"))
 
     def update_template_context(self, context: dict) -> None:
         """Update the template context with some commonly used variables.

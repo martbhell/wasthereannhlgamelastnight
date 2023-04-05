@@ -1,5 +1,5 @@
 # Tweepy
-# Copyright 2009-2022 Joshua Roesslein
+# Copyright 2009-2023 Joshua Roesslein
 # See LICENSE for details.
 
 import warnings
@@ -102,6 +102,11 @@ class Tweet(HashableID, DataMapping):
         "everyone", "mentioned_users", and "followers".
     source : str | None
         The name of the app the user Tweeted from.
+
+        .. note::
+
+            As of December 20, 2022, this field has been removed from the Tweet
+            payload. [#]_
     withheld : dict | None
         When present, contains withholding details for `withheld content`_.
 
