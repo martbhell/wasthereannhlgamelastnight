@@ -1,5 +1,5 @@
 # Tweepy
-# Copyright 2009-2022 Joshua Roesslein
+# Copyright 2009-2023 Joshua Roesslein
 # See LICENSE for details.
 
 import json as json_lib
@@ -33,6 +33,9 @@ class JSONParser(Parser):
     payload_format = 'json'
 
     def parse(self, payload, *, return_cursors=False, **kwargs):
+        if not payload:
+            return
+
         try:
             json = json_lib.loads(payload)
         except Exception as e:
