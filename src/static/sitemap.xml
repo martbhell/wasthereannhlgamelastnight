@@ -1,3 +1,4 @@
+
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset
       xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
@@ -6,7 +7,177 @@
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 <!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
 
+
 <url>
   <loc>https://wtangy.se/</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>1.00</priority>
 </url>
+<url>
+  <loc>https://wtangy.se/menu</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/ANA</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/ARI</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/BOS</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/BUF</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/CAR</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/CBJ</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/CGY</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/CHI</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/COL</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/DAL</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/DET</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/EDM</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/FLA</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/LAK</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/MIN</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/MTL</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/NJD</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/NSH</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/NYI</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/NYR</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/OTT</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/PHI</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/PIT</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/SEA</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/SJS</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/STL</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/TBL</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/TOR</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/VAN</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/VGK</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/WPG</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://wtangy.se/WSH</loc>
+  <lastmod>2023-04-20T18:13:23+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+
+
 </urlset>
