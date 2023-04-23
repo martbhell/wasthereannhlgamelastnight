@@ -114,6 +114,7 @@ TODO / Known issues
  * games include preseason - if this is a problem let me know!
  * add a calendar selection too near the menu?
  * dynamically generate a sitemap.xml
+   * And/Or fail build if the one we have is out of date
  * improve testing
    * update schedule_testing and then verify it / validate json
    * performance testing
