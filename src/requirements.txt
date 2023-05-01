@@ -1,6 +1,6 @@
 google-cloud-storage==2.8.0
 google-cloud-logging==3.5.0
 jsondiff==2.0.0
-tweepy==4.13.0
+tweepy==4.14.0
 Flask==2.2.3
 device_detector==5.0.1
