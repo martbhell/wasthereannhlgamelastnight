@@ -105,24 +105,26 @@ def the_root(var1=False, var2=False):
         update_schedule()
         teamdates = json.loads(read_file(filename))["teamdates"]
 
-    ### Returning something cheap for evil
-
+#    ### Returning something cheap for evil
+#
     useragent = request.headers.get("User-Agent")
     logging.debug(f"User-Agent: {useragent}")
     if useragent:
         device = DeviceDetector(useragent).parse()
-    else:
-        return render_template("cli.html", yesorno="HMM")
-    if device.is_bot():
-        return render_template("cli.html", yesorno="NO"), 406
+#    else:
+#        return render_template("cli.html", yesorno="HMM")
+#    if device.is_bot():
+#        return render_template("cli.html", yesorno="NO"), 406
 
     ### The YES/NO logic:
     yesorno = "NO"
+    httpcode = 404
     if nhlhelpers.yesorno(team1, teamdates, date1):
         yesorno = "YES"
+        httpcode = 200
 
     if device.client_type() == "library":
-        return render_template("cli.html", yesorno=yesorno)
+        return render_template("cli.html", yesorno=yesorno), httpcode
     return render_template(
         "index.html",
         yesorno=yesorno,
@@ -132,7 +134,7 @@ def the_root(var1=False, var2=False):
         fgcolor=fgcolor,
         tomorrow=tomorrow,
         tomorrowurl=tomorrowurl,
-    )
+    ), httpcode
 
 
 @app.route("/update_schedule")
