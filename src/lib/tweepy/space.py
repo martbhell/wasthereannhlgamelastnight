@@ -6,6 +6,32 @@ from tweepy.mixins import DataMapping, HashableID
 from tweepy.utils import parse_datetime
 
 
+#: All the potential publically-available fields for :class:`Space` objects
+PUBLIC_SPACE_FIELDS = [
+    "created_at",
+    "creator_id",
+    "ended_at",
+    "host_ids",
+    "id",
+    "invited_user_ids",
+    "is_ticketed",
+    "lang",
+    "participant_count",
+    "scheduled_start",
+    "speaker_ids",
+    "started_at",
+    "state",
+    "title",
+    "topic_ids",
+    "updated_at",
+]
+
+#: All the potential fields for :class:`Space` objects
+SPACE_FIELDS = PUBLIC_SPACE_FIELDS + [
+    "subscriber_count",
+]
+
+
 class Space(HashableID, DataMapping):
     """Spaces allow expression and interaction via live audio conversations.
     The Space data dictionary contains relevant metadata about a Space; all the
@@ -30,6 +56,9 @@ class Space(HashableID, DataMapping):
 
     .. versionchanged:: 4.6
         Added ``subscriber_count`` field
+
+    .. versionchanged:: 4.14
+        Added ``creator_id`` field
 
     Attributes
     ----------
@@ -76,6 +105,7 @@ class Space(HashableID, DataMapping):
     updated_at : datetime.datetime | None
         Specifies the date and time of the last update to any of the Space's
         metadata, such as its title or scheduled time.
+    creator_id : int | None
 
     References
     ----------
@@ -88,7 +118,7 @@ class Space(HashableID, DataMapping):
         "data", "id", "state", "created_at", "ended_at", "host_ids", "lang",
         "is_ticketed", "invited_user_ids", "participant_count",
         "subscriber_count", "scheduled_start", "speaker_ids", "started_at",
-        "title", "topic_ids", "updated_at"
+        "title", "topic_ids", "updated_at", "creator_id"
     )
 
     def __init__(self, data):
@@ -128,6 +158,10 @@ class Space(HashableID, DataMapping):
         self.updated_at = data.get("updated_at")
         if self.updated_at is not None:
             self.updated_at = parse_datetime(self.updated_at)
+
+        self.creator_id = data.get("creator_id")
+        if self.creator_id is not None:
+            self.creator_id = int(self.creator_id)
 
     def __repr__(self):
         return f"<Space id={self.id} state={self.state}>"
