@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: regex
-Version: 2023.5.4
+Version: 2023.5.5
 Summary: Alternative regular expression module, to replace re.
 Home-page: https://github.com/mrabarnett/mrab-regex
 Author: Matthew Barnett
