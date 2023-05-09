@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: google-cloud-storage
-Version: 2.8.0
+Version: 2.9.0
 Summary: Google Cloud Storage API client library
 Home-page: https://github.com/googleapis/python-storage
 Author: Google LLC
