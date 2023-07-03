@@ -251,6 +251,9 @@ class Map:
         if path_info is None:
             path_info = "/"
 
+        # Port isn't part of IDNA, and might push a name over the 63 octet limit.
+        server_name, port_sep, port = server_name.partition(":")
+
         try:
             server_name = server_name.encode("idna").decode("ascii")
         except UnicodeError as e:
@@ -258,7 +261,7 @@ class Map:
 
         return MapAdapter(
             self,
-            server_name,
+            f"{server_name}{port_sep}{port}",
             script_name,
             subdomain,
             url_scheme,
@@ -781,14 +784,14 @@ class MapAdapter:
             query_args = self.query_args
 
         if query_args:
-            query_args = self.encode_query_args(query_args)
+            query_str = self.encode_query_args(query_args)
+        else:
+            query_str = None
 
         scheme = self.url_scheme or "http"
         host = self.get_host(domain_part)
         path = "/".join((self.script_name.strip("/"), path_info.lstrip("/")))
-        return urlunsplit(  # type: ignore[type-var,return-value]
-            (scheme, host, path, query_args, None)
-        )
+        return urlunsplit((scheme, host, path, query_str, None))
 
     def make_alias_redirect_url(
         self,

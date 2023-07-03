@@ -5,6 +5,7 @@ import warnings
 from io import BytesIO
 from urllib.parse import parse_qsl
 
+from ._internal import _plain_int
 from .datastructures import FileStorage
 from .datastructures import Headers
 from .datastructures import MultiDict
@@ -86,8 +87,6 @@ def parse_form_data(
     argument, else the stream is empty.
 
     This is a shortcut for the common usage of :class:`FormDataParser`.
-
-    Have a look at :doc:`/request_data` for more details.
 
     :param environ: the WSGI environment to be used for parsing.
     :param stream_factory: An optional callable that returns a new read and
@@ -465,7 +464,7 @@ class MultiPartParser:
         content_type = event.headers.get("content-type")
 
         try:
-            content_length = int(event.headers["content-length"])
+            content_length = _plain_int(event.headers["content-length"])
         except (KeyError, ValueError):
             content_length = 0
 
