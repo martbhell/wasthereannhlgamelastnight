@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: google-cloud-core
-Version: 2.3.2
+Version: 2.3.3
 Summary: Google Cloud API client core library
 Home-page: https://github.com/googleapis/python-cloud-core
 Author: Google LLC
