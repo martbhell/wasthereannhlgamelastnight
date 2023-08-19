@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+  <id>https://wtangy.se/</id>
+  <title>WTANGY Schedule Updates</title>
+  <updated>2023-08-19T19:15:43.379281+00:00</updated>
+  <link href="https://wtangy.se/" rel="alternate"/>
+  <link href="https://wtangy.se/atom.xml" rel="self"/>
+  <generator uri="https://lkiesow.github.io/python-feedgen" version="0.9.0">python-feedgen</generator>
+  <subtitle>Was There An NHL Game Yesterday?</subtitle>
+  <entry>
+    <id>https://wtangy.se/</id>
+    <title>NHL Schedule Has Been Updated</title>
+    <updated>2023-08-19T19:15:43.379566+00:00</updated>
+    <author>
+      <name>cron</name>
+    </author>
+    <content>It's available on https://wtangy.se/get_schedule</content>
+    <link href="https://wtangy.se/get_schedule" rel="alternate"/>
+    <category term="Testing"/>
+  </entry>
+  <entry>
+    <id>https://wtangy.se/</id>
+    <title>NHL Schedule Has Been Updated</title>
+    <updated>2023-08-19T18:56:02.029617+00:00</updated>
+    <content>It's available on https://wtangy.se/get_schedule</content>
+    <link href="https://wtangy.se/get_schedule" rel="alternate"/>
+    <category term="Testing"/>
+  </entry>
+  <entry>
+    <id>https://wtangy.se/</id>
+    <title>NHL Schedule Has Been Updated</title>
+    <updated>2023-08-19T19:12:52.970299+00:00</updated>
+    <content>It's available on https://wtangy.se/get_schedule</content>
+    <link href="https://wtangy.se/get_schedule" rel="alternate"/>
+    <category term="Testing"/>
+  </entry>
+</feed>
