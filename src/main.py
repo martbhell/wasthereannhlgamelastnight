@@ -5,12 +5,13 @@ import os
 import json
 import logging
 from urllib.request import urlopen
-import tweepy
 from device_detector import DeviceDetector
 from jsondiff import diff
 from flask import request
 from flask import Flask, render_template, make_response
 from google.cloud import storage
+import feedparser
+from feedgen.feed import FeedGenerator
 import google.cloud.logging
 from google.auth.exceptions import DefaultCredentialsError
 from google.api_core.exceptions import NotFound
@@ -469,11 +470,11 @@ def send_an_email(message, twitter=False):
         access_token_secret = read_file("ACCESS_TOKEN_SECRET.TXT")
 
         # Authenticate to Twitter
-        auth = tweepy.OAuthHandler(api_key, api_secret_key)
-        auth.set_access_token(access_token, access_token_secret)
+        #auth = tweepy.OAuthHandler(api_key, api_secret_key)
+        #auth.set_access_token(access_token, access_token_secret)
 
         # Create API object
-        api = tweepy.API(auth)
+        #api = tweepy.API(auth)
 
         # Create a tweet
         # msgsize: 1577
@@ -484,9 +485,8 @@ def send_an_email(message, twitter=False):
         veri = "testing"
         if VERSION == "master":
             veri = "main"
-        api.update_status(
-            f"#NHL {veri} schedule updated on https://wtangy.se - did your team play last night? Try out https://wtangy.se/DETROIT"
-        )
+        update_message = f"#NHL {veri} schedule updated on https://wtangy.se - did your team play last night? Try out https://wtangy.se/DETROIT"
+        #TODO: Add to RSS
         logging.info("Tweeted and message size was %s", msgsize)
 
         return True
