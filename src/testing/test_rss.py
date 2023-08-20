@@ -43,7 +43,9 @@ def main():
         entry.author({"name": modified_entry.author})
 
     new_update = new_feed.add_entry()
-    new_update.id("https://wtangy.se/")
+    new_update_date = str(new_update.updated()).replace(" ", "")
+
+    new_update.id(f"https://wtangy.se/schedule/{new_update_date}")
     new_update.title("NHL Schedule Has Been Updated")
     new_update.description(
         f"It's available on https://wtangy.se/get_schedule <br /> <br /> {message}"

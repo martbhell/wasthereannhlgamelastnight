@@ -469,8 +469,7 @@ def atom_feed_manager(message):
     filename = "atom_feed_" + VERSION + ".xml"
     logging.info(f"ATOM: Using filename {filename}")
 
-    existing_feed_url = "https://wtangy.se/atom.xml"
-    parsed_feed = feedparser.parse(existing_feed_url)
+    parsed_feed = feedparser.parse("https://wtangy.se/atom.xml")
     if parsed_feed.entries == []:
         # This bit could be done by defining the bootstrap feed in python
         filen = os.path.dirname(__file__) + "/atom_bootstrap.xml"
@@ -514,7 +513,8 @@ def atom_feed_manager(message):
     #  Changes are in the description field.
     #    Maybe content with type=html would be better?
     new_update = new_feed.add_entry()
-    new_update.id("https://wtangy.se/")
+    new_update_date = str(new_update.updated()).replace(" ", "")
+    new_update.id(f"https://wtangy.se/schedule/{new_update_date}")
     new_update.title(f"NHL Schedule ({veri}) Has Been Updated")
     new_update.description(
         f"It's available on https://wtangy.se/get_schedule. <br /> <br /> {message}"
