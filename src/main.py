@@ -28,6 +28,7 @@ app.url_map.strict_slashes = False
 CLIENT = google.cloud.logging.Client()
 CLIENT.setup_logging()
 
+
 # http://exploreflask.com/en/latest/views.html
 @app.route("/")
 def view_root():
@@ -202,7 +203,7 @@ def update_schedule():
             #  (potential spoilers - games are removed from the schedule)
             if CURRENT_MONTH < 4 or CURRENT_MONTH > 6:
                 logging.info("Sending an update notification")
-                send_an_email(diff(json.loads(old_content), json.loads(content)), True)
+                atom_feed_manager(diff(json.loads(old_content), json.loads(content)))
             else:
                 logging.info(
                     "Would have sent an update notification, but it might be playoff folks!"
@@ -243,6 +244,24 @@ def get_schedule():
     content = json.loads(read_file(filename))
     resp = make_response(json.dumps(content, indent=2))
     resp.headers["Content-Type"] = "application/json"
+    return resp
+
+
+@app.route("/atom.xml")
+def atom_feed():
+    """Get atom feed from GCS and return"""
+
+    if VERSION == "None":
+        filename = "atom_feed"
+    else:
+        filename = "atom_feed_" + VERSION
+
+    logging.info(f"Using filename {filename}")
+
+    # No need to pretty print the XML?
+    content = read_file(filename)
+    resp = make_response(content)
+    resp.headers["Content-Type"] = "application/xml"
     return resp
 
 
@@ -440,57 +459,74 @@ def get_size(obj):
     return size
 
 
-def send_an_email(message, twitter=False):
-    """send an e-mail, optionally to the admin"""
+def atom_feed_manager(message):
+    """Manage the Atom Feed"""
 
-    # Mail is not available in python3 -- only twitter!
-    # Also no implemented way to send the whole change to the Admin
+    veri = "testing"
+    if VERSION == "master":
+        veri = "main"
 
-    real_message = message
-    msgsize = get_size(real_message)
-    # size of 2019-2020 schedule was 530016, unclear how large the jsondiff was 2018->2019
-    #  50000 is less than 65490 which was in the log of the update
-    #  if we change all "Rangers" to "Freeezers" the changes to restore 2019-2020 was 106288
-    #  for 2023 - we now count length. Whole schedule in 2022-23 was 64147 chars.
-    if msgsize > 60000:
-        real_message = f"Msgsize is {msgsize}, see /get_schedule - Hello new season?"
-        logging.info(f" big message: {real_message}")
+    filename = "atom_feed_" + VERSION
+    logging.info(f"ATOM: Using filename {filename}")
 
-    if twitter:
-        # Files uploaded manually, content unquoted
-        # These are strings
-        # Beware of newlines
-        api_key = read_file("API_KEY.TXT")
-        if "\n" in api_key:
-            logging.error(
-                "There's a newline in your twitter API_KEY, doubt that should be in there"
-            )
-        api_secret_key = read_file("API_SECRET_KEY.TXT")
-        access_token = read_file("ACCESS_TOKEN.TXT")
-        access_token_secret = read_file("ACCESS_TOKEN_SECRET.TXT")
+    existing_feed_url = "https://wtangy.se/atom.xml"
+    parsed_feed = feedparser.parse(existing_feed_url)
+    if parsed_feed.entries == []:
+        # This bit could be done by defining the bootstrap feed in python
+        filen = os.path.dirname(__file__) + "/atom_bootstrap.xml"
+        with open(filen, "r", encoding="utf-8") as boot_strap_feed_file:
+            initial_feed = boot_strap_feed_file.read()
+            parsed_feed = feedparser.parse(initial_feed)
 
-        # Authenticate to Twitter
-        #auth = tweepy.OAuthHandler(api_key, api_secret_key)
-        #auth.set_access_token(access_token, access_token_secret)
+    # Step 2: Modify the feed entries and metadata
+    modified_entries = []
+    for entry in parsed_feed.entries:
+        # Modify entry attributes as needed
+        #  except we are not modifying them..
+        modified_entries.append(entry)
 
-        # Create API object
-        #api = tweepy.API(auth)
+    # Step 3: Create a new Atom feed using feedgenerator
+    #  Here we "override" the General Feed attributes
+    new_feed = FeedGenerator()
+    new_feed.title("WTANGY Schedule Updates")
+    new_feed.description("Was There An NHL Game Yesterday?")
+    new_feed.link(href="https://wtangy.se/", rel="alternate")
+    new_feed.link(href="https://wtangy.se/atom.xml", rel="self")
+    new_feed.language("en")
+    new_feed.id("https://wtangy.se/")
 
-        # Create a tweet
-        # msgsize: 1577
-        #  changes: {u'teamdates': {u'2019-09-29': {delete: [2]}}}
-        # if msgsize > 1600:
-        #    api.update_status(real_message)
-        # else:
-        veri = "testing"
-        if VERSION == "master":
-            veri = "main"
-        update_message = f"#NHL {veri} schedule updated on https://wtangy.se - did your team play last night? Try out https://wtangy.se/DETROIT"
-        #TODO: Add to RSS
-        logging.info("Tweeted and message size was %s", msgsize)
+    # Add modified entries to the new feed
+    #  Here we are also not modifying anything..
+    for modified_entry in modified_entries:
+        entry = new_feed.add_entry()
+        entry.id(modified_entry.id)
+        entry.title(modified_entry.title)
+        entry.description(modified_entry.description)
+        entry.link(href=modified_entry.link, rel="alternate")
+        entry.updated(modified_entry.updated)
+        entry.category([{"term": modified_entry.category}])
+        entry.author({"name": modified_entry.author})
 
-        return True
-    return False
+    # Here we add a new entry
+    #  All entries in this section need to be in the above too or they are lost
+    #  in space and time.
+    #    Except the updated attribute?
+    #  Changes are in the description field.
+    #    Maybe content with type=html would be better?
+    new_update = new_feed.add_entry()
+    new_update.id("https://wtangy.se/")
+    new_update.title(f"NHL Schedule ({veri}) Has Been Updated")
+    new_update.description(
+        f"It's available on https://wtangy.se/get_schedule. <br /> <br /> {message}"
+    )
+    new_update.link(href="https://wtangy.se/get_schedule", rel="alternate")
+    new_update.category([{"term": veri}])
+    author = {"name": "cron"}
+    new_update.author(author)
+
+    # Step 9: Save the new Atom feed as a string and write to GCS
+    new_atom_feed_xml = new_feed.atom_str(pretty=True)
+    create_file(filename, new_atom_feed_xml)
 
 
 def fetch_upstream_schedule(url):
