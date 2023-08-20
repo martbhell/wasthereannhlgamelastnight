@@ -252,9 +252,9 @@ def atom_feed():
     """Get atom feed from GCS and return"""
 
     if VERSION == "None":
-        filename = "atom_feed"
+        filename = "atom_feed.xml"
     else:
-        filename = "atom_feed_" + VERSION
+        filename = "atom_feed_" + VERSION + ".xml"
 
     logging.info(f"Using filename {filename}")
 
@@ -466,7 +466,7 @@ def atom_feed_manager(message):
     if VERSION == "master":
         veri = "main"
 
-    filename = "atom_feed_" + VERSION
+    filename = "atom_feed_" + VERSION + ".xml"
     logging.info(f"ATOM: Using filename {filename}")
 
     existing_feed_url = "https://wtangy.se/atom.xml"
