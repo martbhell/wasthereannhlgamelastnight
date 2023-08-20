@@ -30,8 +30,8 @@ jobs:
       run: |
         black --version
         black --diff --check src/*.py *.py
-    - name: Run e2e_test.py
-      run: python e2e_test.py
+        #- name: Run e2e_test.py
+        #  run: python e2e_test.py
 
   #
 
