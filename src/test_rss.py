@@ -1,14 +1,18 @@
 """ To test making an RSS feed """
+import os
 import feedparser
 from feedgen.feed import FeedGenerator
 
 
 def main():
-    """ Step 1: Parse the existing Atom feed """
+    """Step 1: Parse the existing Atom feed"""
     existing_feed_url = "https://wtangy.se/atom.xml"
     parsed_feed = feedparser.parse(existing_feed_url)
+    message = "lksjdflkjsdflksdklj"
+
     if parsed_feed.entries == []:
-        with open("atom_bootstrap.xml", "r", encoding="utf-8") as boot_strap_feed_file:
+        filen = os.path.dirname(__file__) + "/atom_bootstrap.xml"
+        with open(filen, "r", encoding="utf-8") as boot_strap_feed_file:
             initial_feed = boot_strap_feed_file.read()
             parsed_feed = feedparser.parse(initial_feed)
 
@@ -36,11 +40,14 @@ def main():
         entry.link(href=modified_entry.link, rel="alternate")
         entry.updated(modified_entry.updated)
         entry.category([{"term": modified_entry.category}])
+        entry.author({"name": modified_entry.author})
 
     new_update = new_feed.add_entry()
     new_update.id("https://wtangy.se/")
     new_update.title("NHL Schedule Has Been Updated")
-    new_update.description("It's available on https://wtangy.se/get_schedule")
+    new_update.description(
+        f"It's available on https://wtangy.se/get_schedule <br /> <br /> {message}"
+    )
     new_update.link(href="https://wtangy.se/get_schedule", rel="alternate")
     new_update.category([{"term": "Testing"}])
     author = {"name": "cron"}
