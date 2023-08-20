@@ -4,4 +4,5 @@ jsondiff==2.0.0
 tweepy==4.14.0
 Flask==2.3.2
 device_detector==5.0.1
-feedgen
+feedgen==0.9.0
+feedparser==6.0.10
