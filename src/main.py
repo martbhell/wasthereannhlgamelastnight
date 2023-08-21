@@ -60,8 +60,7 @@ def the_root(var1=False, var2=False):
 
     ########
 
-    team1 = None
-    date1 = None
+    team1, date1 = None, None
 
     for arg in [var1, var2]:
         # NHLHelpers we in some dicts replace spaces (%20) with "" .. hmm.
