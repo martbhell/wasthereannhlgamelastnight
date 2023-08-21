@@ -605,11 +605,12 @@ def make_data_json(teamdates):
 
 
 def import_lazily(module_name):
-    """ only import some modules when needed """
+    """only import some modules when needed"""
     try:
         return __import__(module_name)
     except ImportError:
         return None
+
 
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=8080)
