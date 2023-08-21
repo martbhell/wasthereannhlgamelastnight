@@ -467,15 +467,12 @@ def atom_feed_manager(message):
         veri = "main"
 
     filename = "atom_feed_" + VERSION + ".xml"
-    logging.info(f"ATOM: Using filename {filename}")
+    logging.info(f"ATOM: For veri {veri} using filename {filename}")
 
     parsed_feed = feedparser.parse("https://wtangy.se/atom.xml")
     if parsed_feed.entries == []:
-        # This bit could be done by defining the bootstrap feed in python
-        filen = os.path.dirname(__file__) + "/atom_bootstrap.xml"
-        with open(filen, "r", encoding="utf-8") as boot_strap_feed_file:
-            initial_feed = boot_strap_feed_file.read()
-            parsed_feed = feedparser.parse(initial_feed)
+        logging.error("ATOM ERROR: We found no entries")
+        return False
 
     # Step 2: Modify the feed entries and metadata
     modified_entries = []
@@ -527,6 +524,8 @@ def atom_feed_manager(message):
     # Step 9: Save the new Atom feed as a string and write to GCS
     new_atom_feed_xml = new_feed.atom_str(pretty=True)
     create_file(filename, new_atom_feed_xml)
+
+    return True
 
 
 def fetch_upstream_schedule(url):
