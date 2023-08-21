@@ -1,20 +1,28 @@
 """ To test making an RSS feed """
-import os
-import feedparser
+# lazy loaded below
+#import os
+#import feedparser
 from feedgen.feed import FeedGenerator
+
+def import_lazily(module_name):
+    """ only import some modules when needed """
+    try:
+        return __import__(module_name)
+    except ImportError:
+        return None
 
 
 def main():
     """Step 1: Parse the existing Atom feed"""
     existing_feed_url = "https://wtangy.se/atom.xml"
-    parsed_feed = feedparser.parse(existing_feed_url)
+    parsed_feed = import_lazily("feedparser").parse(existing_feed_url)
     message = "lksjdflkjsdflksdklj"
 
     if parsed_feed.entries == []:
-        filen = os.path.dirname(__file__) + "/atom_bootstrap.xml"
+        filen = import_lazily("os").path.dirname(__file__) + "/atom_bootstrap.xml"
         with open(filen, "r", encoding="utf-8") as boot_strap_feed_file:
             initial_feed = boot_strap_feed_file.read()
-            parsed_feed = feedparser.parse(initial_feed)
+            parsed_feed = import_lazily("feedparser").parse(initial_feed)
 
     # Step 2: Modify the feed entries and metadata
     modified_entries = []
