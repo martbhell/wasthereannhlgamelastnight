@@ -531,9 +531,14 @@ def atom_feed_manager(message):
 def fetch_upstream_schedule(url):
     """geturl a file and do some health checking"""
 
+    jsondata = None
+
     with urlopen(url) as page:
-        jsondata = json.loads(page.read())
-    totalgames = jsondata["totalGames"]
+        jsondata = import_lazily("json").loads(page.read())
+
+    totalgames = 0
+    if jsondata:
+        totalgames = jsondata["totalGames"]
 
     if totalgames == 0:
         logging.error("parsing data, 0 games found.")
@@ -600,8 +605,16 @@ def make_data_json(teamdates):
     return json_data
 
 
+def import_lazily(module_name):
+    """ only import some modules when needed """
+    try:
+        return __import__(module_name)
+    except ImportError:
+        return None
+
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=8080)
+
 
 # Variables
 
