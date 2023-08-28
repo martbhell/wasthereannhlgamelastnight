@@ -2,7 +2,7 @@ google-cloud-storage==2.10.0
 google-cloud-logging==3.6.0
 jsondiff==2.0.0
 tweepy==4.14.0
-Flask==2.3.2
+Flask==2.3.3
 device_detector==5.0.1
 feedgen==0.9.0
 feedparser==6.0.10
