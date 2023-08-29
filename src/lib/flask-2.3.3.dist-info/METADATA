@@ -1,16 +1,10 @@
 Metadata-Version: 2.1
 Name: Flask
-Version: 2.3.2
+Version: 2.3.3
 Summary: A simple framework for building complex web applications.
-Author-email: Armin Ronacher <armin.ronacher@active-4.com>
 Maintainer-email: Pallets <contact@palletsprojects.com>
-License: BSD-3-Clause
-Project-URL: Donate, https://palletsprojects.com/donate
-Project-URL: Documentation, https://flask.palletsprojects.com/
-Project-URL: Changes, https://flask.palletsprojects.com/changes/
-Project-URL: Source Code, https://github.com/pallets/flask/
-Project-URL: Issue Tracker, https://github.com/pallets/flask/issues/
-Project-URL: Chat, https://discord.gg/pallets
+Requires-Python: >=3.8
+Description-Content-Type: text/x-rst
 Classifier: Development Status :: 5 - Production/Stable
 Classifier: Environment :: Web Environment
 Classifier: Framework :: Flask
@@ -22,19 +16,22 @@ Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content
 Classifier: Topic :: Internet :: WWW/HTTP :: WSGI
 Classifier: Topic :: Internet :: WWW/HTTP :: WSGI :: Application
 Classifier: Topic :: Software Development :: Libraries :: Application Frameworks
-Requires-Python: >=3.8
-Description-Content-Type: text/x-rst
-License-File: LICENSE.rst
-Requires-Dist: Werkzeug (>=2.3.3)
-Requires-Dist: Jinja2 (>=3.1.2)
-Requires-Dist: itsdangerous (>=2.1.2)
-Requires-Dist: click (>=8.1.3)
-Requires-Dist: blinker (>=1.6.2)
-Requires-Dist: importlib-metadata (>=3.6.0) ; python_version < "3.10"
+Requires-Dist: Werkzeug>=2.3.7
+Requires-Dist: Jinja2>=3.1.2
+Requires-Dist: itsdangerous>=2.1.2
+Requires-Dist: click>=8.1.3
+Requires-Dist: blinker>=1.6.2
+Requires-Dist: importlib-metadata>=3.6.0; python_version < '3.10'
+Requires-Dist: asgiref>=3.2 ; extra == "async"
+Requires-Dist: python-dotenv ; extra == "dotenv"
+Project-URL: Changes, https://flask.palletsprojects.com/changes/
+Project-URL: Chat, https://discord.gg/pallets
+Project-URL: Documentation, https://flask.palletsprojects.com/
+Project-URL: Donate, https://palletsprojects.com/donate
+Project-URL: Issue Tracker, https://github.com/pallets/flask/issues/
+Project-URL: Source Code, https://github.com/pallets/flask/
 Provides-Extra: async
-Requires-Dist: asgiref (>=3.2) ; extra == 'async'
 Provides-Extra: dotenv
-Requires-Dist: python-dotenv ; extra == 'dotenv'
 
 Flask
 =====
@@ -116,3 +113,4 @@ Links
 -   Source Code: https://github.com/pallets/flask/
 -   Issue Tracker: https://github.com/pallets/flask/issues/
 -   Chat: https://discord.gg/pallets
+
