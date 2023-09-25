@@ -28,18 +28,14 @@ service account.
 import base64
 import copy
 from datetime import datetime
+import http.client as http_client
 import json
-
-import six
-from six.moves import http_client
 
 from google.auth import _helpers
 from google.auth import credentials
 from google.auth import exceptions
 from google.auth import jwt
 from google.auth import metrics
-
-_DEFAULT_TOKEN_LIFETIME_SECS = 3600  # 1 hour in seconds
 
 _IAM_SCOPE = ["https://www.googleapis.com/auth/iam"]
 
@@ -117,7 +113,7 @@ def _make_iam_token_request(
             ),
             response_body,
         )
-        six.raise_from(new_exc, caught_exc)
+        raise new_exc from caught_exc
 
 
 class Credentials(
@@ -230,6 +226,13 @@ class Credentials(
         # their original scopes modified.
         if isinstance(self._source_credentials, credentials.Scoped):
             self._source_credentials = self._source_credentials.with_scopes(_IAM_SCOPE)
+            # If the source credential is service account and self signed jwt
+            # is needed, we need to create a jwt credential inside it
+            if (
+                hasattr(self._source_credentials, "_create_self_signed_jwt")
+                and self._source_credentials._always_use_jwt_access
+            ):
+                self._source_credentials._create_self_signed_jwt(None)
         self._target_principal = target_principal
         self._target_scopes = target_scopes
         self._delegates = delegates

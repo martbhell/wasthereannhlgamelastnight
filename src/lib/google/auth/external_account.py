@@ -34,8 +34,6 @@ import io
 import json
 import re
 
-import six
-
 from google.auth import _helpers
 from google.auth import credentials
 from google.auth import exceptions
@@ -56,11 +54,11 @@ _CLOUD_RESOURCE_MANAGER = "https://cloudresourcemanager.googleapis.com/v1/projec
 _DEFAULT_UNIVERSE_DOMAIN = "googleapis.com"
 
 
-@six.add_metaclass(abc.ABCMeta)
 class Credentials(
     credentials.Scoped,
     credentials.CredentialsWithQuotaProject,
     credentials.CredentialsWithTokenUri,
+    metaclass=abc.ABCMeta,
 ):
     """Base class for all external account credentials.
 
@@ -387,7 +385,14 @@ class Credentials(
                 additional_headers=additional_headers,
             )
             self.token = response_data.get("access_token")
-            lifetime = datetime.timedelta(seconds=response_data.get("expires_in"))
+            expires_in = response_data.get("expires_in")
+            # Some services do not respect the OAUTH2.0 RFC and send expires_in as a
+            # JSON String.
+            if isinstance(expires_in, str):
+                expires_in = int(expires_in)
+
+            lifetime = datetime.timedelta(seconds=expires_in)
+
             self.expiry = now + lifetime
 
     @_helpers.copy_docstring(credentials.CredentialsWithQuotaProject)
