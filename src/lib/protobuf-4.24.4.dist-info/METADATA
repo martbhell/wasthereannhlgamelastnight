@@ -11,6 +11,6 @@ Classifier: Programming Language :: Python :: 3.8
 Classifier: Programming Language :: Python :: 3.9
 Classifier: Programming Language :: Python :: 3.10
 Requires-Python: >=3.7
-Version: 4.24.3
+Version: 4.24.4
 
 UNKNOWN
