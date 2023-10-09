@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: regex
-Version: 2023.8.8
+Version: 2023.10.3
 Summary: Alternative regular expression module, to replace re.
 Home-page: https://github.com/mrabarnett/mrab-regex
 Author: Matthew Barnett
@@ -10,7 +10,6 @@ Classifier: Development Status :: 5 - Production/Stable
 Classifier: Intended Audience :: Developers
 Classifier: License :: OSI Approved :: Apache Software License
 Classifier: Operating System :: OS Independent
-Classifier: Programming Language :: Python :: 3.6
 Classifier: Programming Language :: Python :: 3.7
 Classifier: Programming Language :: Python :: 3.8
 Classifier: Programming Language :: Python :: 3.9
@@ -21,7 +20,7 @@ Classifier: Topic :: Scientific/Engineering :: Information Analysis
 Classifier: Topic :: Software Development :: Libraries :: Python Modules
 Classifier: Topic :: Text Processing
 Classifier: Topic :: Text Processing :: General
-Requires-Python: >=3.6
+Requires-Python: >=3.7
 Description-Content-Type: text/x-rst
 License-File: LICENSE.txt
 
@@ -53,7 +52,7 @@ The regex module releases the GIL during matching on instances of the built-in (
 Unicode
 -------
 
-This module supports Unicode 15.0.0. Full Unicode case-folding is supported.
+This module supports Unicode 15.1.0. Full Unicode case-folding is supported.
 
 Flags
 -----

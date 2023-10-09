@@ -19,10 +19,10 @@ _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'google.protobuf.struct_pb2', _globals)
 if _descriptor._USE_C_DESCRIPTORS == False:
-  DESCRIPTOR._options = None
-  DESCRIPTOR._serialized_options = b'\n\023com.google.protobufB\013StructProtoP\001Z/google.golang.org/protobuf/types/known/structpb\370\001\001\242\002\003GPB\252\002\036Google.Protobuf.WellKnownTypes'
-  _STRUCT_FIELDSENTRY._options = None
-  _STRUCT_FIELDSENTRY._serialized_options = b'8\001'
+  _globals['DESCRIPTOR']._options = None
+  _globals['DESCRIPTOR']._serialized_options = b'\n\023com.google.protobufB\013StructProtoP\001Z/google.golang.org/protobuf/types/known/structpb\370\001\001\242\002\003GPB\252\002\036Google.Protobuf.WellKnownTypes'
+  _globals['_STRUCT_FIELDSENTRY']._options = None
+  _globals['_STRUCT_FIELDSENTRY']._serialized_options = b'8\001'
   _globals['_NULLVALUE']._serialized_start=574
   _globals['_NULLVALUE']._serialized_end=601
   _globals['_STRUCT']._serialized_start=50

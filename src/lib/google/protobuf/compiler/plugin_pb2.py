@@ -20,8 +20,8 @@ _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'google.protobuf.compiler.plugin_pb2', _globals)
 if _descriptor._USE_C_DESCRIPTORS == False:
-  DESCRIPTOR._options = None
-  DESCRIPTOR._serialized_options = b'\n\034com.google.protobuf.compilerB\014PluginProtosZ)google.golang.org/protobuf/types/pluginpb\252\002\030Google.Protobuf.Compiler'
+  _globals['DESCRIPTOR']._options = None
+  _globals['DESCRIPTOR']._serialized_options = b'\n\034com.google.protobuf.compilerB\014PluginProtosZ)google.golang.org/protobuf/types/pluginpb\252\002\030Google.Protobuf.Compiler'
   _globals['_VERSION']._serialized_start=101
   _globals['_VERSION']._serialized_end=200
   _globals['_CODEGENERATORREQUEST']._serialized_start=203
