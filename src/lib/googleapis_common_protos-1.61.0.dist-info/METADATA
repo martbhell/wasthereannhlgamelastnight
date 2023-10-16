@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: googleapis-common-protos
-Version: 1.60.0
+Version: 1.61.0
 Summary: Common protobufs used in Google APIs
 Home-page: https://github.com/googleapis/python-api-common-protos
 Author: Google LLC
