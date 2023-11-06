@@ -134,7 +134,9 @@ _DOWNLOAD_AS_STRING_DEPRECATED = (
     "Blob.download_as_string() is deprecated and will be removed in future. "
     "Use Blob.download_as_bytes() instead."
 )
-
+_GS_URL_REGEX_PATTERN = re.compile(
+    r"(?P<scheme>gs)://(?P<bucket_name>[a-z0-9_.-]+)/(?P<object_name>.+)"
+)
 
 _DEFAULT_CHUNKSIZE = 104857600  # 1024 * 1024 B * 100 = 100 MB
 _MAX_MULTIPART_SIZE = 8388608  # 8 MB
@@ -403,12 +405,11 @@ class Blob(_PropertyMixin):
         """
         from google.cloud.storage.bucket import Bucket
 
-        scheme, netloc, path, query, frag = urlsplit(uri)
-        if scheme != "gs":
+        match = _GS_URL_REGEX_PATTERN.match(uri)
+        if not match:
             raise ValueError("URI scheme must be gs")
-
-        bucket = Bucket(client, name=netloc)
-        return cls(path[1:], bucket)
+        bucket = Bucket(client, name=match.group("bucket_name"))
+        return cls(match.group("object_name"), bucket)
 
     def generate_signed_url(
         self,
@@ -1738,11 +1739,13 @@ class Blob(_PropertyMixin):
                   * The ``content_type`` as a string (according to precedence)
         """
         content_type = self._get_content_type(content_type, filename=filename)
+        # Add any client attached custom headers to the upload headers.
         headers = {
             **_get_default_headers(
                 client._connection.user_agent, content_type, command=command
             ),
             **_get_encryption_headers(self._encryption_key),
+            **client._extra_headers,
         }
         object_metadata = self._get_writable_metadata()
         return headers, object_metadata, content_type
@@ -4313,9 +4316,11 @@ class Blob(_PropertyMixin):
             if_etag_match=if_etag_match,
             if_etag_not_match=if_etag_not_match,
         )
+        # Add any client attached custom headers to be sent with the request.
         headers = {
             **_get_default_headers(client._connection.user_agent, command=command),
             **headers,
+            **client._extra_headers,
         }
 
         transport = client._http
