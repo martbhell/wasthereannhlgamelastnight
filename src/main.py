@@ -15,11 +15,69 @@ from feedgen.feed import FeedGenerator
 import google.cloud.logging
 from google.auth.exceptions import DefaultCredentialsError
 from google.api_core.exceptions import NotFound
+
+# start opentelemetry
+from opentelemetry import metrics, trace
+from opentelemetry.exporter.cloud_monitoring import (
+    CloudMonitoringMetricsExporter,
+)
+from opentelemetry.exporter.cloud_trace import CloudTraceSpanExporter
+from opentelemetry.instrumentation.flask import FlaskInstrumentor
+from opentelemetry.propagate import set_global_textmap
+from opentelemetry.propagators.cloud_trace_propagator import (
+    CloudTraceFormatPropagator,
+)
+from opentelemetry.sdk.metrics import MeterProvider
+from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
+from opentelemetry.sdk.resources import Resource
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+
+#
 import nhlhelpers
+
+#
+
+set_global_textmap(CloudTraceFormatPropagator())
+
+resource = Resource.create(
+    {
+        "service.name": "wtangy",
+        "service.namespace": "wtangy_main",
+        "service.instance.id": "wtangy_1",
+    }
+)
+
+tracer_provider = TracerProvider(resource=resource)
+cloud_trace_exporter = CloudTraceSpanExporter()
+tracer_provider.add_span_processor(
+    # BatchSpanProcessor buffers spans and sends them in batches in a
+    # background thread. The default parameters are sensible, but can be
+    # tweaked to optimize your performance
+    BatchSpanProcessor(cloud_trace_exporter)
+)
+
+meter_provider = MeterProvider(
+    metric_readers=[
+        PeriodicExportingMetricReader(
+            CloudMonitoringMetricsExporter(), export_interval_millis=5000
+        )
+    ],
+    resource=resource,
+)
+
+trace.set_tracer_provider(tracer_provider)
+metrics.set_meter_provider(meter_provider)
+
+tracer = trace.get_tracer(__name__)
+meter = metrics.get_meter(__name__)
+
+# end opentelemetry
 
 # https://cloud.google.com/datastore/docs/reference/libraries#client-libraries-usage-python
 
 app = Flask(__name__)
+FlaskInstrumentor().instrument_app(app)
 
 # /menu is now also /menu/
 app.url_map.strict_slashes = False
