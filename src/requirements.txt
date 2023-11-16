@@ -7,5 +7,14 @@ device_detector==5.0.1
 feedgen==0.9.0
 feedparser==6.0.10
 opentelemetry-api==1.21.0
+opentelemetry-exporter-gcp-monitoring==1.6.0a0
 opentelemetry-exporter-gcp-trace==1.6.0
+opentelemetry-instrumentation==0.42b0
+opentelemetry-instrumentation-flask==0.42b0
+opentelemetry-instrumentation-requests==0.42b0
+opentelemetry-instrumentation-wsgi==0.42b0
+opentelemetry-propagator-gcp==1.6.0
+opentelemetry-resourcedetector-gcp==1.6.0a0
 opentelemetry-sdk==1.21.0
+opentelemetry-semantic-conventions==0.42b0
+opentelemetry-util-http==0.42b0
