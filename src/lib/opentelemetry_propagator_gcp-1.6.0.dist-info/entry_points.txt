@@ -1,0 +1,2 @@
+[opentelemetry_propagator]
+gcp_trace = opentelemetry.propagators.cloud_trace_propagator:CloudTraceFormatPropagator
