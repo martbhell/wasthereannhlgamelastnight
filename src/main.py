@@ -448,7 +448,8 @@ def create_file(filename, content):
     logging.info(
         f"Trying to create filename {filename} in bucket_name {bucket_name}, content size is {get_size(content)}"
     )
-    blob.upload_from_string(content, content_type="application/json")
+    with tracer.start_as_current_span("create_file"):
+        blob.upload_from_string(content, content_type="application/json")
 
     return True
 
@@ -472,7 +473,8 @@ def stat_file(filename):
 
     mybucket = storage_client.bucket(bucket_name)
     logging.info(f"Trying to stat filename {filename} in bucket_name {bucket_name}")
-    return mybucket.get_blob(filename)
+    with tracer.start_as_current_span("stat_file"):
+        return mybucket.get_blob(filename)
 
 
 def read_file(filename):
@@ -493,7 +495,8 @@ def read_file(filename):
     mybucket = storage_client.bucket(bucket_name)
     blob = mybucket.blob(filename)
     logging.debug(f"Trying to read filename {filename} in bucket_name {bucket_name}")
-    downloaded_blob = blob.download_as_text(encoding="utf-8")
+    with tracer.start_as_current_span("read_file"):
+        downloaded_blob = blob.download_as_text(encoding="utf-8")
 
     return downloaded_blob
 
