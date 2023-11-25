@@ -28,6 +28,7 @@ from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.sdk.trace.sampling import TraceIdRatioBased
 
 #
 import nhlhelpers
@@ -44,7 +45,13 @@ resource = Resource.create(
     }
 )
 
-tracer_provider = TracerProvider(resource=resource)
+# Set the sampling ratio (e.g., 1%)
+SAMPLE_RATIO = 0.01
+
+# Create TraceIdRatioBased sampler
+trace_sampler = TraceIdRatioBased(SAMPLE_RATIO)
+
+tracer_provider = TracerProvider(resource=resource, sampler=trace_sampler)
 cloud_trace_exporter = CloudTraceSpanExporter()
 tracer_provider.add_span_processor(
     # BatchSpanProcessor buffers spans and sends them in batches in a
