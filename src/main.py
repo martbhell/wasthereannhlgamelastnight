@@ -498,12 +498,16 @@ def read_file(filename):
     )
 
     bucket_name = project_name + ".appspot.com"
+    now_before = datetime.datetime.now()
 
     mybucket = storage_client.bucket(bucket_name)
     blob = mybucket.blob(filename)
     logging.debug(f"Trying to read filename {filename} in bucket_name {bucket_name}")
     with tracer.start_as_current_span("read_file"):
         downloaded_blob = blob.download_as_text(encoding="utf-8")
+    now_after = datetime.datetime.now()
+    time_spent = now_after - now_before
+    logging.info(f"Read blob {bucket_name}:{filename} in {time_spent}")
 
     return downloaded_blob
 
