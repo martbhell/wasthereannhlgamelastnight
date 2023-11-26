@@ -63,7 +63,7 @@ tracer_provider.add_span_processor(
 meter_provider = MeterProvider(
     metric_readers=[
         PeriodicExportingMetricReader(
-            CloudMonitoringMetricsExporter(), export_interval_millis=5000
+            CloudMonitoringMetricsExporter(), export_interval_millis=120000
         )
     ],
     resource=resource,
