@@ -1,28 +1,25 @@
 """ Bits of main.py to test the parsing """
 
-from datetime import date, timedelta, datetime
+from datetime import timedelta, datetime
 import json
 import requests
 
 from nhlhelpers import get_team
 
-URL = "https://api-web.nhle.com/v1/schedule" #
-URL_NOW = f"{URL}/now"  # gets update of today for this week
-# Do I want to fetch more than just one week?
-# What's the likelihood of this breaking and me not having time to fix it asap?
+###
 
 
-def fetch_upstream_url(url):
+def fetch_upstream_url(fetch_this_url):
     """Fetch Upstream Schedule
-       returns json and a string of the date of the schedule
-       that we got redirected to
+    returns json and a string of the date of the schedule
+    that we got redirected to
     """
 
-    geturl = requests.get(url, timeout=5)
+    geturl = requests.get(fetch_this_url, timeout=5)
     content = geturl.content
     destination_url = geturl.url
     schedule_date = destination_url.split("/")[-1]
-    date_format = '%Y-%m-%d'
+    date_format = "%Y-%m-%d"
     date_obj = datetime.strptime(schedule_date, date_format)
 
     jsondata = json.loads(content)
@@ -101,22 +98,22 @@ def make_data_json(teamdates):
 
 
 # Below gets the data, so fetching works
-DATE_FORMAT = '%Y-%m-%d'
+URL = "https://api-web.nhle.com/v1/schedule"  #
+URL_NOW = f"{URL}/now"  # gets update of today for this week
+
+DATE_FORMAT = "%Y-%m-%d"
 JSONDATA, SCHEDULE_DATE = fetch_upstream_url(URL_NOW)
 EXTRA_WEEKS = 4
-for WEEK in range(1,EXTRA_WEEKS):
-    NEXT_WEEK = SCHEDULE_DATE + timedelta(days=7*WEEK)
-    NEXT = str(NEXT_WEEK).split(" ")[0]
+TEAMDATES = parse_schedule(JSONDATA)
+CONTENT = json.loads(make_data_json(TEAMDATES))
+for WEEK in range(1, EXTRA_WEEKS):
+    NEXT_WEEK = SCHEDULE_DATE + timedelta(days=7 * WEEK)
+    NEXT = str(NEXT_WEEK).split(" ", maxsplit=1)[0]
     EXTRA_URL = f"{URL}/{NEXT}"
     EXTRA_JSONDATA, EXTRA_SCHEDULE_DATE = fetch_upstream_url(EXTRA_URL)
-    JSONDATA.update(EXTRA_JSONDATA) # TODO not enough to 
-    print(EXTRA_URL)
-# print(json.dumps(JSONDATA, indent=2))
+    EXTRA_TEAMDATES = parse_schedule(EXTRA_JSONDATA)
+    EXTRA_CONTENT = json.loads(make_data_json(EXTRA_TEAMDATES))
+    CONTENT["teamdates"].append(EXTRA_CONTENT["teamdates"])
 
-# Then our parsing begins
-TEAMDATES = parse_schedule(JSONDATA)
-# print(TEAMDATES)
-CONTENT = json.loads(make_data_json(TEAMDATES))
-print(json.dumps(CONTENT, indent=2))
-
-# print(json.dumps(TEAMDATES, indent=2))
+# Now content contains next ~4 (possibly off by one :D ?) weeks of games
+print(json.dumps(CONTENT))
