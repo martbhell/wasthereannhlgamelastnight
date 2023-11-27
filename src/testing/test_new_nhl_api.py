@@ -4,6 +4,8 @@ import datetime
 import json
 import requests
 
+from nhlhelpers import get_team
+
 NOW = datetime.datetime.now()
 FOR_UPDATED = str(NOW.isoformat())
 [CURRENT_MONTH, CURRENT_YEAR] = NOW.month, NOW.year
@@ -64,15 +66,17 @@ def parse_schedule(jsondata):
             # sorry, you can't query montre(withaccent)alcanadiens, hard coded bits in main parser
             #  wasthereannhlgamelastnight.py has MTL without the acute accent
             # Silmarillionly, mainparser has St Louis Blues, not St. Louis Blues as in the NHLschema
+            awayabbrev = game["awayTeam"]["abbrev"]
+            homeabbrev = game["homeTeam"]["abbrev"]
             twoteams.append(
-                game["awayTeam"]["abbrev"]
-                # .replace("Montréal", "Montreal")
-                # .replace("St. Louis Blues", "St Louis Blues")
+                get_team(awayabbrev)
+                #                .replace("Montréal", "Montreal")
+                #                .replace("St. Louis Blues", "St Louis Blues")
             )
             twoteams.append(
-                game["homeTeam"]["abbrev"]
-                # .replace("Montréal", "Montreal")
-                # .replace("St. Louis Blues", "St Louis Blues")
+                get_team(homeabbrev)
+                #                .replace("Montréal", "Montreal")
+                #                .replace("St. Louis Blues", "St Louis Blues")
             )
             twoteams_sorted = sorted(twoteams)
             dict_of_keys_and_matchups[date].append(twoteams_sorted)
@@ -88,7 +92,7 @@ def make_data_json(teamdates):
     }
     """
     data = {}
-    data["gameWeek"] = teamdates
+    data["teamdates"] = teamdates
     json_data = json.dumps(data, sort_keys=True)
 
     return json_data
@@ -100,8 +104,8 @@ JSONDATA = fetch_upstream_url()
 
 # Then our parsing begins
 TEAMDATES = parse_schedule(JSONDATA)
-print(TEAMDATES)
-# content = json.loads(make_data_json(TEAMDATES))
-# print(json.dumps(content, indent=2))
+# print(TEAMDATES)
+CONTENT = json.loads(make_data_json(TEAMDATES))
+print(json.dumps(CONTENT, indent=2))
 
 # print(json.dumps(TEAMDATES, indent=2))
