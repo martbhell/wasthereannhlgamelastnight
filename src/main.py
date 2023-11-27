@@ -680,9 +680,9 @@ VERSION = os.environ.get("GAE_VERSION", "no_GAE_VERSION_env_found")
 # Loading schedule on startup instead of on every request to reduce latency
 # Expecting dynamic instances to restart often enough to figure out schedule
 #   changes.
-FILENAME = "py3_schedule"
+FILENAME = "py3_nhle_new_schedule"
 if VERSION != "None":
-    FILENAME = "py3_schedule_" + VERSION
+    FILENAME = "py3_nhle_new_schedule_" + VERSION
 
 try:
     THESCHEDULE = json.loads(read_file(FILENAME))["teamdates"]
