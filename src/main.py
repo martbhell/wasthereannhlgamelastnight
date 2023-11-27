@@ -684,8 +684,6 @@ FILENAME = "py3_schedule"
 if VERSION != "None":
     FILENAME = "py3_schedule_" + VERSION
 
-THESCHEDULE = json.loads(read_file(FILENAME))["teamdates"]
-
 try:
     THESCHEDULE = json.loads(read_file(FILENAME))["teamdates"]
 except NotFound:
