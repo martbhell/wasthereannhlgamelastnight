@@ -1,5 +1,7 @@
 runtime: python310
 
+entrypoint: gunicorn -b :$PORT -w 2 main:app
+
 # comment out while developing
 # F1 - https://cloud.google.com/appengine/quotas#Instances 28h/day free
 instance_class: F1
