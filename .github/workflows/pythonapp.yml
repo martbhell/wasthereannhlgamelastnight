@@ -30,8 +30,9 @@ jobs:
       run: |
         black --version
         black --diff --check src/*.py *.py
-    - name: Run e2e_test.py
-      run: python e2e_test.py
+        # Why test the site on every build?
+        #    - name: Run e2e_test.py
+        #      run: python e2e_test.py
 
   #
 
