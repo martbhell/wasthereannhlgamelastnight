@@ -1,10 +1,10 @@
 """ YES, oor no? """
 
-import datetime
+from datetime import timedelta, datetime
 import os
 import json
 import logging
-from urllib.request import urlopen
+import requests
 from device_detector import DeviceDetector
 from jsondiff import diff
 from flask import request
@@ -115,7 +115,7 @@ def the_root(var1=False, var2=False):
     # Set some tomorrow things for when a date or team has not been specified
     # tomorrow set to today if none is set
     # because today is like tomorrow if you know what I mean (wink wink)
-    tomorrow = datetime.datetime.now()
+    tomorrow = datetime.now()
     tomorrow1 = tomorrow.strftime("%Y%m%d")
     tomorrowurl = f"/{tomorrow1}"
 
@@ -132,9 +132,7 @@ def the_root(var1=False, var2=False):
         elif arg and nhlhelpers.validatedate(arg):
             date1 = nhlhelpers.validatedate(arg)
             # If an argument is a date we set tomorrow to one day after that
-            tomorrow = datetime.datetime.strptime(
-                date1, "%Y-%m-%d"
-            ) + datetime.timedelta(days=1)
+            tomorrow = datetime.strptime(date1, "%Y-%m-%d") + timedelta(days=1)
             tomorrow1 = tomorrow.strftime("%Y%m%d")
             tomorrowurl = f"/{tomorrow1}"  # Used by the right-arrow on index.html
 
@@ -185,14 +183,18 @@ def update_schedule():
 
     # default bucket is in this format: project-id.appspot.com
     # https://cloud.google.com/appengine/docs/standard/python3/using-cloud-storage
-    filename = "py3_schedule_" + VERSION
+    filename = "py3_nhle_new_schedule_" + VERSION
     updated_filename = "py3_updated_schedule_" + VERSION
 
     logging.info(f"Using filename {filename} and updated_filename {updated_filename}")
 
     ####
 
-    [totalgames, jsondata] = fetch_upstream_schedule(URL)
+    url = "https://api-web.nhle.com/v1/schedule"  #
+    url_now = f"{url}/now"  # gets update of today for this week
+
+    jsondata, schedule_date = fetch_upstream_schedule(url_now)
+    content = fetch_schedule_ahead(jsondata, url, schedule_date)
 
     if not jsondata:
         return (
@@ -200,7 +202,6 @@ def update_schedule():
                 "update_schedule.html",
                 version=VERSION,
                 filename=filename,
-                totalgames=totalgames,
                 last_updated=False,
                 changes=False,
             ),
@@ -209,70 +210,62 @@ def update_schedule():
 
     changes = False
 
-    if totalgames == 0:
-        pass
-    else:
-        [teamdates] = parse_schedule(jsondata)
-        content = make_data_json(teamdates)
+    try:
+        old_content = read_file(filename)
+    except NotFound:
+        create_file(filename, content)
+        changes = "just created"
+        logging.info("No schedule found, created it")
+        return (
+            render_template(
+                "update_schedule.html",
+                version=VERSION,
+                filename=filename,
+                last_updated=FOR_UPDATED,
+                changes=changes,
+            ),
+            202,
+        )
+    if old_content == content:
+        changes = "No changes needed"
         try:
-            old_content = read_file(filename)
+            last_updated = read_file(updated_filename)
+            _msg = "Not updating schedule - it is current."
+            logging.info(_msg)
         except NotFound:
-            create_file(filename, content)
-            changes = "just created"
-            logging.info("No schedule found, created it")
-            return (
-                render_template(
-                    "update_schedule.html",
-                    version=VERSION,
-                    filename=filename,
-                    totalgames=totalgames,
-                    last_updated=FOR_UPDATED,
-                    changes=changes,
-                ),
-                202,
-            )
-        if old_content == content:
-            changes = "No changes needed"
-            try:
-                last_updated = read_file(updated_filename)
-                _msg = "Not updating schedule - it is current."
-                logging.info(_msg)
-            except NotFound:
-                create_file(updated_filename, FOR_UPDATED)
-                last_updated = read_file(updated_filename)
-            logging.info(f"Last updated: {last_updated}")
-        else:
-            changes = diff(json.loads(old_content), json.loads(content))
-            logging.info(f"Changes: {changes}")
-            create_file(filename, content)
             create_file(updated_filename, FOR_UPDATED)
             last_updated = read_file(updated_filename)
-            # Only send notifications outside playoffs
-            #  (potential spoilers - games are removed from the schedule)
-            if CURRENT_MONTH < 4 or CURRENT_MONTH > 6:
-                logging.info("Sending an update notification")
-                atom_feed_manager(diff(json.loads(old_content), json.loads(content)))
-            else:
-                logging.info(
-                    "Would have sent an update notification, but it might be playoff folks!"
-                )
-            return (
-                render_template(
-                    "update_schedule.html",
-                    version=VERSION,
-                    filename=filename,
-                    totalgames=totalgames,
-                    last_updated=last_updated,
-                    changes=changes,
-                ),
-                202,
+        logging.info(f"Last updated: {last_updated}")
+    else:
+        changes = diff(json.loads(old_content), json.loads(content))
+        logging.info(f"Changes: {changes}")
+        create_file(filename, content)
+        create_file(updated_filename, FOR_UPDATED)
+        last_updated = read_file(updated_filename)
+        # Only send notifications outside playoffs
+        #  (potential spoilers - games are removed from the schedule)
+        if CURRENT_MONTH < 4 or CURRENT_MONTH > 6:
+            logging.info("Sending an update notification")
+            atom_feed_manager(diff(json.loads(old_content), json.loads(content)))
+        else:
+            logging.info(
+                "Would have sent an update notification, but it might be playoff folks!"
             )
+        return (
+            render_template(
+                "update_schedule.html",
+                version=VERSION,
+                filename=filename,
+                last_updated=last_updated,
+                changes=changes,
+            ),
+            202,
+        )
 
     return render_template(
         "update_schedule.html",
         version=VERSION,
         filename=filename,
-        totalgames=totalgames,
         last_updated=last_updated,
         changes=changes,
     )
@@ -283,9 +276,9 @@ def get_schedule():
     """Get schedule from GCS and return it as JSON"""
 
     if VERSION == "None":
-        filename = "py3_schedule"
+        filename = "py3_nhle_new_schedule"
     else:
-        filename = "py3_schedule_" + VERSION
+        filename = "py3_nhle_new_schedule_" + VERSION
 
     logging.info(f"Using filename {filename}")
 
@@ -486,14 +479,14 @@ def read_file(filename):
     )
 
     bucket_name = project_name + ".appspot.com"
-    now_before = datetime.datetime.now()
+    now_before = datetime.now()
 
     mybucket = storage_client.bucket(bucket_name)
     blob = mybucket.blob(filename)
     logging.debug(f"Trying to read filename {filename} in bucket_name {bucket_name}")
     with tracer.start_as_current_span("read_file"):
         downloaded_blob = blob.download_as_text(encoding="utf-8")
-    now_after = datetime.datetime.now()
+    now_after = datetime.now()
     time_spent = now_after - now_before
     logging.info(f"Read blob {bucket_name}:{filename} in {time_spent}")
 
@@ -583,23 +576,40 @@ def atom_feed_manager(message):
     return True
 
 
-def fetch_upstream_schedule(url):
+def fetch_schedule_ahead(now_initial_jsondata, base_url, now_initial_schedule_date):
+    """return parsed 4 weeks ahead of now"""
+
+    extra_weeks = 4
+    teamdates = parse_schedule(now_initial_jsondata)
+    content = json.loads(make_data_json(teamdates))
+    for week in range(1, extra_weeks):
+        next_week = now_initial_schedule_date + timedelta(days=7 * week)
+        next_date_str = str(next_week).split(" ", maxsplit=1)[0]
+        extra_url = f"{base_url}/{next_date_str}"
+        extra_jsondata, _ = fetch_upstream_schedule(extra_url)  # could verify here
+        extra_teamdates = parse_schedule(extra_jsondata)
+        extra_content = json.loads(make_data_json(extra_teamdates))
+        content["teamdates"].append(extra_content["teamdates"])
+
+    return content
+
+
+def fetch_upstream_schedule(fetch_this_url):
     """geturl a file and do some health checking"""
 
     jsondata = None
 
-    with urlopen(url) as page:
-        jsondata = import_lazily("json").loads(page.read())
+    geturl = requests.get(fetch_this_url, timeout=5)
+    content = geturl.content
+    destination_url = geturl.url
+    schedule_date = destination_url.split("/")[-1]
+    date_format = "%Y-%m-%d"
+    date_obj = datetime.strptime(schedule_date, date_format)
 
-    totalgames = 0
-    if jsondata:
-        totalgames = jsondata["totalGames"]
+    jsondata = import_lazily("json").loads(content)
 
-    if totalgames == 0:
-        logging.error("parsing data, 0 games found.")
-        logging.info(f"URL: {url}")
-        return (totalgames, False)
-    return (totalgames, jsondata)
+    logging.info(f"URL: {fetch_this_url}")
+    return (jsondata, date_obj)
 
 
 def parse_schedule(jsondata):
@@ -608,36 +618,38 @@ def parse_schedule(jsondata):
 
     The JSON data looks something like this under "dates":
 
-    {'date': '2022-04-28',
-      'games': ['teams': {'away': {'team': {'id': 7, 'name': 'Buffalo Sabres'}},
-                          'home': {'team': {'id': 6, 'name': 'Boston Bruins'}}}}
+    # URL.gameWeek is a list of dicts
+    # {
+    #  date: "2023-11-26"
+    #  games: [ list of dicts
+    #    {
+    #      id: 2023020321 # running number
+    #      season: 20232024
+    #      awayTeam:
+    #        {
+    #          abbrev: MIN
+    #          placeName: { default: "Montréal" } # see the accent
+    #      homeTeam: { abbrev: DET, placeName: { default: "St. Louis" }
+    #    },
+    #    { }
+    #  date: "2023-11-27"
+    #  games: [] ...
     """
 
     dict_of_keys_and_matchups = {}
     dict_of_keys_and_matchups_s = {}
 
-    dates = jsondata["dates"]
+    dates = jsondata["gameWeek"]
     for key in dates:
         date = key["date"]
         dict_of_keys_and_matchups[date] = []
         games = key["games"]
         for game in games:
             twoteams = []
-            teams = game["teams"]
-            # Montréal and St. Louis Blues are added into the get_team() function
-            #  So if someone enters it, it works
-            # But the lookups are then later done with "MTL" or "STL" respectively,
-            #  and in some places with "Montreal Canadiens".
-            twoteams.append(
-                teams["away"]["team"]["name"]
-                .replace("Montréal", "Montreal")
-                .replace("St. Louis Blues", "St Louis Blues")
-            )
-            twoteams.append(
-                teams["home"]["team"]["name"]
-                .replace("Montréal", "Montreal")
-                .replace("St. Louis Blues", "St Louis Blues")
-            )
+            awayabbrev = game["awayTeam"]["abbrev"]
+            homeabbrev = game["homeTeam"]["abbrev"]
+            twoteams.append(nhlhelpers.get_team(awayabbrev))
+            twoteams.append(nhlhelpers.get_team(homeabbrev))
             twoteams_sorted = sorted(twoteams)
             dict_of_keys_and_matchups[date].append(twoteams_sorted)
             dict_of_keys_and_matchups_s[date] = sorted(dict_of_keys_and_matchups[date])
@@ -693,18 +705,9 @@ except NotFound:
     THESCHEDULE = json.loads(read_file(FILENAME))["teamdates"]
 ##
 
-NOW = datetime.datetime.now()
+NOW = datetime.now()
 FOR_UPDATED = str({"version": str(NOW.isoformat())})
-[CURRENT_MONTH, CURRENT_YEAR] = NOW.month, NOW.year
-LAST_YEAR = CURRENT_YEAR - 1
-NEXT_YEAR = CURRENT_YEAR + 1
-# if now is before August we get last year from September until July
-if CURRENT_MONTH < 8:
-    START_DATE = f"{LAST_YEAR}-08-01"
-    END_DATE = f"{CURRENT_YEAR}-07-01"
-# if now is in or after August we get this year from September until July
-else:
-    START_DATE = f"{CURRENT_YEAR}-08-01"
-    END_DATE = f"{NEXT_YEAR}-07-01"
-
-URL = f"https://statsapi.web.nhl.com/api/v1/schedule?startDate={START_DATE}&endDate={END_DATE}"
+[CURRENT_MONTH, CURRENT_YEAR] = (
+    NOW.month,
+    NOW.year,
+)  # used to silence updates during playoffs
