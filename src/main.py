@@ -153,19 +153,7 @@ def the_root(var1=False, var2=False):
 
     ########
 
-    filename = "py3_schedule"
-    if VERSION != "None":
-        filename = "py3_schedule_" + VERSION
-
-    try:
-        teamdates = json.loads(read_file(filename))["teamdates"]
-    except NotFound:
-        # In case there is no schedule stored for the backend, try to make it
-        logging.info(
-            "Viewing Root but no schedule found, let's try to parse and store it"
-        )
-        update_schedule()
-        teamdates = json.loads(read_file(filename))["teamdates"]
+    teamdates = THESCHEDULE
 
     useragent = request.headers.get("User-Agent")
     logging.debug(f"User-Agent: {useragent}")
@@ -688,6 +676,24 @@ if __name__ == "__main__":
 
 CLIAGENTS = ["curl", "Wget", "Python-urllib"]
 VERSION = os.environ.get("GAE_VERSION", "no_GAE_VERSION_env_found")
+
+# Loading schedule on startup instead of on every request to reduce latency
+# Expecting dynamic instances to restart often enough to figure out schedule
+#   changes.
+FILENAME = "py3_schedule"
+if VERSION != "None":
+    FILENAME = "py3_schedule_" + VERSION
+
+THESCHEDULE = json.loads(read_file(FILENAME))["teamdates"]
+
+try:
+    THESCHEDULE = json.loads(read_file(FILENAME))["teamdates"]
+except NotFound:
+    # In case there is no schedule stored for the backend, try to make it
+    logging.info("Viewing Root but no schedule found, let's try to parse and store it")
+    update_schedule()
+    THESCHEDULE = json.loads(read_file(FILENAME))["teamdates"]
+##
 
 NOW = datetime.datetime.now()
 FOR_UPDATED = str({"version": str(NOW.isoformat())})
