@@ -18,3 +18,4 @@ opentelemetry-resourcedetector-gcp==1.6.0a0
 opentelemetry-sdk==1.21.0
 opentelemetry-semantic-conventions==0.42b0
 opentelemetry-util-http==0.42b0
+gunicorn==21.2.0
