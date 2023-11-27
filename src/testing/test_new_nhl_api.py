@@ -113,9 +113,10 @@ for WEEK in range(1, EXTRA_WEEKS):
     EXTRA_JSONDATA, EXTRA_SCHEDULE_DATE = fetch_upstream_url(EXTRA_URL)
     EXTRA_TEAMDATES = parse_schedule(EXTRA_JSONDATA)
     EXTRA_CONTENT = json.loads(make_data_json(EXTRA_TEAMDATES))
-    CONTENT["teamdates"].append(EXTRA_CONTENT["teamdates"])
+    CONTENT["teamdates"].append(EXTRA_CONTENT["teamdates"])  # TODO: OK this bit makes things not work. teamdates should be a flat list, not list of gameweeks
 
 # Now content contains next ~4 (possibly off by one :D ?) weeks of games
+CONTENT["teamdates"] = CONTENT["teamdates"][0]
 print(json.dumps(CONTENT))
 
 NOW = datetime.now()
