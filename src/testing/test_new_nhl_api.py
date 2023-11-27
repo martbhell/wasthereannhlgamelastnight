@@ -117,3 +117,7 @@ for WEEK in range(1, EXTRA_WEEKS):
 
 # Now content contains next ~4 (possibly off by one :D ?) weeks of games
 print(json.dumps(CONTENT))
+
+NOW = datetime.now()
+FOR_UPDATED = str({"version": str(NOW.isoformat())})
+[CURRENT_MONTH, CURRENT_YEAR] = NOW.month, NOW.year # used to silence updates during playoffs
