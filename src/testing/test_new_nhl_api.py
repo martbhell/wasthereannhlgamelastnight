@@ -1,34 +1,36 @@
 """ Bits of main.py to test the parsing """
 
-import datetime
+from datetime import date, timedelta, datetime
 import json
 import requests
 
 from nhlhelpers import get_team
 
-NOW = datetime.datetime.now()
-FOR_UPDATED = str(NOW.isoformat())
-[CURRENT_MONTH, CURRENT_YEAR] = NOW.month, NOW.year
-LAST_YEAR = CURRENT_YEAR - 1
-NEXT_YEAR = CURRENT_YEAR + 1
-START_DATE = f"{LAST_YEAR}-08-01"
-END_DATE = f"{CURRENT_YEAR}-07-01"
-URL = "https://api-web.nhle.com/v1/schedule/now"  # gets update of today for this week
+URL = "https://api-web.nhle.com/v1/schedule" #
+URL_NOW = f"{URL}/now"  # gets update of today for this week
 # Do I want to fetch more than just one week?
 # What's the likelihood of this breaking and me not having time to fix it asap?
 
 
-def fetch_upstream_url():
-    """Fetch Upstream Schedule"""
+def fetch_upstream_url(url):
+    """Fetch Upstream Schedule
+       returns json and a string of the date of the schedule
+       that we got redirected to
+    """
 
-    content = requests.get(URL, timeout=5).content
+    geturl = requests.get(url, timeout=5)
+    content = geturl.content
+    destination_url = geturl.url
+    schedule_date = destination_url.split("/")[-1]
+    date_format = '%Y-%m-%d'
+    date_obj = datetime.strptime(schedule_date, date_format)
 
     jsondata = json.loads(content)
 
     if jsondata["gameWeek"] == []:
         print("Oh no")
 
-    return jsondata
+    return (jsondata, date_obj)
 
 
 def parse_schedule(jsondata):
@@ -99,7 +101,16 @@ def make_data_json(teamdates):
 
 
 # Below gets the data, so fetching works
-JSONDATA = fetch_upstream_url()
+DATE_FORMAT = '%Y-%m-%d'
+JSONDATA, SCHEDULE_DATE = fetch_upstream_url(URL_NOW)
+EXTRA_WEEKS = 4
+for WEEK in range(1,EXTRA_WEEKS):
+    NEXT_WEEK = SCHEDULE_DATE + timedelta(days=7*WEEK)
+    NEXT = str(NEXT_WEEK).split(" ")[0]
+    EXTRA_URL = f"{URL}/{NEXT}"
+    EXTRA_JSONDATA, EXTRA_SCHEDULE_DATE = fetch_upstream_url(EXTRA_URL)
+    JSONDATA.update(EXTRA_JSONDATA) # TODO not enough to 
+    print(EXTRA_URL)
 # print(json.dumps(JSONDATA, indent=2))
 
 # Then our parsing begins
