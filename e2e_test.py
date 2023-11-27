@@ -45,6 +45,7 @@ NEXT_YEAR = NOW.year + 1
 BOTH_YEARS = [str(THIS_YEAR), str(LAST_YEAR)]
 
 # This is a list of the basic tests / arguments.
+# TODO these dates should be updated to match that we only fetch next X weeks
 YESNODATES = [
     str(THIS_YEAR) + "1013",
     str(LAST_YEAR) + "1013",
