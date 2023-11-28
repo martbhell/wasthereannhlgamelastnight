@@ -589,7 +589,7 @@ def fetch_schedule_ahead(now_initial_jsondata, base_url, now_initial_schedule_da
         extra_jsondata, _ = fetch_upstream_schedule(extra_url)  # could verify here
         extra_teamdates = parse_schedule(extra_jsondata)
         extra_content = json.loads(make_data_json(extra_teamdates))
-        content["teamdates"].append(extra_content["teamdates"]) # TODO: Nope. We should not add list. We should add the dicts (each day is a dict)
+        content["teamdates"].update(extra_content["teamdates"])
 
     return content
 
@@ -655,7 +655,7 @@ def parse_schedule(jsondata):
             dict_of_keys_and_matchups_s[date] = sorted(dict_of_keys_and_matchups[date])
 
     logging.info("parsed schedule")
-    return [dict_of_keys_and_matchups_s]
+    return dict_of_keys_and_matchups_s
 
 
 def make_data_json(teamdates):

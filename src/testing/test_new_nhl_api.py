@@ -81,7 +81,7 @@ def parse_schedule(jsondata):
             dict_of_keys_and_matchups[date].append(twoteams_sorted)
             dict_of_keys_and_matchups_s[date] = sorted(dict_of_keys_and_matchups[date])
 
-    return [dict_of_keys_and_matchups_s]
+    return dict_of_keys_and_matchups_s
 
 
 def make_data_json(teamdates):
@@ -113,11 +113,15 @@ for WEEK in range(1, EXTRA_WEEKS):
     EXTRA_JSONDATA, EXTRA_SCHEDULE_DATE = fetch_upstream_url(EXTRA_URL)
     EXTRA_TEAMDATES = parse_schedule(EXTRA_JSONDATA)
     EXTRA_CONTENT = json.loads(make_data_json(EXTRA_TEAMDATES))
-    CONTENT["teamdates"].append(EXTRA_CONTENT["teamdates"])  # TODO: OK this bit makes things not work. teamdates should be a flat list, not list of gameweeks
+   # print(EXTRA_CONTENT)
+    CONTENT["teamdates"].update(EXTRA_CONTENT["teamdates"])  # .update updates the dictionary
+    #print(CONTENT)
+    #print(json.dumps(EXTRA_CONTENT))
 
 # Now content contains next ~4 (possibly off by one :D ?) weeks of games
-CONTENT["teamdates"] = CONTENT["teamdates"][0]
-print(json.dumps(CONTENT))
+#CONTENT["teamdates"] = CONTENT["teamdates"]
+#print(CONTENT)
+print(json.dumps(CONTENT, indent=2))
 
 NOW = datetime.now()
 FOR_UPDATED = str({"version": str(NOW.isoformat())})
