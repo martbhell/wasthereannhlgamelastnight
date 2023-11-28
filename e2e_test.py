@@ -1,12 +1,3 @@
-# Copyright 2015, Google, Inc.
-# Licensed under the Apache License, Version 2.0 (the "License"); you may not use
-# this file except in compliance with the License. You may obtain a copy of the
-# License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable
-# law or agreed to in writing, software distributed under the License is distributed
-# on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
-# or implied. See the License for the specific language governing permissions and
-# limitations under the License.
-
 """ Do some testing """
 
 from __future__ import absolute_import  #
@@ -40,19 +31,35 @@ YESNO = ["YES\n", "NO\n"]
 
 NOW = datetime.datetime.now()
 THIS_YEAR = NOW.year
+THIS_MONTH = NOW.month
 LAST_YEAR = NOW.year - 1
 NEXT_YEAR = NOW.year + 1
+NEXT_MONTH = NOW.month + 1
 BOTH_YEARS = [str(THIS_YEAR), str(LAST_YEAR)]
 
 # This is a list of the basic tests / arguments.
-# TODO these dates should be updated to match that we only fetch next X weeks
+t1 = NOW + datetime.timedelta(days=2)
+t2 = NOW + datetime.timedelta(days=6)
+t3 = NOW + datetime.timedelta(days=7)
+t4 = NOW + datetime.timedelta(days=12)
+t5 = NOW + datetime.timedelta(days=15)
+t6 = NOW + datetime.timedelta(days=20)
+t7 = NOW + datetime.timedelta(days=22)
+t8 = NOW + datetime.timedelta(days=100)
+t9 = NOW + datetime.timedelta(days=130)
+t10 = NOW + datetime.timedelta(days=190)
+
 YESNODATES = [
-    str(THIS_YEAR) + "1013",
-    str(LAST_YEAR) + "1013",
-    str(NEXT_YEAR) + "0316",
-    "wingS/" + str(LAST_YEAR) + "1014",
-    "wingS/" + str(NEXT_YEAR) + "0315",
-    str(NEXT_YEAR) + "0315" + "/wingS",
+    t1.strftime("%Y%m%d"),
+    t2.strftime("%Y%m%d"),
+    t3.strftime("%Y%m%d"),
+    t4.strftime("%Y%m%d"),
+    t5.strftime("%Y%m%d"),
+    t6.strftime("%Y%m%d"),
+    t7.strftime("%Y%m%d"),
+    "wingS/" + t8.strftime("%Y%m%d"),
+    "wingS/" + t9.strftime("%Y%m%d"),
+    t10.strftime("%Y%m%d") + "/wingS",
     "",
     "WINGS",
     "Lak",
@@ -78,23 +85,16 @@ MUSTGETAYES = {}
 
 for team in ALLTEAMS:
     MUSTGETAYES[team] = []
-    MUSTGETAYES[team].append(str(THIS_YEAR) + "0327")
-    MUSTGETAYES[team].append(str(THIS_YEAR) + "0328")
-    MUSTGETAYES[team].append(str(THIS_YEAR) + "1014")
-    MUSTGETAYES[team].append(str(THIS_YEAR) + "0805")
-    MUSTGETAYES[team].append(str(THIS_YEAR) + "0806")
-    MUSTGETAYES[team].append(str(THIS_YEAR) + "1014")
-    MUSTGETAYES[team].append(str(THIS_YEAR) + "1015")
-    MUSTGETAYES[team].append(str(THIS_YEAR) + "1016")
-    MUSTGETAYES[team].append(str(THIS_YEAR) + "1017")
-    MUSTGETAYES[team].append(str(THIS_YEAR) + "1018")
-    MUSTGETAYES[team].append(str(LAST_YEAR) + "0327")
-    MUSTGETAYES[team].append(str(LAST_YEAR) + "0328")
-    MUSTGETAYES[team].append(str(LAST_YEAR) + "1014")
-    MUSTGETAYES[team].append(str(LAST_YEAR) + "1015")
-    MUSTGETAYES[team].append(str(LAST_YEAR) + "1016")
-    MUSTGETAYES[team].append(str(LAST_YEAR) + "1017")
-    MUSTGETAYES[team].append(str(LAST_YEAR) + "1018")
+    MUSTGETAYES[team].append(t1.strftime("%Y%m%d"))
+    MUSTGETAYES[team].append(t2.strftime("%Y%m%d"))
+    MUSTGETAYES[team].append(t3.strftime("%Y%m%d"))
+    MUSTGETAYES[team].append(t4.strftime("%Y%m%d"))
+    MUSTGETAYES[team].append(t5.strftime("%Y%m%d"))
+    MUSTGETAYES[team].append(t6.strftime("%Y%m%d"))
+    MUSTGETAYES[team].append(t7.strftime("%Y%m%d"))
+    MUSTGETAYES[team].append(t8.strftime("%Y%m%d"))
+    MUSTGETAYES[team].append(t9.strftime("%Y%m%d"))
+    MUSTGETAYES[team].append(t10.strftime("%Y%m%d"))
 
 # Add the tests where we want to check that we get at least one yes
 #  for each team
@@ -115,7 +115,6 @@ for team, value in MUSTGETAYES.items():
         if "YES" in str(html):
             YESCNT = YESCNT + 1
         if ALLCNT == len(value):
-
             print(
                 f"asserting that at least ( {YESCNT} ) one of {str(value)} is YES for {team}"
             )
