@@ -697,7 +697,7 @@ if VERSION != "None":
     FILENAME = "py3_nhle_new_schedule_" + VERSION
 
 try:
-    THESCHEDULE = json.loads(read_file(FILENAME))["teamdates"]
+    THESCHEDULE = json.loads(read_file(FILENAME).replace("'", '"'))["teamdates"]
 except NotFound:
     # In case there is no schedule stored for the backend, try to make it
     logging.info("Viewing Root but no schedule found, let's try to parse and store it")
