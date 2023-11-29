@@ -213,7 +213,7 @@ def update_schedule():
     try:
         old_content = json.loads(read_file(filename))
     except NotFound:
-        create_file(filename, content)
+        create_file(filename, str(content))
         changes = "just created"
         logging.info("No schedule found, created it")
         return (
@@ -239,7 +239,7 @@ def update_schedule():
     else:
         changes = diff(old_content, content)
         logging.info(f"Changes: {changes}")
-        create_file(filename, content)
+        create_file(filename, str(content))
         create_file(updated_filename, FOR_UPDATED)
         last_updated = read_file(updated_filename)
         # Only send notifications outside playoffs
