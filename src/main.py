@@ -282,7 +282,7 @@ def get_schedule():
 
     logging.info(f"Using filename {filename}")
 
-    content = json.loads(read_file(filename))
+    content = json.loads(str(read_file(filename)).replace("'", '"'))
     resp = make_response(json.dumps(content, indent=2))
     resp.headers["Content-Type"] = "application/json"
     return resp
@@ -702,7 +702,7 @@ except NotFound:
     # In case there is no schedule stored for the backend, try to make it
     logging.info("Viewing Root but no schedule found, let's try to parse and store it")
     update_schedule()
-    THESCHEDULE = json.loads(read_file(FILENAME))["teamdates"]
+    THESCHEDULE = json.loads(str(read_file(FILENAME)).replace("'", '"'))["teamdates"]
 ##
 
 NOW = datetime.now()
