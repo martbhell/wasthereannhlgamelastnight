@@ -211,7 +211,7 @@ def update_schedule():
     changes = False
 
     try:
-        old_content = json.loads(read_file(filename))
+        old_content = json.loads(str(read_file(filename)).replace("'", '"'))
     except NotFound:
         create_file(filename, str(content))
         changes = "just created"
