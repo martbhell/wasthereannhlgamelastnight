@@ -211,7 +211,7 @@ def update_schedule():
     changes = False
 
     try:
-        old_content = read_file(filename)
+        old_content = json.loads(read_file(filename))
     except NotFound:
         create_file(filename, content)
         changes = "just created"
@@ -237,7 +237,7 @@ def update_schedule():
             last_updated = read_file(updated_filename)
         logging.info(f"Last updated: {last_updated}")
     else:
-        changes = diff(json.loads(old_content), json.loads(content))
+        changes = diff(old_content, content)
         logging.info(f"Changes: {changes}")
         create_file(filename, content)
         create_file(updated_filename, FOR_UPDATED)
@@ -246,7 +246,7 @@ def update_schedule():
         #  (potential spoilers - games are removed from the schedule)
         if CURRENT_MONTH < 4 or CURRENT_MONTH > 6:
             logging.info("Sending an update notification")
-            atom_feed_manager(diff(json.loads(old_content), json.loads(content)))
+            atom_feed_manager(diff(old_content, content))
         else:
             logging.info(
                 "Would have sent an update notification, but it might be playoff folks!"

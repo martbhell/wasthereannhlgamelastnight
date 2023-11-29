@@ -2,6 +2,7 @@
 
 from datetime import timedelta, datetime
 import json
+from jsondiff import diff
 import requests
 
 from nhlhelpers import get_team
@@ -103,7 +104,7 @@ URL_NOW = f"{URL}/now"  # gets update of today for this week
 
 DATE_FORMAT = "%Y-%m-%d"
 JSONDATA, SCHEDULE_DATE = fetch_upstream_url(URL_NOW)
-EXTRA_WEEKS = 4
+EXTRA_WEEKS = 3
 TEAMDATES = parse_schedule(JSONDATA)
 CONTENT = json.loads(make_data_json(TEAMDATES))
 for WEEK in range(1, EXTRA_WEEKS):
@@ -113,16 +114,27 @@ for WEEK in range(1, EXTRA_WEEKS):
     EXTRA_JSONDATA, EXTRA_SCHEDULE_DATE = fetch_upstream_url(EXTRA_URL)
     EXTRA_TEAMDATES = parse_schedule(EXTRA_JSONDATA)
     EXTRA_CONTENT = json.loads(make_data_json(EXTRA_TEAMDATES))
-   # print(EXTRA_CONTENT)
-    CONTENT["teamdates"].update(EXTRA_CONTENT["teamdates"])  # .update updates the dictionary
-    #print(CONTENT)
-    #print(json.dumps(EXTRA_CONTENT))
+    # print(EXTRA_CONTENT)
+    CONTENT["teamdates"].update(
+        EXTRA_CONTENT["teamdates"]
+    )  # .update updates the dictionary
+    print(EXTRA_CONTENT)
+    # print(CONTENT)
+    # print(type(CONTENT))
+    # print(type(CONTENT["teamdates"]))
+    # print(type(json.loads(CONTENT["teamdates"])))
+    # print(diff(json.dumps(CONTENT), json.dumps(EXTRA_CONTENT)))
+    print(diff(CONTENT, EXTRA_CONTENT))
+    # print(json.dumps(EXTRA_CONTENT))
 
 # Now content contains next ~4 (possibly off by one :D ?) weeks of games
-#CONTENT["teamdates"] = CONTENT["teamdates"]
-#print(CONTENT)
-print(json.dumps(CONTENT, indent=2))
+# CONTENT["teamdates"] = CONTENT["teamdates"]
+# print(CONTENT)
+# print(json.dumps(CONTENT, indent=2))
 
 NOW = datetime.now()
 FOR_UPDATED = str({"version": str(NOW.isoformat())})
-[CURRENT_MONTH, CURRENT_YEAR] = NOW.month, NOW.year # used to silence updates during playoffs
+[CURRENT_MONTH, CURRENT_YEAR] = (
+    NOW.month,
+    NOW.year,
+)  # used to silence updates during playoffs
