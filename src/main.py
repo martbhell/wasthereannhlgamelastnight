@@ -16,71 +16,12 @@ import google.cloud.logging
 from google.auth.exceptions import DefaultCredentialsError
 from google.api_core.exceptions import NotFound
 
-# start opentelemetry
-from opentelemetry import metrics, trace
-from opentelemetry.exporter.cloud_monitoring import CloudMonitoringMetricsExporter
-from opentelemetry.exporter.cloud_trace import CloudTraceSpanExporter
-from opentelemetry.instrumentation.flask import FlaskInstrumentor
-from opentelemetry.propagate import set_global_textmap
-from opentelemetry.propagators.cloud_trace_propagator import CloudTraceFormatPropagator
-from opentelemetry.sdk.metrics import MeterProvider
-from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
-from opentelemetry.sdk.resources import Resource
-from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import BatchSpanProcessor
-from opentelemetry.sdk.trace.sampling import TraceIdRatioBased
-
 #
 import nhlhelpers
-
-#
-
-set_global_textmap(CloudTraceFormatPropagator())
-
-resource = Resource.create(
-    {
-        "service.name": "wtangy",
-        "service.namespace": "wtangy_main",
-        "service.instance.id": "wtangy_1",
-    }
-)
-
-# Set the sampling ratio (e.g., 1%)
-SAMPLE_RATIO = 0.01
-
-# Create TraceIdRatioBased sampler
-trace_sampler = TraceIdRatioBased(SAMPLE_RATIO)
-
-tracer_provider = TracerProvider(resource=resource, sampler=trace_sampler)
-cloud_trace_exporter = CloudTraceSpanExporter()
-tracer_provider.add_span_processor(
-    # BatchSpanProcessor buffers spans and sends them in batches in a
-    # background thread. The default parameters are sensible, but can be
-    # tweaked to optimize your performance
-    BatchSpanProcessor(cloud_trace_exporter)
-)
-
-meter_provider = MeterProvider(
-    metric_readers=[
-        PeriodicExportingMetricReader(
-            CloudMonitoringMetricsExporter(), export_interval_millis=120000
-        )
-    ],
-    resource=resource,
-)
-
-trace.set_tracer_provider(tracer_provider)
-metrics.set_meter_provider(meter_provider)
-
-tracer = trace.get_tracer(__name__)
-meter = metrics.get_meter(__name__)
-
-# end opentelemetry
 
 # https://cloud.google.com/datastore/docs/reference/libraries#client-libraries-usage-python
 
 app = Flask(__name__)
-FlaskInstrumentor().instrument_app(app)
 
 # /menu is now also /menu/
 app.url_map.strict_slashes = False
@@ -436,8 +377,6 @@ def create_file(filename, content):
     logging.info(
         f"Trying to create filename {filename} in bucket_name {bucket_name}, content size is {get_size(content)}"
     )
-    with tracer.start_as_current_span("create_file"):
-        blob.upload_from_string(content, content_type="application/json")
 
     return True
 
@@ -461,8 +400,6 @@ def stat_file(filename):
 
     mybucket = storage_client.bucket(bucket_name)
     logging.info(f"Trying to stat filename {filename} in bucket_name {bucket_name}")
-    with tracer.start_as_current_span("stat_file"):
-        return mybucket.get_blob(filename)
 
 
 def read_file(filename):
@@ -484,8 +421,6 @@ def read_file(filename):
     mybucket = storage_client.bucket(bucket_name)
     blob = mybucket.blob(filename)
     logging.debug(f"Trying to read filename {filename} in bucket_name {bucket_name}")
-    with tracer.start_as_current_span("read_file"):
-        downloaded_blob = blob.download_as_text(encoding="utf-8")
     now_after = datetime.now()
     time_spent = now_after - now_before
     logging.info(f"Read blob {bucket_name}:{filename} in {time_spent}")
