@@ -378,6 +378,8 @@ def create_file(filename, content):
         f"Trying to create filename {filename} in bucket_name {bucket_name}, content size is {get_size(content)}"
     )
 
+    blob.upload_from_string(content, content_type="application/json")
+
     return True
 
 
@@ -400,6 +402,8 @@ def stat_file(filename):
 
     mybucket = storage_client.bucket(bucket_name)
     logging.info(f"Trying to stat filename {filename} in bucket_name {bucket_name}")
+
+    return mybucket.get_blob(filename)
 
 
 def read_file(filename):
