@@ -424,6 +424,7 @@ def read_file(filename):
     now_after = datetime.now()
     time_spent = now_after - now_before
     logging.info(f"Read blob {bucket_name}:{filename} in {time_spent}")
+    downloaded_blob = blob.download_as_text(encoding="utf-8")
 
     return downloaded_blob
 
