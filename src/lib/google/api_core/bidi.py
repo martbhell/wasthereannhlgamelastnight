@@ -92,7 +92,10 @@ class _RequestQueueGenerator(object):
         # Note: there is a possibility that this starts *before* the call
         # property is set. So we have to check if self.call is set before
         # seeing if it's active.
-        return self.call is not None and self.call.is_active()
+        if self.call is not None and not self.call.is_active():
+            return False
+        else:
+            return True
 
     def __iter__(self):
         if self._initial_request is not None:
@@ -262,10 +265,6 @@ class BidiRpc(object):
         self._callbacks.append(callback)
 
     def _on_call_done(self, future):
-        # This occurs when the RPC errors or is successfully terminated.
-        # Note that grpc's "future" here can also be a grpc.RpcError.
-        # See note in https://github.com/grpc/grpc/issues/10885#issuecomment-302651331
-        # that `grpc.RpcError` is also `grpc.call`.
         for callback in self._callbacks:
             callback(future)
 
@@ -277,13 +276,7 @@ class BidiRpc(object):
         request_generator = _RequestQueueGenerator(
             self._request_queue, initial_request=self._initial_request
         )
-        try:
-            call = self._start_rpc(iter(request_generator), metadata=self._rpc_metadata)
-        except exceptions.GoogleAPICallError as exc:
-            # The original `grpc.RpcError` (which is usually also a `grpc.Call`) is
-            # available from the ``response`` property on the mapped exception.
-            self._on_call_done(exc.response)
-            raise
+        call = self._start_rpc(iter(request_generator), metadata=self._rpc_metadata)
 
         request_generator.call = call
 

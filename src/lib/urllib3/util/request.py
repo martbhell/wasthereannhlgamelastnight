@@ -9,7 +9,7 @@ from ..exceptions import UnrewindableBodyError
 from .util import to_bytes
 
 if typing.TYPE_CHECKING:
-    from typing import Final
+    from typing_extensions import Final
 
 # Pass as a value within ``headers`` to skip
 # emitting some HTTP headers that are added automatically.
