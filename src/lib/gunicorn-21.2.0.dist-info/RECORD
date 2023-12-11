@@ -1,4 +1,4 @@
-../../bin/gunicorn,sha256=BTy167ckVhCWiR4zDUvQW3iMd_XfqSqj21MIr9kX7Ec,255
+../../bin/gunicorn,sha256=5kiAxbPSgkDDIxUtyjnK_RHcUQEVGkmMN2BRLunoVM4,251
 gunicorn-21.2.0.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
 gunicorn-21.2.0.dist-info/METADATA,sha256=5D3VZHwuMtS6iruVsiafVSSiuCpM_vfR3f9_o274SyU,4129
 gunicorn-21.2.0.dist-info/RECORD,,
