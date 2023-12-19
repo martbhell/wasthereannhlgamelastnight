@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: google-cloud-storage
-Version: 2.13.0
+Version: 2.14.0
 Summary: Google Cloud Storage API client library
 Home-page: https://github.com/googleapis/python-storage
 Author: Google LLC
@@ -17,18 +17,19 @@ Classifier: Programming Language :: Python :: 3.8
 Classifier: Programming Language :: Python :: 3.9
 Classifier: Programming Language :: Python :: 3.10
 Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
 Classifier: Operating System :: OS Independent
 Classifier: Topic :: Internet
 Requires-Python: >=3.7
 License-File: LICENSE
-Requires-Dist: google-auth (<3.0dev,>=2.23.3)
-Requires-Dist: google-api-core (!=2.0.*,!=2.1.*,!=2.2.*,!=2.3.0,<3.0.0dev,>=1.31.5)
-Requires-Dist: google-cloud-core (<3.0dev,>=2.3.0)
-Requires-Dist: google-resumable-media (>=2.6.0)
-Requires-Dist: requests (<3.0.0dev,>=2.18.0)
-Requires-Dist: google-crc32c (<2.0dev,>=1.0)
+Requires-Dist: google-auth <3.0dev,>=2.23.3
+Requires-Dist: google-api-core !=2.0.*,!=2.1.*,!=2.2.*,!=2.3.0,<3.0.0dev,>=1.31.5
+Requires-Dist: google-cloud-core <3.0dev,>=2.3.0
+Requires-Dist: google-resumable-media >=2.6.0
+Requires-Dist: requests <3.0.0dev,>=2.18.0
+Requires-Dist: google-crc32c <2.0dev,>=1.0
 Provides-Extra: protobuf
-Requires-Dist: protobuf (<5.0.0dev) ; extra == 'protobuf'
+Requires-Dist: protobuf <5.0.0dev ; extra == 'protobuf'
 
 Python Client for Google Cloud Storage
 ======================================
