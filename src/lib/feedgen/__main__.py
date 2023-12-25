@@ -36,8 +36,8 @@ Stdout options:
 
 
 def print_enc(s):
-    '''Print function compatible with both python2 and python3 accepting strings
-    and byte arrays.
+    '''Print function compatible with both python2 and python3 accepting
+    strings and byte arrays.
     '''
     if sys.version_info[0] >= 3:
         print(s.decode('utf-8') if isinstance(s, bytes) else s)
@@ -73,9 +73,9 @@ def main():
     fe = fg.add_entry()
     fe.id('http://lernfunk.de/_MEDIAID_123#1')
     fe.title('First Element')
-    fe.content('''Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tamen
-            aberramus a proposito, et, ne longius, prorsus, inquam, Piso, si
-            ista mala sunt, placet. Aut etiam, ut vestitum, sic sententiam
+    fe.content('''Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            Tamen aberramus a proposito, et, ne longius, prorsus, inquam, Piso,
+            si ista mala sunt, placet. Aut etiam, ut vestitum, sic sententiam
             habeas aliam domesticam, aliam forensem, ut in fronte ostentatio
             sit, intus veritas occultetur? Cum id fugiunt, re eadem defendunt,
             quae Peripatetici, verba.''')
@@ -100,7 +100,12 @@ def main():
         fg.podcast.itunes_summary('Lorem ipsum dolor sit amet, consectetur ' +
                                   'adipiscing elit. Verba tu fingas et ea ' +
                                   'dicas, quae non sentias?')
+        fg.podcast.itunes_type('episodic')
         fe.podcast.itunes_author('Lars Kiesow')
+        fe.podcast.itunes_season(1)
+        fe.podcast.itunes_episode(1)
+        fe.podcast.itunes_title('First podcast episode')
+        fe.podcast.itunes_episode_type('full')
         print_enc(fg.rss_str(pretty=True))
 
     elif arg == 'torrent':

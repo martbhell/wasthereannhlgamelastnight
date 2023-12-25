@@ -1,5 +1,5 @@
 Metadata-Version: 2.1
-Name: device-detector
+Name: device_detector
 Version: 5.0.1
 Summary: Python3 port of matomo's Device Detector
 Home-page: https://github.com/thinkwelltwd/device_detector
