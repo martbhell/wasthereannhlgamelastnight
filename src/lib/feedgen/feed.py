@@ -130,18 +130,18 @@ class FeedGenerator(object):
                 uri = xml_elem('uri', author)
                 uri.text = a.get('uri')
 
-        for l in self.__atom_link or []:
-            link = xml_elem('link', feed, href=l['href'])
-            if l.get('rel'):
-                link.attrib['rel'] = l['rel']
-            if l.get('type'):
-                link.attrib['type'] = l['type']
-            if l.get('hreflang'):
-                link.attrib['hreflang'] = l['hreflang']
-            if l.get('title'):
-                link.attrib['title'] = l['title']
-            if l.get('length'):
-                link.attrib['length'] = l['length']
+        for ln in self.__atom_link or []:
+            link = xml_elem('link', feed, href=ln['href'])
+            if ln.get('rel'):
+                link.attrib['rel'] = ln['rel']
+            if ln.get('type'):
+                link.attrib['type'] = ln['type']
+            if ln.get('hreflang'):
+                link.attrib['hreflang'] = ln['hreflang']
+            if ln.get('title'):
+                link.attrib['title'] = ln['title']
+            if ln.get('length'):
+                link.attrib['length'] = ln['length']
 
         for c in self.__atom_category or []:
             cat = xml_elem('category', feed, term=c['term'])
@@ -220,7 +220,7 @@ class FeedGenerator(object):
         <https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.tostring>`_
         '''
         feed, doc = self._create_atom(extensions=extensions)
-        return etree.tostring(feed, pretty_print=pretty, encoding=encoding,
+        return etree.tostring(doc, pretty_print=pretty, encoding=encoding,
                               xml_declaration=xml_declaration)
 
     def atom_file(self, filename, extensions=True, pretty=False,
@@ -396,7 +396,7 @@ class FeedGenerator(object):
         <https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.tostring>`_
         '''
         feed, doc = self._create_rss(extensions=extensions)
-        return etree.tostring(feed, pretty_print=pretty, encoding=encoding,
+        return etree.tostring(doc, pretty_print=pretty, encoding=encoding,
                               xml_declaration=xml_declaration)
 
     def rss_file(self, filename, extensions=True, pretty=False,
@@ -635,7 +635,7 @@ class FeedGenerator(object):
         If a label is present it is used for the RSS feeds. Otherwise the term
         is used. The scheme is used for the domain attribute in RSS.
 
-        :param link:    Dict or list of dicts with data.
+        :param category: Dict or list of dicts with data.
         :param replace: Add or replace old data.
         :returns: List of category data.
         '''
@@ -761,7 +761,7 @@ class FeedGenerator(object):
         :param title: Describes the image. The default value is the feeds
                       title.
         :param link: URL of the site the image will link to. The default is to
-                     use the feeds first altertate link.
+                     use the feeds first alternate link.
         :param width: Width of the image in pixel. The maximum is 144.
         :param height: The height of the image. The maximum is 400.
         :param description: Title of the link.
@@ -802,7 +802,7 @@ class FeedGenerator(object):
         return self.rights(copyright)
 
     def subtitle(self, subtitle=None):
-        '''Get or set the subtitle value of the cannel which contains a
+        '''Get or set the subtitle value of the channel which contains a
         human-readable description or subtitle for the feed. This ATOM property
         will also set the value for rss:description.
 
@@ -997,7 +997,7 @@ class FeedGenerator(object):
 
     def add_entry(self, feedEntry=None, order='prepend'):
         '''This method will add a new entry to the feed. If the feedEntry
-        argument is omittet a new Entry object is created automatically. This
+        argument is omitted a new Entry object is created automatically. This
         is the preferred way to add new entries to a feed.
 
         :param feedEntry: FeedEntry object to add.
@@ -1042,7 +1042,7 @@ class FeedGenerator(object):
 
     def add_item(self, item=None):
         '''This method will add a new item to the feed. If the item argument is
-        omittet a new FeedEntry object is created automatically. This is just
+        omitted a new FeedEntry object is created automatically. This is just
         another name for add_entry(...)
         '''
         return self.add_entry(item)
