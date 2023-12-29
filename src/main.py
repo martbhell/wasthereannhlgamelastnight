@@ -119,6 +119,7 @@ def the_root(var1=False, var2=False):
 
 
 @app.route("/update_schedule")
+@app.route("/update_schedule_6fd74614-9bdd-45a5-a96d-a19b597bc604")
 def update_schedule():
     """fetches schedule from upstream, parses it, uploads it, sets a version, outputs html for debug"""
 
