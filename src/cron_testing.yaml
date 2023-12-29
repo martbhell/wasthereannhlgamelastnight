@@ -1,0 +1,8 @@
+cron:
+- description: update schedule_testing
+  url: /update_schedule?cron_testing
+  schedule: every 1 minutes
+  retry_parameters:
+      job_retry_limit: 5
+      min_backoff_seconds: 5
+      max_backoff_seconds: 20
