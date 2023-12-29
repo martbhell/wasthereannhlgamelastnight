@@ -23,11 +23,13 @@ handlers:
 
 - url: /update_schedule
   login: admin
+  script: update_schedule2
   secure: always
 
 # by obscurity
 - url: /update_schedule_6fd74614-9bdd-45a5-a96d-a19b597bc604
   login: optional
+  script: update_schedule3
   secure: always
 
 - url: /.*
