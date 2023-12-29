@@ -125,7 +125,7 @@ jobs:
       with:
         python-version: "3.10"
     - name: update_schedule in testing first
-      run: "curl https://testing-dot-wasthereannhlgamelastnight.appspot.com"
+      run: "curl https://testing-dot-wasthereannhlgamelastnight.appspot.com/update_schedule_6fd74614-9bdd-45a5-a96d-a19b597bc604"
     - name: e2e_test.py testing at the end
       run: "python e2e_test.py"
 
