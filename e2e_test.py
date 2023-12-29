@@ -38,9 +38,14 @@ NEXT_MONTH = NOW.month + 1
 BOTH_YEARS = [str(THIS_YEAR), str(LAST_YEAR)]
 
 # This is a list of the basic tests / arguments.
-t1 = NOW + datetime.timedelta(days=2)
+t1 = NOW + datetime.timedelta(days=1)
+t11 = NOW + datetime.timedelta(days=2)
+t12 = NOW + datetime.timedelta(days=3)
+t13 = NOW + datetime.timedelta(days=4)
+t14 = NOW + datetime.timedelta(days=5)
+t15 = NOW + datetime.timedelta(days=6)
 t2 = NOW + datetime.timedelta(days=6)
-t3 = NOW + datetime.timedelta(days=7)
+t3 = NOW + datetime.timedelta(days=10)
 t4 = NOW + datetime.timedelta(days=12)
 t5 = NOW + datetime.timedelta(days=15)
 t6 = NOW + datetime.timedelta(days=20)
@@ -60,6 +65,11 @@ YESNODATES = [
     "wingS/" + t8.strftime("%Y%m%d"),
     "wingS/" + t9.strftime("%Y%m%d"),
     t10.strftime("%Y%m%d") + "/wingS",
+    t11.strftime("%Y%m%d"),
+    t12.strftime("%Y%m%d"),
+    t13.strftime("%Y%m%d"),
+    t14.strftime("%Y%m%d"),
+    t15.strftime("%Y%m%d"),
     "",
     "WINGS",
     "Lak",
