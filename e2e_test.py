@@ -148,7 +148,7 @@ for arg, value in ARGS.items():
 
     else:
         print(
-            f"asserting {HOST}/{arg} contains {value['test']} - response code: {response.code}"
+            f"{arg}: asserting {HOST}/{value['url']} contains {value['test']} - response code: {response.code}"
         )
         try:
             if value["type"] == "in" or value["type"] == "injson":
