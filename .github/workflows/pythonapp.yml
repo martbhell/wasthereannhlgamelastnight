@@ -45,8 +45,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - run: cp -v src/cron.yaml src/cron.yaml.bkp
-    - run: cp -v src/cron_testing.yaml src/cron.yaml
     # https://github.com/google-github-actions/auth#with-workload-identity-federation
     - id: 'auth'
       name: 'Authenticate to Google Cloud'
@@ -70,7 +68,6 @@ jobs:
         version: testing
         promote: False
     - run: 'echo "TESTING version_url: ${{ steps.deploy_to_test.outputs.version_url }} is ${{ steps.deploy_to_test.outputs.serving_status }}"'
-    - run: mv -v src/cron.yaml.bkp src/cron.yaml
 
   #
 
@@ -127,6 +124,8 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: "3.10"
+    - name: update_schedule in testing first
+      run: "curl https://testing-dot-wasthereannhlgamelastnight.appspot.com"
     - name: e2e_test.py testing at the end
       run: "python e2e_test.py"
 
