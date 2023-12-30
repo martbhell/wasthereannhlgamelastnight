@@ -25,7 +25,3 @@ handlers:
   login: admin
   script: update_schedule2
   secure: always
-
-- url: /.*
-  script: auto
-  secure: always

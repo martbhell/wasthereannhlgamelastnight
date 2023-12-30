@@ -1,0 +1,4 @@
+
+- url: /.*
+  script: auto
+  secure: always
