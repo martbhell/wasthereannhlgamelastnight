@@ -59,6 +59,10 @@ jobs:
     - run: "gcloud config list"
     - run: 'echo "${{ steps.auth.outputs.project_id }}"'
 
+    - run: cp -v src/app.yaml src/app.yaml.bkp
+    - run: cp -v src/app_testing.yaml src/app.yaml
+      name: 'custom app.yaml for testing for allowing updating schedule without credentials'
+
     - id: 'deploy_to_test'
       name: 'Deploy to Test'
       uses: 'google-github-actions/deploy-appengine@v1'
@@ -68,6 +72,7 @@ jobs:
         version: testing
         promote: False
     - run: 'echo "TESTING version_url: ${{ steps.deploy_to_test.outputs.version_url }} is ${{ steps.deploy_to_test.outputs.serving_status }}"'
+    - run: mv -v src/app.yaml src/app.yaml.bkp
 
   #
 
