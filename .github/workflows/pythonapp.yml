@@ -59,8 +59,8 @@ jobs:
     - run: "gcloud config list"
     - run: 'echo "${{ steps.auth.outputs.project_id }}"'
 
-    - run: cp -v src/app.yaml src/app.yaml.bkp
-    - run: cp -v src/app_testing.yaml src/app.yaml
+    - run: "cat src/app_testing.yaml | tee -a src/app.yaml"
+    - run: "cat src/app.yaml.end | tee -a src/app.yaml"
       name: 'custom app.yaml for testing for allowing updating schedule without credentials'
 
     - id: 'deploy_to_test'
@@ -72,7 +72,6 @@ jobs:
         version: testing
         promote: False
     - run: 'echo "TESTING version_url: ${{ steps.deploy_to_test.outputs.version_url }} is ${{ steps.deploy_to_test.outputs.serving_status }}"'
-    - run: mv -v src/app.yaml src/app.yaml.bkp
 
   #
 
@@ -101,6 +100,9 @@ jobs:
     - run: "gcloud config list"
 
     # master
+
+    - run: "cat src/app.yaml.end | tee -a src/app.yaml"
+      name: 'add the last handler, no custom update handler here'
 
     - id: 'deploy'
       name: 'Deploy to Prod'

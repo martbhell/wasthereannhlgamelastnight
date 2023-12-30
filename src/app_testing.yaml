@@ -1,37 +1,6 @@
-runtime: python310
-
-entrypoint: gunicorn -b :$PORT -w 2 main:app
-
-# comment out while developing
-# F1 - https://cloud.google.com/appengine/quotas#Instances 28h/day free
-instance_class: F1
-automatic_scaling:
-    min_instances: 1
-    min_idle_instances: 1
-    max_instances: 1
-
-handlers:
-- url: /(robots\.txt|favicon\.ico|sitemap\.xml|preferences\.js|shiny\.umd\.js|shiny\.umd\.js\.map|colorpreferences\.js|android-chrome-192x192\.png|android-chrome-512x512\.png|apple-touch-icon\.png|browserconfig\.xml|favicon-16x16\.png|favicon-32x32\.png|mstile-150x150\.png|safari-pinned-tab\.svg|site\.webmanifest)
-  static_files: static/\1
-  upload: static/.*
-  secure: always
-
-- url: /google9273e1dd86a36f05.html
-  static_files: google_verification/google9273e1dd86a36f05.html
-  upload: google_verification/google9273e1dd86a36f05.html
-  secure: always
-
-- url: /update_schedule
-  login: admin
-  script: update_schedule2
-  secure: always
 
 # by obscurity
 - url: /update_schedule_6fd74614-9bdd-45a5-a96d-a19b597bc604
   login: optional
   script: update_schedule3
-  secure: always
-
-- url: /.*
-  script: auto
   secure: always
