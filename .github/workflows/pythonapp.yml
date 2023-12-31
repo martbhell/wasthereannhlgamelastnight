@@ -60,8 +60,12 @@ jobs:
     - run: 'echo "${{ steps.auth.outputs.project_id }}"'
 
     - run: "cat src/app_testing.yaml | tee -a src/app.yaml"
-    - run: "cat src/app.yaml.end | tee -a src/app.yaml"
       name: 'custom app.yaml for testing for allowing updating schedule without credentials'
+    - run: "cat src/app.yaml.end | tee -a src/app.yaml"
+      name: 'add the wildcard handler'
+
+    - run: "cat src/app.yaml"
+      name: "Print testing app.yaml"
 
     - id: 'deploy_to_test'
       name: 'Deploy to Test'
@@ -101,8 +105,12 @@ jobs:
 
     # master
 
+    - run: "cat src/app_testing_disable.yaml | tee -a src/app.yaml"
+      name: 'set the extra update url to require admin auth in prod'
     - run: "cat src/app.yaml.end | tee -a src/app.yaml"
-      name: 'add the last handler, no custom update handler here'
+      name: 'add the wildcard handler'
+    - run: "cat src/app.yaml"
+      name: "Print prod app.yaml"
 
     - id: 'deploy'
       name: 'Deploy to Prod'
