@@ -1,0 +1,6 @@
+
+# disabled - just for admin in prod
+- url: /update_schedule_6fd74614-9bdd-45a5-a96d-a19b597bc604
+  login: admin
+  script: update_schedule4
+  secure: always
