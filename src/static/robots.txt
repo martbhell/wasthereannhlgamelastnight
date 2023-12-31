@@ -2,3 +2,6 @@
 #  an attempt to prevent some crawlers from visiting all teams' dates in infinity
 User-agent: *
 Disallow: /*20*
+# Also no need to crawl this, it requires auth
+User-agent: *
+Disallow: /update_schedule*
