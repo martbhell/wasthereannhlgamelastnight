@@ -335,7 +335,8 @@ def get_version():
         filename = "py3_updated_schedule_" + VERSION
 
     # If we always store json no need to make it more json
-    real_jsondata = read_file(filename)
+    real_jsondata = json.loads(read_file(filename))
+    # we get it as a str when reading
     type_real_jsondata = type(real_jsondata)
     logging.info(f"real_jsondata is {type_real_jsondata}")
     real_jsondata["instance"] = IN_MEMORY_VERSION
