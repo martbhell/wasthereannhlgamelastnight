@@ -322,7 +322,7 @@ def version():
 
     return get_version()
 
-    # We set_version in update_schedule.py
+    # We set_version in update_schedule
 
 
 def get_version():
@@ -647,7 +647,7 @@ except NotFound:
 ##
 
 NOW = datetime.now()
-FOR_UPDATED = str({"version": str(NOW.isoformat())})
+FOR_UPDATED = str({"version": str(NOW.isoformat()), "instance": VERSION})
 [CURRENT_MONTH, CURRENT_YEAR] = (
     NOW.month,
     NOW.year,
