@@ -338,6 +338,7 @@ def get_version():
     real_jsondata = json.loads(read_file(filename))
     # But read_file we get the blob as_text
     type_real_jsondata = type(real_jsondata)
+    logging.info(f"version object after loading is of type {type_real_jsondata}")
     jsondata = str(real_jsondata).replace("'", '"')
 
     resp = make_response(jsondata)
