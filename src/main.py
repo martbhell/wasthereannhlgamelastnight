@@ -335,11 +335,7 @@ def get_version():
         filename = "py3_updated_schedule_" + VERSION
 
     # If we always store json no need to make it more json
-    real_jsondata = read_file(filename)
-    type_real_jsondata = type(real_jsondata)
-    logging.info(f"real_jsondata is {type_real_jsondata}")
-    real_jsondata["instance"] = IN_MEMORY_VERSION
-    jsondata = str(real_jsondata.replace("'", '"'))
+    jsondata = str(read_file(filename)).replace("'", '"')
 
     resp = make_response(jsondata)
     resp.headers["Content-Type"] = "application/json"
@@ -643,7 +639,6 @@ if VERSION != "None":
 
 try:
     THESCHEDULE = json.loads(read_file(FILENAME).replace("'", '"'))["teamdates"]
-    IN_MEMORY_VERSION = version()
 except NotFound:
     # In case there is no schedule stored for the backend, try to make it
     logging.info("Viewing Root but no schedule found, let's try to parse and store it")
