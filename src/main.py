@@ -336,11 +336,9 @@ def get_version():
 
     # If we always store json no need to make it more json
     real_jsondata = json.loads(read_file(filename))
-    # we get it as a str when reading
+    # But read_file we get the blob as_text
     type_real_jsondata = type(real_jsondata)
-    logging.info(f"real_jsondata is {type_real_jsondata}")
-    real_jsondata["instance"] = IN_MEMORY_VERSION
-    jsondata = str(real_jsondata.replace("'", '"'))
+    jsondata = str(real_jsondata).replace("'", '"')
 
     resp = make_response(jsondata)
     resp.headers["Content-Type"] = "application/json"
@@ -644,7 +642,6 @@ if VERSION != "None":
 
 try:
     THESCHEDULE = json.loads(read_file(FILENAME).replace("'", '"'))["teamdates"]
-    IN_MEMORY_VERSION = version()
 except NotFound:
     # In case there is no schedule stored for the backend, try to make it
     logging.info("Viewing Root but no schedule found, let's try to parse and store it")
