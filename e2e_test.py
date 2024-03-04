@@ -105,6 +105,10 @@ for team in ALLTEAMS:
     MUSTGETAYES[team].append(t8.strftime("%Y%m%d"))
     MUSTGETAYES[team].append(t9.strftime("%Y%m%d"))
     MUSTGETAYES[team].append(t10.strftime("%Y%m%d"))
+    MUSTGETAYES[team].append(t11.strftime("%Y%m%d"))
+    MUSTGETAYES[team].append(t12.strftime("%Y%m%d"))
+    MUSTGETAYES[team].append(t13.strftime("%Y%m%d"))
+    MUSTGETAYES[team].append(t14.strftime("%Y%m%d"))
 
 # Add the tests where we want to check that we get at least one yes
 #  for each team
