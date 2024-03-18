@@ -1,5 +1,5 @@
 google-cloud-storage==2.15.0
-google-cloud-logging==3.9.0
+google-cloud-logging==3.10.0
 jsondiff==2.0.0
 tweepy==4.14.0
 Flask==3.0.2
