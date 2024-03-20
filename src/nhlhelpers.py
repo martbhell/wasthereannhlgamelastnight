@@ -5,7 +5,6 @@ import logging
 
 
 def yesorno(team, teamdates, date2=None):
-
     """
     Input: team/city/etc, teamdates and date
     Returns: True/False
