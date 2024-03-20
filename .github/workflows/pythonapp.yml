@@ -48,14 +48,14 @@ jobs:
     # https://github.com/google-github-actions/auth#with-workload-identity-federation
     - id: 'auth'
       name: 'Authenticate to Google Cloud'
-      uses: 'google-github-actions/auth@v1'
+      uses: 'google-github-actions/auth@v2'
       with:
         workload_identity_provider: "projects/210229919199/locations/global/workloadIdentityPools/wtangy-pool/providers/my-provider"
         service_account: "wasthereannhlgamelastnight@appspot.gserviceaccount.com"
         project_id: "wasthereannhlgamelastnight"
 
     - name: 'Set up Cloud SDK so we can run gcloud commands'
-      uses: 'google-github-actions/setup-gcloud@v1'
+      uses: 'google-github-actions/setup-gcloud@v2'
     - run: "gcloud config list"
     - run: 'echo "${{ steps.auth.outputs.project_id }}"'
 
@@ -69,7 +69,7 @@ jobs:
 
     - id: 'deploy_to_test'
       name: 'Deploy to Test'
-      uses: 'google-github-actions/deploy-appengine@v1'
+      uses: 'google-github-actions/deploy-appengine@v2'
       with:
         project_id: wasthereannhlgamelastnight
         deliverables: "src/app.yaml src/cron.yaml"
@@ -93,14 +93,14 @@ jobs:
 
     - id: 'auth'
       name: 'Authenticate to Google Cloud'
-      uses: 'google-github-actions/auth@v1'
+      uses: 'google-github-actions/auth@v2'
       with:
         workload_identity_provider: "projects/210229919199/locations/global/workloadIdentityPools/wtangy-pool/providers/my-provider"
         service_account: "wasthereannhlgamelastnight@appspot.gserviceaccount.com"
         project_id: "wasthereannhlgamelastnight"
 
     - name: 'Set up Cloud SDK so we can run gcloud commands'
-      uses: 'google-github-actions/setup-gcloud@v1'
+      uses: 'google-github-actions/setup-gcloud@v2'
     - run: "gcloud config list"
 
     # master
@@ -114,7 +114,7 @@ jobs:
 
     - id: 'deploy'
       name: 'Deploy to Prod'
-      uses: 'google-github-actions/deploy-appengine@v1'
+      uses: 'google-github-actions/deploy-appengine@v2'
       with:
         project_id: wasthereannhlgamelastnight
         deliverables: src/app.yaml src/cron.yaml
