@@ -4,7 +4,7 @@ on:
   pull_request:
     types: [opened, synchronize, closed]
   schedule:
-    - cron: '10 4 */2 * *' # Every second day at 4:10 am to reload schedule
+    - cron: '10 4 * 1-7,10-12 *' # At 04:10 in every month from January through July and every month from October through December.
 
 jobs:
   build:
