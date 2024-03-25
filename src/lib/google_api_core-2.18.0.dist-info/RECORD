@@ -20,6 +20,7 @@ google/api_core/__pycache__/rest_helpers.cpython-310.pyc,,
 google/api_core/__pycache__/rest_streaming.cpython-310.pyc,,
 google/api_core/__pycache__/retry_async.cpython-310.pyc,,
 google/api_core/__pycache__/timeout.cpython-310.pyc,,
+google/api_core/__pycache__/universe.cpython-310.pyc,,
 google/api_core/__pycache__/version.cpython-310.pyc,,
 google/api_core/bidi.py,sha256=wpC9Lthrh62Jxp9WzRas1W78UiHO5OPuHEvx3SHcvgg,27940
 google/api_core/client_info.py,sha256=MQse7unHD1nxqvEQPEMZyr4BH8oRHb9p2DE5dPXfKY0,3744
@@ -52,7 +53,7 @@ google/api_core/gapic_v1/method.py,sha256=SnMqRoKKCRph9xpnQvQ29SGjCd9WVpHEPK60X-
 google/api_core/gapic_v1/method_async.py,sha256=f307YYgYYvjQBF5So9S1rP8E7DubCbmhJw5EbkHwMA4,1952
 google/api_core/gapic_v1/routing_header.py,sha256=kJKOYpNS2mgSZa4Qt8Ib2Q5ONfNwpJwbNloVJ8e2wMs,3093
 google/api_core/general_helpers.py,sha256=ZrYwDg7VTgtaQlFk_fCeFTKYZD62JMQdZRhbQhbQL_c,681
-google/api_core/grpc_helpers.py,sha256=h07x2ZQIXDfc1pyamvRRcEnYd9fwL2Kx9lGCrS_BFdQ,23013
+google/api_core/grpc_helpers.py,sha256=r262_0OWGqkECOlydA2dp40KG9Qqhnw72qJ7Pj9hpUU,23291
 google/api_core/grpc_helpers_async.py,sha256=1ewS441H6o0tvgdgfanL8y9STOseV3evnvstk7kDy-4,12344
 google/api_core/iam.py,sha256=BGz63HtOP5_5oH9Zs93RP0Y6Qshty2eOhFEYj_CoE64,13213
 google/api_core/operation.py,sha256=mHWay2vrNbEliv5YWFzyXBywbQdy_VPW98BALh514PA,13198
@@ -96,10 +97,11 @@ google/api_core/retry/retry_unary.py,sha256=k_0PGsmFwRe4EPUMRHfzrZatDTFwEp9ucPRZ
 google/api_core/retry/retry_unary_async.py,sha256=9mQgLnDqRNBb0enszfE7suqy-5R_C0PQlV3y-s2q_Hw,9415
 google/api_core/retry_async.py,sha256=_r0ROYeQqdATtRMx-q_6o4bPmqFzPyjr_oV3lfloDSM,1514
 google/api_core/timeout.py,sha256=LnElJPn1XJuU8dNZl0YKxw8wqQbGGV94t5K1NiXOGk0,9685
-google/api_core/version.py,sha256=30sxGNk93-GbJmQKxVgkyOO_jP435goDeIxd1NeM2Q8,598
-google_api_core-2.17.1.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
-google_api_core-2.17.1.dist-info/LICENSE,sha256=z8d0m5b2O9McPEK1xHG_dWgUBT6EfBDz6wA0F7xSPTA,11358
-google_api_core-2.17.1.dist-info/METADATA,sha256=aFqyVqKE_78X73xJ6-Hb8kIGW1raEy00KZcRZat5qKw,2684
-google_api_core-2.17.1.dist-info/RECORD,,
-google_api_core-2.17.1.dist-info/WHEEL,sha256=Xo9-1PvkuimrydujYJAjF7pCkriuXBpUPEjma1nZyJ0,92
-google_api_core-2.17.1.dist-info/top_level.txt,sha256=_1QvSJIhFAGfxb79D6DhB7SUw2X6T4rwnz_LLrbcD3c,7
+google/api_core/universe.py,sha256=k_K5J0I3kKQiM2yEHvxeqAWxXEQZKJ2SfDlMAH-rQ08,2952
+google/api_core/version.py,sha256=renixtf_y0adQ2kXsijS-8imySsiS-AyJYl1K1mFrW8,598
+google_api_core-2.18.0.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
+google_api_core-2.18.0.dist-info/LICENSE,sha256=z8d0m5b2O9McPEK1xHG_dWgUBT6EfBDz6wA0F7xSPTA,11358
+google_api_core-2.18.0.dist-info/METADATA,sha256=i2hxmm3l7JB0zTFD9v6fTvjT6fC_9ncojtYM1tcWgkc,2729
+google_api_core-2.18.0.dist-info/RECORD,,
+google_api_core-2.18.0.dist-info/WHEEL,sha256=Xo9-1PvkuimrydujYJAjF7pCkriuXBpUPEjma1nZyJ0,92
+google_api_core-2.18.0.dist-info/top_level.txt,sha256=_1QvSJIhFAGfxb79D6DhB7SUw2X6T4rwnz_LLrbcD3c,7

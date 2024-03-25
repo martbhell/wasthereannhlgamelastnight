@@ -1,5 +1,11 @@
 from json import dumps
-from urllib.parse import parse_qsl
+
+try:
+    from urlparse import parse_qsl
+except ImportError:
+    from urllib.parse import parse_qsl
+
+from oauthlib.common import to_unicode
 
 
 def facebook_compliance_fix(session):
@@ -20,7 +26,7 @@ def facebook_compliance_fix(session):
         if expires is not None:
             token["expires_in"] = expires
         token["token_type"] = "Bearer"
-        r._content = dumps(token).encode()
+        r._content = to_unicode(dumps(token)).encode("UTF-8")
         return r
 
     session.register_compliance_hook("access_token_response", _compliance_fix)
