@@ -1,11 +1,13 @@
 """ To test making an RSS feed """
+
 # lazy loaded below
-#import os
-#import feedparser
+# import os
+# import feedparser
 from feedgen.feed import FeedGenerator
 
+
 def import_lazily(module_name):
-    """ only import some modules when needed """
+    """only import some modules when needed"""
     try:
         return __import__(module_name)
     except ImportError:
@@ -24,11 +26,17 @@ def main():
             initial_feed = boot_strap_feed_file.read()
             parsed_feed = import_lazily("feedparser").parse(initial_feed)
 
-    # Step 2: Modify the feed entries and metadata
+    sorted_entries = sorted(
+        parsed_feed.entries, key=lambda x: x["updated"], reverse=True
+    )
+
+    max_entries = 64
     modified_entries = []
-    for entry in parsed_feed.entries:
-        # Modify entry attributes as needed
+    for entry in sorted_entries:
+        max_entries = max_entries - 1
         modified_entries.append(entry)
+        if not max_entries:
+            break
 
     # Step 3: Create a new Atom feed using feedgenerator
     new_feed = FeedGenerator()
