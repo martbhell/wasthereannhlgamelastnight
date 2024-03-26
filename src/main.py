@@ -463,12 +463,23 @@ def atom_feed_manager(message):
         logging.error("ATOM ERROR: We found no entries")
         return False
 
+    sorted_entries = sorted(
+        parsed_feed.entries, key=lambda x: x["updated"], reverse=True
+    )
+
     # Step 2: Modify the feed entries and metadata
+    max_entries = 64
     modified_entries = []
-    for entry in parsed_feed.entries:
+    for entry in sorted_entries:
         # Modify entry attributes as needed
         #  except we are not modifying them..
         modified_entries.append(entry)
+        max_entries = max_entries - 1
+        # But we do only keep the last 64 updates
+        #  Trying to be nice to RSS readers - no need for them to after a few
+        #  years download megabytes. .. Is that how RSS readers work?
+        if not max_entries:
+            break
 
     # Step 3: Create a new Atom feed using feedgenerator
     #  Here we "override" the General Feed attributes
@@ -492,7 +503,7 @@ def atom_feed_manager(message):
         entry.category([{"term": modified_entry.category}])
         entry.author({"name": modified_entry.author})
 
-    # Here we add a new entry
+    # Here we add a new entry _at the bottom_of the file_
     #  All entries in this section need to be in the above too or they are lost
     #  in space and time.
     #    Except the updated attribute?
