@@ -1,6 +1,7 @@
 {% for team in allteams -%}
 .wrapper > a.{{ team }} {
                 background-color: #{{ colordict[team] }};
+                font-family: NHL;
                 {% if team in whitetext -%}
                 color: white 
 }
