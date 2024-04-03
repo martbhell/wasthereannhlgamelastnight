@@ -1,12 +1,9 @@
 @font-face {
   font-family: NHL;
-  src: url(static/NHL.woff2);
+  src: url(NHL.woff2);
 }
 
-* {
-  box-sizing: border-box;
-  font-family: NHL;
-  }
+* { box-sizing: border-box; }
 
 .wrapper {
     border: 0px solid #f76707;
