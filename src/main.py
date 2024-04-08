@@ -514,7 +514,7 @@ def atom_feed_manager(message):
     new_update.id(f"https://wtangy.se/schedule/{new_update_date}")
     new_update.title(f"NHL Schedule ({veri}) Has Been Updated")
     new_update.description(
-        f"It's available on https://wtangy.se/get_schedule. <br /> <br /> {message}"
+        f"It's available on <a href='https://wtangy.se/get_schedule'>wtangy.se</a>. \n\n {message}"
     )
     new_update.link(href="https://wtangy.se/get_schedule", rel="alternate")
     new_update.category([{"term": veri}])
