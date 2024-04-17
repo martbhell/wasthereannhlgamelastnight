@@ -2111,6 +2111,9 @@ class Branch(RegexBase):
         return fs or set([None])
 
     def _compile(self, reverse, fuzzy):
+        if not self.branches:
+            return []
+
         code = [(OP.BRANCH, )]
         for b in self.branches:
             code.extend(b.compile(reverse, fuzzy))

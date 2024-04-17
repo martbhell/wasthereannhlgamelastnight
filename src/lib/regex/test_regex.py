@@ -4326,6 +4326,9 @@ thing
         self.assertEqual(regex.match(r'(?(?!a).|..)', 'ab').span(), (0, 2))
         self.assertEqual(regex.match(r'(?(?!b).|..)', 'ab').span(), (0, 1))
 
+        # Git issue 525: segfault when fuzzy matching empty list
+        self.assertEqual(regex.match(r"(\L<foo>){e<=5}", "blah", foo=[]).span(), (0, 0))
+
     def test_fuzzy_ext(self):
         self.assertEqual(bool(regex.fullmatch(r'(?r)(?:a){e<=1:[a-z]}', 'e')),
           True)
