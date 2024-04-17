@@ -1,7 +1,5 @@
 """ Do some testing """
 
-from __future__ import absolute_import  #
-from __future__ import print_function  # python3
 import urllib  # we validate that a website responds properly
 from urllib.request import urlopen
 import sys  # control exit codes
@@ -37,39 +35,21 @@ NEXT_YEAR = NOW.year + 1
 NEXT_MONTH = NOW.month + 1
 BOTH_YEARS = [str(THIS_YEAR), str(LAST_YEAR)]
 
+if 3 < THIS_MONTH < 10:
+    print("INFO: returning True because we are in the off-season")
+    sys.exit(0)
+
 # This is a list of the basic tests / arguments.
-t1 = NOW + datetime.timedelta(days=1)
-t11 = NOW + datetime.timedelta(days=2)
-t12 = NOW + datetime.timedelta(days=3)
-t13 = NOW + datetime.timedelta(days=4)
-t14 = NOW + datetime.timedelta(days=5)
-t15 = NOW + datetime.timedelta(days=6)
-t2 = NOW + datetime.timedelta(days=6)
-t3 = NOW + datetime.timedelta(days=10)
-t4 = NOW + datetime.timedelta(days=12)
-t5 = NOW + datetime.timedelta(days=15)
-t6 = NOW + datetime.timedelta(days=20)
-t7 = NOW + datetime.timedelta(days=22)
-t8 = NOW + datetime.timedelta(days=100)
-t9 = NOW + datetime.timedelta(days=130)
-t10 = NOW + datetime.timedelta(days=190)
+TIME_INTERVALS = [1, 2, 3, 4, 5, 6, 6, 10, 12, 15, 20, 22, 100, 130, 190]
+TIMEDELTAS = [NOW + datetime.timedelta(days=i) for i in TIME_INTERVALS]
+YESNODATES = []
+for D in TIMEDELTAS:
+    YESNODATES.append(D.strftime("%Y%m%d"))
 
 YESNODATES = [
-    t1.strftime("%Y%m%d"),
-    t2.strftime("%Y%m%d"),
-    t3.strftime("%Y%m%d"),
-    t4.strftime("%Y%m%d"),
-    t5.strftime("%Y%m%d"),
-    t6.strftime("%Y%m%d"),
-    t7.strftime("%Y%m%d"),
-    "wingS/" + t8.strftime("%Y%m%d"),
-    "wingS/" + t9.strftime("%Y%m%d"),
-    t10.strftime("%Y%m%d") + "/wingS",
-    t11.strftime("%Y%m%d"),
-    t12.strftime("%Y%m%d"),
-    t13.strftime("%Y%m%d"),
-    t14.strftime("%Y%m%d"),
-    t15.strftime("%Y%m%d"),
+    "wingS/" + TIMEDELTAS[7].strftime("%Y%m%d"),
+    "wingS/" + TIMEDELTAS[8].strftime("%Y%m%d"),
+    TIMEDELTAS[9].strftime("%Y%m%d") + "/wingS",
     "",
     "WINGS",
     "Lak",
@@ -95,20 +75,8 @@ MUSTGETAYES = {}
 
 for team in ALLTEAMS:
     MUSTGETAYES[team] = []
-    MUSTGETAYES[team].append(t1.strftime("%Y%m%d"))
-    MUSTGETAYES[team].append(t2.strftime("%Y%m%d"))
-    MUSTGETAYES[team].append(t3.strftime("%Y%m%d"))
-    MUSTGETAYES[team].append(t4.strftime("%Y%m%d"))
-    MUSTGETAYES[team].append(t5.strftime("%Y%m%d"))
-    MUSTGETAYES[team].append(t6.strftime("%Y%m%d"))
-    MUSTGETAYES[team].append(t7.strftime("%Y%m%d"))
-    MUSTGETAYES[team].append(t8.strftime("%Y%m%d"))
-    MUSTGETAYES[team].append(t9.strftime("%Y%m%d"))
-    MUSTGETAYES[team].append(t10.strftime("%Y%m%d"))
-    MUSTGETAYES[team].append(t11.strftime("%Y%m%d"))
-    MUSTGETAYES[team].append(t12.strftime("%Y%m%d"))
-    MUSTGETAYES[team].append(t13.strftime("%Y%m%d"))
-    MUSTGETAYES[team].append(t14.strftime("%Y%m%d"))
+    for DA in TIMEDELTAS:
+        MUSTGETAYES[team].append(DA.strftime("%Y%m%d"))
 
 # Add the tests where we want to check that we get at least one yes
 #  for each team
