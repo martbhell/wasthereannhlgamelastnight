@@ -13,7 +13,7 @@ struct LxmlElementBase;
 struct LxmlElementClassLookup;
 struct LxmlFallbackElementClassLookup;
 
-/* "lxml/etree.pyx":333
+/* "lxml/etree.pyx":353
  * 
  * # type of a function that steps from node to node
  * ctypedef public xmlNode* (*_node_to_node_function)(xmlNode*)             # <<<<<<<<<<<<<<
@@ -22,7 +22,7 @@ struct LxmlFallbackElementClassLookup;
  */
 typedef xmlNode *(*_node_to_node_function)(xmlNode *);
 
-/* "lxml/etree.pyx":349
+/* "lxml/etree.pyx":369
  * @cython.final
  * @cython.freelist(8)
  * cdef public class _Document [ type LxmlDocumentType, object LxmlDocument ]:             # <<<<<<<<<<<<<<
@@ -38,7 +38,7 @@ struct LxmlDocument {
   struct __pyx_obj_4lxml_5etree__BaseParser *_parser;
 };
 
-/* "lxml/etree.pyx":698
+/* "lxml/etree.pyx":718
  * 
  * @cython.no_gc_clear
  * cdef public class _Element [ type LxmlElementType, object LxmlElement ]:             # <<<<<<<<<<<<<<
@@ -52,7 +52,7 @@ struct LxmlElement {
   PyObject *_tag;
 };
 
-/* "lxml/etree.pyx":1872
+/* "lxml/etree.pyx":1892
  * 
  * 
  * cdef public class _ElementTree [ type LxmlElementTreeType,             # <<<<<<<<<<<<<<
@@ -66,7 +66,7 @@ struct LxmlElementTree {
   struct LxmlElement *_context_node;
 };
 
-/* "lxml/etree.pyx":2646
+/* "lxml/etree.pyx":2666
  * 
  * 
  * cdef public class _ElementTagMatcher [ object LxmlElementTagMatcher,             # <<<<<<<<<<<<<<
@@ -82,7 +82,7 @@ struct LxmlElementTagMatcher {
   char *_name;
 };
 
-/* "lxml/etree.pyx":2677
+/* "lxml/etree.pyx":2697
  *                 self._name = NULL
  * 
  * cdef public class _ElementIterator(_ElementTagMatcher) [             # <<<<<<<<<<<<<<
