@@ -453,7 +453,7 @@ class Rule(RuleFactory):
         subdomain: str | None = None,
         methods: t.Iterable[str] | None = None,
         build_only: bool = False,
-        endpoint: str | None = None,
+        endpoint: t.Any | None = None,
         strict_slashes: bool | None = None,
         merge_slashes: bool | None = None,
         redirect_to: str | t.Callable[..., str] | None = None,
@@ -493,7 +493,7 @@ class Rule(RuleFactory):
                 )
 
         self.methods = methods
-        self.endpoint: str = endpoint  # type: ignore
+        self.endpoint: t.Any = endpoint
         self.redirect_to = redirect_to
 
         if defaults:
@@ -912,6 +912,6 @@ class Rule(RuleFactory):
                 parts.append(f"<{data}>")
             else:
                 parts.append(data)
-        parts = "".join(parts).lstrip("|")
+        parts_str = "".join(parts).lstrip("|")
         methods = f" ({', '.join(self.methods)})" if self.methods is not None else ""
-        return f"<{type(self).__name__} {parts!r}{methods} -> {self.endpoint}>"
+        return f"<{type(self).__name__} {parts_str!r}{methods} -> {self.endpoint}>"

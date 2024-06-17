@@ -11,6 +11,7 @@ It provides features like interactive debugging and code reloading. Use
     from myapp import create_app
     from werkzeug import run_simple
 """
+
 from __future__ import annotations
 
 import errno
@@ -496,10 +497,10 @@ def generate_adhoc_ssl_pair(
 ) -> tuple[Certificate, RSAPrivateKeyWithSerialization]:
     try:
         from cryptography import x509
-        from cryptography.x509.oid import NameOID
         from cryptography.hazmat.backends import default_backend
         from cryptography.hazmat.primitives import hashes
         from cryptography.hazmat.primitives.asymmetric import rsa
+        from cryptography.x509.oid import NameOID
     except ImportError:
         raise TypeError(
             "Using ad-hoc certificates requires the cryptography library."
@@ -531,7 +532,10 @@ def generate_adhoc_ssl_pair(
         .not_valid_before(dt.now(timezone.utc))
         .not_valid_after(dt.now(timezone.utc) + timedelta(days=365))
         .add_extension(x509.ExtendedKeyUsage([x509.OID_SERVER_AUTH]), critical=False)
-        .add_extension(x509.SubjectAlternativeName([x509.DNSName(cn)]), critical=False)
+        .add_extension(
+            x509.SubjectAlternativeName([x509.DNSName(cn), x509.DNSName(f"*.{cn}")]),
+            critical=False,
+        )
         .sign(pkey, hashes.SHA256(), backend)
     )
     return cert, pkey
@@ -559,7 +563,7 @@ def make_ssl_devcert(
     """
 
     if host is not None:
-        cn = f"*.{host}/CN={host}"
+        cn = host
     cert, pkey = generate_adhoc_ssl_pair(cn=cn)
 
     from cryptography.hazmat.primitives import serialization
@@ -583,8 +587,8 @@ def make_ssl_devcert(
 
 def generate_adhoc_ssl_context() -> ssl.SSLContext:
     """Generates an adhoc SSL context for the development server."""
-    import tempfile
     import atexit
+    import tempfile
 
     cert, pkey = generate_adhoc_ssl_pair()
 
@@ -1068,6 +1072,9 @@ def run_simple(
         from .debug import DebuggedApplication
 
         application = DebuggedApplication(application, evalex=use_evalex)
+        # Allow the specified hostname to use the debugger, in addition to
+        # localhost domains.
+        application.trusted_hosts.append(hostname)
 
     if not is_running_from_reloader():
         fd = None
