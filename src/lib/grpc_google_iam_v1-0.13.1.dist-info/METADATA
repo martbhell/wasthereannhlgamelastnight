@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: grpc-google-iam-v1
-Version: 0.13.0
+Version: 0.13.1
 Summary: IAM API client library
 Home-page: https://github.com/googleapis/python-grpc-google-iam-v1
 Author: Google LLC
@@ -24,7 +24,7 @@ Requires-Python: >=3.7
 License-File: LICENSE
 Requires-Dist: grpcio <2.0.0dev,>=1.44.0
 Requires-Dist: googleapis-common-protos[grpc] <2.0.0dev,>=1.56.0
-Requires-Dist: protobuf !=3.20.0,!=3.20.1,!=4.21.1,!=4.21.2,!=4.21.3,!=4.21.4,!=4.21.5,<5.0.0dev,>=3.19.5
+Requires-Dist: protobuf !=4.21.1,!=4.21.2,!=4.21.3,!=4.21.4,!=4.21.5,<6.0.0dev,>=3.20.2
 
 Python Client for IAM
 =====================

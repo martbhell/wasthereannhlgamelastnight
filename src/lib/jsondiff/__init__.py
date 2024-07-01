@@ -1,10 +1,13 @@
-__version__ = '2.0.0'
-
 import sys
 import json
+import yaml
+
+from json import JSONDecodeError
+from yaml import YAMLError
 
 from .symbols import *
 from .symbols import Symbol
+from ._version import __version__
 
 # rules
 # - keys and strings which start with $ (or specified escape_str) are escaped to $$ (or escape_str * 2)
@@ -35,11 +38,29 @@ class JsonDumper(object):
 default_dumper = JsonDumper()
 
 
+class YamlDumper(object):
+    """Write object as YAML string"""
+
+    def __init__(self, **kwargs):
+        self.kwargs = kwargs
+
+    def __call__(self,  obj, dest=None):
+        """Format obj as a YAML string and optionally write to dest
+        :param obj: dict to dump
+        :param dest: file-like object
+        :return: str
+        """
+        return yaml.dump(obj, dest, **self.kwargs)
+
 class JsonLoader(object):
     def __init__(self, **kwargs):
         self.kwargs = kwargs
 
     def __call__(self, src):
+        """Parse and return JSON data
+        :param src: str|file-like source
+        :return: dict parsed data
+        """
         if isinstance(src, string_types):
             return json.loads(src, **self.kwargs)
         else:
@@ -47,6 +68,57 @@ class JsonLoader(object):
 
 
 default_loader = JsonLoader()
+
+
+class YamlLoader(object):
+    """Load YAML data from file-like object or string"""
+
+    def __call__(self, src):
+        """Parse and return YAML data
+        :param src: str|file-like source
+        :return: dict parsed data
+        """
+        return yaml.safe_load(src)
+
+class Serializer:
+    """Serializer helper loads and stores object data
+    :param file_format: str json or yaml
+    :param indent: int Output indentation in spaces
+    :raise ValueError: file_path does not contains valid file_format data
+    """
+
+    def __init__(self, file_format, indent):
+        # pyyaml _can_ load json but is ~20 times slower and has known issues so use
+        # the json from stdlib when json is specified.
+        self.serializers = {
+            "json": (JsonLoader(), JsonDumper(indent=indent)),
+            "yaml": (YamlLoader(), YamlDumper(indent=indent)),
+        }
+        self.file_format = file_format
+        if file_format not in self.serializers:
+            raise ValueError(f"Unsupported serialization format {file_format}, expected one of {self.serializers.keys()}")
+
+    def deserialize_file(self, src):
+        """Deserialize file from the specified format
+        :param file_path: str path to file
+        :param src: str|file-like source
+        :return dict
+        :raise ValueError: file_path does not contain valid file_format data
+        """
+        loader, _ = self.serializers[self.file_format]
+        try:
+            parsed = loader(src)
+        except (JSONDecodeError, YAMLError) as ex:
+            raise ValueError(f"Invalid {self.file_format} file") from ex
+        return parsed
+
+    def serialize_data(self, obj, stream):
+        """Serialize obj and write to stream
+        :param obj: dict to serialize
+        :param stream: Writeable stream
+        """
+        _, dumper = self.serializers[self.file_format]
+        dumper(obj, stream)
 
 
 class JsonDiffSyntax(object):
@@ -84,7 +156,7 @@ class CompactJsonDiffSyntax(object):
     def emit_list_diff(self, a, b, s, inserted, changed, deleted):
         if s == 0.0:
             return {replace: b} if isinstance(b, dict) else b
-        elif s == 1.0:
+        elif s == 1.0 and not (inserted or changed or deleted):
             return {}
         else:
             d = changed
@@ -97,7 +169,7 @@ class CompactJsonDiffSyntax(object):
     def emit_dict_diff(self, a, b, s, added, changed, removed):
         if s == 0.0:
             return {replace: b} if isinstance(b, dict) else b
-        elif s == 1.0:
+        elif s == 1.0 and not (added or changed or removed):
             return {}
         else:
             changed.update(added)
@@ -171,9 +243,9 @@ class ExplicitJsonDiffSyntax(object):
             return d
 
     def emit_list_diff(self, a, b, s, inserted, changed, deleted):
-        if s == 0.0:
+        if s == 0.0 and not (inserted or changed or deleted):
             return b
-        elif s == 1.0:
+        elif s == 1.0 and not (inserted or changed or deleted):
             return {}
         else:
             d = changed
@@ -184,9 +256,9 @@ class ExplicitJsonDiffSyntax(object):
             return d
 
     def emit_dict_diff(self, a, b, s, added, changed, removed):
-        if s == 0.0:
+        if s == 0.0 and not (added or changed or removed):
             return b
-        elif s == 1.0:
+        elif s == 1.0 and not (added or changed or removed):
             return {}
         else:
             d = {}
@@ -218,9 +290,9 @@ class SymmetricJsonDiffSyntax(object):
             return d
 
     def emit_list_diff(self, a, b, s, inserted, changed, deleted):
-        if s == 0.0:
+        if s == 0.0 and not (inserted or changed or deleted):
             return [a, b]
-        elif s == 1.0:
+        elif s == 1.0 and not (inserted or changed or deleted):
             return {}
         else:
             d = changed
@@ -231,9 +303,9 @@ class SymmetricJsonDiffSyntax(object):
             return d
 
     def emit_dict_diff(self, a, b, s, added, changed, removed):
-        if s == 0.0:
+        if s == 0.0 and not (added or changed or removed):
             return [a, b]
-        elif s == 1.0:
+        elif s == 1.0 and not (added or changed or removed):
             return {}
         else:
             d = changed
@@ -342,10 +414,36 @@ class SymmetricJsonDiffSyntax(object):
         raise Exception("Invalid symmetric diff")
 
 
+class RightOnlyJsonDiffSyntax(CompactJsonDiffSyntax):
+    """
+    Compare to the CompactJsonDiffSyntax, I will not compare the difference in list,
+    because in some senario we only care about the right value (in most cases means latest value).
+    Instead, I will pop the later list value.
+    """
+
+    def emit_dict_diff(self, a, b, s, added, changed, removed):
+        if s == 1.0:
+            return {}
+        else:
+            changed.update(added)
+            if removed:
+                changed[delete] = list(removed.keys())
+            return changed
+
+    def emit_list_diff(self, a, b, s, inserted, changed, deleted):
+        if s == 0.0:
+            return b
+        elif s == 1.0:
+            return {}
+        else:
+            return b
+
+
 builtin_syntaxes = {
     'compact': CompactJsonDiffSyntax(),
     'symmetric': SymmetricJsonDiffSyntax(),
-    'explicit': ExplicitJsonDiffSyntax()
+    'explicit': ExplicitJsonDiffSyntax(),
+    'rightonly': RightOnlyJsonDiffSyntax(),
 }
 
 
@@ -615,4 +713,7 @@ __all__ = [
     "JsonDiffer",
     "JsonDumper",
     "JsonLoader",
+    "YamlDumper",
+    "YamlLoader",
+    "Serializer",
 ]

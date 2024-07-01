@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: google-api-core
-Version: 2.19.0
+Version: 2.19.1
 Summary: Google API client core library
 Home-page: https://github.com/googleapis/python-api-core
 Author: Google LLC
@@ -23,7 +23,7 @@ Classifier: Topic :: Internet
 Requires-Python: >=3.7
 License-File: LICENSE
 Requires-Dist: googleapis-common-protos <2.0.dev0,>=1.56.2
-Requires-Dist: protobuf !=3.20.0,!=3.20.1,!=4.21.0,!=4.21.1,!=4.21.2,!=4.21.3,!=4.21.4,!=4.21.5,<5.0.0.dev0,>=3.19.5
+Requires-Dist: protobuf !=3.20.0,!=3.20.1,!=4.21.0,!=4.21.1,!=4.21.2,!=4.21.3,!=4.21.4,!=4.21.5,<6.0.0.dev0,>=3.19.5
 Requires-Dist: proto-plus <2.0.0dev,>=1.22.3
 Requires-Dist: google-auth <3.0.dev0,>=2.14.1
 Requires-Dist: requests <3.0.0.dev0,>=2.18.0

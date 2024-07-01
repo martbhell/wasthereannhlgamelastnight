@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: googleapis-common-protos
-Version: 1.63.1
+Version: 1.63.2
 Summary: Common protobufs used in Google APIs
 Home-page: https://github.com/googleapis/python-api-common-protos
 Author: Google LLC
@@ -21,7 +21,7 @@ Classifier: Programming Language :: Python :: Implementation :: CPython
 Requires-Python: >=3.7
 Description-Content-Type: text/markdown
 License-File: LICENSE
-Requires-Dist: protobuf !=3.20.0,!=3.20.1,!=4.21.1,!=4.21.2,!=4.21.3,!=4.21.4,!=4.21.5,<6.0.0.dev0,>=3.19.5
+Requires-Dist: protobuf !=3.20.0,!=3.20.1,!=4.21.1,!=4.21.2,!=4.21.3,!=4.21.4,!=4.21.5,<6.0.0.dev0,>=3.20.2
 Provides-Extra: grpc
 Requires-Dist: grpcio <2.0.0.dev0,>=1.44.0 ; extra == 'grpc'
 
