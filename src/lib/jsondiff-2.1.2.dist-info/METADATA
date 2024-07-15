@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: jsondiff
-Version: 2.1.1
+Version: 2.1.2
 Summary: Diff JSON and JSON-like structures in Python
 Author-email: Zoomer Analytics LLC <eric.reynolds@zoomeranalytics.com>
 License: The MIT License (MIT)
