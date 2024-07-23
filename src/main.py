@@ -4,11 +4,15 @@ from datetime import timedelta, datetime
 import os
 import json
 import logging
+import dataclasses
 import requests
 from device_detector import DeviceDetector
 from jsondiff import diff
 from flask import request
-from flask import Flask, render_template, make_response
+from flask import render_template, make_response
+
+from apiflask import APIFlask, Schema
+from apiflask.fields import String
 from google.cloud import storage
 import feedparser
 from feedgen.feed import FeedGenerator
@@ -21,10 +25,18 @@ import nhlhelpers
 
 # https://cloud.google.com/datastore/docs/reference/libraries#client-libraries-usage-python
 
-app = Flask(__name__)
+app = APIFlask(__name__)
 
 # /menu is now also /menu/
 app.url_map.strict_slashes = False
+
+
+@dataclasses.dataclass
+class RootSchema(Schema):
+    """Define a schema if needed"""
+
+    message = String()
+
 
 # Setup logging https://cloud.google.com/logging/docs/setup/python
 CLIENT = google.cloud.logging.Client()
@@ -32,19 +44,22 @@ CLIENT.setup_logging()
 
 
 # http://exploreflask.com/en/latest/views.html
-@app.route("/")
+@app.get("/")
+@app.output(RootSchema)
 def view_root():
     """No arguments"""
     return the_root()
 
 
-@app.route("/<string:var1>/")
+@app.get("/<string:var1>/")
+@app.output(RootSchema)
 def view_team(var1):
     """1 argument, team or date"""
     return the_root(var1, var2=False)
 
 
-@app.route("/<string:var1>/<string:var2>/")
+@app.get("/<string:var1>/<string:var2>/")
+@app.output(RootSchema)
 def view_teamdate(var1, var2):
     """2 arguments, hopefully one team and one date"""
     return the_root(var1, var2)
@@ -118,8 +133,8 @@ def the_root(var1=False, var2=False):
     )
 
 
-@app.route("/update_schedule")
-@app.route("/update_schedule_6fd74614-9bdd-45a5-a96d-a19b597bc604")
+@app.get("/update_schedule")
+@app.get("/update_schedule_6fd74614-9bdd-45a5-a96d-a19b597bc604")
 def update_schedule():
     """fetches schedule from upstream, parses it, uploads it, sets a version, outputs html for debug"""
 
@@ -213,7 +228,7 @@ def update_schedule():
     )
 
 
-@app.route("/get_schedule")
+@app.get("/get_schedule")
 def get_schedule():
     """Get schedule from GCS and return it as JSON"""
 
@@ -230,7 +245,7 @@ def get_schedule():
     return resp
 
 
-@app.route("/atom.xml")
+@app.get("/atom.xml")
 def atom_feed():
     """Get atom feed from GCS and return"""
 
@@ -248,7 +263,7 @@ def atom_feed():
     return resp
 
 
-@app.route("/menu")
+@app.get("/menu")
 def menu():
     """Return a menu, where one can choose team and some other settings"""
 
@@ -260,7 +275,7 @@ def menu():
     )
 
 
-@app.route("/css/menu_team.css")
+@app.get("/css/menu_team.css")
 def menu_css():
     """Programmatically creates CSS based on the defined teams and their colors"""
 
@@ -316,7 +331,7 @@ def menu_css():
     return resp
 
 
-@app.route("/version")
+@app.get("/version")
 def version():
     """Fetch a file and render it"""
 
