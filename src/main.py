@@ -30,10 +30,13 @@ app = APIFlask(__name__)
 # /menu is now also /menu/
 app.url_map.strict_slashes = False
 
+
 @dataclasses.dataclass
 class RootSchema(Schema):
-    """ Define a schema if needed """
+    """Define a schema if needed"""
+
     message = String()
+
 
 # Setup logging https://cloud.google.com/logging/docs/setup/python
 CLIENT = google.cloud.logging.Client()
