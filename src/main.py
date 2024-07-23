@@ -4,13 +4,15 @@ from datetime import timedelta, datetime
 import os
 import json
 import logging
+import dataclasses
 import requests
 from device_detector import DeviceDetector
 from jsondiff import diff
 from flask import request
 from flask import render_template, make_response
 
-from apiflask import APIFlask
+from apiflask import APIFlask, Schema
+from apiflask.fields import String
 from google.cloud import storage
 import feedparser
 from feedgen.feed import FeedGenerator
@@ -28,6 +30,11 @@ app = APIFlask(__name__)
 # /menu is now also /menu/
 app.url_map.strict_slashes = False
 
+@dataclasses.dataclass
+class RootSchema(Schema):
+    """ Define a schema if needed """
+    message = String()
+
 # Setup logging https://cloud.google.com/logging/docs/setup/python
 CLIENT = google.cloud.logging.Client()
 CLIENT.setup_logging()
@@ -35,18 +42,21 @@ CLIENT.setup_logging()
 
 # http://exploreflask.com/en/latest/views.html
 @app.get("/")
+@app.output(RootSchema)
 def view_root():
     """No arguments"""
     return the_root()
 
 
 @app.get("/<string:var1>/")
+@app.output(RootSchema)
 def view_team(var1):
     """1 argument, team or date"""
     return the_root(var1, var2=False)
 
 
 @app.get("/<string:var1>/<string:var2>/")
+@app.output(RootSchema)
 def view_teamdate(var1, var2):
     """2 arguments, hopefully one team and one date"""
     return the_root(var1, var2)
