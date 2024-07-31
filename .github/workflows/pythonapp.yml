@@ -35,6 +35,9 @@ jobs:
     - name: Isort with black
       run: |
         isort --skip-glob src/lib --profile black .
+    - name: tox
+      run: |
+        tox
 
   #
 

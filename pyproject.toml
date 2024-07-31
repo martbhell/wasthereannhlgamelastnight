@@ -1,0 +1,61 @@
+[project]
+name = "wtangy"
+requires-python = ">=3.10"
+version = "4.0.2"
+
+[project.optional-dependencies]
+codeqa = [
+    "pylint",
+]
+formatters = [
+    "black",
+    "isort",
+]
+
+[tool.isort]
+profile = "black"
+
+[tool.black]
+force-exclude = '''
+/(
+\.git
+| \.mypy_cache
+| \.venv
+| _build
+| build
+| dist
+| src/lib
+| \.tox
+)/
+'''
+
+[tool.pylint.main]
+# Maximum number of characters on a single line.
+max-line-length = 120
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+envlist = py, lint, format
+
+#[testenv]
+#deps =
+#    pytest
+#commands =
+#    pytest
+
+[testenv:lint]
+description = Run linters
+deps =
+    pylint
+commands =
+    pylint src/*.py *.py
+
+[testenv:format]
+description = Run code formatters
+deps =
+    black
+    isort
+commands =
+    isort --skip-glob src/lib --profile black .
+    black --diff --check .
+"""
