@@ -1,0 +1,7 @@
+
+[codeqa]
+pylint
+
+[formatters]
+black
+isort

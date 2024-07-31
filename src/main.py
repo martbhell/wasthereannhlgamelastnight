@@ -96,6 +96,7 @@ def the_root(var1=False, var2=False):
 
     useragent = request.headers.get("User-Agent")
     logging.debug(f"User-Agent: {useragent}")
+    device = ""
     if useragent:
         device = DeviceDetector(useragent).parse()
 
