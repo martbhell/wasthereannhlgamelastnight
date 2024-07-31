@@ -1,20 +1,20 @@
 """ YES, oor no? """
 
-from datetime import timedelta, datetime
-import os
 import json
 import logging
+import os
+from datetime import datetime, timedelta
+
+import feedparser
+import google.cloud.logging
 import requests
 from device_detector import DeviceDetector
-from jsondiff import diff
-from flask import request
-from flask import Flask, render_template, make_response
-from google.cloud import storage
-import feedparser
 from feedgen.feed import FeedGenerator
-import google.cloud.logging
-from google.auth.exceptions import DefaultCredentialsError
+from flask import Flask, make_response, render_template, request
 from google.api_core.exceptions import NotFound
+from google.auth.exceptions import DefaultCredentialsError
+from google.cloud import storage
+from jsondiff import diff
 
 #
 import nhlhelpers

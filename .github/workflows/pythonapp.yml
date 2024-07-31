@@ -32,9 +32,9 @@ jobs:
       run: |
         black --version
         black --diff --check src/*.py *.py
-        # Why test the site on every build?
-        #    - name: Run e2e_test.py
-        #      run: python e2e_test.py
+    - name: Isort with black
+      run: |
+        isort --skip-glob src/lib --profile black .
 
   #
 

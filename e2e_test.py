@@ -1,15 +1,15 @@
 """ Do some testing """
 
-import urllib  # we validate that a website responds properly
-from urllib.request import urlopen
-import sys  # control exit codes
-import json  # validate json
-import datetime  # figure out year to have dynamic year testing
 import argparse
+import datetime  # figure out year to have dynamic year testing
+import json  # validate json
 
 # this bit should be improvable
 #  https://docs.python.org/3/reference/import.html#regular-packages
 import os
+import sys  # control exit codes
+import urllib  # we validate that a website responds properly
+from urllib.request import urlopen
 
 sys.path.append(os.path.realpath("src/"))
 

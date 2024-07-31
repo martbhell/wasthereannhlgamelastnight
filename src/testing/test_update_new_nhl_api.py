@@ -1,9 +1,10 @@
 """ Bits of main.py to test the parsing """
 
-from datetime import timedelta, datetime
 import json
-from jsondiff import diff
+from datetime import datetime, timedelta
+
 import requests
+from jsondiff import diff
 
 from nhlhelpers import get_team
 
