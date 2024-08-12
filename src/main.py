@@ -105,11 +105,11 @@ def the_root(var1=False, var2=False):
     if nhlhelpers.yesorno(team1, teamdates, date1):
         yesorno = "YES"
 
-    if useragent and device.client_type() == "library":
-        return render_template("cli.html", yesorno=yesorno)
-
     if "JSON" in request.args:
         return jsonify({"wtangy": yesorno, "team": str(team1), "date": str(date1)})
+
+    if useragent and device.client_type() == "library":
+        return render_template("cli.html", yesorno=yesorno)
 
     return render_template(
         "index.html",
