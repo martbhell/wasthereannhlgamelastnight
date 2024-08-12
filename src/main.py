@@ -109,7 +109,7 @@ def the_root(var1=False, var2=False):
         return render_template("cli.html", yesorno=yesorno)
 
     if "JSON" in request.args:
-        return jsonify({"wtangy": yesorno})
+        return jsonify({"wtangy": yesorno, "team": str(team1)})
 
     return render_template(
         "index.html",
