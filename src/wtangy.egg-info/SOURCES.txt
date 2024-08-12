@@ -298,6 +298,7 @@ src/lib/google/api_core/retry/retry_unary_async.py
 src/lib/google/auth/__init__.py
 src/lib/google/auth/_cloud_sdk.py
 src/lib/google/auth/_credentials_async.py
+src/lib/google/auth/_credentials_base.py
 src/lib/google/auth/_default.py
 src/lib/google/auth/_default_async.py
 src/lib/google/auth/_exponential_backoff.py
@@ -322,6 +323,8 @@ src/lib/google/auth/metrics.py
 src/lib/google/auth/pluggable.py
 src/lib/google/auth/py.typed
 src/lib/google/auth/version.py
+src/lib/google/auth/aio/__init__.py
+src/lib/google/auth/aio/credentials.py
 src/lib/google/auth/compute_engine/__init__.py
 src/lib/google/auth/compute_engine/_metadata.py
 src/lib/google/auth/compute_engine/credentials.py
@@ -337,6 +340,7 @@ src/lib/google/auth/transport/_aiohttp_requests.py
 src/lib/google/auth/transport/_custom_tls_signer.py
 src/lib/google/auth/transport/_http_client.py
 src/lib/google/auth/transport/_mtls_helper.py
+src/lib/google/auth/transport/_requests_base.py
 src/lib/google/auth/transport/grpc.py
 src/lib/google/auth/transport/mtls.py
 src/lib/google/auth/transport/requests.py
@@ -1277,6 +1281,7 @@ src/lib/yaml/tokens.py
 src/lib/zipp/__init__.py
 src/lib/zipp/glob.py
 src/lib/zipp/compat/__init__.py
+src/lib/zipp/compat/overlay.py
 src/lib/zipp/compat/py310.py
 src/testing/nhlhelpers.py
 src/testing/test_rss.py
