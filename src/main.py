@@ -10,7 +10,7 @@ import google.cloud.logging
 import requests
 from device_detector import DeviceDetector
 from feedgen.feed import FeedGenerator
-from flask import Flask, make_response, render_template, request
+from flask import Flask, jsonify, make_response, render_template, request
 from google.api_core.exceptions import NotFound
 from google.auth.exceptions import DefaultCredentialsError
 from google.cloud import storage
@@ -107,6 +107,10 @@ def the_root(var1=False, var2=False):
 
     if useragent and device.client_type() == "library":
         return render_template("cli.html", yesorno=yesorno)
+
+    if "JSON" in request.args:
+        return jsonify({"wtangy": yesorno})
+
     return render_template(
         "index.html",
         yesorno=yesorno,
