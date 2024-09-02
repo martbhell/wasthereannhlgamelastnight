@@ -1,0 +1,17 @@
+../../bin/jdiff,sha256=dCI8Q2s6TYvfPj2H_ty9WgibR6elhkYYy-vJ_pPzg1k,245
+jsondiff-2.2.1.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
+jsondiff-2.2.1.dist-info/LICENSE,sha256=FIDXLds7nS2NXc1G4MNYHRH6aEb7uQWUfO0bLHo4pMQ,1088
+jsondiff-2.2.1.dist-info/METADATA,sha256=aA1wyoqigGliFheUDagu0dAS8e-24K-hq4NPV_uDTIM,5202
+jsondiff-2.2.1.dist-info/RECORD,,
+jsondiff-2.2.1.dist-info/REQUESTED,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0
+jsondiff-2.2.1.dist-info/WHEEL,sha256=UvcQYKBHoFqaQd6LKyqHw9fxEolWLQnlzP0h_LgJAfI,91
+jsondiff-2.2.1.dist-info/entry_points.txt,sha256=SUDxs2-6UalYMMwnkgSRMzU9xxN0zKsbmcTcVp6G1J0,44
+jsondiff-2.2.1.dist-info/top_level.txt,sha256=oK_hfsYTZbMypy3gXevBmFBW6qXYFpk20t8oBZfnSog,9
+jsondiff/__init__.py,sha256=eNtiRCQ3n-xg4q6baTCdtZQmS4impOP4wnSUkFe2b6Q,40503
+jsondiff/__pycache__/__init__.cpython-310.pyc,,
+jsondiff/__pycache__/_version.cpython-310.pyc,,
+jsondiff/__pycache__/cli.cpython-310.pyc,,
+jsondiff/__pycache__/symbols.cpython-310.pyc,,
+jsondiff/_version.py,sha256=R_Wr7clGXr8a07n6uqFj88MyYFGydFRXYBI10R9k_uw,411
+jsondiff/cli.py,sha256=yXvG9qOryMkT7RuBvuN2369WVMv1_I0z4eIPDx3v8Lk,1884
+jsondiff/symbols.py,sha256=tsVpB753s4wPe7IwdbOuQ3gv3bNF0ztsO8dtI80ANgY,2291
