@@ -36,8 +36,10 @@ class Symbol:
         return "$" + self.label
 
     def __eq__(self, other):
+        if not isinstance(other, Symbol):
+            return False
         return self.label == other.label
-    
+
     def __hash__(self) -> int:
         return hash(self.label)
 
