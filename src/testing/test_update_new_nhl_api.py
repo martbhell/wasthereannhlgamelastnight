@@ -79,6 +79,9 @@ def parse_schedule(jsondata):
                 #                .replace("Montréal", "Montreal")
                 #                .replace("St. Louis Blues", "St Louis Blues")
             )
+            if None in twoteams:
+                continue
+            print(twoteams)
             twoteams_sorted = sorted(twoteams)
             dict_of_keys_and_matchups[date].append(twoteams_sorted)
             dict_of_keys_and_matchups_s[date] = sorted(dict_of_keys_and_matchups[date])

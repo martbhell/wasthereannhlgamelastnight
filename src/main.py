@@ -607,6 +607,11 @@ def parse_schedule(jsondata):
             homeabbrev = game["homeTeam"]["abbrev"]
             twoteams.append(nhlhelpers.get_team(awayabbrev))
             twoteams.append(nhlhelpers.get_team(homeabbrev))
+            if None in twoteams:
+                logging.info(
+                    f"Unknown team ({awayabbrev} or {homeabbrev}) on {date}. Not adding this to our schedule"
+                )
+                continue
             twoteams_sorted = sorted(twoteams)
             dict_of_keys_and_matchups[date].append(twoteams_sorted)
             dict_of_keys_and_matchups_s[date] = sorted(dict_of_keys_and_matchups[date])
