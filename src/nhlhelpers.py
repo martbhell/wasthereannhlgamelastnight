@@ -128,6 +128,7 @@ def get_city_from_team(cityteam):
         "jets": "Winnipeg Jets",
         "capitals": "Washington Capitals",
         "kraken": "Seattle Kraken",
+        "utah": "Utah Hockey Club",
     }
 
     # Flip because I'm lazy
@@ -172,6 +173,7 @@ def get_team_from_city(city):
         "STL": "STLOUIS",
         "TBL": "TAMPABAY",
         "TOR": "TORONTO",
+        "UTA": "UTAH",
         "VAN": "VANCOUVER",
         "VGK": "VEGAS",
         "WPG": "WINNIPEG",
@@ -226,6 +228,7 @@ def get_team(team):
         "STL": "St Louis Blues",
         "TBL": "Tampa Bay Lightning",
         "TOR": "Toronto Maple Leafs",
+        "UTA": "Utah Hockey Club",
         "VAN": "Vancouver Canucks",
         "VGK": "Vegas Golden Knights",
         "WPG": "Winnipeg Jets",
@@ -267,6 +270,7 @@ def get_team(team):
         "STL": "BLUES",
         "TBL": "LIGHTNING",
         "TOR": "MAPLELEAFS",
+        "UTA": "UHC",
         "VAN": "CANUCKS",
         "VGK": "GOLDENKNIGHTS",
         "WPG": "JETS",
@@ -361,6 +365,7 @@ def get_team_colors(team):
         "St Louis Blues": ["0546A0", "FFC325", "101F48"],
         "Tampa Bay Lightning": ["013E7D", "000000", "C0C0C0"],
         "Toronto Maple Leafs": ["003777"],
+        "Utah Hockey Club": ["71AFE5", "090909"],
         "Vancouver Canucks": ["07346F", "047A4A", "A8A9AD"],
         "Vegas Golden Knights": ["333F42", "B4975A", "010101"],
         "Washington Capitals": ["CF132B", "00214E", "000000"],
@@ -404,6 +409,7 @@ def get_all_teams():
         "STL": "St Louis Blues",
         "TBL": "Tampa Bay Lightning",
         "TOR": "Toronto Maple Leafs",
+        "UTA": "Utah Hockey Club",
         "VAN": "Vancouver Canucks",
         "VGK": "Vegas Golden Knights",
         "WPG": "Winnipeg Jets",
