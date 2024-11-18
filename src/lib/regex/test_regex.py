@@ -4346,6 +4346,16 @@ thing
         self.assertEqual(regex.match(r"(?i)[^/]*b/xyz", "b/xy", partial=True).span(), (0, 4))
         self.assertEqual(regex.match(r"(?i)[^/]*b/xyz", "b/yz", partial=True), None)
 
+        # Git issue 546: Partial match not working in some instances with non-greedy capture
+        self.assertEqual(bool(regex.match(r'<thinking>.*?</thinking>', '<', partial=True)), True)
+        self.assertEqual(bool(regex.match(r'<thinking>.*?</thinking>', '<thinking', partial=True)), True)
+        self.assertEqual(bool(regex.match(r'<thinking>.*?</thinking>', '<thinking>', partial=True)), True)
+        self.assertEqual(bool(regex.match(r'<thinking>.*?</thinking>', '<thinking>x', partial=True)), True)
+        self.assertEqual(bool(regex.match(r'<thinking>.*?</thinking>', '<thinking>xyz abc', partial=True)), True)
+        self.assertEqual(bool(regex.match(r'<thinking>.*?</thinking>', '<thinking>xyz abc foo', partial=True)), True)
+        self.assertEqual(bool(regex.match(r'<thinking>.*?</thinking>', '<thinking>xyz abc foo ', partial=True)), True)
+        self.assertEqual(bool(regex.match(r'<thinking>.*?</thinking>', '<thinking>xyz abc foo bar', partial=True)), True)
+
     def test_fuzzy_ext(self):
         self.assertEqual(bool(regex.fullmatch(r'(?r)(?:a){e<=1:[a-z]}', 'e')),
           True)
