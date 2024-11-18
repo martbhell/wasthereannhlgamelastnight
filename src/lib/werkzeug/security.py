@@ -7,7 +7,7 @@ import posixpath
 import secrets
 
 SALT_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-DEFAULT_PBKDF2_ITERATIONS = 600000
+DEFAULT_PBKDF2_ITERATIONS = 1_000_000
 
 _os_alt_seps: list[str] = list(
     sep for sep in [os.sep, os.path.altsep] if sep is not None and sep != "/"
@@ -91,6 +91,9 @@ def generate_password_hash(
     :param password: The plaintext password.
     :param method: The key derivation function and parameters.
     :param salt_length: The number of characters to generate for the salt.
+
+    .. versionchanged:: 3.1
+        The default iterations for pbkdf2 was increased to 1,000,000.
 
     .. versionchanged:: 2.3
         Scrypt support was added.

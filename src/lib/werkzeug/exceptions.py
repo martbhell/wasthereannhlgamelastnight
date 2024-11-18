@@ -197,7 +197,7 @@ class BadRequestKeyError(BadRequest, KeyError):
     #: useful in a debug mode.
     show_exception = False
 
-    def __init__(self, arg: str | None = None, *args: t.Any, **kwargs: t.Any):
+    def __init__(self, arg: object | None = None, *args: t.Any, **kwargs: t.Any):
         super().__init__(*args, **kwargs)
 
         if arg is None:
@@ -569,6 +569,19 @@ class ImATeapot(HTTPException):
 
     code = 418
     description = "This server is a teapot, not a coffee machine"
+
+
+class MisdirectedRequest(HTTPException):
+    """421 Misdirected Request
+
+    Indicates that the request was directed to a server that is not able to
+    produce a response.
+
+    .. versionadded:: 3.1
+    """
+
+    code = 421
+    description = "The server is not able to produce a response."
 
 
 class UnprocessableEntity(HTTPException):
