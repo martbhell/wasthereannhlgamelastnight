@@ -1,4 +1,4 @@
-""" Do some testing """
+"""Do some testing"""
 
 import argparse
 import datetime  # figure out year to have dynamic year testing

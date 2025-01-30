@@ -1,4 +1,4 @@
-""" YES, oor no? """
+"""YES, oor no?"""
 
 import json
 import logging
