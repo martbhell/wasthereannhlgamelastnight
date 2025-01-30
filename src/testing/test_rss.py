@@ -1,4 +1,4 @@
-""" To test making an RSS feed """
+"""To test making an RSS feed"""
 
 # lazy loaded below
 # import os

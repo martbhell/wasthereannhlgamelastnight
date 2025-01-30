@@ -1,4 +1,4 @@
-""" Bits of main.py to test the parsing """
+"""Bits of main.py to test the parsing"""
 
 import json
 from datetime import datetime, timedelta
