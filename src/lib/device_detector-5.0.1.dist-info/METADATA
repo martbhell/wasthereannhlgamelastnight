@@ -1,4 +1,4 @@
-Metadata-Version: 2.1
+Metadata-Version: 2.2
 Name: device_detector
 Version: 5.0.1
 Summary: Python3 port of matomo's Device Detector
@@ -19,6 +19,15 @@ Classifier: Programming Language :: Python :: Implementation :: CPython
 Description-Content-Type: text/markdown
 Requires-Dist: pyyaml
 Requires-Dist: regex
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: requires-dist
+Dynamic: summary
 
 
 # DeviceDetector

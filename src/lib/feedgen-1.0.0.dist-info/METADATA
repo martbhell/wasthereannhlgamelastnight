@@ -1,4 +1,4 @@
-Metadata-Version: 2.1
+Metadata-Version: 2.2
 Name: feedgen
 Version: 1.0.0
 Summary: Feed Generator (ATOM, RSS, Podcasts)
@@ -25,6 +25,15 @@ Classifier: Topic :: Text Processing :: Markup
 Classifier: Topic :: Text Processing :: Markup :: XML
 Requires-Dist: lxml
 Requires-Dist: python-dateutil
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license
+Dynamic: requires-dist
+Dynamic: summary
 
 Feedgenerator
 =============
