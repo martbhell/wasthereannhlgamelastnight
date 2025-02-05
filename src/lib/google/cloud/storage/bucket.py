@@ -85,6 +85,9 @@ _LOCATION_SETTER_MESSAGE = (
     "valid before the bucket is created. Instead, pass the location "
     "to `Bucket.create`."
 )
+_FROM_STRING_MESSAGE = (
+    "Bucket.from_string() is deprecated. " "Use Bucket.from_uri() instead."
+)
 
 
 def _blobs_page_start(iterator, page, response):
@@ -778,8 +781,40 @@ class Bucket(_PropertyMixin):
         return params
 
     @classmethod
+    def from_uri(cls, uri, client=None):
+        """Get a constructor for bucket object by URI.
+
+        .. code-block:: python
+
+            from google.cloud import storage
+            from google.cloud.storage.bucket import Bucket
+            client = storage.Client()
+            bucket = Bucket.from_uri("gs://bucket", client=client)
+
+        :type uri: str
+        :param uri: The bucket uri pass to get bucket object.
+
+        :type client: :class:`~google.cloud.storage.client.Client` or
+                      ``NoneType``
+        :param client: (Optional) The client to use.  Application code should
+            *always* pass ``client``.
+
+        :rtype: :class:`google.cloud.storage.bucket.Bucket`
+        :returns: The bucket object created.
+        """
+        scheme, netloc, path, query, frag = urlsplit(uri)
+
+        if scheme != "gs":
+            raise ValueError("URI scheme must be gs")
+
+        return cls(client, name=netloc)
+
+    @classmethod
     def from_string(cls, uri, client=None):
         """Get a constructor for bucket object by URI.
+
+        .. note::
+           Deprecated alias for :meth:`from_uri`.
 
         .. code-block:: python
 
@@ -799,12 +834,8 @@ class Bucket(_PropertyMixin):
         :rtype: :class:`google.cloud.storage.bucket.Bucket`
         :returns: The bucket object created.
         """
-        scheme, netloc, path, query, frag = urlsplit(uri)
-
-        if scheme != "gs":
-            raise ValueError("URI scheme must be gs")
-
-        return cls(client, name=netloc)
+        warnings.warn(_FROM_STRING_MESSAGE, PendingDeprecationWarning, stacklevel=2)
+        return Bucket.from_uri(uri=uri, client=client)
 
     def blob(
         self,
@@ -1694,7 +1725,7 @@ class Bucket(_PropertyMixin):
         if_metageneration_match=None,
         if_metageneration_not_match=None,
         timeout=_DEFAULT_TIMEOUT,
-        retry=DEFAULT_RETRY_IF_GENERATION_SPECIFIED,
+        retry=DEFAULT_RETRY,
     ):
         """Deletes a blob from the current bucket.
 
@@ -1734,14 +1765,21 @@ class Bucket(_PropertyMixin):
             for the server response.  See: :ref:`configuring_timeouts`
 
         :type retry: google.api_core.retry.Retry or google.cloud.storage.retry.ConditionalRetryPolicy
-        :param retry:
-            (Optional) How to retry the RPC.
-            The default value is ``DEFAULT_RETRY_IF_GENERATION_SPECIFIED``, a conditional retry
-            policy which will only enable retries if ``if_generation_match`` or ``generation``
-            is set, in order to ensure requests are idempotent before retrying them.
-            Change the value to ``DEFAULT_RETRY`` or another `google.api_core.retry.Retry` object
-            to enable retries regardless of generation precondition setting.
-            See [Configuring Retries](https://cloud.google.com/python/docs/reference/storage/latest/retry_timeout).
+        :param retry: (Optional) How to retry the RPC. A None value will disable
+            retries. A google.api_core.retry.Retry value will enable retries,
+            and the object will define retriable response codes and errors and
+            configure backoff and timeout options.
+
+            A google.cloud.storage.retry.ConditionalRetryPolicy value wraps a
+            Retry object and activates it only if certain conditions are met.
+            This class exists to provide safe defaults for RPC calls that are
+            not technically safe to retry normally (due to potential data
+            duplication or other side-effects) but become safe to retry if a
+            condition such as if_generation_match is set.
+
+            See the retry.py source code and docstrings in this package
+            (google.cloud.storage.retry) for information on retry types and how
+            to configure them.
 
         :raises: :class:`google.cloud.exceptions.NotFound` Raises a NotFound
                  if the blob isn't found. To suppress
@@ -1782,7 +1820,7 @@ class Bucket(_PropertyMixin):
         if_generation_not_match=None,
         if_metageneration_match=None,
         if_metageneration_not_match=None,
-        retry=DEFAULT_RETRY_IF_GENERATION_SPECIFIED,
+        retry=DEFAULT_RETRY,
     ):
         """Deletes a list of blobs from the current bucket.
 
@@ -1842,14 +1880,21 @@ class Bucket(_PropertyMixin):
             for the server response.  See: :ref:`configuring_timeouts`
 
         :type retry: google.api_core.retry.Retry or google.cloud.storage.retry.ConditionalRetryPolicy
-        :param retry:
-            (Optional) How to retry the RPC.
-            The default value is ``DEFAULT_RETRY_IF_GENERATION_SPECIFIED``, a conditional retry
-            policy which will only enable retries if ``if_generation_match`` or ``generation``
-            is set, in order to ensure requests are idempotent before retrying them.
-            Change the value to ``DEFAULT_RETRY`` or another `google.api_core.retry.Retry` object
-            to enable retries regardless of generation precondition setting.
-            See [Configuring Retries](https://cloud.google.com/python/docs/reference/storage/latest/retry_timeout).
+        :param retry: (Optional) How to retry the RPC. A None value will disable
+            retries. A google.api_core.retry.Retry value will enable retries,
+            and the object will define retriable response codes and errors and
+            configure backoff and timeout options.
+
+            A google.cloud.storage.retry.ConditionalRetryPolicy value wraps a
+            Retry object and activates it only if certain conditions are met.
+            This class exists to provide safe defaults for RPC calls that are
+            not technically safe to retry normally (due to potential data
+            duplication or other side-effects) but become safe to retry if a
+            condition such as if_generation_match is set.
+
+            See the retry.py source code and docstrings in this package
+            (google.cloud.storage.retry) for information on retry types and how
+            to configure them.
 
         :raises: :class:`~google.cloud.exceptions.NotFound` (if
                  `on_error` is not passed).
