@@ -1,4 +1,4 @@
-../../bin/gunicorn,sha256=sCPbTzUgTECeLp6XGyAfFhzZQxCEUbQ6tU37UsgazIU,251
+../../bin/gunicorn,sha256=cvME0FG433RO8BAWIi6smtxYLstMLZZjily5QIhbPj8,251
 gunicorn-23.0.0.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
 gunicorn-23.0.0.dist-info/LICENSE,sha256=ZkbNu6LpnjQh3RjCIXNXmh_eNH6DHa5q3ugO7-Mx6VE,1136
 gunicorn-23.0.0.dist-info/METADATA,sha256=KhY-mRcAcWCLIbXIHihsUNKWB5fGDOrsbq-JKQTBHY4,4421

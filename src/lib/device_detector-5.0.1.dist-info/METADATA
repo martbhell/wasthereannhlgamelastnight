@@ -1,4 +1,4 @@
-Metadata-Version: 2.2
+Metadata-Version: 2.4
 Name: device_detector
 Version: 5.0.1
 Summary: Python3 port of matomo's Device Detector

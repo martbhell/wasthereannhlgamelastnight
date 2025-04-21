@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# googleapis-common-protos documentation build configuration file
+# google-cloud-audit-log documentation build configuration file
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.
@@ -80,7 +80,7 @@ source_suffix = [".rst", ".md"]
 root_doc = "index"
 
 # General information about the project.
-project = "googleapis-common-protos"
+project = "google-cloud-audit-log"
 copyright = "2019, Google"
 author = "Google APIs"
 
@@ -154,7 +154,7 @@ html_theme = "alabaster"
 # further.  For a list of options available for each theme, see the
 # documentation.
 html_theme_options = {
-    "description": "Google Cloud Client Libraries for googleapis-common-protos",
+    "description": "Google Cloud Client Libraries for google-cloud-audit-log",
     "github_user": "googleapis",
     "github_repo": "google-cloud-python",
     "github_banner": True,
@@ -248,7 +248,7 @@ html_static_path = ["_static"]
 # html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "googleapis-common-protos-doc"
+htmlhelp_basename = "google-cloud-audit-log-doc"
 
 # -- Options for warnings ------------------------------------------------------
 
@@ -281,8 +281,8 @@ latex_elements = {
 latex_documents = [
     (
         root_doc,
-        "googleapis-common-protos.tex",
-        "googleapis-common-protos Documentation",
+        "google-cloud-audit-log.tex",
+        "google-cloud-audit-log Documentation",
         author,
         "manual",
     )
@@ -316,8 +316,8 @@ latex_documents = [
 man_pages = [
     (
         root_doc,
-        "googleapis-common-protos",
-        "googleapis-common-protos Documentation",
+        "google-cloud-audit-log",
+        "google-cloud-audit-log Documentation",
         [author],
         1,
     )
@@ -335,11 +335,11 @@ man_pages = [
 texinfo_documents = [
     (
         root_doc,
-        "googleapis-common-protos",
-        "googleapis-common-protos Documentation",
+        "google-cloud-audit-log",
+        "google-cloud-audit-log Documentation",
         author,
-        "googleapis-common-protos",
-        "googleapis-common-protos Library",
+        "google-cloud-audit-log",
+        "google-cloud-audit-log Library",
         "APIs",
     )
 ]
