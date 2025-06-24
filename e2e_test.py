@@ -114,52 +114,77 @@ def test_2():
     return True
 
 
-def test_3():
-    """Add the "basic" tests where we should only get a YES or NO"""
+def fetch_html(url):
+    """Get HTML"""
+    try:
+        with urlopen(url) as response:
+            return response.read(), response.code
+    except urllib.error.HTTPError as e:
+        print(f"Cannot fetch URL: {e}")
+        sys.exit(66)
 
+
+def assert_yesno_response(arg, html, code):
+    """You must decide"""
+    print(f"asserting {HOST}/{arg} - response code: {code}")
+    print(str(html))
+    if not ("YES" in str(html) or "NO" in str(html)):
+        print(f"{HOST}/{arg} does not contain 'YES' or 'NO'")
+        sys.exit(3)
+
+
+def assert_in_response(arg, html, test_values):
+    """Strings are important"""
+    if not any(val in str(html) for val in test_values):
+        print(f"{HOST}/{arg} does not contain expected values: {test_values}")
+        sys.exit(4)
+
+
+def assert_injson_response(arg, html, test_values):
+    """JSON popitem please"""
+    try:
+        data = json.loads(html)
+        assert data["teamdates"].popitem()
+    except (KeyError, AssertionError):
+        print(f"popitem of JSON on {HOST}/{arg} key {test_values} failed")
+        if not 6 <= THIS_MONTH <= 9:
+            sys.exit(8)
+        else:
+            print("Not failing popitem, we are in the off-season")
+
+
+def assert_json_response(arg, html):
+    """Also JSON please"""
+    try:
+        json.loads(html)
+    except TypeError:
+        print(f"json.loads failed on {HOST}/{arg}")
+        sys.exit(7)
+
+
+def test_3():
+    """Add the 'basic' tests where we should only get a YES or NO"""
     for date in YESNODATES:
         ARGS[date] = {"url": date, "test": YESNO}
 
     for arg, value in ARGS.items():
-        try:
-            with urlopen(f"{HOST}/{value['url']}") as response:
-                html = response.read()
-        except urllib.error.HTTPError as urlliberror:
-            print(f"Cannot fetch URL: {urlliberror}")
-            sys.exit(66)
+        url = f"{HOST}/{value['url']}"
+        html, code = fetch_html(url)
 
         if value["test"] == YESNO:
-            print(f"asserting {HOST}/{arg} - response code: {response.code}")
-            try:
-                print(str(html))
-                assert "NO" in str(html) or "YES" in str(html)
-            except AssertionError:
-                print(f"{HOST}/{arg} does not contain 'YES\n or NO\n'")
-                sys.exit(3)
+            assert_yesno_response(arg, html, code)
+            continue
 
-        else:
-            print(
-                f"{arg}: asserting {HOST}/{value['url']} contains {value['test']} - response code: {response.code}"
-            )
-            try:
-                if value["type"] == "in" or value["type"] == "injson":
-                    # this any loops over tests in ARGS[arg]['test']). There's also an all()
-                    assert any(anarg in str(html) for anarg in value["test"])
-            except AssertionError:
-                print("{HOST}/{arg} does not contain {ARGS[arg]}")
-                sys.exit(4)
-            if value["type"] == "injson":
-                try:
-                    assert json.loads(html)["teamdates"].popitem()
-                except KeyError:
-                    print(f"popitem of JSON on {HOST}/{arg} key {value['test']} failed")
-                    sys.exit(6)
-            if value["type"] == "json":
-                try:
-                    assert json.loads(html)
-                except TypeError:
-                    print("json.dumps of JSON on {HOST}/{arg}")
-                    sys.exit(7)
+        print(
+            f"{arg}: asserting {url} contains {value['test']} - response code: {code}"
+        )
+
+        if value["type"] in ("in", "injson"):
+            assert_in_response(arg, html, value["test"])
+        if value["type"] == "injson":
+            assert_injson_response(arg, html, value["test"])
+        if value["type"] == "json":
+            assert_json_response(arg, html)
 
 
 ###########
