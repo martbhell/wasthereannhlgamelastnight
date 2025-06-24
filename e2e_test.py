@@ -119,8 +119,8 @@ def fetch_html(url):
     try:
         with urlopen(url) as response:
             return response.read(), response.code
-    except urllib.error.HTTPError as e:
-        print(f"Cannot fetch URL: {e}")
+    except urllib.error.HTTPError as errrr:
+        print(f"Cannot fetch URL: {errrr}")
         sys.exit(66)
 
 
