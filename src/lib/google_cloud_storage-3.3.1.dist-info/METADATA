@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: google-cloud-storage
-Version: 3.3.0
+Version: 3.3.1
 Summary: Google Cloud Storage API client library
 Home-page: https://github.com/googleapis/python-storage
 Author: Google LLC

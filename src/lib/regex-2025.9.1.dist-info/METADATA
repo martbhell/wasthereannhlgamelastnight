@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: regex
-Version: 2025.7.34
+Version: 2025.9.1
 Summary: Alternative regular expression module, to replace re.
 Author-email: Matthew Barnett <regex@mrabarnett.plus.com>
 License-Expression: Apache-2.0 AND CNRI-Python
