@@ -12,6 +12,6 @@ Classifier: Programming Language :: Python :: 3.11
 Classifier: Programming Language :: Python :: 3.12
 Classifier: Programming Language :: Python :: 3.13
 Requires-Python: >=3.9
-Version: 6.32.0
+Version: 6.32.1
 
 UNKNOWN
