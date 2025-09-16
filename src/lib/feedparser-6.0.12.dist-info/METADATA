@@ -1,6 +1,6 @@
-Metadata-Version: 2.1
+Metadata-Version: 2.4
 Name: feedparser
-Version: 6.0.11
+Version: 6.0.12
 Summary: Universal feed parser, handles RSS 0.9x, RSS 1.0, RSS 2.0, CDF, Atom 0.3, and Atom 1.0 feeds
 Home-page: https://github.com/kurtmckee/feedparser
 Download-URL: https://pypi.python.org/pypi/feedparser
@@ -25,10 +25,24 @@ Requires-Python: >=3.6
 Description-Content-Type: text/x-rst
 License-File: LICENSE
 Requires-Dist: sgmllib3k
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: download-url
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license
+Dynamic: license-file
+Dynamic: platform
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
 
 ..
     This file is part of feedparser.
-    Copyright 2010-2023 Kurt McKee <contactme@kurtmckee.org>
+    Copyright 2010-2025 Kurt McKee <contactme@kurtmckee.org>
     Copyright 2002-2008 Mark Pilgrim
     Released under the BSD 2-clause license.
 
