@@ -859,6 +859,9 @@ cdef class _BaseParser:
         if not isinstance(self, (XMLParser, HTMLParser)):
             raise TypeError, "This class cannot be instantiated"
 
+        if not collect_ids and tree.LIBXML_VERSION >= 21500:
+            parse_options |= xmlparser.XML_PARSE_SKIP_IDS
+
         self._parse_options = parse_options
         self.target = target
         self._for_html = for_html
@@ -1669,6 +1672,8 @@ cdef class XMLParser(_FeedParser):
             resolve_external = False
         if not strip_cdata:
             parse_options = parse_options ^ xmlparser.XML_PARSE_NOCDATA
+        if decompress:
+            parse_options |= xmlparser.XML_PARSE_UNZIP
 
         _BaseParser.__init__(self, parse_options, False, schema,
                              remove_comments, remove_pis, strip_cdata,
@@ -1847,6 +1852,8 @@ cdef class HTMLParser(_FeedParser):
             parse_options = parse_options ^ htmlparser.HTML_PARSE_NODEFDTD
         if huge_tree:
             parse_options = parse_options | xmlparser.XML_PARSE_HUGE
+        if decompress:
+            parse_options |= xmlparser.XML_PARSE_UNZIP
 
         if strip_cdata is not _UNUSED:
             import warnings
