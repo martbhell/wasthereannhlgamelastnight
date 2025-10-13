@@ -15,7 +15,7 @@ sys.path.append(os.path.realpath("src/"))
 
 ## Setting up some settings and stuff to test
 
-HOST = "https://testing-dot-wasthereannhlgamelastnight.appspot.com"
+host = "https://testing-dot-wasthereannhlgamelastnight.appspot.com"
 
 PARSER = argparse.ArgumentParser(
     prog="e2e_test",
@@ -23,9 +23,9 @@ PARSER = argparse.ArgumentParser(
 )
 
 PARSER.add_argument("--host", help="URL to test, like https://wtangy.se", default=None)
-ARGS = PARSER.parse_args()
-if ARGS.host:
-    HOST = ARGS.host
+script_args = PARSER.parse_args()
+if script_args.host:
+    host = script_args.host
 
 YESNO = ["YES\n", "NO\n"]
 
@@ -40,11 +40,11 @@ BOTH_YEARS = [str(THIS_YEAR), str(LAST_YEAR)]
 # This is a list of the basic tests / arguments.
 TIME_INTERVALS = [0, 1, 2, 3, 4, 5, 6, 6, 10, 12, 15, 20, 22, 100, 130, 190]
 TIMEDELTAS = [NOW + datetime.timedelta(days=i) for i in TIME_INTERVALS]
-YESNODATES = []
+yesnodates = []
 for D in TIMEDELTAS:
-    YESNODATES.append(D.strftime("%Y%m%d"))
+    yesnodates.append(D.strftime("%Y%m%d"))
 
-YESNODATES = [
+yesnodates = [
     "wingS/" + TIMEDELTAS[7].strftime("%Y%m%d"),
     "wingS/" + TIMEDELTAS[8].strftime("%Y%m%d"),
     TIMEDELTAS[9].strftime("%Y%m%d") + "/wingS",
@@ -55,7 +55,8 @@ YESNODATES = [
 ]
 
 # First we define two special URIs where we do some extra testing
-ARGS = {
+# Looks like we are overriding args..
+args = {
     "00-update_schedule": {
         "url": "update_schedule",
         "test": ["accounts.google.com"],
@@ -91,7 +92,7 @@ def test_2():
         for dstring in value:
             estring = key + "/" + dstring
             try:
-                with urlopen(f"{HOST}/{estring}") as response:
+                with urlopen(f"{host}/{estring}") as response:
                     html = response.read()
             except urllib.error.HTTPError as urlliberror:
                 print(f"Cannot fetch URL: {urlliberror}")
@@ -126,17 +127,17 @@ def fetch_html(url):
 
 def assert_yesno_response(arg, html, code):
     """You must decide"""
-    print(f"asserting {HOST}/{arg} - response code: {code}")
+    print(f"asserting {host}/{arg} - response code: {code}")
     print(str(html))
     if not ("YES" in str(html) or "NO" in str(html)):
-        print(f"{HOST}/{arg} does not contain 'YES' or 'NO'")
+        print(f"{host}/{arg} does not contain 'YES' or 'NO'")
         sys.exit(3)
 
 
 def assert_in_response(arg, html, test_values):
     """Strings are important"""
     if not any(val in str(html) for val in test_values):
-        print(f"{HOST}/{arg} does not contain expected values: {test_values}")
+        print(f"{host}/{arg} does not contain expected values: {test_values}")
         sys.exit(4)
 
 
@@ -146,7 +147,7 @@ def assert_injson_response(arg, html, test_values):
         data = json.loads(html)
         assert data["teamdates"].popitem()
     except (KeyError, AssertionError):
-        print(f"popitem of JSON on {HOST}/{arg} key {test_values} failed")
+        print(f"popitem of JSON on {host}/{arg} key {test_values} failed")
         if not 6 <= THIS_MONTH <= 9:
             sys.exit(8)
         else:
@@ -158,17 +159,17 @@ def assert_json_response(arg, html):
     try:
         json.loads(html)
     except TypeError:
-        print(f"json.loads failed on {HOST}/{arg}")
+        print(f"json.loads failed on {host}/{arg}")
         sys.exit(7)
 
 
 def test_3():
     """Add the 'basic' tests where we should only get a YES or NO"""
-    for date in YESNODATES:
-        ARGS[date] = {"url": date, "test": YESNO}
+    for date in yesnodates:
+        args[date] = {"url": date, "test": YESNO}
 
-    for arg, value in ARGS.items():
-        url = f"{HOST}/{value['url']}"
+    for arg, value in args.items():
+        url = f"{host}/{value['url']}"
         html, code = fetch_html(url)
 
         if value["test"] == YESNO:

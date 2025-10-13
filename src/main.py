@@ -654,17 +654,17 @@ VERSION = os.environ.get("GAE_VERSION", "no_GAE_VERSION_env_found")
 # Loading schedule on startup instead of on every request to reduce latency
 # Expecting dynamic instances to restart often enough to figure out schedule
 #   changes.
-FILENAME = "py3_nhle_new_schedule"
+file_name = "py3_nhle_new_schedule"
 if VERSION != "None":
-    FILENAME = "py3_nhle_new_schedule_" + VERSION
+    file_name = "py3_nhle_new_schedule_" + VERSION
 
 try:
-    THESCHEDULE = json.loads(read_file(FILENAME).replace("'", '"'))["teamdates"]
+    THESCHEDULE = json.loads(read_file(file_name).replace("'", '"'))["teamdates"]
 except NotFound:
     # In case there is no schedule stored for the backend, try to make it
     logging.info("Viewing Root but no schedule found, let's try to parse and store it")
     update_schedule()
-    THESCHEDULE = json.loads(str(read_file(FILENAME)).replace("'", '"'))["teamdates"]
+    THESCHEDULE = json.loads(str(read_file(file_name)).replace("'", '"'))["teamdates"]
 ##
 
 NOW = datetime.now()
