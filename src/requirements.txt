@@ -1,4 +1,4 @@
-google-cloud-storage==3.4.0
+google-cloud-storage==3.4.1
 google-cloud-logging==3.12.1
 jsondiff==2.2.1
 Flask==3.1.2
