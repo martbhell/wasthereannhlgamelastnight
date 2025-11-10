@@ -1,4 +1,4 @@
-#!/opt/hostedtoolcache/Python/3.10.18/x64/bin/python
+#!/opt/hostedtoolcache/Python/3.10.19/x64/bin/python
 import sys
 from gunicorn.app.wsgiapp import run
 if __name__ == '__main__':
