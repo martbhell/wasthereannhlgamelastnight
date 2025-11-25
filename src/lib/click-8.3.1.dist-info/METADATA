@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: click
-Version: 8.3.0
+Version: 8.3.1
 Summary: Composable command line interface toolkit
 Maintainer-email: Pallets <contact@palletsprojects.com>
 Requires-Python: >=3.10
