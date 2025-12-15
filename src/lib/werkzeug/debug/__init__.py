@@ -318,8 +318,11 @@ class DebuggedApplication:
         return self._pin
 
     @pin.setter
-    def pin(self, value: str) -> None:
-        self._pin = value
+    def pin(self, value: str | None) -> None:
+        if value is None:
+            del self._pin
+        else:
+            self._pin = value
 
     @property
     def pin_cookie_name(self) -> str:
@@ -438,6 +441,11 @@ class DebuggedApplication:
         """
         if self.pin is None:
             return True
+
+        # If we failed too many times, then we're locked out.
+        if self._failed_pin_auth.value >= 10:
+            return False
+
         val = parse_cookie(environ).get(self.pin_cookie_name)
         if not val or "|" not in val:
             return False
@@ -487,7 +495,7 @@ class DebuggedApplication:
             auth = True
 
         # If we failed too many times, then we're locked out.
-        elif self._failed_pin_auth.value > 10:
+        elif self._failed_pin_auth.value >= 10:
             exhausted = True
 
         # Otherwise go through pin based authentication

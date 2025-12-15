@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: opentelemetry-api
-Version: 1.38.0
+Version: 1.39.1
 Summary: OpenTelemetry Python API
 Project-URL: Homepage, https://github.com/open-telemetry/opentelemetry-python/tree/main/opentelemetry-api
 Project-URL: Repository, https://github.com/open-telemetry/opentelemetry-python
