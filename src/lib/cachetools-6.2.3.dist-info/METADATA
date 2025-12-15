@@ -1,15 +1,13 @@
 Metadata-Version: 2.4
 Name: cachetools
-Version: 6.2.2
+Version: 6.2.3
 Summary: Extensible memoizing collections and decorators
-Home-page: https://github.com/tkem/cachetools/
-Author: Thomas Kemmer
-Author-email: tkemmer@computer.org
-License: MIT
+Author-email: Thomas Kemmer <tkemmer@computer.org>
+Maintainer-email: Thomas Kemmer <tkemmer@computer.org>
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/tkem/cachetools/
 Classifier: Development Status :: 5 - Production/Stable
-Classifier: Environment :: Other Environment
 Classifier: Intended Audience :: Developers
-Classifier: License :: OSI Approved :: MIT License
 Classifier: Operating System :: OS Independent
 Classifier: Programming Language :: Python
 Classifier: Programming Language :: Python :: 3
@@ -21,6 +19,7 @@ Classifier: Programming Language :: Python :: 3.13
 Classifier: Programming Language :: Python :: 3.14
 Classifier: Topic :: Software Development :: Libraries :: Python Modules
 Requires-Python: >=3.9
+Description-Content-Type: text/x-rst
 License-File: LICENSE
 Dynamic: license-file
 
