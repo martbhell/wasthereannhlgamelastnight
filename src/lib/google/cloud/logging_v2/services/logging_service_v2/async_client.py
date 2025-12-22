@@ -31,6 +31,7 @@ from typing import (
     Type,
     Union,
 )
+import uuid
 
 from google.cloud.logging_v2 import gapic_version as package_version
 
@@ -40,6 +41,7 @@ from google.api_core import gapic_v1
 from google.api_core import retry_async as retries
 from google.auth import credentials as ga_credentials  # type: ignore
 from google.oauth2 import service_account  # type: ignore
+import google.protobuf
 
 
 try:
@@ -338,10 +340,10 @@ class LoggingServiceV2AsyncClient:
             log_name (:class:`str`):
                 Required. The resource name of the log to delete:
 
-                -  ``projects/[PROJECT_ID]/logs/[LOG_ID]``
-                -  ``organizations/[ORGANIZATION_ID]/logs/[LOG_ID]``
-                -  ``billingAccounts/[BILLING_ACCOUNT_ID]/logs/[LOG_ID]``
-                -  ``folders/[FOLDER_ID]/logs/[LOG_ID]``
+                - ``projects/[PROJECT_ID]/logs/[LOG_ID]``
+                - ``organizations/[ORGANIZATION_ID]/logs/[LOG_ID]``
+                - ``billingAccounts/[BILLING_ACCOUNT_ID]/logs/[LOG_ID]``
+                - ``folders/[FOLDER_ID]/logs/[LOG_ID]``
 
                 ``[LOG_ID]`` must be URL-encoded. For example,
                 ``"projects/my-project-id/logs/syslog"``,
@@ -464,10 +466,10 @@ class LoggingServiceV2AsyncClient:
                 to all log entries in ``entries`` that do not specify a
                 value for ``log_name``:
 
-                -  ``projects/[PROJECT_ID]/logs/[LOG_ID]``
-                -  ``organizations/[ORGANIZATION_ID]/logs/[LOG_ID]``
-                -  ``billingAccounts/[BILLING_ACCOUNT_ID]/logs/[LOG_ID]``
-                -  ``folders/[FOLDER_ID]/logs/[LOG_ID]``
+                - ``projects/[PROJECT_ID]/logs/[LOG_ID]``
+                - ``organizations/[ORGANIZATION_ID]/logs/[LOG_ID]``
+                - ``billingAccounts/[BILLING_ACCOUNT_ID]/logs/[LOG_ID]``
+                - ``folders/[FOLDER_ID]/logs/[LOG_ID]``
 
                 ``[LOG_ID]`` must be URL-encoded. For example:
 
@@ -657,17 +659,17 @@ class LoggingServiceV2AsyncClient:
                 Required. Names of one or more parent resources from
                 which to retrieve log entries:
 
-                -  ``projects/[PROJECT_ID]``
-                -  ``organizations/[ORGANIZATION_ID]``
-                -  ``billingAccounts/[BILLING_ACCOUNT_ID]``
-                -  ``folders/[FOLDER_ID]``
+                - ``projects/[PROJECT_ID]``
+                - ``organizations/[ORGANIZATION_ID]``
+                - ``billingAccounts/[BILLING_ACCOUNT_ID]``
+                - ``folders/[FOLDER_ID]``
 
                 May alternatively be one or more views:
 
-                -  ``projects/[PROJECT_ID]/locations/[LOCATION_ID]/buckets/[BUCKET_ID]/views/[VIEW_ID]``
-                -  ``organizations/[ORGANIZATION_ID]/locations/[LOCATION_ID]/buckets/[BUCKET_ID]/views/[VIEW_ID]``
-                -  ``billingAccounts/[BILLING_ACCOUNT_ID]/locations/[LOCATION_ID]/buckets/[BUCKET_ID]/views/[VIEW_ID]``
-                -  ``folders/[FOLDER_ID]/locations/[LOCATION_ID]/buckets/[BUCKET_ID]/views/[VIEW_ID]``
+                - ``projects/[PROJECT_ID]/locations/[LOCATION_ID]/buckets/[BUCKET_ID]/views/[VIEW_ID]``
+                - ``organizations/[ORGANIZATION_ID]/locations/[LOCATION_ID]/buckets/[BUCKET_ID]/views/[VIEW_ID]``
+                - ``billingAccounts/[BILLING_ACCOUNT_ID]/locations/[LOCATION_ID]/buckets/[BUCKET_ID]/views/[VIEW_ID]``
+                - ``folders/[FOLDER_ID]/locations/[LOCATION_ID]/buckets/[BUCKET_ID]/views/[VIEW_ID]``
 
                 Projects listed in the ``project_ids`` field are added
                 to this list. A maximum of 100 resources may be
@@ -917,10 +919,10 @@ class LoggingServiceV2AsyncClient:
             parent (:class:`str`):
                 Required. The resource name to list logs for:
 
-                -  ``projects/[PROJECT_ID]``
-                -  ``organizations/[ORGANIZATION_ID]``
-                -  ``billingAccounts/[BILLING_ACCOUNT_ID]``
-                -  ``folders/[FOLDER_ID]``
+                - ``projects/[PROJECT_ID]``
+                - ``organizations/[ORGANIZATION_ID]``
+                - ``billingAccounts/[BILLING_ACCOUNT_ID]``
+                - ``folders/[FOLDER_ID]``
 
                 This corresponds to the ``parent`` field
                 on the ``request`` instance; if ``request`` is provided, this
@@ -1262,6 +1264,9 @@ class LoggingServiceV2AsyncClient:
 DEFAULT_CLIENT_INFO = gapic_v1.client_info.ClientInfo(
     gapic_version=package_version.__version__
 )
+
+if hasattr(DEFAULT_CLIENT_INFO, "protobuf_runtime_version"):  # pragma: NO COVER
+    DEFAULT_CLIENT_INFO.protobuf_runtime_version = google.protobuf.__version__
 
 
 __all__ = ("LoggingServiceV2AsyncClient",)
