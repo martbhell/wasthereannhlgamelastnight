@@ -49,10 +49,10 @@ proto/message.py,sha256=0PM6ULYveFZ0lPM7jgGdOsjI42mAx-9md92BDjfi434,38971
 proto/modules.py,sha256=1g3HAZW0JWBx7LCrlMPamUOMHxaaf-QFwbYa6zgiplg,1585
 proto/primitives.py,sha256=Fwu6KQdn1i6vVPPD3MxQXHKvbz7z5B42QlOwSTkcidI,1000
 proto/utils.py,sha256=5-Dqe2WOPJQ0gsT5MTiMiPTDa8q56VfD-EcqIJD4eD0,1651
-proto/version.py,sha256=OF7j9uLRJVWUnlwxOfWDwIGwf8R0Te4sjB4goPaEtVQ,599
-proto_plus-1.26.1.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
-proto_plus-1.26.1.dist-info/LICENSE,sha256=z8d0m5b2O9McPEK1xHG_dWgUBT6EfBDz6wA0F7xSPTA,11358
-proto_plus-1.26.1.dist-info/METADATA,sha256=BsLqotjWamZTkLtBbQcnTlhuxNQoCliKgehQKr5ZAro,2170
-proto_plus-1.26.1.dist-info/RECORD,,
-proto_plus-1.26.1.dist-info/WHEEL,sha256=P9jw-gEje8ByB7_hXoICnHtVCrEwMQh-630tKvQWehc,91
-proto_plus-1.26.1.dist-info/top_level.txt,sha256=HFg_NW9VxhDySzqGDmUxqUh6w8QZlVLh4ZDIxYksTCM,6
+proto/version.py,sha256=b6L-N_UiDBuT-LpBng1NoOB8HemgkLHTUTNYeWBWANM,599
+proto_plus-1.27.0.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
+proto_plus-1.27.0.dist-info/METADATA,sha256=WuE6hN8OpWwH0sUVDfMC07SmXDlB_edOk-DqnBHxUY4,2243
+proto_plus-1.27.0.dist-info/RECORD,,
+proto_plus-1.27.0.dist-info/WHEEL,sha256=_zCd3N1l69ArxyTb8rzEoP9TpbYXkqRFSNOD5OuxnTs,91
+proto_plus-1.27.0.dist-info/licenses/LICENSE,sha256=z8d0m5b2O9McPEK1xHG_dWgUBT6EfBDz6wA0F7xSPTA,11358
+proto_plus-1.27.0.dist-info/top_level.txt,sha256=HFg_NW9VxhDySzqGDmUxqUh6w8QZlVLh4ZDIxYksTCM,6

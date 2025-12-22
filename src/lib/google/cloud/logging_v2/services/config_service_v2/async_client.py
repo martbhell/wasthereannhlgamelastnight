@@ -28,6 +28,7 @@ from typing import (
     Type,
     Union,
 )
+import uuid
 
 from google.cloud.logging_v2 import gapic_version as package_version
 
@@ -37,6 +38,7 @@ from google.api_core import gapic_v1
 from google.api_core import retry_async as retries
 from google.auth import credentials as ga_credentials  # type: ignore
 from google.oauth2 import service_account  # type: ignore
+import google.protobuf
 
 
 try:
@@ -2966,7 +2968,7 @@ class ConfigServiceV2AsyncClient:
                    chargeable logs. Note that exclusions on
                    organization-level and folder-level sinks don't apply
                    to child resources. Note also that you cannot modify
-                   the \_Required sink or exclude logs from it.
+                   the Required sink or exclude logs from it.
 
         """
         # Create or coerce a protobuf request object.
@@ -3109,7 +3111,7 @@ class ConfigServiceV2AsyncClient:
                    chargeable logs. Note that exclusions on
                    organization-level and folder-level sinks don't apply
                    to child resources. Note also that you cannot modify
-                   the \_Required sink or exclude logs from it.
+                   the Required sink or exclude logs from it.
 
         """
         # Create or coerce a protobuf request object.
@@ -3266,7 +3268,7 @@ class ConfigServiceV2AsyncClient:
                    chargeable logs. Note that exclusions on
                    organization-level and folder-level sinks don't apply
                    to child resources. Note also that you cannot modify
-                   the \_Required sink or exclude logs from it.
+                   the Required sink or exclude logs from it.
 
         """
         # Create or coerce a protobuf request object.
@@ -3504,7 +3506,7 @@ class ConfigServiceV2AsyncClient:
                    the Google Cloud organization.
 
                    See [Enabling CMEK for Log
-                   Router](\ https://cloud.google.com/logging/docs/routing/managed-encryption)
+                   Router](https://cloud.google.com/logging/docs/routing/managed-encryption)
                    for more information.
 
         """
@@ -3618,7 +3620,7 @@ class ConfigServiceV2AsyncClient:
                    the Google Cloud organization.
 
                    See [Enabling CMEK for Log
-                   Router](\ https://cloud.google.com/logging/docs/routing/managed-encryption)
+                   Router](https://cloud.google.com/logging/docs/routing/managed-encryption)
                    for more information.
 
         """
@@ -4222,6 +4224,9 @@ class ConfigServiceV2AsyncClient:
 DEFAULT_CLIENT_INFO = gapic_v1.client_info.ClientInfo(
     gapic_version=package_version.__version__
 )
+
+if hasattr(DEFAULT_CLIENT_INFO, "protobuf_runtime_version"):  # pragma: NO COVER
+    DEFAULT_CLIENT_INFO.protobuf_runtime_version = google.protobuf.__version__
 
 
 __all__ = ("ConfigServiceV2AsyncClient",)
