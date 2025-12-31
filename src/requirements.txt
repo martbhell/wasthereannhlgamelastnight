@@ -2,7 +2,7 @@ google-cloud-storage==3.7.0
 google-cloud-logging==3.13.0
 jsondiff==2.2.1
 Flask==3.1.2
-device_detector==5.0.1
+device_detector==6.0.0
 feedgen==1.0.0
 feedparser==6.0.12
 gunicorn==23.0.0
