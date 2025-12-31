@@ -1,0 +1,45 @@
+try:
+    from enum import StrEnum
+except ImportError:
+    from backports.strenum import StrEnum  # type: ignore[no-redef]
+
+
+class AppType(StrEnum):
+    Antivirus = 'av'
+    ArtificialIntelligence = 'ai'
+    Browser = 'browser'
+    FeedReader = 'feed reader'
+    Game = 'game'
+    Library = 'library'
+    MediaPlayer = 'mediaplayer'
+    Messaging = 'messaging'
+    Navigation = 'navigation'
+    OsUtility = 'osutility'
+    Productivity = 'productivity'
+    P2P = 'p2p'
+    PIM = 'pim'
+    VpnProxy = 'vpnproxy'
+
+    # Generic types
+    DesktopApp = 'desktop app'
+    MobileApp = 'mobile app'
+    Generic = 'generic'
+    Unknown = ''
+
+
+class DeviceType(StrEnum):
+    Desktop = 'desktop'
+    Smartphone = 'smartphone'
+    Tablet = 'tablet'
+    FeaturePhone = 'feature phone'
+    Console = 'console'
+    TV = 'tv'  # including set-top boxes, Blu-ray players
+    CarBrowser = 'car browser'
+    SmartDisplay = 'smart display'
+    Camera = 'camera'
+    PortableMediaPlayer = 'portable media player'
+    Phablet = 'phablet'
+    SmartSpeaker = 'smart speaker'
+    Wearable = 'wearable'  # including set watches, headsets
+    Peripheral = 'peripheral'  # including portable terminal, portable projector
+    Unknown = ''

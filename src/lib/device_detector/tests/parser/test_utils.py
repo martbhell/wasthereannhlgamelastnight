@@ -1,0 +1,318 @@
+from unittest import TestCase
+
+from device_detector.utils import (
+    mostly_repeating_characters,
+    only_numerals_and_punctuation,
+    mostly_numerals,
+    random_alphanumeric_string,
+    uuid_like_name,
+)
+
+
+# -----------------------------------------------------------------------
+class TestNotUUIDname(TestCase):
+
+    def test_user_agent_like_uuid(self):
+        for ua in (
+                '738FAAEF-30CF',
+                '6BFAD903-A5EA-4E34',
+                '5FAEB6ED-AE46-4A26-BA1B',
+                '4U9WD-2TNWA-OQTSJ-QQDIG',
+                '4UWWU-WBDXC-VYFN3-QDJMH',
+                '4U4AP-Z24UV-BTW0P-QW93F',
+                '4UY9X-NSVVL-O4BZQ-QIMCL-QTDCH',
+                '4UNEF-PB63F-X9ZAS-AO3TB-HI9JO',
+                'ea1866cb-c89a-6d5d-89b8-afdcdb715237',
+                'a_05D42541-648B-41DD-B11F-0CAF61F4CE19-660-0000004D54BA56F2',
+                'a_03E848FE-2BD9-4400-B87B-172C35D4A309-3121-00000B5202325FA0',
+        ):
+            self.assertTrue(
+                uuid_like_name(ua),
+                msg='%s is similar to a UUID' % ua,
+            )
+
+    def test_user_agent_not_like_uuid(self):
+        for ua in (
+                'Waterman-WZVN',
+                'Grainger-Cats',
+                'Boxcarts-8932',
+                'Google-Java-Http-Lib',
+        ):
+            self.assertFalse(
+                uuid_like_name(ua),
+                msg='%s is not similar to a UUID' % ua,
+            )
+
+
+# -----------------------------------------------------------------------
+class TestNotNumerals(TestCase):
+
+    def test_user_agent_mostly_numerals(self):
+        for ua in (
+                '2349090',
+                'Tx23490923v',
+                '4444444444444444444444444sdfasd',
+        ):
+            self.assertTrue(
+                mostly_numerals(ua),
+                msg='%s is mostly numerical' % ua,
+            )
+
+    def test_numerical_names_spaces_allowed(self):
+        """
+        If a name with mostly numerals contains a space, don't reject it.
+        """
+        for ua in (
+                'Xray 2.35.90/23.19',
+                'Tesla 9-5883/2.35.90/23.19',
+        ):
+            self.assertFalse(
+                mostly_numerals(ua),
+                msg='%s is not considered mostly numerical' % ua,
+            )
+
+    def test_not_mostly_numerals_punctuation(self):
+        for ua in (
+                '234.90/90',
+                '2-3.40/5',
+                '345/90.9 45.20.4.5',
+        ):
+            self.assertTrue(
+                only_numerals_and_punctuation(ua),
+                msg='%s is only numerals and punctuation' % ua,
+            )
+
+
+class TestNotGibberish(TestCase):
+
+    def test_gibberish_ua_strings(self):
+        for ua in (
+                '8MIj7Yq0J1VxqYRS kd 0x0ovW0CTyvXAAAAAA',
+                'Ya0eXACkoylZb9TS9qacxCw8XxYYHI XQAAAAA',
+                'o8HG9zLURJv6DKX1MyqnXbnJoycf/ rWwAAAAA',
+                'Ya0eXACkoylZb9TS9qacxCw8XxYzWWuXQAAAAA',
+                'Ya0eXACkoylZb9TS9qacxCw8XxYXW0gYQAAAAA',
+                '001471FmBjtgZvahkMJdcGJhhjXuuD99',
+                '002261f23pRwrjIEtS1MrX0lZ4hx8N7P',
+                '002353ueFfucaEDjKRbKwlpDpecxwYwC',
+                'ziNICEarE9VlaPSkhDAyZrkZSpuEkIA',
+                '002921Fw0cheewpv5V82uy0sQ5DLeXyC',
+                '002404WQDQjvKP3nVYqAhONTZ8U3IJOq',
+                '003703Z6BUGEG0SGHIGyCbPoLC4CjTMw',
+                '003098zRAFF8LcClf2Db1g1WPHsFhBOh',
+                'ziNICEarE9VlaPSkhDAyZrkZSpuEkIA',
+                'yN6OR5feZZJLWQ7ACkTkSFVAzhhd7g',
+                '005398AzsR1apMZDU3R4eKUn2Ce2YP2t',
+                '019075NAmsDfAyLQwfYzrItmHUokQmg4',
+                '988629DFoPiphgYXrAXFQ4PVvARYJhGo',
+                '008847Zab1zwuMkakvROGNpDADGmsncM',
+                '0176150ybYVbSawNcofPImqRStnzfQNd',
+                '0187803xp7UeBtUytFoixmJAUgKIDDpL',
+                '029212UcpIeYpvvoYWWEjuzn4UxMTOVN',
+                '988629DFoPiphgYXrAXFQ4PVvARYJhGo',
+                '029607qypCjEVzUvbkocrIrLXEuVIeen',
+                '04511892N6RXcmAMsIHTTUxwhynHDpAe',
+                '016734gFTOFOHOVwkEEJiY2EUUeSRnZu',
+                '124856aRNUaoXlJaDUtZULmL44LNoIqa',
+                '1116610FoLlb56WHsQCrXfDMdmzClzpd',
+                '166694kNMwYcM2daaPAdkqunFhojumdS',
+                'zWOjZVKqdtwb2vdv2hvWpHzUGNY',
+                'holav1_10593F39DD2DAEBC',
+                'D6A8DBACB0C1',
+                'HKUM_XBw3S',
+                'HKUM_X7ebO2fs',
+                'vVNYZaiXO9Hd5zAi',
+                'W6o8uLSXW8gagZqDA',
+                'zmV3SkWiLPNcSXNmhvFbQjpyk',
+                '3vFsPvhg',
+                '3VWsvq4e',
+                '3vjQidb8',
+                '21jWHcQV',
+                '2ffAGSu1',
+                '33Ji2XaL',
+        ):
+            self.assertTrue(
+                random_alphanumeric_string(ua.lower()),
+                msg='%s is random gibberish' % ua,
+            )
+
+    def test_not_gibberish_ua_strings(self):
+        for ua in (
+                'rss junkie',
+                'Add Music',
+                'Adobe GC',
+                'ACSS Pro',
+                'Adobe Bridge 2022',
+                'Agilissystems Linxup',
+                'Norwoodsystems Worldvoicemail',
+                'Mediamushroom Copymydata2',
+                'Mpixels Gravitynoodle',
+                'Mizmowireless Acctmgt',
+                'Shotgungaming Clayhuntstart',
+                'Riffsy Riffsykeyboard',
+                'Thegrizzlylabs Geniussign',
+                'Peoplefun Wordflowers',
+                'Pilottravelcenters Mypilot',
+                'Salehotaibiapps Blackholecut',
+                'Shareitagain Mymoodsmiley',
+                'Sunnystudio Photovault',
+                'Ag World',
+                'HP-Inkjet-WebUpdate-1.1-wm',
+                'Karaokemusicapplab Sing-Sharp',
+                'Midasplayer Apps Bubblewitchsaga3',
+                'NDES client 10.0.18362.1766',
+                'X-Plane Installer 4.13r1-final-APL10.16',
+                'Meevii--IOS-_640_1136_iPodtouch_iPod9,1_14.6_2.80.0_',
+                'WeatherWeatherFoundation115F',
+                'VrboTripWidgetExtension',
+                'Wordswithfriends3',
+                'Farmville2Countryescape',
+                'yourswagfontsandquotesfree',
+                'ZooskAndroid',
+                'ZombodroidMemegenerator',
+                'ZombieOutbreakSimulator',
+                'WatercolorPaintingUniqueArt',
+                'YellowPagesMessageApp',
+                'ZeroiOSWidgetsExtension',
+                'YouTubeUnplugged',
+                'Youtube2016Oct16KI',
+                'YouTubeMusicWidgetKitExtension',
+                'YouTubeMusicTodayExtensionSkylark',
+                'YahooWeatherNotificationServiceExtension',
+                'YahooWeatherWeatherWidgetExtension',
+                'YahooWeatherLiveWidget',
+                'YAppNotificationServiceExtension',
+                'YahooNewsWidgetExtension',
+                'Volcanoes&Earthquakes',
+                'MoviePosterWallpaperMaker',
+                'LedWiFiDalsRGBW',
+                'PoliceChase2Trucker',
+                'PaperLabelMaker',
+                'WorldTranslatorLite',
+                'SynchronyCarCare',
+                'AdobeCloudShare',
+                'Americantruck2017',
+                'worldtimebuddy',
+                'AudioBook002',
+                'simulator2018',
+                'Scan2CadV10',
+                'Perfect365',
+                'StocksProTodayWidget',
+                'bettycrockerbigbookcupcakes',
+                'flytransporterairplanepilot',
+                'Tube360VR',
+                '3026moat',
+                'goknots3d',
+                'SuperBird',
+                'wordcafe',
+                'Vivaldi',
+                'UT4Aplus',
+                'CoffeeF2P',
+                'zombiegun3d',
+                'sniper3d',
+                'TimeClockFree',
+                'Volo',
+                'Syncro',
+                'SynkedUp',
+                'simgai3d',
+                'sylvaniasmart',
+                'Tuunes',
+                'Traffie',
+                'Toyota',
+                'talk',
+                'tabcar',
+                'Tapcart',
+                'Snaptube',
+                'Qlock',
+                'Quickshot',
+                'Roblox',
+                'Scrapy',
+                'Schoology',
+                'Scape',
+                'Scanbot',
+                'Setup',
+                'rampage',
+                'PikLab',
+                'PicLab',
+                'Polyglot',
+                'Popsa',
+                'pamadunknbeat',
+                'woodoku',
+                'Wordly',
+                'WeHunt',
+                'Weebly',
+                'weirdlaws',
+                'WeDrum',
+                'RackIPH',
+                'Owltail',
+                'Paycor',
+                'PCAPro',
+                'Roadie',
+                'Quora',
+                'ToonPackiMessage',
+                'Voicy',
+                'Wakie',
+                'Wikibot',
+                'WikiArt',
+                'YumpuNews',
+                'VOClock',
+                'Volkswagen',
+                'Wakeboard',
+                'wartroops1917',
+                'pic2shop',
+                'zescape',
+                'zipCAT',
+                '100Lessons',
+                'BoxCar 2.30',
+                'JQSmartBand',
+                'OfficialDropboxObjCSDKv2',
+                'Ezze',
+                'OPPO',
+                'Wiko',
+                'Asus',
+                'KaiOS',
+                'Huawei',
+                'LG',
+                'video.like',
+                'snomM700',
+                'sendori-client-win32',
+                'Stocks101',
+                'TuneFox2',
+                'project205',
+                'oilhunt2',
+                'pacman256',
+                'rcplane3',
+                'loggly-log4net-appender',
+                'sendori-client-win32',
+        ):
+            self.assertFalse(
+                random_alphanumeric_string(ua.lower()),
+                msg=f'{ua} is not random gibberish',
+            )
+
+
+class TestNotRepeatingCharacters(TestCase):
+
+    def test_mostly_repeating_characters(self):
+        for ua in (
+                'b888888888888888888888x888888',
+                '88888888888888888888888888888',
+                'PUUUUUUUUUUUUUUUUXXXXXXXXX555',
+                'AKAKAKAKAKAKAKAKAKA',
+        ):
+            self.assertTrue(
+                mostly_repeating_characters(ua),
+                msg=f'{ua} is mostly repeating characters',
+            )
+
+    def test_not_mostly_repeating_characters(self):
+        for ua in (
+                '1island',
+                'cmeaom Android Radarym',
+                'AivAndroidPlayer',
+                'Alaskaairlines Android',
+        ):
+            self.assertFalse(
+                mostly_repeating_characters(ua),
+                msg=f'{ua} is not mostly repeating characters',
+            )
