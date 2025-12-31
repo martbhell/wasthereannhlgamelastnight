@@ -25,3 +25,129 @@
 
 - uaname: com.amazon.mp3
   name: Amazon Music
+
+- uaname: com.apple.imovie
+  name: Apple iMovie
+- uaname: com.apple.itunescloudd
+  name: Apple iTunes
+- uaname: com.apple.mobilestore
+  name: Apple iTunes
+- uaname: com.apple.music
+  name: Apple Music
+- uaname: com.apple.podcast
+  name: Apple Podcasts
+- uaname: com.apple.tv
+  name: Apple TV
+- uaname: com.apple.shazamd
+  name: 'Shazam: Find Music & Concerts'
+
+- uaname: com.zhiliaoapp.musically
+  suffixes: .go
+  name: TikTok - Videos, Shop & LIVE
+
+- uaname: com.amazon.avod.thirdpartyclient
+  name: Prime Video
+
+- uaname: com.sec.android.app.music
+  name: Samsung Music
+
+- uaname: com.jio.media.jiobeats
+  name: JioSaavn - Music & Podcasts
+
+- uaname: atube-music
+  name: ATube Music
+
+- uaname: com.project100pi.themusicplayer
+  name: "Pi Music Player: Offline Music"
+
+- uaname: music
+  name: Music
+
+- uaname: musicplayerapp
+  name: Music Player App
+
+- uaname: com.pandora
+  suffixes: .android|.ios
+  name: Pandora - Music & Podcasts
+
+- uaname: com.vkontakte.android
+  name: "VK: music, video, messenger"
+
+- uaname: musicplayer.musicapps.music.mp3player
+  name: Music Player & MP3 Player
+
+- uaname: com.tencent.ibg.joox
+  name: JOOX Music
+
+- uaname: com.dywx.larkplayer
+  name: "Lark Player:Music Player & MP3"
+
+- uaname: com.bsbportal.music
+  name: "Wynk Music: MP3, Song, Podcast"
+
+- uaname: in.amazon.mshop.android.shopping
+  name: Amazon India Shop, Pay, miniTV
+
+- uaname: com.gaana
+  name: "Gaana: Music App, MP3 Songs"
+
+- uaname: com.spotify.music
+  name: "Spotify: Music and Podcasts"
+
+- uaname: com.miui.player
+  name: Mi Music
+
+- uaname: deezer.android.app
+  name: "Deezer: Music & Podcast Player"
+
+- uaname: Player FM
+  name: Player FM
+
+- uaname: com.netflix
+  suffixes: .netflix|.mediaclient
+  name: Netflix
+
+- uaname: com.evolve.podcast
+  name: The Evolve Podcast
+
+- uaname: com.deepvision.shortdrama
+  name: Drama Pops - Reel Shorts TV
+
+- uaname: com.audible
+  suffixes: .playersdk.player|.application
+  name: Audible Music Player
+- uaname: audiblenotificationserviceextension
+  name: Audible Music Player
+
+# YouTube
+- uaname: youtube
+  name: YouTube
+- uaname: youtubemusic
+  name: YouTube Music
+- uaname: com.google.android.apps.youtube.music
+  name: YouTube Music
+- uaname: com.googleios.youtube
+  name: YouTube Music
+- uaname: com.google.ios.youtubemusic
+  name: YouTube Music
+- uaname: com.google.android.youtube
+  suffixes: .player
+  name: YouTube
+- uaname: com.google.ios.youtube
+  suffixes: .player
+  name: YouTube
+- uaname: com.google.ios.youtubeunplugged
+  name: YouTube
+- uaname: com.google.android.apps.youtube.kids
+  name: YouTube Kids
+- uaname: com.google.android.music
+  name: YouTube Music
+- uaname: com.google.android.videos
+  name: Google TV
+- uaname: com.google.playmusic
+  name: Google Play Music
+- uaname: com.google.movies
+  name: Google Movies
+- uaname: com.soundcloud
+  suffixes: .TouchApp|.android|.ios
+  name: 'SoundCloud: The Music You Love'

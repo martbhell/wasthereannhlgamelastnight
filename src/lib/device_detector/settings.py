@@ -1,10 +1,10 @@
 from collections import OrderedDict
 from copy import deepcopy
 import os
+from typing import Any
 
-# interpolate regex with anchors so
-# iPhone / Tiphone are matched correctly
-BOUNDED_REGEX = r'(?:^|[^A-Z0-9\-_]|MZ-)(?:{})'
+# Only match if useragent begins with given regex or there is no letter before it
+BOUNDED_REGEX = r'(?:^|[^A-Z0-9_-]|[^A-Z0-9-]_|sprd-|MZ-)(?:{})'
 MAX_CACHE_SIZE = 1024
 
 
@@ -19,7 +19,7 @@ class LRUDict(OrderedDict):
     manually calling purge().
     """
 
-    def __init__(self, *args, maxkeys=MAX_CACHE_SIZE, **kwargs):
+    def __init__(self, *args: Any, maxkeys: int = MAX_CACHE_SIZE, **kwargs: dict[Any, Any]) -> None:
         """
         Same arguments as OrderedDict with 1 addition
 
@@ -29,7 +29,7 @@ class LRUDict(OrderedDict):
         self.maxkeys = maxkeys
         self.purge()
 
-    def purge(self):
+    def purge(self) -> None:
         """
         Pop least used keys until maximum keys is reached.
         """
@@ -37,7 +37,7 @@ class LRUDict(OrderedDict):
         for _ in range(overflowing):
             self.popitem(last=False)
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: Any) -> Any:
         value = super().__getitem__(key)
         try:
             self.move_to_end(key)
@@ -45,16 +45,16 @@ class LRUDict(OrderedDict):
             pass
         return value
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: Any, value: Any) -> None:
         super().__setitem__(key, value)
         self.purge()
 
 
 class Cache(dict):
-
-    base = {
-        'appdetails': {},
+    base: dict = {
+        'app_details': {},
         'regexes': {},
+        'corasick': {},
         'normalize_regexes': [],
         'appids_ignored': set(),
         'appids_secondary': set(),
@@ -62,13 +62,12 @@ class Cache(dict):
         'user_agents': LRUDict(),
     }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         kwargs.update(deepcopy(self.base))
         super().__init__(*args, **kwargs)
 
-    def clear(self):
-        super().clear()
-        self.update(deepcopy(self.base))
+    def clear_user_agents(self) -> None:
+        self['user_agents'] = LRUDict()
 
 
 ROOT = os.path.dirname(os.path.abspath(__file__))

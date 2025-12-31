@@ -1,8 +1,6 @@
 from urllib.parse import unquote
 from ..base import ParserBaseTest
-from ...parser import OS, OSFragment
-from ...utils import ua_hash
-from device_detector.device_detector import VERSION_TRUNCATION_NONE
+from ...parser import OS, OSFragment, ClientHints
 
 
 class TestOS(ParserBaseTest):
@@ -14,7 +12,6 @@ class TestOS(ParserBaseTest):
     fields = ('name', 'version')
     fixture_key = 'os'
     Parser = OS
-    VERSION_TRUNCATION = VERSION_TRUNCATION_NONE
 
 
 class TestOSFragment(ParserBaseTest):
@@ -30,15 +27,10 @@ class TestOSFragment(ParserBaseTest):
 
         for fixture in fixtures:
             self.user_agent = unquote(fixture.pop('user_agent'))
-            hashed = ua_hash(self.user_agent)
             spaceless = self.user_agent.lower().replace(' ', '')
             expect = fixture['name']
-            parsed = OSFragment(
-                self.user_agent,
-                hashed,
-                spaceless,
-                self.VERSION_TRUNCATION,
-            ).parse()
+            ch = ClientHints.new(fixture.get('headers', {}))
+            parsed = OSFragment(self.user_agent, spaceless, client_hints=ch).parse()
 
             self.assertEqual(expect, parsed.ua_data['name'])
 

@@ -1,16 +1,14 @@
 import string
 
+from ...enums import AppType
 from ...lazy_regex import RegexLazyIgnore
 from ..parser import Parser
-from ...parser.key_value_pairs import key_value_pairs
-from ...settings import DDCache
 from ...utils import calculate_dtype
 
-keep = {'!', '@', '+'}
+keep = frozenset(['!', '@', '+'])
 table = str.maketrans(dict.fromkeys(''.join(c for c in string.punctuation if c not in keep)))
 
-FIRST_ALPHANUMERIC_WORD = RegexLazyIgnore(r'^([a-z0-9]+)')
-
+# fmt: off
 UNWANTED_UA_STRINGS = [
     # 13F7BD1A-F6FF-411E-BF5E
     # 4UWWU-WBDXC-VYFN3-QDJMH
@@ -27,82 +25,43 @@ UNWANTED_APP_NAMES = [
     # App IDs will be parsed with ApplicationID extractor
     RegexLazyIgnore(r'^com\.'),
 ]
+# fmt: on
 
 
 class BaseClientParser(Parser):
+    # If this client parser class matches, also
+    # check the UA string for an application id.
+    # Disable that check if the application id
+    # is used for many different apps and would
+    # result in a loss of precise app names.
+    CHECK_APP_ID = True
+    __slots__ = ()
+    APP_TYPE = AppType.Unknown
 
-    def name_version_pairs(self) -> list:
+    def set_data_from_client_hints(self) -> None:
         """
-        Extract key/value pairs from User Agent String, based on various patterns of:
-        <name><sep><version>
+        Prefer client hints over user agent data generally.
+        Override on subclasses to customize order
         """
-        cached = DDCache['user_agents'][self.ua_hash].get('name_version_pairs', None)
-        if cached is not None:
-            return cached
+        if self.ua_data and self.ch_client_data:
+            self.ua_data |= self.ch_client_data
 
-        name_version_pairs = key_value_pairs(ua=self.user_agent)
+    def dtype(self) -> AppType | str:
+        return self.APP_TYPE
 
-        DDCache['user_agents'][self.ua_hash]['name_version_pairs'] = name_version_pairs
-        return name_version_pairs
-
-    def matches_manual_appdetails(self):
+    def set_details(self) -> None:
         """
-        Check the name_version_pairs data before checking regexes.
-        This can make tests fail from upstream, if names don't match exactly, in
-        which case enter needful uaname/name values in the `appdetails` fixtures.
-
-        Much faster to check for set membership than to iterate over
-        custom regexes for each application.
+        Set app data from UA or Client Hints.
         """
-        app_details = self.appdetails_data.get(self.dtype())
-        if not app_details:
-            return False
+        self.set_data_from_client_hints()
 
-        name_version_pairs = self.name_version_pairs()
-
-        for code, name, version in name_version_pairs:
-            if code in app_details:
-                self.known = True
-                self.ua_data = {
-                    'name': app_details[code]['name'],
-                    'version': version,
-                }
-                self.calculated_dtype = app_details[code].get('type', '')
-                return True
-
-        # check if whole UA string found in app details
-        match = app_details.get(self.ua_spaceless, {})
-
-        # Check if first alphanumeric word found in app details.
-        if not match:
-            try:
-                first_word = FIRST_ALPHANUMERIC_WORD.search(self.ua_spaceless).group()
-                match = app_details.get(first_word, {})
-            except AttributeError:
-                pass
-
-        if match:
-            match['version'] = None
-            self.ua_data = match
-            self.calculated_dtype = match.get('type', '')
-            return True
-
-        return False
-
-    def _parse(self) -> None:
-        """
-        Each subclass may have `appdetails/<name>.yml` file(s) defined
-        containing manually specified details for the regex.
-
-        These files before checking regexes, for best performance.
-        """
-        super()._parse()
-        name = self.ua_data.get('name')
-        if not name or name == '$1':
-            self.matches_manual_appdetails()
+        super().set_details()
+        if self.known and not self.ua_data.get('type'):
+            self.ua_data['type'] = self.dtype()
 
 
 class GenericClientParser(BaseClientParser):
+    APP_TYPE = AppType.Generic
 
     # -------------------------------------------------------------------
     # App names that have no value to us so we want to discard them
@@ -154,10 +113,12 @@ class GenericClientParser(BaseClientParser):
         """
         return 1 < len(self.app_name) <= 45
 
-    def is_substring_unwanted(self):
+    def is_substring_unwanted(self) -> bool:
         for substring in self.unwanted_substrings:
             if substring in self.app_name.lower():
                 return True
+
+        return False
 
     def unwanted_regex_match(self) -> bool:
         for regex in UNWANTED_UA_STRINGS:
@@ -193,7 +154,7 @@ class GenericClientParser(BaseClientParser):
             if not char.isnumeric():
                 alphabetic_chars += 1
 
-        threshold = .25 if len(self.app_name) < 10 else .5
+        threshold = 0.25 if len(self.app_name) < 10 else 0.5
 
         return alphabetic_chars / len(app_no_punc) < threshold
 
@@ -209,52 +170,8 @@ class GenericClientParser(BaseClientParser):
 
         return self.app_name_no_punctuation
 
-    def clean_name(self) -> None:
-        """
-        Check if the extracted name uses a known format that we can
-        extract helpful info from.  If so, update ua data and mark
-        as known.
-        """
-        for regex, group in self.parse_generic_regex:
-            m = regex.match(self.user_agent)
-
-            if m:
-                try:
-                    self.app_name = m.group(group).strip()
-                    return
-                except Exception:
-                    continue
-
-        self.app_name = self.user_agent
-
-    def dtype(self) -> str:
-        if self.calculated_dtype:
-            return self.calculated_dtype
-
-        return calculate_dtype(app_name=self.app_name)
-
-    def check_manual_appdetails(self):
-        """
-        Check to see if this app matches any values defined the appdetails yml files,
-        and if so, apply the name and app type.
-        """
-        if not self.app_name:
-            return
-
-        app_details = self.appdetails_data
-        if not app_details:
-            return
-
-        code = self.app_name.lower().replace('_', '').replace(' ', '')
-
-        for dtype, apps in app_details.items():
-            if code not in apps:
-                continue
-
-            app_details_data = apps.get(code)
-            self.app_name = app_details_data['name']
-            self.calculated_dtype = app_details_data.get('type') or self.calculated_dtype
-            return
+    def dtype(self) -> AppType | str:
+        return calculate_dtype(app_name=self.app_name) or self.APP_TYPE
 
 
 __all__ = (
