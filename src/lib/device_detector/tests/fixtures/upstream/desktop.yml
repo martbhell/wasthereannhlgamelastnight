@@ -7505,7 +7505,7 @@
     version: 4.0.3
     platform: ""
   client:
-    type: mobile app
+    type: mediaplayer
     name: YouTube
     version: 5.3.32
   device:
@@ -8448,7 +8448,7 @@
     engine_version: 89.0.4389.105
   device:
     type: desktop
-    brand: Jedi
+    brand: Jide
     model: Remix Mini
   os_family: Android
   browser_family: Chrome
@@ -9253,7 +9253,7 @@
     version: ""
     platform: ""
   client:
-    type: mobile app
+    type: mediaplayer
     name: Spotify
     version: "120800923"
   device:

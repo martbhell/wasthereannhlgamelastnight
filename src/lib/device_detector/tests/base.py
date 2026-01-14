@@ -222,11 +222,9 @@ class ParserBaseTest(Base):
 
         for fixture in fixtures:
             self.user_agent = unquote(fixture.pop('user_agent'))
-            spaceless = self.user_agent.lower().replace(' ', '')
             expect = fixture[self.fixture_key]
             parsed = self.Parser(
                 self.user_agent,
-                spaceless,
                 client_hints=ClientHints.new(fixture.get('headers', {})),
             ).clear_cache().parse()  # clear cache because fixture files may contain duplicate UAs
             data = parsed.ua_data
@@ -235,7 +233,7 @@ class ParserBaseTest(Base):
                 self.assertIn(
                     field,
                     data,
-                    msg=f'Error parsing {self.user_agent}. Parsed data does not have {field!r} key.'
+                    msg=f'Error parsing {self.user_agent!r}. Parsed data missing {field!r} key.'
                 )
                 self.assertEqual(
                     str(expect.get(field, '')),
@@ -250,11 +248,7 @@ class GenericParserTest(ParserBaseTest):
 
     def test_skipped_useragents(self):
         for ua in self.skipped:
-            parsed = self.Parser(
-                ua,
-                ua.lower().replace(' ', ''),
-                None,
-            ).parse()
+            parsed = self.Parser(ua, None).parse()
             self.assertEqual(parsed.ua_data, {})
 
 
