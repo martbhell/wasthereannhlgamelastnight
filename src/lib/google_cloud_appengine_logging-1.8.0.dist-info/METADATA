@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: google-cloud-appengine-logging
-Version: 1.7.0
+Version: 1.8.0
 Summary: Google Cloud Appengine Logging API client library
 Home-page: https://github.com/googleapis/google-cloud-python/tree/main/packages/google-cloud-appengine-logging
 Author: Google LLC
