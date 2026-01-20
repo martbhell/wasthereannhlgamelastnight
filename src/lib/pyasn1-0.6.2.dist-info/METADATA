@@ -1,13 +1,12 @@
-Metadata-Version: 2.1
+Metadata-Version: 2.4
 Name: pyasn1
-Version: 0.6.1
+Version: 0.6.2
 Summary: Pure-Python implementation of ASN.1 types and DER/BER/CER codecs (X.208)
-Home-page: https://github.com/pyasn1/pyasn1
-Author: Ilya Etingof
-Author-email: etingof@gmail.com
+Author-email: Ilya Etingof <etingof@gmail.com>
 Maintainer: pyasn1 maintenance organization
 Maintainer-email: Christian Heimes <christian@python.org>
 License: BSD-2-Clause
+Project-URL: Homepage, https://github.com/pyasn1/pyasn1
 Project-URL: Documentation, https://pyasn1.readthedocs.io
 Project-URL: Source, https://github.com/pyasn1/pyasn1
 Project-URL: Issues, https://github.com/pyasn1/pyasn1/issues
@@ -20,7 +19,6 @@ Classifier: Intended Audience :: Education
 Classifier: Intended Audience :: Information Technology
 Classifier: Intended Audience :: System Administrators
 Classifier: Intended Audience :: Telecommunications Industry
-Classifier: License :: OSI Approved :: BSD License
 Classifier: Natural Language :: English
 Classifier: Operating System :: OS Independent
 Classifier: Programming Language :: Python :: 3
@@ -30,6 +28,7 @@ Classifier: Programming Language :: Python :: 3.10
 Classifier: Programming Language :: Python :: 3.11
 Classifier: Programming Language :: Python :: 3.12
 Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
 Classifier: Programming Language :: Python :: Implementation :: CPython
 Classifier: Programming Language :: Python :: Implementation :: PyPy
 Classifier: Topic :: Communications
@@ -37,6 +36,7 @@ Classifier: Topic :: Software Development :: Libraries :: Python Modules
 Requires-Python: >=3.8
 Description-Content-Type: text/markdown
 License-File: LICENSE.rst
+Dynamic: license-file
 
 
 ASN.1 library for Python
