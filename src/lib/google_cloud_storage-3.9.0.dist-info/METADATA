@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: google-cloud-storage
-Version: 3.8.0
+Version: 3.9.0
 Summary: Google Cloud Storage API client library
 Home-page: https://github.com/googleapis/python-storage
 Author: Google LLC
@@ -43,6 +43,29 @@ Provides-Extra: protobuf
 Requires-Dist: protobuf<7.0.0,>=3.20.2; extra == "protobuf"
 Provides-Extra: tracing
 Requires-Dist: opentelemetry-api<2.0.0,>=1.1.0; extra == "tracing"
+Provides-Extra: testing
+Requires-Dist: google-cloud-testutils; extra == "testing"
+Requires-Dist: numpy; extra == "testing"
+Requires-Dist: psutil; extra == "testing"
+Requires-Dist: py-cpuinfo; extra == "testing"
+Requires-Dist: pytest-benchmark; extra == "testing"
+Requires-Dist: PyYAML; extra == "testing"
+Requires-Dist: mock; extra == "testing"
+Requires-Dist: pytest; extra == "testing"
+Requires-Dist: pytest-cov; extra == "testing"
+Requires-Dist: pytest-asyncio; extra == "testing"
+Requires-Dist: pytest-rerunfailures; extra == "testing"
+Requires-Dist: pytest-xdist; extra == "testing"
+Requires-Dist: google-cloud-testutils; extra == "testing"
+Requires-Dist: google-cloud-iam; extra == "testing"
+Requires-Dist: google-cloud-pubsub; extra == "testing"
+Requires-Dist: google-cloud-kms; extra == "testing"
+Requires-Dist: brotli; extra == "testing"
+Requires-Dist: coverage; extra == "testing"
+Requires-Dist: pyopenssl; extra == "testing"
+Requires-Dist: opentelemetry-sdk; extra == "testing"
+Requires-Dist: flake8; extra == "testing"
+Requires-Dist: black; extra == "testing"
 Dynamic: author
 Dynamic: author-email
 Dynamic: classifier
