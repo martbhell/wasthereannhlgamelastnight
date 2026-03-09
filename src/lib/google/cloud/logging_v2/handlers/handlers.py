@@ -17,20 +17,18 @@
 import collections
 import json
 import logging
+from typing import IO, Optional, Type
 
-from typing import Optional, IO, Type
-
+from google.cloud.logging_v2.handlers._helpers import get_request_data
+from google.cloud.logging_v2.handlers._monitored_resources import (
+    add_resource_labels,
+    detect_resource,
+)
 from google.cloud.logging_v2.handlers.transports import (
     BackgroundThreadTransport,
     Transport,
 )
-from google.cloud.logging_v2.handlers._monitored_resources import (
-    detect_resource,
-    add_resource_labels,
-)
-from google.cloud.logging_v2.handlers._helpers import get_request_data
 from google.cloud.logging_v2.resource import Resource
-
 
 DEFAULT_LOGGER_NAME = "python"
 

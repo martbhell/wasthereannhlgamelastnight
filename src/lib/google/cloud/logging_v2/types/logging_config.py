@@ -17,11 +17,9 @@ from __future__ import annotations
 
 from typing import MutableMapping, MutableSequence
 
+import google.protobuf.field_mask_pb2 as field_mask_pb2  # type: ignore
+import google.protobuf.timestamp_pb2 as timestamp_pb2  # type: ignore
 import proto  # type: ignore
-
-from google.protobuf import field_mask_pb2  # type: ignore
-from google.protobuf import timestamp_pb2  # type: ignore
-
 
 __protobuf__ = proto.module(
     package="google.logging.v2",
@@ -107,6 +105,7 @@ class OperationState(proto.Enum):
         OPERATION_STATE_CANCELLED (6):
             The operation was cancelled by the user.
     """
+
     OPERATION_STATE_UNSPECIFIED = 0
     OPERATION_STATE_SCHEDULED = 1
     OPERATION_STATE_WAITING_FOR_PERMISSIONS = 2
@@ -140,6 +139,7 @@ class LifecycleState(proto.Enum):
         FAILED (5):
             The resource is in an INTERNAL error state.
     """
+
     LIFECYCLE_STATE_UNSPECIFIED = 0
     ACTIVE = 1
     DELETE_REQUESTED = 2
@@ -160,6 +160,7 @@ class IndexType(proto.Enum):
         INDEX_TYPE_INTEGER (2):
             The index is a integer-type index.
     """
+
     INDEX_TYPE_UNSPECIFIED = 0
     INDEX_TYPE_STRING = 1
     INDEX_TYPE_INTEGER = 2
@@ -513,6 +514,7 @@ class LogSink(proto.Message):
             V1 (2):
                 ``LogEntry`` version 1 format.
         """
+
         VERSION_FORMAT_UNSPECIFIED = 0
         V2 = 1
         V1 = 2

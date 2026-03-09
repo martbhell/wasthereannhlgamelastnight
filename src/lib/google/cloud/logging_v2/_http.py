@@ -17,12 +17,12 @@
 import functools
 
 from google.api_core import page_iterator
-from google.cloud import _http
 
+from google.cloud import _http
 from google.cloud.logging_v2 import __version__
 from google.cloud.logging_v2._helpers import entry_from_resource
-from google.cloud.logging_v2.sink import Sink
 from google.cloud.logging_v2.metric import Metric
+from google.cloud.logging_v2.sink import Sink
 
 
 class Connection(_http.JSONConnection):

@@ -18,27 +18,26 @@ import logging
 import os
 import sys
 
-
 import google.api_core.client_options
 from google.cloud.client import ClientWithProject
 from google.cloud.environment_vars import DISABLE_GRPC
+
 from google.cloud.logging_v2._helpers import _add_defaults_to_filter
 from google.cloud.logging_v2._http import Connection
 from google.cloud.logging_v2._http import _LoggingAPI as JSONLoggingAPI
 from google.cloud.logging_v2._http import _MetricsAPI as JSONMetricsAPI
 from google.cloud.logging_v2._http import _SinksAPI as JSONSinksAPI
-from google.cloud.logging_v2.handlers import CloudLoggingHandler
-from google.cloud.logging_v2.handlers import StructuredLogHandler
-from google.cloud.logging_v2.handlers import setup_logging
-from google.cloud.logging_v2.handlers.handlers import EXCLUDED_LOGGER_DEFAULTS
-from google.cloud.logging_v2.resource import Resource
+from google.cloud.logging_v2.handlers import (
+    CloudLoggingHandler,
+    StructuredLogHandler,
+    setup_logging,
+)
 from google.cloud.logging_v2.handlers._monitored_resources import detect_resource
-
-
+from google.cloud.logging_v2.handlers.handlers import EXCLUDED_LOGGER_DEFAULTS
 from google.cloud.logging_v2.logger import Logger
 from google.cloud.logging_v2.metric import Metric
+from google.cloud.logging_v2.resource import Resource
 from google.cloud.logging_v2.sink import Sink
-
 
 _DISABLE_GRPC = os.getenv(DISABLE_GRPC, False)
 _HAVE_GRPC = False

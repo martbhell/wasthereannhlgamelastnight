@@ -12,17 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Logging handler for printing formatted structured logs to standard output.
-"""
+"""Logging handler for printing formatted structured logs to standard output."""
+
 import collections
 import json
 import logging
 import logging.handlers
 
-from google.cloud.logging_v2.handlers.handlers import CloudLoggingFilter
-from google.cloud.logging_v2.handlers.handlers import _format_and_parse_message
 import google.cloud.logging_v2
 from google.cloud.logging_v2._instrumentation import _create_diagnostic_entry
+from google.cloud.logging_v2.handlers.handlers import (
+    CloudLoggingFilter,
+    _format_and_parse_message,
+)
 
 GCP_FORMAT = (
     "{%(_payload_str)s"
@@ -69,7 +71,7 @@ class StructuredLogHandler(logging.StreamHandler):
         stream=None,
         project_id=None,
         json_encoder_cls=None,
-        **kwargs
+        **kwargs,
     ):
         """
         Args:

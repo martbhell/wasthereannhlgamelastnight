@@ -13,8 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from .client import ConfigServiceV2Client
 from .async_client import ConfigServiceV2AsyncClient
+from .client import ConfigServiceV2Client
 
 __all__ = (
     "ConfigServiceV2Client",

@@ -13,8 +13,9 @@
 # limitations under the License.
 
 """Add diagnostic instrumentation source information to logs"""
-from google.cloud.logging_v2.entries import StructEntry
+
 from google.cloud.logging_v2 import __version__
+from google.cloud.logging_v2.entries import StructEntry
 
 _DIAGNOSTIC_INFO_KEY = "logging.googleapis.com/diagnostic"
 _INSTRUMENTATION_SOURCE_KEY = "instrumentation_source"

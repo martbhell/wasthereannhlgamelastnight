@@ -15,17 +15,16 @@
 """Common logging helpers."""
 
 import logging
-
-from datetime import datetime
-from datetime import timedelta
-from datetime import timezone
+from datetime import datetime, timedelta, timezone
 
 import requests
 
-from google.cloud.logging_v2.entries import LogEntry
-from google.cloud.logging_v2.entries import ProtobufEntry
-from google.cloud.logging_v2.entries import StructEntry
-from google.cloud.logging_v2.entries import TextEntry
+from google.cloud.logging_v2.entries import (
+    LogEntry,
+    ProtobufEntry,
+    StructEntry,
+    TextEntry,
+)
 
 try:
     from google.cloud.logging_v2.types import LogSeverity

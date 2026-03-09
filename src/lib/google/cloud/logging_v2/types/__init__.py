@@ -59,6 +59,8 @@ from .logging_config import (
     GetSinkRequest,
     GetViewRequest,
     IndexConfig,
+    IndexType,
+    LifecycleState,
     Link,
     LinkMetadata,
     ListBucketsRequest,
@@ -76,6 +78,7 @@ from .logging_config import (
     LogExclusion,
     LogSink,
     LogView,
+    OperationState,
     Settings,
     UndeleteBucketRequest,
     UpdateBucketRequest,
@@ -84,9 +87,6 @@ from .logging_config import (
     UpdateSettingsRequest,
     UpdateSinkRequest,
     UpdateViewRequest,
-    IndexType,
-    LifecycleState,
-    OperationState,
 )
 from .logging_metrics import (
     CreateLogMetricRequest,
