@@ -18,19 +18,20 @@ import collections
 import json
 import re
 
-from google.protobuf.json_format import MessageToDict
-from google.protobuf.json_format import Parse
-from google.protobuf.message import Message
-
-from google.cloud.logging_v2.resource import Resource
-from google.cloud._helpers import _name_from_project_path
-from google.cloud._helpers import _rfc3339_nanos_to_datetime
-from google.cloud._helpers import _datetime_to_rfc3339
+import google.cloud.appengine_logging  # noqa: F401
 
 # import officially supported proto definitions
 import google.cloud.audit.audit_log_pb2  # noqa: F401
-import google.cloud.appengine_logging  # noqa: F401
+from google.cloud._helpers import (
+    _datetime_to_rfc3339,
+    _name_from_project_path,
+    _rfc3339_nanos_to_datetime,
+)
 from google.iam.v1.logging import audit_data_pb2  # noqa: F401
+from google.protobuf.json_format import MessageToDict, Parse
+from google.protobuf.message import Message
+
+from google.cloud.logging_v2.resource import Resource
 
 _GLOBAL_RESOURCE = Resource(type="global", labels={})
 

@@ -16,8 +16,8 @@ import functools
 import logging
 import os
 
-from google.cloud.logging_v2.resource import Resource
 from google.cloud.logging_v2._helpers import retrieve_metadata_server
+from google.cloud.logging_v2.resource import Resource
 
 _GAE_SERVICE_ENV = "GAE_SERVICE"
 _GAE_VERSION_ENV = "GAE_VERSION"

@@ -14,8 +14,8 @@
 
 """Helper functions for logging handlers."""
 
-import math
 import json
+import math
 import re
 import warnings
 

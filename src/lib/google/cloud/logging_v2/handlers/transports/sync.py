@@ -16,6 +16,7 @@
 
 Logs directly to the Cloud Logging API with a synchronous call.
 """
+
 from google.cloud.logging_v2 import _helpers
 from google.cloud.logging_v2.handlers.transports.base import Transport
 from google.cloud.logging_v2.logger import _GLOBAL_RESOURCE
