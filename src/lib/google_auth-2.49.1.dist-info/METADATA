@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: google-auth
-Version: 2.49.0
+Version: 2.49.1
 Summary: Google Authentication Library
 Home-page: https://github.com/googleapis/google-auth-library-python
 Author: Google Cloud Platform
@@ -27,7 +27,6 @@ Requires-Python: >=3.8
 License-File: LICENSE
 Requires-Dist: pyasn1-modules>=0.2.1
 Requires-Dist: cryptography>=38.0.3
-Requires-Dist: rsa<5,>=3.1.4
 Provides-Extra: cryptography
 Requires-Dist: cryptography>=38.0.3; extra == "cryptography"
 Provides-Extra: aiohttp
@@ -47,7 +46,6 @@ Provides-Extra: testing
 Requires-Dist: grpcio; extra == "testing"
 Requires-Dist: flask; extra == "testing"
 Requires-Dist: freezegun; extra == "testing"
-Requires-Dist: oauth2client; extra == "testing"
 Requires-Dist: pyjwt>=2.0; extra == "testing"
 Requires-Dist: pytest; extra == "testing"
 Requires-Dist: pytest-cov; extra == "testing"
@@ -66,6 +64,8 @@ Requires-Dist: aiohttp<3.10.0; extra == "testing"
 Provides-Extra: urllib3
 Requires-Dist: urllib3; extra == "urllib3"
 Requires-Dist: packaging; extra == "urllib3"
+Provides-Extra: rsa
+Requires-Dist: rsa<5,>=3.1.4; extra == "rsa"
 Dynamic: author
 Dynamic: author-email
 Dynamic: classifier
