@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: pyasn1
-Version: 0.6.2
+Version: 0.6.3
 Summary: Pure-Python implementation of ASN.1 types and DER/BER/CER codecs (X.208)
 Author-email: Ilya Etingof <etingof@gmail.com>
 Maintainer: pyasn1 maintenance organization
