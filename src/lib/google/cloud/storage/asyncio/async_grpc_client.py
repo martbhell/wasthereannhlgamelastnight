@@ -19,6 +19,8 @@ from google.cloud._storage_v2.services.storage.transports.base import (
     DEFAULT_CLIENT_INFO,
 )
 from google.cloud.storage import __version__
+import grpc
+from google.auth import credentials as auth_credentials
 
 
 class AsyncGrpcClient:
@@ -52,6 +54,16 @@ class AsyncGrpcClient:
         *,
         attempt_direct_path=True,
     ):
+        if isinstance(credentials, auth_credentials.AnonymousCredentials):
+            if client_options is None or client_options.api_endpoint is None:
+                raise ValueError(
+                    "Either client_options or `client_option.api_endpoint` is None. Please provide api_endpoint when `AnonymousCredentials` is used "
+                )
+            self._grpc_client = self._create_anonymous_client(
+                client_options, credentials
+            )
+            return
+
         if client_info is None:
             client_info = DEFAULT_CLIENT_INFO
         client_info.client_library_version = __version__
@@ -66,6 +78,21 @@ class AsyncGrpcClient:
             client_info=client_info,
             client_options=client_options,
             attempt_direct_path=attempt_direct_path,
+        )
+
+    def _create_anonymous_client(self, client_options, credentials):
+        channel = grpc.aio.insecure_channel(client_options.api_endpoint)
+        transport = storage_v2.services.storage.transports.StorageGrpcAsyncIOTransport(
+            channel=channel, credentials=credentials
+        )
+        return storage_v2.StorageAsyncClient(transport=transport)
+
+    @classmethod
+    def _create_insecure_grpc_client(cls, client_options):
+        return cls(
+            credentials=auth_credentials.AnonymousCredentials(),
+            client_options=client_options,
+            attempt_direct_path=False,
         )
 
     def _create_async_grpc_client(
