@@ -36,7 +36,7 @@ class Field:
         enum=None,
         oneof: str = None,
         json_name: str = None,
-        optional: bool = False
+        optional: bool = False,
     ):
         # This class is not intended to stand entirely alone;
         # data is augmented by the metaclass for Message.

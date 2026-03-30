@@ -15,7 +15,6 @@
 import collections
 
 from proto.utils import cached_property
-from google.protobuf.message import Message
 
 
 class MapComposite(collections.abc.MutableMapping):

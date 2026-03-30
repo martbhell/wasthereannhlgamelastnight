@@ -14,11 +14,10 @@
 
 from datetime import datetime
 from datetime import timedelta
-from datetime import timezone
 
 from google.protobuf import duration_pb2
 from google.protobuf import timestamp_pb2
-from proto import datetime_helpers, utils
+from proto import datetime_helpers
 
 
 class TimestampRule:
