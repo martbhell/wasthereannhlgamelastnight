@@ -14,7 +14,6 @@
 
 """Helpers for :mod:`datetime`."""
 
-import calendar
 import datetime
 import re
 

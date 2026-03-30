@@ -13,9 +13,7 @@
 # limitations under the License.
 
 import abc
-import enum
 
-from google.protobuf import message
 from google.protobuf import duration_pb2
 from google.protobuf import timestamp_pb2
 from google.protobuf import field_mask_pb2

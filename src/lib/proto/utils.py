@@ -17,7 +17,7 @@ import functools
 
 def has_upb():
     try:
-        from google._upb import _message  # pylint: disable=unused-import
+        from google._upb import _message  # noqa: F401
 
         has_upb = True
     except ImportError:
