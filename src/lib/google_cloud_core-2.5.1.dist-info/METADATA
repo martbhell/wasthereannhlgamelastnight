@@ -1,8 +1,8 @@
 Metadata-Version: 2.4
 Name: google-cloud-core
-Version: 2.5.0
+Version: 2.5.1
 Summary: Google Cloud API client core library
-Home-page: https://github.com/googleapis/python-cloud-core
+Home-page: https://github.com/googleapis/google-cloud-python/tree/main/packages/google-cloud-core
 Author: Google LLC
 Author-email: googleapis-packages@google.com
 License: Apache 2.0
@@ -12,8 +12,6 @@ Classifier: Intended Audience :: Developers
 Classifier: License :: OSI Approved :: Apache Software License
 Classifier: Programming Language :: Python
 Classifier: Programming Language :: Python :: 3
-Classifier: Programming Language :: Python :: 3.7
-Classifier: Programming Language :: Python :: 3.8
 Classifier: Programming Language :: Python :: 3.9
 Classifier: Programming Language :: Python :: 3.10
 Classifier: Programming Language :: Python :: 3.11
@@ -22,11 +20,10 @@ Classifier: Programming Language :: Python :: 3.13
 Classifier: Programming Language :: Python :: 3.14
 Classifier: Operating System :: OS Independent
 Classifier: Topic :: Internet
-Requires-Python: >=3.7
+Requires-Python: >=3.9
 License-File: LICENSE
-Requires-Dist: google-api-core!=2.0.*,!=2.1.*,!=2.2.*,!=2.3.0,<3.0.0,>=1.31.6
-Requires-Dist: google-auth<3.0.0,>=1.25.0
-Requires-Dist: importlib-metadata>1.0.0; python_version < "3.8"
+Requires-Dist: google-api-core<3.0.0,>=2.11.0
+Requires-Dist: google-auth!=2.24.0,!=2.25.0,<3.0.0,>=2.14.1
 Provides-Extra: grpc
 Requires-Dist: grpcio<2.0.0,>=1.38.0; python_version < "3.14" and extra == "grpc"
 Requires-Dist: grpcio<2.0.0,>=1.75.1; python_version >= "3.14" and extra == "grpc"
@@ -78,12 +75,9 @@ to `Python Development Environment Setup Guide`_ for Google Cloud Platform.
 
 Supported Python Versions
 -------------------------
-Python >= 3.7
+Python >= 3.9
 
 Unsupported Python Versions
 ---------------------------
-Python == 2.7: the last version of this library which supported Python 2.7
-is ``google.cloud.core 1.7.2``.
 
-Python == 3.6: the last version of this library which supported Python 3.6
-is ``google.cloud.core 2.3.1``.
+Python <= 3.8

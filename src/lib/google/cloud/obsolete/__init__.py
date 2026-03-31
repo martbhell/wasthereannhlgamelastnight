@@ -14,7 +14,12 @@
 
 """Helpers for deprecated code and modules."""
 
-import importlib.metadata as metadata
+try:
+    import importlib.metadata as metadata
+except ImportError:
+    # For Python 3.7 compatibility
+    import importlib_metadata as metadata  # type: ignore[no-redef]
+
 import warnings
 
 
