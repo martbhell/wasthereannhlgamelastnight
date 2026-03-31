@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: google-api-core
-Version: 2.30.0
+Version: 2.30.1
 Summary: Google API client core library
 Author-email: Google LLC <googleapis-packages@google.com>
 License: Apache 2.0
@@ -23,7 +23,7 @@ Classifier: Topic :: Internet
 Requires-Python: >=3.9
 Description-Content-Type: text/x-rst
 License-File: LICENSE
-Requires-Dist: googleapis-common-protos<2.0.0,>=1.56.3
+Requires-Dist: googleapis-common-protos<2.0.0,>=1.63.2
 Requires-Dist: protobuf<7.0.0,>=4.25.8
 Requires-Dist: proto-plus<2.0.0,>=1.22.3
 Requires-Dist: proto-plus<2.0.0,>=1.25.0; python_version >= "3.13"
