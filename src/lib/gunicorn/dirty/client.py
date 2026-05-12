@@ -34,7 +34,7 @@ class DirtyClient:
 
     Provides both sync and async APIs. The sync API is for traditional
     sync workers (sync, gthread), while the async API is for async
-    workers (asgi, gevent, eventlet).
+    workers (asgi, gevent).
     """
 
     def __init__(self, socket_path, timeout=30.0):

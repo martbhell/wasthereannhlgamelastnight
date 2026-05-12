@@ -15,7 +15,6 @@ import errno
 import os
 import queue
 import selectors
-import socket
 import ssl
 import sys
 import time
@@ -121,8 +120,12 @@ class TConn:
         finally:
             sel.close()
 
-    def close(self):
-        util.close(self.sock)
+    def close(self, graceful=False):
+        if graceful:
+            self.sock.setblocking(True)
+            util.close_graceful(self.sock)
+        else:
+            util.close(self.sock)
 
 
 class PollableMethodQueue:
@@ -435,7 +438,7 @@ class ThreadWorker(base.Worker):
                                      partial(self.on_client_socket_readable, conn))
             else:
                 self.nr_conns -= 1
-                conn.close()
+                conn.close(graceful=True)
         except Exception:
             self.nr_conns -= 1
             conn.close()
@@ -475,9 +478,14 @@ class ThreadWorker(base.Worker):
             # Handle the request
             keepalive = self.handle_request(req, conn)
             if keepalive:
-                # Discard any unread request body before keepalive
-                # to prevent socket appearing readable due to leftover bytes
-                conn.parser.finish_body()
+                # Discard any unread request body before keepalive to prevent
+                # the socket from appearing readable due to leftover bytes.
+                # Bound the drain by the worker data timeout: a stalled client
+                # must not keep this thread blocked.
+                drain_deadline = time.monotonic() + DEFAULT_WORKER_DATA_TIMEOUT
+                if not conn.parser.finish_body(deadline=drain_deadline):
+                    # Abandon keepalive when the body could not be fully drained.
+                    return False
                 return True
         except http.errors.NoMoreData as e:
             self.log.debug("Ignored premature client disconnection. %s", e)
@@ -693,11 +701,7 @@ class ThreadWorker(base.Worker):
                 # If the requests have already been sent, we should close the
                 # connection to indicate the error.
                 self.log.exception("Error handling request")
-                try:
-                    conn.sock.shutdown(socket.SHUT_RDWR)
-                    conn.sock.close()
-                except OSError:
-                    pass
+                util.close_graceful(conn.sock)
                 raise StopIteration()
             raise
         finally:

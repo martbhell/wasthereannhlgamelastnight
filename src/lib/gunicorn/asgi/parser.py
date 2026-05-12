@@ -9,6 +9,7 @@ Provides callback-based parsing using either the fast C parser (gunicorn_h1c)
 or the pure Python PythonProtocol fallback.
 """
 
+import socket
 import struct
 from enum import IntEnum
 
@@ -27,6 +28,18 @@ class InvalidProxyHeader(ParseError):
 
 # PROXY protocol v2 constants
 PP_V2_SIGNATURE = b"\x0D\x0A\x0D\x0A\x00\x0D\x0A\x51\x55\x49\x54\x0A"
+
+
+# RFC 9110 section 6.5.1: fields forbidden in trailers because they alter
+# routing, framing, or authentication.
+RFC9110_6_5_1_FORBIDDEN_TRAILER = frozenset((
+    b"host",
+    b"content-length",
+    b"transfer-encoding",
+    b"trailer",
+    b"authorization",
+    b"te",
+))
 
 
 class PPCommand(IntEnum):
@@ -307,9 +320,19 @@ class PythonProtocol:
             if len(parts) != 6:
                 raise InvalidProxyLine("Invalid PROXY v1 line for %s" % proto)
 
+            s_addr = parts[2]
+            d_addr = parts[3]
+
+            # Validate addresses with the appropriate family.  WSGI does the
+            # same in gunicorn/http/message.py:_parse_proxy_protocol_v1.
+            af = socket.AF_INET if proto == 'TCP4' else socket.AF_INET6
             try:
-                s_addr = parts[2]
-                d_addr = parts[3]
+                socket.inet_pton(af, s_addr)
+                socket.inet_pton(af, d_addr)
+            except (OSError, ValueError):
+                raise InvalidProxyLine("Invalid PROXY v1 %s address" % proto)
+
+            try:
                 s_port = int(parts[4])
                 d_port = int(parts[5])
             except ValueError as e:
@@ -379,6 +402,13 @@ class PythonProtocol:
         family = (fam_prot & 0xF0) >> 4
         protocol = fam_prot & 0x0F
 
+        # gunicorn is an HTTP server; only TCP (STREAM) makes sense.  WSGI
+        # rejects non-STREAM at gunicorn/http/message.py:_parse_proxy_protocol_v2.
+        if family in (PPFamily.INET, PPFamily.INET6) and protocol != PPProtocol.STREAM:
+            raise InvalidProxyHeader(
+                "PROXY v2: only TCP (STREAM) protocol is supported"
+            )
+
         if family == PPFamily.INET:
             # IPv4
             if len(addr_data) < 12:
@@ -387,7 +417,7 @@ class PythonProtocol:
             d_addr = '.'.join(str(b) for b in addr_data[4:8])
             s_port = struct.unpack('>H', addr_data[8:10])[0]
             d_port = struct.unpack('>H', addr_data[10:12])[0]
-            proto = 'TCP4' if protocol == PPProtocol.STREAM else 'UDP4'
+            proto = 'TCP4'
 
         elif family == PPFamily.INET6:
             # IPv6
@@ -400,7 +430,7 @@ class PythonProtocol:
             d_addr = ':'.join('%x' % w for w in d_words)
             s_port = struct.unpack('>H', addr_data[32:34])[0]
             d_port = struct.unpack('>H', addr_data[34:36])[0]
-            proto = 'TCP6' if protocol == PPProtocol.STREAM else 'UDP6'
+            proto = 'TCP6'
 
         elif family == PPFamily.UNSPEC:
             # Unspecified address family
@@ -455,6 +485,17 @@ class PythonProtocol:
         if not self._permit_unconventional_http_method:
             if not self._is_valid_method(self.method):
                 raise InvalidRequestMethod(self.method.decode('latin-1'))
+
+        # RFC 9112 section 3.2.4: asterisk-form is only valid with OPTIONS.
+        if self.path == b'*' and self.method != b'OPTIONS':
+            raise InvalidRequestLine("Invalid request line")
+
+        # RFC 9112 section 3.2.3: authority-form is only valid with CONNECT.
+        if (self.method != b'CONNECT'
+                and self.path != b'*'
+                and not self.path.startswith(b'/')
+                and b'://' not in self.path):
+            raise InvalidRequestLine("Invalid request line")
 
         # Parse version
         version = parts[2]
@@ -745,6 +786,14 @@ class PythonProtocol:
                         self._on_message_complete()
                     return True
 
+                # RFC 9110 section 6.5.1: reject fields that must not appear
+                # in trailers.
+                colon = line.find(b':')
+                if colon > 0:
+                    name = line[:colon].strip(b' \t').lower()
+                    if name in RFC9110_6_5_1_FORBIDDEN_TRAILER:
+                        raise InvalidHeaderName(name.decode('latin-1'))
+
         return False
 
     def _is_valid_method(self, method):
@@ -773,8 +822,11 @@ class PythonProtocol:
         return True
 
     def _has_invalid_header_chars(self, value):
-        """Check for NUL, CR, LF in header value."""
-        return b'\x00' in value or b'\r' in value or b'\n' in value
+        """RFC 9110 section 5.5: only VCHAR, SP, HTAB, and obs-text allowed."""
+        for c in value:
+            if c <= 0x08 or 0x0a <= c <= 0x1f or c == 0x7f:
+                return True
+        return False
 
 
 class CallbackRequest:
