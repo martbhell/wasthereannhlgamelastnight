@@ -719,7 +719,6 @@ class WorkerClass(Setting):
         A string referring to one of the following bundled classes:
 
         * ``sync``
-        * ``eventlet`` - **DEPRECATED: will be removed in 26.0**. Requires eventlet >= 0.40.3
         * ``gevent``   - Requires gevent >= 24.10.1 (or install it via
           ``pip install gunicorn[gevent]``)
         * ``tornado``  - Requires tornado >= 6.5.0 (or install it via
@@ -773,7 +772,7 @@ class WorkerConnections(Setting):
     desc = """\
         The maximum number of simultaneous clients.
 
-        This setting only affects the ``gthread``, ``eventlet`` and ``gevent`` worker types.
+        This setting only affects the ``gthread`` and ``gevent`` worker types.
         """
 
 

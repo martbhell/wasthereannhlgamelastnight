@@ -166,8 +166,8 @@ class BodyReceiver:
     Uses Future-based waiting for efficient async receive().
     """
 
-    __slots__ = ('_chunks', '_complete', '_body_finished', '_closed', '_waiter',
-                 'request', 'protocol')
+    __slots__ = ('_chunks', '_complete', '_body_finished', '_closed',
+                 '_body_wait_expired', '_waiter', 'request', 'protocol')
 
     def __init__(self, request, protocol):
         self.request = request
@@ -175,7 +175,13 @@ class BodyReceiver:
         self._chunks = []
         self._complete = False
         self._body_finished = False  # True after returning more_body=False
+        # _closed means the client transport has gone away (signal_disconnect
+        # was called or the protocol detected a disconnect).  _body_wait_expired
+        # means the body did not finish framing within the configured timeout
+        # but the transport itself may still be open.  Both surface as
+        # http.disconnect to the app, but they are distinct conditions.
         self._closed = False
+        self._body_wait_expired = False
         self._waiter = None
 
     def feed(self, chunk):
@@ -190,9 +196,14 @@ class BodyReceiver:
         self._wake_waiter()
 
     def signal_disconnect(self):
-        """Signal that connection has been lost."""
+        """Signal that the client transport has gone away."""
         self._closed = True
         self._wake_waiter()
+
+    @property
+    def _disconnected(self):
+        """True when the receiver should yield http.disconnect to the app."""
+        return self._closed or self._body_wait_expired
 
     def _wake_waiter(self):
         """Wake up any pending receive() call."""
@@ -201,8 +212,14 @@ class BodyReceiver:
 
     async def receive(self):  # pylint: disable=too-many-return-statements
         """ASGI receive callable - returns body chunks or disconnect."""
-        # Already disconnected or body finished
-        if self._closed or self._body_finished:
+        # Already disconnected (transport closed or body wait timed out)
+        if self._disconnected:
+            return {"type": "http.disconnect"}
+
+        # Body finished but not disconnected - wait for actual disconnect
+        # This is needed for frameworks like Django that listen for disconnect
+        if self._body_finished:
+            await self._wait_for_disconnect()
             return {"type": "http.disconnect"}
 
         # Fast path: chunk already available
@@ -242,33 +259,77 @@ class BodyReceiver:
 
     def _build_receive_result(self):
         """Build receive result after waiting for data."""
-        if self._closed:
+        if self._disconnected:
             return {"type": "http.disconnect"}
 
         if self._chunks:
             return self._pop_chunk()
 
-        # Complete OR timeout - mark body finished to prevent infinite loops
-        # Apps should not loop forever waiting for body that won't arrive
-        self._body_finished = True
-        return {"type": "http.request", "body": b"", "more_body": False}
+        if self._complete:
+            self._body_finished = True
+            return {"type": "http.request", "body": b"", "more_body": False}
+
+        # Wait returned without data and the message was not framed complete:
+        # treat as a body-wait expiry rather than synthesizing end-of-body
+        # (which would desync the next pipelined request).
+        self._body_wait_expired = True
+        return {"type": "http.disconnect"}
 
     async def _wait_for_data(self):
         """Wait for body data to arrive via callback."""
-        if self._chunks or self._complete or self._closed:
+        if self._chunks or self._complete or self._disconnected:
             return
 
         # Create a new waiter
         loop = asyncio.get_event_loop()
         self._waiter = loop.create_future()
 
+        # Bound the wait by the configured worker timeout (default 30s).
+        # The protocol-level timeout drives transport disconnect handling;
+        # this only needs to escape an idle wait if data never arrives.
+        cfg = getattr(self.protocol, 'cfg', None)
+        timeout = getattr(cfg, 'timeout', None) if cfg is not None else None
+        if not timeout or timeout <= 0:
+            timeout = 30.0
+
         try:
-            # Wait with timeout for data or completion
-            await asyncio.wait_for(self._waiter, timeout=30.0)
+            await asyncio.wait_for(self._waiter, timeout=timeout)
         except asyncio.TimeoutError:
+            # No data arrived in time: mark body-wait as expired so receive()
+            # yields http.disconnect rather than a fake terminal http.request
+            # with more_body=False.  The transport itself may still be alive;
+            # _closed stays False so any code keying on transport-disconnect
+            # only is unaffected.
+            self._body_wait_expired = True
+        finally:
+            self._waiter = None
+
+    async def _wait_for_disconnect(self):
+        """Wait for connection to close after body is finished.
+
+        This is needed for ASGI apps (like Django) that call receive()
+        to listen for client disconnect after the request body is consumed.
+        """
+        if self._closed:
+            return
+
+        # Check protocol closed state first
+        if self.protocol._closed:
+            self._closed = True
+            return
+
+        # Create a new waiter to wait for disconnect
+        loop = asyncio.get_event_loop()
+        self._waiter = loop.create_future()
+
+        try:
+            # Wait indefinitely for disconnect (or until cancelled)
+            await self._waiter
+        except asyncio.CancelledError:
             pass
         finally:
             self._waiter = None
+            self._closed = True
 
 
 class ASGIProtocol(asyncio.Protocol):
@@ -283,6 +344,8 @@ class ASGIProtocol(asyncio.Protocol):
     _h1c_available = None
     _h1c_protocol_class = None
     _h1c_has_limits = False  # True if >= 0.4.1 (has limit parameters)
+    _h1c_limit_request_line = None  # Exception class from gunicorn_h1c >= 0.4.1
+    _h1c_limit_request_headers = None  # Exception class from gunicorn_h1c >= 0.4.1
     _h1c_invalid_chunk_extension = None  # Exception class from gunicorn_h1c >= 0.6.3
 
     def __init__(self, worker):
@@ -364,6 +427,13 @@ class ASGIProtocol(asyncio.Protocol):
                 cls._h1c_protocol_class = H1CProtocol
                 # Require >= 0.4.1 for limit enforcement
                 cls._h1c_has_limits = hasattr(gunicorn_h1c, 'LimitRequestLine')
+                # Store h1c exception classes for handling (>= 0.4.1)
+                cls._h1c_limit_request_line = getattr(
+                    gunicorn_h1c, 'LimitRequestLine', None
+                )
+                cls._h1c_limit_request_headers = getattr(
+                    gunicorn_h1c, 'LimitRequestHeaders', None
+                )
                 # Check for InvalidChunkExtension (>= 0.6.3)
                 cls._h1c_invalid_chunk_extension = getattr(
                     gunicorn_h1c, 'InvalidChunkExtension', None
@@ -394,6 +464,10 @@ class ASGIProtocol(asyncio.Protocol):
         for flag in self._FAST_PARSER_INCOMPATIBLE_FLAGS:
             if getattr(self.cfg, flag, False):
                 incompatible.append(flag)
+        # PROXY protocol framing is implemented only in PythonProtocol; the C parser
+        # has no proxy_protocol kwarg and would silently drop the framing.
+        if getattr(self.cfg, 'proxy_protocol', 'off') != 'off':
+            incompatible.append('proxy_protocol')
 
         if parser_setting == 'python':
             parser_class = PythonProtocol
@@ -425,17 +499,37 @@ class ASGIProtocol(asyncio.Protocol):
         if limit_request_line == 0 and parser_class != PythonProtocol:
             limit_request_line = 1024 * 1024  # 1MB for C parser
 
-        # Create parser with callbacks and limit parameters (both parsers support them)
-        self._callback_parser = parser_class(
-            on_headers_complete=self._on_headers_complete,
-            on_body=self._on_body,
-            on_message_complete=self._on_message_complete,
-            limit_request_line=limit_request_line,
-            limit_request_fields=self.cfg.limit_request_fields,
-            limit_request_field_size=self.cfg.limit_request_field_size,
-            permit_unconventional_http_method=self.cfg.permit_unconventional_http_method,
-            permit_unconventional_http_version=self.cfg.permit_unconventional_http_version,
-        )
+        # Create parser with callbacks and limit parameters (both parsers support them).
+        # Only the Python parser implements PROXY protocol framing; pass the option there.
+        parser_kwargs = {
+            'on_headers_complete': self._on_headers_complete,
+            'on_body': self._on_body,
+            'on_message_complete': self._on_message_complete,
+            'limit_request_line': limit_request_line,
+            'limit_request_fields': self.cfg.limit_request_fields,
+            'limit_request_field_size': self.cfg.limit_request_field_size,
+            'permit_unconventional_http_method': self.cfg.permit_unconventional_http_method,
+            'permit_unconventional_http_version': self.cfg.permit_unconventional_http_version,
+        }
+        if parser_class is PythonProtocol:
+            # PROXY framing is only honored when the peer is in
+            # ``proxy_allow_ips`` (the WSGI parser enforces the same gate at
+            # gunicorn/http/message.py:proxy_protocol_access_check).  Untrusted
+            # peers get proxy_protocol='off', so any framing they send is
+            # interpreted as malformed HTTP and rejected with a 400.
+            cfg_proxy = getattr(self.cfg, 'proxy_protocol', 'off')
+            if cfg_proxy != 'off':
+                peername = self.transport.get_extra_info('peername')
+                normalized = _normalize_sockaddr(peername)
+                trusted = _check_trusted_proxy(
+                    normalized,
+                    self.cfg.proxy_allow_ips,
+                    self.cfg.proxy_allow_networks(),
+                )
+                parser_kwargs['proxy_protocol'] = cfg_proxy if trusted else 'off'
+            else:
+                parser_kwargs['proxy_protocol'] = 'off'
+        self._callback_parser = parser_class(**parser_kwargs)
 
     def _on_headers_complete(self):
         """Callback: request headers are complete."""
@@ -464,6 +558,29 @@ class ASGIProtocol(asyncio.Protocol):
         if self._body_receiver:
             self._body_receiver.set_complete()
 
+    def _handle_h1c_exception(self, exc):
+        """Handle gunicorn_h1c exceptions with appropriate HTTP status codes.
+
+        Returns True if the exception was handled, False otherwise.
+        """
+        # pylint: disable=isinstance-second-argument-not-valid-type
+        h1c_limit_line = ASGIProtocol._h1c_limit_request_line
+        if h1c_limit_line is not None and isinstance(exc, h1c_limit_line):
+            self._send_error_response(414, str(exc))  # URI Too Long
+            self._close_transport()
+            return True
+        h1c_limit_headers = ASGIProtocol._h1c_limit_request_headers
+        if h1c_limit_headers is not None and isinstance(exc, h1c_limit_headers):
+            self._send_error_response(431, str(exc))  # Request Header Fields Too Large
+            self._close_transport()
+            return True
+        h1c_chunk_ext = ASGIProtocol._h1c_invalid_chunk_extension
+        if h1c_chunk_ext is not None and isinstance(exc, h1c_chunk_ext):
+            self._send_error_response(400, str(exc))
+            self._close_transport()
+            return True
+        return False
+
     def data_received(self, data):
         """Called when data is received on the connection."""
         if self._websocket:
@@ -475,37 +592,38 @@ class ASGIProtocol(asyncio.Protocol):
             self.reader.feed_data(data)
         elif self._callback_parser:
             # HTTP/1.x path - feed directly to callback parser
-            try:
-                self._callback_parser.feed(data)
-            except LimitRequestLine as e:
-                self._send_error_response(414, str(e))  # URI Too Long
-                self._close_transport()
+            if not self._feed_callback_parser(data):
                 return
-            except LimitRequestHeaders as e:
-                self._send_error_response(431, str(e))  # Request Header Fields Too Large
-                self._close_transport()
-                return
-            except InvalidChunkExtension as e:
-                self._send_error_response(400, str(e))
-                self._close_transport()
-                return
-            except ParseError as e:
-                self._send_error_response(400, str(e))
-                self._close_transport()
-                return
-            except Exception as e:
-                # Handle gunicorn_h1c exceptions (different class hierarchy)
-                h1c_exc = ASGIProtocol._h1c_invalid_chunk_extension
-                # pylint: disable=isinstance-second-argument-not-valid-type
-                if h1c_exc is not None and isinstance(e, h1c_exc):
-                    self._send_error_response(400, str(e))
-                    self._close_transport()
-                    return
-                raise
 
         # Backpressure: pause reading if buffer is too large
         if not self._reading_paused and self._is_buffer_full():
             self._pause_reading()
+
+    def _feed_callback_parser(self, data):
+        """Feed data to callback parser, handling parse errors.
+
+        Returns True if parsing should continue, False if connection was closed.
+        """
+        try:
+            self._callback_parser.feed(data)
+            return True
+        except LimitRequestLine as e:
+            self._send_error_response(414, str(e))  # URI Too Long
+            self._close_transport()
+            return False
+        except LimitRequestHeaders as e:
+            self._send_error_response(431, str(e))  # Request Header Fields Too Large
+            self._close_transport()
+            return False
+        except (InvalidChunkExtension, ParseError) as e:
+            self._send_error_response(400, str(e))
+            self._close_transport()
+            return False
+        except Exception as e:
+            # Handle gunicorn_h1c exceptions (different class hierarchy)
+            if self._handle_h1c_exception(e):
+                return False
+            raise
 
     def _is_buffer_full(self):
         """Check if internal buffer is full (HTTP/2 only)."""
@@ -663,14 +781,17 @@ class ASGIProtocol(asyncio.Protocol):
 
                 request = self._current_request
 
+                # If PROXY protocol provided a real client address, use it.
+                effective_peer = self._effective_peername(peername)
+
                 # Check for WebSocket upgrade
                 if self._is_websocket_upgrade(request):
-                    await self._handle_websocket(request, sockname, peername)
+                    await self._handle_websocket(request, sockname, effective_peer)
                     break  # WebSocket takes over the connection
 
                 # Handle HTTP request
                 keepalive = await self._handle_http_request(
-                    request, sockname, peername
+                    request, sockname, effective_peer
                 )
 
                 # Increment worker request count
@@ -687,6 +808,16 @@ class ASGIProtocol(asyncio.Protocol):
 
                 # Check connection limits for keepalive
                 if not self.cfg.keepalive:
+                    break
+
+                # Refuse keepalive if the previous request body was not fully
+                # framed: residual bytes in the transport stream would be parsed
+                # as the start of the next request (smuggling).  Only _complete
+                # signals a cleanly framed message; _closed is set on transport
+                # disconnect *and* on receive timeout, neither of which means
+                # the body finished framing.
+                receiver = self._body_receiver
+                if receiver is not None and not receiver._complete:
                     break
 
                 # Resume reading if paused during body consumption
@@ -803,6 +934,8 @@ class ASGIProtocol(asyncio.Protocol):
         response_complete = False
         exc_to_raise = None
         use_chunked = False
+        omits_body = False
+        omits_body_warned = False
 
         # Reset response buffer for write batching
         self._response_buffer = None
@@ -817,7 +950,8 @@ class ASGIProtocol(asyncio.Protocol):
 
         async def send(message):
             nonlocal response_started, response_complete, exc_to_raise
-            nonlocal response_status, response_headers, response_sent, use_chunked
+            nonlocal response_status, response_headers, response_sent, use_chunked, omits_body
+            nonlocal omits_body_warned
 
             # If client disconnected, silently ignore send attempts
             # This allows apps to finish cleanup without errors
@@ -841,15 +975,42 @@ class ASGIProtocol(asyncio.Protocol):
                 response_status = message["status"]
                 response_headers = message.get("headers", [])
 
-                # Check if Content-Length is present
-                has_content_length = any(
-                    (name.lower() if isinstance(name, str) else name.lower()) == b"content-length"
-                    or (name.lower() if isinstance(name, str) else name.lower()) == "content-length"
-                    for name, _ in response_headers
-                )
+                # Check if Content-Length or Transfer-Encoding is present
+                has_content_length = False
+                has_transfer_encoding = False
+                for name, _ in response_headers:
+                    name_lower = name.lower() if isinstance(name, str) else name.lower()
+                    if name_lower in (b"content-length", "content-length"):
+                        has_content_length = True
+                    elif name_lower in (b"transfer-encoding", "transfer-encoding"):
+                        has_transfer_encoding = True
+                        use_chunked = True  # Framework already set chunked encoding
 
-                # Use chunked encoding for HTTP/1.1 streaming responses without Content-Length
-                if not has_content_length and request.version >= (1, 1):
+                # No-body responses (HEAD/1xx/204/304) must not carry a body.
+                # Always drop Transfer-Encoding (no chunked terminator without
+                # a body); Content-Length is dropped only for statuses that
+                # forbid it per RFC 9110 §6.4.2 (1xx, 204).  HEAD and 304 keep
+                # an app-supplied Content-Length.
+                omits_body = self._response_omits_body(request.method, response_status)
+                if omits_body and (has_content_length or has_transfer_encoding):
+                    response_headers = self._strip_body_framing_headers(
+                        response_headers, response_status
+                    )
+                    if self._response_forbids_content_length(response_status):
+                        has_content_length = False
+                    has_transfer_encoding = False
+                    use_chunked = False
+
+                # Use chunked encoding for HTTP/1.1 streaming responses without Content-Length.
+                # Skip when the response cannot carry a body or when Transfer-Encoding was
+                # already set by the framework.
+                needs_chunked = (
+                    not has_content_length
+                    and not has_transfer_encoding
+                    and request.version >= (1, 1)
+                    and not omits_body
+                )
+                if needs_chunked:
                     use_chunked = True
                     response_headers = list(response_headers) + [(b"transfer-encoding", b"chunked")]
 
@@ -865,6 +1026,22 @@ class ASGIProtocol(asyncio.Protocol):
 
                 body = message.get("body", b"")
                 more_body = message.get("more_body", False)
+
+                # RFC 9110: HEAD/1xx/204/304 responses must not carry a body,
+                # even if the framework emits one.  Drop body bytes;
+                # use_chunked has already been forced False above so no
+                # terminator will be written either.  Warn once per request
+                # so framework bugs surface in logs without spamming on
+                # multi-chunk streams.
+                if omits_body:
+                    if body and not omits_body_warned:
+                        self.log.warning(
+                            "ASGI app sent body bytes on a no-body response "
+                            "(method=%s status=%s); dropping per RFC 9110.",
+                            request.method, response_status,
+                        )
+                        omits_body_warned = True
+                    body = b""
 
                 if body:
                     self._send_body(body, chunked=use_chunked)
@@ -909,15 +1086,22 @@ class ASGIProtocol(asyncio.Protocol):
             self.log.debug("Request cancelled (client disconnected)")
             return False
         except Exception:
-            self.log.exception("Error in ASGI application")
-            if not response_started:
-                self._send_error_response(500, "Internal Server Error")
-                response_status = 500
+            # If response was already completely sent, this is likely a
+            # disconnect-related exception (e.g. Django's RequestAborted)
+            if response_complete:
+                self.log.debug("Exception after response complete (client disconnected)")
+            else:
+                self.log.exception("Error in ASGI application")
+                if not response_started:
+                    self._send_error_response(500, "Internal Server Error")
+                    response_status = 500
             return False
         finally:
-            # Clear the body receiver reference
-            self._body_receiver = None
-
+            # NOTE: do NOT clear self._body_receiver here.  _handle_connection
+            # reads it after this method returns to enforce the keepalive
+            # smuggling guard (refuse keepalive when the body was not framed
+            # complete).  The connection loop clears the reference itself
+            # after the gate has run.
             try:
                 request_time = _RequestTime(time.monotonic() - request_start)
                 # Only build log data if access logging is enabled
@@ -1116,6 +1300,71 @@ class ASGIProtocol(asyncio.Protocol):
 
         # Buffer headers for batching with first body chunk
         self._response_buffer = b"".join(parts)
+
+    def _effective_peername(self, peername):
+        """Return the client address advertised via PROXY protocol if any.
+
+        Falls back to the transport peername when PROXY protocol is disabled,
+        the framing was absent, the parser is the C variant (which currently
+        does not surface PROXY metadata), or the transport peer is not in
+        ``proxy_allow_ips`` (defense-in-depth: ``_setup_callback_parser``
+        already disables PROXY parsing for untrusted peers).
+        """
+        if getattr(self.cfg, 'proxy_protocol', 'off') == 'off':
+            return peername
+        if not _check_trusted_proxy(
+            peername,
+            self.cfg.proxy_allow_ips,
+            self.cfg.proxy_allow_networks(),
+        ):
+            return peername
+        parser = self._callback_parser
+        info = getattr(parser, 'proxy_protocol_info', None) if parser else None
+        if not info:
+            return peername
+        client_addr = info.get('client_addr')
+        client_port = info.get('client_port')
+        if client_addr is None or client_port is None:
+            return peername
+        return (client_addr, client_port)
+
+    @staticmethod
+    def _response_omits_body(method, status):
+        """Return True when the response MUST NOT have a body (RFC 9110).
+
+        Applies to HEAD requests and to status codes that semantically carry no body:
+        1xx informational, 204 No Content, 304 Not Modified.
+        """
+        return (
+            method == "HEAD"
+            or status in (204, 304)
+            or 100 <= status < 200
+        )
+
+    @staticmethod
+    def _response_forbids_content_length(status):
+        """Per RFC 9110 §6.4.2 a server MUST NOT send Content-Length on 1xx
+        or 204 responses.  HEAD and 304 are NOT covered: HEAD MAY include the
+        Content-Length the same GET would have returned, and 304 MAY include
+        the Content-Length the unconditional response would have carried.
+        """
+        return status == 204 or 100 <= status < 200
+
+    @classmethod
+    def _strip_body_framing_headers(cls, headers, status):
+        """Remove framing headers that must not appear on a no-body response.
+
+        Transfer-Encoding is always stripped (chunked framing implies a body
+        we will not send).  Content-Length is stripped only when the status
+        forbids it (1xx / 204); HEAD and 304 keep app-supplied Content-Length.
+        """
+        forbidden = {b"transfer-encoding", "transfer-encoding"}
+        if cls._response_forbids_content_length(status):
+            forbidden.update({b"content-length", "content-length"})
+        return [
+            (n, v) for n, v in headers
+            if (n.lower() if isinstance(n, str) else n.lower()) not in forbidden
+        ]
 
     def _send_body(self, body, chunked=False):
         """Send response body chunk.

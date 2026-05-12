@@ -81,7 +81,7 @@ class TornadoWorker(Worker):
         if 'h2' in self.cfg.http_protocols:
             self.log.warning(
                 "HTTP/2 is not supported by the tornado worker. "
-                "Use gthread, gevent, eventlet, or asgi workers for HTTP/2 support. "
+                "Use gthread, gevent, or asgi workers for HTTP/2 support. "
                 "Falling back to HTTP/1.1 only."
             )
 
