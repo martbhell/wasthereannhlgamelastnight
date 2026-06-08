@@ -12,19 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, Dict, List, IO
 import logging
+from typing import IO, Any, Dict, List
 
-from google_crc32c import Checksum
+import google_crc32c
+
 from google.cloud import _storage_v2 as storage_v2
-from google.cloud.storage.exceptions import DataCorruption
 from google.cloud.storage.asyncio.retry._helpers import (
     _handle_redirect,
 )
 from google.cloud.storage.asyncio.retry.base_strategy import (
     _BaseResumptionStrategy,
 )
-
+from google.cloud.storage.exceptions import DataCorruption
 
 _BIDI_READ_REDIRECTED_TYPE_URL = (
     "type.googleapis.com/google.storage.v2.BidiReadObjectRedirectedError"
@@ -127,7 +127,7 @@ class _ReadResumptionStrategy(_BaseResumptionStrategy):
 
             if checksummed_data.HasField("crc32c"):
                 server_checksum = checksummed_data.crc32c
-                client_checksum = int.from_bytes(Checksum(data).digest(), "big")
+                client_checksum = google_crc32c.value(data)
                 if server_checksum != client_checksum:
                     raise DataCorruption(
                         response,

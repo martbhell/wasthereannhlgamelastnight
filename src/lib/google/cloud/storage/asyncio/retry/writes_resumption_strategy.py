@@ -12,16 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, Dict, IO, List, Optional, Union
+from typing import IO, Any, Dict, List, Optional, Union
 
 import google_crc32c
+
 from google.cloud._storage_v2.types import storage as storage_type
 from google.cloud._storage_v2.types.storage import BidiWriteObjectRedirectedError
-from google.cloud.storage.asyncio.retry.base_strategy import (
-    _BaseResumptionStrategy,
-)
 from google.cloud.storage.asyncio.retry._helpers import (
     _extract_bidi_writes_redirect_proto,
+)
+from google.cloud.storage.asyncio.retry.base_strategy import (
+    _BaseResumptionStrategy,
 )
 
 
@@ -83,8 +84,7 @@ class _WriteResumptionStrategy(_BaseResumptionStrategy):
                 break
 
             checksummed_data = storage_type.ChecksummedData(content=chunk)
-            checksum = google_crc32c.Checksum(chunk)
-            checksummed_data.crc32c = int.from_bytes(checksum.digest(), "big")
+            checksummed_data.crc32c = google_crc32c.value(chunk)
 
             request = storage_type.BidiWriteObjectRequest(
                 write_offset=write_state.bytes_sent,

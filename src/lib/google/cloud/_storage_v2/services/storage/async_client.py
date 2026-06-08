@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2025 Google LLC
+# Copyright 2026 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,50 +14,51 @@
 # limitations under the License.
 #
 import logging as std_logging
-from collections import OrderedDict
 import re
+from collections import OrderedDict
 from typing import (
-    Dict,
+    AsyncIterable,
+    AsyncIterator,
+    Awaitable,
     Callable,
+    Dict,
     Mapping,
     MutableMapping,
     MutableSequence,
     Optional,
-    AsyncIterable,
-    Awaitable,
-    AsyncIterator,
     Sequence,
     Tuple,
     Type,
     Union,
 )
 
-from google.cloud._storage_v2 import gapic_version as package_version
-
-from google.api_core.client_options import ClientOptions
+import google.protobuf
 from google.api_core import exceptions as core_exceptions
 from google.api_core import gapic_v1
 from google.api_core import retry_async as retries
+from google.api_core.client_options import ClientOptions
 from google.auth import credentials as ga_credentials  # type: ignore
 from google.oauth2 import service_account  # type: ignore
-import google.protobuf
 
+from google.cloud._storage_v2 import gapic_version as package_version
 
 try:
     OptionalRetry = Union[retries.AsyncRetry, gapic_v1.method._MethodDefault, None]
 except AttributeError:  # pragma: NO COVER
     OptionalRetry = Union[retries.AsyncRetry, object, None]  # type: ignore
 
+import google.iam.v1.iam_policy_pb2 as iam_policy_pb2  # type: ignore
+import google.iam.v1.policy_pb2 as policy_pb2  # type: ignore
+import google.protobuf.field_mask_pb2 as field_mask_pb2  # type: ignore
+import google.protobuf.timestamp_pb2 as timestamp_pb2  # type: ignore
+from google.longrunning import operations_pb2  # type: ignore
+
 from google.cloud._storage_v2.services.storage import pagers
 from google.cloud._storage_v2.types import storage
-from google.iam.v1 import iam_policy_pb2  # type: ignore
-from google.iam.v1 import policy_pb2  # type: ignore
-from google.longrunning import operations_pb2  # type: ignore
-from google.protobuf import field_mask_pb2  # type: ignore
-from google.protobuf import timestamp_pb2  # type: ignore
-from .transports.base import StorageTransport, DEFAULT_CLIENT_INFO
-from .transports.grpc_asyncio import StorageGrpcAsyncIOTransport
+
 from .client import StorageClient
+from .transports.base import DEFAULT_CLIENT_INFO, StorageTransport
+from .transports.grpc_asyncio import StorageGrpcAsyncIOTransport
 
 try:
     from google.api_core import client_logging  # type: ignore
@@ -148,7 +149,10 @@ class StorageAsyncClient:
         Returns:
             StorageAsyncClient: The constructed client.
         """
-        return StorageClient.from_service_account_info.__func__(StorageAsyncClient, info, *args, **kwargs)  # type: ignore
+        sa_info_func = (
+            StorageClient.from_service_account_info.__func__  # type: ignore
+        )
+        return sa_info_func(StorageAsyncClient, info, *args, **kwargs)
 
     @classmethod
     def from_service_account_file(cls, filename: str, *args, **kwargs):
@@ -164,7 +168,10 @@ class StorageAsyncClient:
         Returns:
             StorageAsyncClient: The constructed client.
         """
-        return StorageClient.from_service_account_file.__func__(StorageAsyncClient, filename, *args, **kwargs)  # type: ignore
+        sa_file_func = (
+            StorageClient.from_service_account_file.__func__  # type: ignore
+        )
+        return sa_file_func(StorageAsyncClient, filename, *args, **kwargs)
 
     from_service_account_json = from_service_account_file
 
@@ -214,7 +221,7 @@ class StorageAsyncClient:
         return self._client.transport
 
     @property
-    def api_endpoint(self):
+    def api_endpoint(self) -> str:
         """Return the API endpoint used by the client instance.
 
         Returns:
@@ -363,14 +370,14 @@ class StorageAsyncClient:
             # - It may require specifying regional endpoints when creating the service
             #   client as shown in:
             #   https://googleapis.dev/python/google-api-core/latest/client_options.html
-            from google.cloud import storage_v2
+            from google.cloud import _storage_v2
 
             async def sample_delete_bucket():
                 # Create a client
-                client = storage_v2.StorageAsyncClient()
+                client = _storage_v2.StorageAsyncClient()
 
                 # Initialize request argument(s)
-                request = storage_v2.DeleteBucketRequest(
+                request = _storage_v2.DeleteBucketRequest(
                     name="name_value",
                 )
 
@@ -476,14 +483,14 @@ class StorageAsyncClient:
             # - It may require specifying regional endpoints when creating the service
             #   client as shown in:
             #   https://googleapis.dev/python/google-api-core/latest/client_options.html
-            from google.cloud import storage_v2
+            from google.cloud import _storage_v2
 
             async def sample_get_bucket():
                 # Create a client
-                client = storage_v2.StorageAsyncClient()
+                client = _storage_v2.StorageAsyncClient()
 
                 # Initialize request argument(s)
-                request = storage_v2.GetBucketRequest(
+                request = _storage_v2.GetBucketRequest(
                     name="name_value",
                 )
 
@@ -602,14 +609,14 @@ class StorageAsyncClient:
             # - It may require specifying regional endpoints when creating the service
             #   client as shown in:
             #   https://googleapis.dev/python/google-api-core/latest/client_options.html
-            from google.cloud import storage_v2
+            from google.cloud import _storage_v2
 
             async def sample_create_bucket():
                 # Create a client
-                client = storage_v2.StorageAsyncClient()
+                client = _storage_v2.StorageAsyncClient()
 
                 # Initialize request argument(s)
-                request = storage_v2.CreateBucketRequest(
+                request = _storage_v2.CreateBucketRequest(
                     parent="parent_value",
                     bucket_id="bucket_id_value",
                 )
@@ -763,14 +770,14 @@ class StorageAsyncClient:
             # - It may require specifying regional endpoints when creating the service
             #   client as shown in:
             #   https://googleapis.dev/python/google-api-core/latest/client_options.html
-            from google.cloud import storage_v2
+            from google.cloud import _storage_v2
 
             async def sample_list_buckets():
                 # Create a client
-                client = storage_v2.StorageAsyncClient()
+                client = _storage_v2.StorageAsyncClient()
 
                 # Initialize request argument(s)
-                request = storage_v2.ListBucketsRequest(
+                request = _storage_v2.ListBucketsRequest(
                     parent="parent_value",
                 )
 
@@ -913,14 +920,14 @@ class StorageAsyncClient:
             # - It may require specifying regional endpoints when creating the service
             #   client as shown in:
             #   https://googleapis.dev/python/google-api-core/latest/client_options.html
-            from google.cloud import storage_v2
+            from google.cloud import _storage_v2
 
             async def sample_lock_bucket_retention_policy():
                 # Create a client
-                client = storage_v2.StorageAsyncClient()
+                client = _storage_v2.StorageAsyncClient()
 
                 # Initialize request argument(s)
-                request = storage_v2.LockBucketRetentionPolicyRequest(
+                request = _storage_v2.LockBucketRetentionPolicyRequest(
                     bucket="bucket_value",
                     if_metageneration_match=2413,
                 )
@@ -1037,12 +1044,12 @@ class StorageAsyncClient:
             # - It may require specifying regional endpoints when creating the service
             #   client as shown in:
             #   https://googleapis.dev/python/google-api-core/latest/client_options.html
-            from google.cloud import storage_v2
-            from google.iam.v1 import iam_policy_pb2  # type: ignore
+            from google.cloud import _storage_v2
+            import google.iam.v1.iam_policy_pb2 as iam_policy_pb2  # type: ignore
 
             async def sample_get_iam_policy():
                 # Create a client
-                client = storage_v2.StorageAsyncClient()
+                client = _storage_v2.StorageAsyncClient()
 
                 # Initialize request argument(s)
                 request = iam_policy_pb2.GetIamPolicyRequest(
@@ -1192,12 +1199,12 @@ class StorageAsyncClient:
             # - It may require specifying regional endpoints when creating the service
             #   client as shown in:
             #   https://googleapis.dev/python/google-api-core/latest/client_options.html
-            from google.cloud import storage_v2
-            from google.iam.v1 import iam_policy_pb2  # type: ignore
+            from google.cloud import _storage_v2
+            import google.iam.v1.iam_policy_pb2 as iam_policy_pb2  # type: ignore
 
             async def sample_set_iam_policy():
                 # Create a client
-                client = storage_v2.StorageAsyncClient()
+                client = _storage_v2.StorageAsyncClient()
 
                 # Initialize request argument(s)
                 request = iam_policy_pb2.SetIamPolicyRequest(
@@ -1351,12 +1358,12 @@ class StorageAsyncClient:
             # - It may require specifying regional endpoints when creating the service
             #   client as shown in:
             #   https://googleapis.dev/python/google-api-core/latest/client_options.html
-            from google.cloud import storage_v2
-            from google.iam.v1 import iam_policy_pb2  # type: ignore
+            from google.cloud import _storage_v2
+            import google.iam.v1.iam_policy_pb2 as iam_policy_pb2  # type: ignore
 
             async def sample_test_iam_permissions():
                 # Create a client
-                client = storage_v2.StorageAsyncClient()
+                client = _storage_v2.StorageAsyncClient()
 
                 # Initialize request argument(s)
                 request = iam_policy_pb2.TestIamPermissionsRequest(
@@ -1505,14 +1512,14 @@ class StorageAsyncClient:
             # - It may require specifying regional endpoints when creating the service
             #   client as shown in:
             #   https://googleapis.dev/python/google-api-core/latest/client_options.html
-            from google.cloud import storage_v2
+            from google.cloud import _storage_v2
 
             async def sample_update_bucket():
                 # Create a client
-                client = storage_v2.StorageAsyncClient()
+                client = _storage_v2.StorageAsyncClient()
 
                 # Initialize request argument(s)
-                request = storage_v2.UpdateBucketRequest(
+                request = _storage_v2.UpdateBucketRequest(
                 )
 
                 # Make the request
@@ -1648,14 +1655,14 @@ class StorageAsyncClient:
             # - It may require specifying regional endpoints when creating the service
             #   client as shown in:
             #   https://googleapis.dev/python/google-api-core/latest/client_options.html
-            from google.cloud import storage_v2
+            from google.cloud import _storage_v2
 
             async def sample_compose_object():
                 # Create a client
-                client = storage_v2.StorageAsyncClient()
+                client = _storage_v2.StorageAsyncClient()
 
                 # Initialize request argument(s)
-                request = storage_v2.ComposeObjectRequest(
+                request = _storage_v2.ComposeObjectRequest(
                 )
 
                 # Make the request
@@ -1758,14 +1765,14 @@ class StorageAsyncClient:
             # - It may require specifying regional endpoints when creating the service
             #   client as shown in:
             #   https://googleapis.dev/python/google-api-core/latest/client_options.html
-            from google.cloud import storage_v2
+            from google.cloud import _storage_v2
 
             async def sample_delete_object():
                 # Create a client
-                client = storage_v2.StorageAsyncClient()
+                client = _storage_v2.StorageAsyncClient()
 
                 # Initialize request argument(s)
-                request = storage_v2.DeleteObjectRequest(
+                request = _storage_v2.DeleteObjectRequest(
                     bucket="bucket_value",
                     object_="object__value",
                 )
@@ -1924,14 +1931,14 @@ class StorageAsyncClient:
             # - It may require specifying regional endpoints when creating the service
             #   client as shown in:
             #   https://googleapis.dev/python/google-api-core/latest/client_options.html
-            from google.cloud import storage_v2
+            from google.cloud import _storage_v2
 
             async def sample_restore_object():
                 # Create a client
-                client = storage_v2.StorageAsyncClient()
+                client = _storage_v2.StorageAsyncClient()
 
                 # Initialize request argument(s)
-                request = storage_v2.RestoreObjectRequest(
+                request = _storage_v2.RestoreObjectRequest(
                     bucket="bucket_value",
                     object_="object__value",
                     generation=1068,
@@ -2069,14 +2076,14 @@ class StorageAsyncClient:
             # - It may require specifying regional endpoints when creating the service
             #   client as shown in:
             #   https://googleapis.dev/python/google-api-core/latest/client_options.html
-            from google.cloud import storage_v2
+            from google.cloud import _storage_v2
 
             async def sample_cancel_resumable_write():
                 # Create a client
-                client = storage_v2.StorageAsyncClient()
+                client = _storage_v2.StorageAsyncClient()
 
                 # Initialize request argument(s)
-                request = storage_v2.CancelResumableWriteRequest(
+                request = _storage_v2.CancelResumableWriteRequest(
                     upload_id="upload_id_value",
                 )
 
@@ -2198,14 +2205,14 @@ class StorageAsyncClient:
             # - It may require specifying regional endpoints when creating the service
             #   client as shown in:
             #   https://googleapis.dev/python/google-api-core/latest/client_options.html
-            from google.cloud import storage_v2
+            from google.cloud import _storage_v2
 
             async def sample_get_object():
                 # Create a client
-                client = storage_v2.StorageAsyncClient()
+                client = _storage_v2.StorageAsyncClient()
 
                 # Initialize request argument(s)
-                request = storage_v2.GetObjectRequest(
+                request = _storage_v2.GetObjectRequest(
                     bucket="bucket_value",
                     object_="object__value",
                 )
@@ -2338,14 +2345,14 @@ class StorageAsyncClient:
             # - It may require specifying regional endpoints when creating the service
             #   client as shown in:
             #   https://googleapis.dev/python/google-api-core/latest/client_options.html
-            from google.cloud import storage_v2
+            from google.cloud import _storage_v2
 
             async def sample_read_object():
                 # Create a client
-                client = storage_v2.StorageAsyncClient()
+                client = _storage_v2.StorageAsyncClient()
 
                 # Initialize request argument(s)
-                request = storage_v2.ReadObjectRequest(
+                request = _storage_v2.ReadObjectRequest(
                     bucket="bucket_value",
                     object_="object__value",
                 )
@@ -2472,8 +2479,9 @@ class StorageAsyncClient:
         across several messages. If an error occurs with any request,
         the stream closes with a relevant error code. Since you can have
         multiple outstanding requests, the error response includes a
-        ``BidiReadObjectRangesError`` field detailing the specific error
-        for each pending ``read_id``.
+        ``BidiReadObjectError`` proto in its ``details`` field,
+        reporting the specific error, if any, for each pending
+        ``read_id``.
 
         **IAM Permissions**:
 
@@ -2488,18 +2496,18 @@ class StorageAsyncClient:
             # - It may require specifying regional endpoints when creating the service
             #   client as shown in:
             #   https://googleapis.dev/python/google-api-core/latest/client_options.html
-            from google.cloud import storage_v2
+            from google.cloud import _storage_v2
 
             async def sample_bidi_read_object():
                 # Create a client
-                client = storage_v2.StorageAsyncClient()
+                client = _storage_v2.StorageAsyncClient()
 
                 # Initialize request argument(s)
-                request = storage_v2.BidiReadObjectRequest(
+                request = _storage_v2.BidiReadObjectRequest(
                 )
 
                 # This method expects an iterator which contains
-                # 'storage_v2.BidiReadObjectRequest' objects
+                # '_storage_v2.BidiReadObjectRequest' objects
                 # Here we create a generator that yields a single `request` for
                 # demonstrative purposes.
                 requests = [request]
@@ -2588,14 +2596,14 @@ class StorageAsyncClient:
             # - It may require specifying regional endpoints when creating the service
             #   client as shown in:
             #   https://googleapis.dev/python/google-api-core/latest/client_options.html
-            from google.cloud import storage_v2
+            from google.cloud import _storage_v2
 
             async def sample_update_object():
                 # Create a client
-                client = storage_v2.StorageAsyncClient()
+                client = _storage_v2.StorageAsyncClient()
 
                 # Initialize request argument(s)
-                request = storage_v2.UpdateObjectRequest(
+                request = _storage_v2.UpdateObjectRequest(
                 )
 
                 # Make the request
@@ -2796,20 +2804,20 @@ class StorageAsyncClient:
             # - It may require specifying regional endpoints when creating the service
             #   client as shown in:
             #   https://googleapis.dev/python/google-api-core/latest/client_options.html
-            from google.cloud import storage_v2
+            from google.cloud import _storage_v2
 
             async def sample_write_object():
                 # Create a client
-                client = storage_v2.StorageAsyncClient()
+                client = _storage_v2.StorageAsyncClient()
 
                 # Initialize request argument(s)
-                request = storage_v2.WriteObjectRequest(
+                request = _storage_v2.WriteObjectRequest(
                     upload_id="upload_id_value",
                     write_offset=1297,
                 )
 
                 # This method expects an iterator which contains
-                # 'storage_v2.WriteObjectRequest' objects
+                # '_storage_v2.WriteObjectRequest' objects
                 # Here we create a generator that yields a single `request` for
                 # demonstrative purposes.
                 requests = [request]
@@ -2898,20 +2906,20 @@ class StorageAsyncClient:
             # - It may require specifying regional endpoints when creating the service
             #   client as shown in:
             #   https://googleapis.dev/python/google-api-core/latest/client_options.html
-            from google.cloud import storage_v2
+            from google.cloud import _storage_v2
 
             async def sample_bidi_write_object():
                 # Create a client
-                client = storage_v2.StorageAsyncClient()
+                client = _storage_v2.StorageAsyncClient()
 
                 # Initialize request argument(s)
-                request = storage_v2.BidiWriteObjectRequest(
+                request = _storage_v2.BidiWriteObjectRequest(
                     upload_id="upload_id_value",
                     write_offset=1297,
                 )
 
                 # This method expects an iterator which contains
-                # 'storage_v2.BidiWriteObjectRequest' objects
+                # '_storage_v2.BidiWriteObjectRequest' objects
                 # Here we create a generator that yields a single `request` for
                 # demonstrative purposes.
                 requests = [request]
@@ -2991,14 +2999,14 @@ class StorageAsyncClient:
             # - It may require specifying regional endpoints when creating the service
             #   client as shown in:
             #   https://googleapis.dev/python/google-api-core/latest/client_options.html
-            from google.cloud import storage_v2
+            from google.cloud import _storage_v2
 
             async def sample_list_objects():
                 # Create a client
-                client = storage_v2.StorageAsyncClient()
+                client = _storage_v2.StorageAsyncClient()
 
                 # Initialize request argument(s)
-                request = storage_v2.ListObjectsRequest(
+                request = _storage_v2.ListObjectsRequest(
                     parent="parent_value",
                 )
 
@@ -3123,14 +3131,14 @@ class StorageAsyncClient:
             # - It may require specifying regional endpoints when creating the service
             #   client as shown in:
             #   https://googleapis.dev/python/google-api-core/latest/client_options.html
-            from google.cloud import storage_v2
+            from google.cloud import _storage_v2
 
             async def sample_rewrite_object():
                 # Create a client
-                client = storage_v2.StorageAsyncClient()
+                client = _storage_v2.StorageAsyncClient()
 
                 # Initialize request argument(s)
-                request = storage_v2.RewriteObjectRequest(
+                request = _storage_v2.RewriteObjectRequest(
                     destination_name="destination_name_value",
                     destination_bucket="destination_bucket_value",
                     source_bucket="source_bucket_value",
@@ -3241,14 +3249,14 @@ class StorageAsyncClient:
             # - It may require specifying regional endpoints when creating the service
             #   client as shown in:
             #   https://googleapis.dev/python/google-api-core/latest/client_options.html
-            from google.cloud import storage_v2
+            from google.cloud import _storage_v2
 
             async def sample_start_resumable_write():
                 # Create a client
-                client = storage_v2.StorageAsyncClient()
+                client = _storage_v2.StorageAsyncClient()
 
                 # Initialize request argument(s)
-                request = storage_v2.StartResumableWriteRequest(
+                request = _storage_v2.StartResumableWriteRequest(
                 )
 
                 # Make the request
@@ -3351,14 +3359,14 @@ class StorageAsyncClient:
             # - It may require specifying regional endpoints when creating the service
             #   client as shown in:
             #   https://googleapis.dev/python/google-api-core/latest/client_options.html
-            from google.cloud import storage_v2
+            from google.cloud import _storage_v2
 
             async def sample_query_write_status():
                 # Create a client
-                client = storage_v2.StorageAsyncClient()
+                client = _storage_v2.StorageAsyncClient()
 
                 # Initialize request argument(s)
-                request = storage_v2.QueryWriteStatusRequest(
+                request = _storage_v2.QueryWriteStatusRequest(
                     upload_id="upload_id_value",
                 )
 
@@ -3486,14 +3494,14 @@ class StorageAsyncClient:
             # - It may require specifying regional endpoints when creating the service
             #   client as shown in:
             #   https://googleapis.dev/python/google-api-core/latest/client_options.html
-            from google.cloud import storage_v2
+            from google.cloud import _storage_v2
 
             async def sample_move_object():
                 # Create a client
-                client = storage_v2.StorageAsyncClient()
+                client = _storage_v2.StorageAsyncClient()
 
                 # Initialize request argument(s)
-                request = storage_v2.MoveObjectRequest(
+                request = _storage_v2.MoveObjectRequest(
                     bucket="bucket_value",
                     source_object="source_object_value",
                     destination_object="destination_object_value",
