@@ -12,25 +12,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from io import BufferedReader
 import io
 import logging
-from typing import List, Optional, Tuple, Union
+from io import BufferedReader
+from typing import Dict, List, Optional, Tuple, Union
 
 from google.api_core import exceptions
 from google.api_core.retry_async import AsyncRetry
 from google.rpc import status_pb2
+
+from google.cloud import _storage_v2
 from google.cloud._storage_v2.types import BidiWriteObjectRedirectedError
 from google.cloud._storage_v2.types.storage import BidiWriteObjectRequest
-
-
-from . import _utils
-from google.cloud import _storage_v2
+from google.cloud.storage import Blob
 from google.cloud.storage.asyncio.async_grpc_client import (
     AsyncGrpcClient,
 )
 from google.cloud.storage.asyncio.async_write_object_stream import (
     _AsyncWriteObjectStream,
+)
+from google.cloud.storage.asyncio.retry._helpers import (
+    _extract_bidi_writes_redirect_proto,
 )
 from google.cloud.storage.asyncio.retry.bidi_stream_retry_manager import (
     _BidiStreamRetryManager,
@@ -39,9 +41,8 @@ from google.cloud.storage.asyncio.retry.writes_resumption_strategy import (
     _WriteResumptionStrategy,
     _WriteState,
 )
-from google.cloud.storage.asyncio.retry._helpers import (
-    _extract_bidi_writes_redirect_proto,
-)
+
+from . import _utils
 
 _MAX_CHUNK_SIZE_BYTES = 2 * 1024 * 1024  # 2 MiB
 _DEFAULT_FLUSH_INTERVAL_BYTES = 16 * 1024 * 1024  # 16 MiB
@@ -211,6 +212,60 @@ class AsyncAppendableObjectWriter:
         self._routing_token: Optional[str] = None
         self.object_resource: Optional[_storage_v2.Object] = None
         self._flush_count = 0
+        self.blob: Optional[Blob] = None
+
+    @classmethod
+    def from_blob(
+        cls,
+        client: AsyncGrpcClient,
+        blob: Blob,
+        write_handle: Optional[_storage_v2.BidiWriteHandle] = None,
+        writer_options: Optional[dict] = None,
+    ) -> "AsyncAppendableObjectWriter":
+        """Creates an AsyncAppendableObjectWriter from an existing Blob object.
+
+        This factory method extracts the bucket and object names directly from
+        the provided blob instance.
+
+        .. code-block:: python
+
+            from google.cloud.storage.bucket import Bucket
+            from google.cloud.storage.blob import Blob
+
+            bucket = Bucket(client, name="my-bucket")
+            blob = Blob(name="my-object.txt", bucket=bucket)
+
+            writer = AsyncAppendableObjectWriter.from_blob(
+                client=client,
+                blob=blob
+            )
+
+        :type client: :class:`~google.cloud.storage.client.AsyncGrpcClient`
+        :param client: The async gRPC client to use for write operations.
+
+        :type blob: :class:`~google.cloud.storage.blob.Blob`
+        :param blob: The blob instance providing the target path.
+
+        :type write_handle: :class:`~google.storage.v2.BidiWriteHandle`
+        :param write_handle: (Optional) An existing BidiWriteHandle to resume a session.
+
+        :type writer_options: dict
+        :param writer_options: (Optional) Configuration settings for the underlying
+            appendable writer.
+
+        :rtype: :class:`AsyncAppendableObjectWriter`
+        :returns: An initialized writer instance.
+        """
+        instance = cls(
+            client=client,
+            bucket_name=blob.bucket.name,
+            object_name=blob.name,
+            generation=blob.generation,
+            write_handle=write_handle,
+            writer_options=writer_options,
+        )
+        instance.blob = blob
+        return instance
 
     async def state_lookup(self) -> int:
         """Returns the persisted_size
@@ -297,6 +352,7 @@ class AsyncAppendableObjectWriter:
                 client=self.client.grpc_client,
                 bucket_name=self.bucket_name,
                 object_name=self.object_name,
+                blob=self.blob,
                 generation_number=self.generation,
                 write_handle=self.write_handle,
                 routing_token=self._routing_token,
@@ -367,7 +423,7 @@ class AsyncAppendableObjectWriter:
 
         def send_and_recv_generator(
             requests: List[BidiWriteObjectRequest],
-            state: dict[str, _WriteState],
+            state: Dict[str, _WriteState],
             metadata: Optional[List[Tuple[str, str]]] = None,
         ):
             async def generator():

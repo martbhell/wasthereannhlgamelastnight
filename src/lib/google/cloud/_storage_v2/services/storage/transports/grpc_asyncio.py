@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2025 Google LLC
+# Copyright 2026 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,30 +15,29 @@
 #
 import inspect
 import json
-import pickle
 import logging as std_logging
+import pickle
 import warnings
 from typing import Awaitable, Callable, Dict, Optional, Sequence, Tuple, Union
 
-from google.api_core import gapic_v1
-from google.api_core import grpc_helpers_async
+import google.iam.v1.iam_policy_pb2 as iam_policy_pb2  # type: ignore
+import google.iam.v1.policy_pb2 as policy_pb2  # type: ignore
+import google.protobuf.empty_pb2 as empty_pb2  # type: ignore
+import google.protobuf.message
+import grpc  # type: ignore
+import proto  # type: ignore
 from google.api_core import exceptions as core_exceptions
+from google.api_core import gapic_v1, grpc_helpers_async
 from google.api_core import retry_async as retries
 from google.auth import credentials as ga_credentials  # type: ignore
 from google.auth.transport.grpc import SslCredentials  # type: ignore
+from google.longrunning import operations_pb2  # type: ignore
 from google.protobuf.json_format import MessageToJson
-import google.protobuf.message
-
-import grpc  # type: ignore
-import proto  # type: ignore
 from grpc.experimental import aio  # type: ignore
 
 from google.cloud._storage_v2.types import storage
-from google.iam.v1 import iam_policy_pb2  # type: ignore
-from google.iam.v1 import policy_pb2  # type: ignore
-from google.longrunning import operations_pb2  # type: ignore
-from google.protobuf import empty_pb2  # type: ignore
-from .base import StorageTransport, DEFAULT_CLIENT_INFO
+
+from .base import DEFAULT_CLIENT_INFO, StorageTransport
 from .grpc import StorageGrpcTransport
 
 try:
@@ -65,7 +64,7 @@ class _LoggingClientAIOInterceptor(
             elif isinstance(request, google.protobuf.message.Message):
                 request_payload = MessageToJson(request)
             else:
-                request_payload = f"{type(request).__name__}: {pickle.dumps(request)}"
+                request_payload = f"{type(request).__name__}: {pickle.dumps(request)!r}"
 
             request_metadata = {
                 key: value.decode("utf-8") if isinstance(value, bytes) else value
@@ -100,7 +99,7 @@ class _LoggingClientAIOInterceptor(
             elif isinstance(result, google.protobuf.message.Message):
                 response_payload = MessageToJson(result)
             else:
-                response_payload = f"{type(result).__name__}: {pickle.dumps(result)}"
+                response_payload = f"{type(result).__name__}: {pickle.dumps(result)!r}"
             grpc_response = {
                 "payload": response_payload,
                 "metadata": metadata,
@@ -272,6 +271,10 @@ class StorageGrpcAsyncIOTransport(StorageTransport):
                 your own client library.
             always_use_jwt_access (Optional[bool]): Whether self signed JWT should
                 be used for service account credentials.
+            api_audience (Optional[str]): The intended audience for the API calls
+                to the service that will be set when using certain 3rd party
+                authentication flows. Audience is typically a resource identifier.
+                If not set, the host value will be used as a default.
 
         Raises:
             google.auth.exceptions.MutualTlsChannelError: If mutual TLS transport
@@ -562,12 +565,12 @@ class StorageGrpcAsyncIOTransport(StorageTransport):
         # gRPC handles serialization and deserialization, so we just need
         # to pass in the functions for each.
         if "lock_bucket_retention_policy" not in self._stubs:
-            self._stubs[
-                "lock_bucket_retention_policy"
-            ] = self._logged_channel.unary_unary(
-                "/google.storage.v2.Storage/LockBucketRetentionPolicy",
-                request_serializer=storage.LockBucketRetentionPolicyRequest.serialize,
-                response_deserializer=storage.Bucket.deserialize,
+            self._stubs["lock_bucket_retention_policy"] = (
+                self._logged_channel.unary_unary(
+                    "/google.storage.v2.Storage/LockBucketRetentionPolicy",
+                    request_serializer=storage.LockBucketRetentionPolicyRequest.serialize,
+                    response_deserializer=storage.Bucket.deserialize,
+                )
             )
         return self._stubs["lock_bucket_retention_policy"]
 
@@ -971,8 +974,9 @@ class StorageGrpcAsyncIOTransport(StorageTransport):
         across several messages. If an error occurs with any request,
         the stream closes with a relevant error code. Since you can have
         multiple outstanding requests, the error response includes a
-        ``BidiReadObjectRangesError`` field detailing the specific error
-        for each pending ``read_id``.
+        ``BidiReadObjectError`` proto in its ``details`` field,
+        reporting the specific error, if any, for each pending
+        ``read_id``.
 
         **IAM Permissions**:
 

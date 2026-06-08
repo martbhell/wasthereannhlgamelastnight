@@ -560,7 +560,7 @@ class Session(SessionRedirectMixin):
         url: _t.UriType,
         params: _t.ParamsType = None,
         data: _t.DataType = None,
-        headers: Mapping[str, str | bytes] | None = None,
+        headers: _t.HeadersType = None,
         cookies: RequestsCookieJar | CookieJar | dict[str, str] | None = None,
         files: _t.FilesType = None,
         auth: _t.AuthType = None,

@@ -14,13 +14,16 @@
 
 """An async client for interacting with Google Cloud Storage using the gRPC API."""
 
+import grpc
+from google.auth import credentials as auth_credentials
+
 from google.cloud import _storage_v2 as storage_v2
 from google.cloud._storage_v2.services.storage.transports.base import (
     DEFAULT_CLIENT_INFO,
 )
 from google.cloud.storage import __version__
-import grpc
-from google.auth import credentials as auth_credentials
+
+_DEFAULT_HOST = "storage.googleapis.com"
 
 
 class AsyncGrpcClient:
@@ -108,7 +111,15 @@ class AsyncGrpcClient:
 
         primary_user_agent = client_info.to_user_agent()
 
+        host = _DEFAULT_HOST
+        quota_project_id = None
+        if client_options:
+            host = getattr(client_options, "api_endpoint", None) or _DEFAULT_HOST
+            quota_project_id = getattr(client_options, "quota_project_id", None)
+
         channel = transport_cls.create_channel(
+            host=host,
+            quota_project_id=quota_project_id,
             attempt_direct_path=attempt_direct_path,
             credentials=credentials,
             options=(("grpc.primary_user_agent", primary_user_agent),),

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2025 Google LLC
+# Copyright 2026 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,14 +17,12 @@ from __future__ import annotations
 
 from typing import MutableMapping, MutableSequence
 
+import google.protobuf.duration_pb2 as duration_pb2  # type: ignore
+import google.protobuf.field_mask_pb2 as field_mask_pb2  # type: ignore
+import google.protobuf.timestamp_pb2 as timestamp_pb2  # type: ignore
+import google.rpc.status_pb2 as status_pb2  # type: ignore
+import google.type.date_pb2 as date_pb2  # type: ignore
 import proto  # type: ignore
-
-from google.protobuf import duration_pb2  # type: ignore
-from google.protobuf import field_mask_pb2  # type: ignore
-from google.protobuf import timestamp_pb2  # type: ignore
-from google.rpc import status_pb2  # type: ignore
-from google.type import date_pb2  # type: ignore
-
 
 __protobuf__ = proto.module(
     package="google.storage.v2",
@@ -489,6 +487,11 @@ class ComposeObjectRequest(proto.Message):
             Optional. The checksums of the complete
             object. This is validated against the combined
             checksums of the component objects.
+        delete_source_objects (bool):
+            Whether the source objects should be deleted
+            in the compose request.
+
+            This field is a member of `oneof`_ ``_delete_source_objects``.
     """
 
     class SourceObject(proto.Message):
@@ -579,6 +582,11 @@ class ComposeObjectRequest(proto.Message):
         proto.MESSAGE,
         number=10,
         message="ObjectChecksums",
+    )
+    delete_source_objects: bool = proto.Field(
+        proto.BOOL,
+        number=11,
+        optional=True,
     )
 
 
@@ -1460,18 +1468,18 @@ class ReadRange(proto.Message):
             ``ReadObjectRequest`` with ``read_offset`` = -5 and
             ``read_length`` = 3 would return bytes 10 through 12 of the
             object. Requesting a negative offset with magnitude larger
-            than the size of the object returns the entire object. A
-            ``read_offset`` larger than the size of the object results
-            in an ``OutOfRange`` error.
+            than the size of the object is equivalent to ``read_offset``
+            = 0. A ``read_offset`` larger than the size of the object
+            results in an ``OutOfRange`` error.
         read_length (int):
             Optional. The maximum number of data bytes the server is
             allowed to return across all response messages with the same
             ``read_id``. A ``read_length`` of zero indicates to read
             until the resource end, and a negative ``read_length``
-            causes an error. If the stream returns fewer bytes than
-            allowed by the ``read_length`` and no error occurred, the
-            stream includes all data from the ``read_offset`` to the
-            resource end.
+            causes an ``OutOfRange`` error. If the stream returns fewer
+            bytes than allowed by the ``read_length`` and no error
+            occurred, the stream includes all data from the
+            ``read_offset`` to the resource end.
         read_id (int):
             Required. Read identifier provided by the client. When the
             client issues more than one outstanding ``ReadRange`` on the
@@ -1790,6 +1798,9 @@ class WriteObjectResponse(proto.Message):
             finalized.
 
             This field is a member of `oneof`_ ``write_status``.
+        persisted_data_checksums (google.cloud._storage_v2.types.ObjectChecksums):
+            If persisted_size is set, contains checksums of persisted
+            data.
     """
 
     persisted_size: int = proto.Field(
@@ -1802,6 +1813,11 @@ class WriteObjectResponse(proto.Message):
         number=2,
         oneof="write_status",
         message="Object",
+    )
+    persisted_data_checksums: "ObjectChecksums" = proto.Field(
+        proto.MESSAGE,
+        number=3,
+        message="ObjectChecksums",
     )
 
 
@@ -1942,8 +1958,9 @@ class BidiWriteObjectRequest(proto.Message):
         object_checksums (google.cloud._storage_v2.types.ObjectChecksums):
             Optional. Checksums for the complete object. If the
             checksums computed by the service don't match the specified
-            checksums the call fails. Might only be provided in the
-            first request or the last request (with finish_write set).
+            checksums the call fails. May be provided in the last
+            request (with finish_write set). For non-appendable objects
+            only, may also be provided in the first request.
         state_lookup (bool):
             Optional. For each ``BidiWriteObjectRequest`` where
             ``state_lookup`` is ``true`` or the client closes the
@@ -2050,6 +2067,9 @@ class BidiWriteObjectResponse(proto.Message):
             finalized.
 
             This field is a member of `oneof`_ ``write_status``.
+        persisted_data_checksums (google.cloud._storage_v2.types.ObjectChecksums):
+            If persisted_size is set, contains checksums of persisted
+            data.
         write_handle (google.cloud._storage_v2.types.BidiWriteHandle):
             An optional write handle that is returned
             periodically in response messages. Clients
@@ -2069,6 +2089,11 @@ class BidiWriteObjectResponse(proto.Message):
         number=2,
         oneof="write_status",
         message="Object",
+    )
+    persisted_data_checksums: "ObjectChecksums" = proto.Field(
+        proto.MESSAGE,
+        number=4,
+        message="ObjectChecksums",
     )
     write_handle: "BidiWriteHandle" = proto.Field(
         proto.MESSAGE,
@@ -2268,6 +2293,9 @@ class QueryWriteStatusResponse(proto.Message):
             finalized.
 
             This field is a member of `oneof`_ ``write_status``.
+        persisted_data_checksums (google.cloud._storage_v2.types.ObjectChecksums):
+            If persisted_size is set, contains checksums of persisted
+            data.
     """
 
     persisted_size: int = proto.Field(
@@ -2280,6 +2308,11 @@ class QueryWriteStatusResponse(proto.Message):
         number=2,
         oneof="write_status",
         message="Object",
+    )
+    persisted_data_checksums: "ObjectChecksums" = proto.Field(
+        proto.MESSAGE,
+        number=3,
+        message="ObjectChecksums",
     )
 
 
@@ -3009,6 +3042,7 @@ class ServiceConstants(proto.Message):
                 returned by the GetListObjectsSplitPoints RPC is
                 valid.
         """
+
         _pb_options = {"allow_alias": True}
         VALUES_UNSPECIFIED = 0
         MAX_READ_CHUNK_BYTES = 2097152
@@ -3990,12 +4024,12 @@ class Bucket(proto.Message):
             optional=True,
             message="Bucket.IpFilter.PublicNetworkSource",
         )
-        vpc_network_sources: MutableSequence[
-            "Bucket.IpFilter.VpcNetworkSource"
-        ] = proto.RepeatedField(
-            proto.MESSAGE,
-            number=3,
-            message="Bucket.IpFilter.VpcNetworkSource",
+        vpc_network_sources: MutableSequence["Bucket.IpFilter.VpcNetworkSource"] = (
+            proto.RepeatedField(
+                proto.MESSAGE,
+                number=3,
+                message="Bucket.IpFilter.VpcNetworkSource",
+            )
         )
         allow_cross_org_vpcs: bool = proto.Field(
             proto.BOOL,
@@ -4364,7 +4398,10 @@ class ObjectContexts(proto.Message):
 
     Attributes:
         custom (MutableMapping[str, google.cloud._storage_v2.types.ObjectCustomContextPayload]):
-            Optional. User-defined object contexts.
+            Optional. User-defined object contexts. The maximum key or
+            value size is ``256`` characters. The maximum number of
+            entries is ``50``. The maximum total serialized size of all
+            entries is ``25KiB``.
     """
 
     custom: MutableMapping[str, "ObjectCustomContextPayload"] = proto.MapField(
@@ -4620,6 +4657,7 @@ class Object(proto.Message):
                     The Retention configuration cannot be removed.
                     The mode cannot be changed.
             """
+
             MODE_UNSPECIFIED = 0
             UNLOCKED = 1
             LOCKED = 2

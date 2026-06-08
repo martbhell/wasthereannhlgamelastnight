@@ -9,7 +9,7 @@ by external code.
 
 from __future__ import annotations
 
-from collections.abc import Callable, Iterable, Mapping, MutableMapping
+from collections.abc import Callable, Iterable, Mapping, MutableMapping, Sequence
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -109,8 +109,7 @@ if TYPE_CHECKING:
         bytes | str | Iterable[bytes | str] | SupportsRead[bytes | str] | None
     )
 
-    HeadersType: TypeAlias = CaseInsensitiveDict[str] | Mapping[str, str | bytes]
-    HeadersUpdateType: TypeAlias = Mapping[str, str | bytes | None]
+    HeadersType: TypeAlias = Mapping[str, str | bytes] | None
 
     CookiesType: TypeAlias = RequestsCookieJar | Mapping[str, str]
 
@@ -139,13 +138,19 @@ if TYPE_CHECKING:
     VerifyType: TypeAlias = bool | str
     CertType: TypeAlias = str | tuple[str, str] | None
     JsonType: TypeAlias = (
-        None | bool | int | float | str | list["JsonType"] | dict[str, "JsonType"]
+        None
+        | bool
+        | int
+        | float
+        | str
+        | Sequence["JsonType"]
+        | Mapping[str, "JsonType"]
     )
 
     # TypedDicts for Unpack kwargs (PEP 692)
 
     class BaseRequestKwargs(TypedDict, total=False):
-        headers: Mapping[str, str | bytes] | None
+        headers: HeadersType
         cookies: RequestsCookieJar | CookieJar | dict[str, str] | None
         files: FilesType
         auth: AuthType
