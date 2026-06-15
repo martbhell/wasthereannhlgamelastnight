@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: grpcio-status
-Version: 1.81.0
+Version: 1.81.1
 Summary: Status proto mapping for gRPC
 Author-email: The gRPC Authors <grpc-io@googlegroups.com>
 License-Expression: Apache-2.0
@@ -18,7 +18,7 @@ Requires-Python: >=3.10
 Description-Content-Type: text/x-rst
 License-File: LICENSE
 Requires-Dist: protobuf<8.0.0,>=6.33.5
-Requires-Dist: grpcio>=1.81.0
+Requires-Dist: grpcio>=1.81.1
 Requires-Dist: googleapis-common-protos>=1.5.5
 Dynamic: classifier
 Dynamic: license-file

@@ -24,8 +24,8 @@ grpc/_cython/_cygrpc/__init__.py,sha256=w3kqSAyaZgP-W0890xR4L4WeBPGrtsQCQJe0FUFR
 grpc/_cython/_cygrpc/__pycache__/__init__.cpython-310.pyc,,
 grpc/_cython/_cygrpc/private_key_signing/private_key_signer_py_wrapper.cc,sha256=2lH-rsDyJ5jGUDrmbeLwsEuOthOoXuhwBezl_ifOQHE,3433
 grpc/_cython/_cygrpc/private_key_signing/private_key_signer_py_wrapper.h,sha256=q6BHeYgB_QcalS05Owm7lBuz65W5sTBf-6RynTvoU2M,5469
-grpc/_cython/cygrpc.cpython-310-x86_64-linux-gnu.so,sha256=2eKbIvVhEPNClDKWgOf27g86ZW0stZz0cxvbv0tblXg,16117464
-grpc/_grpcio_metadata.py,sha256=clqxu6hS0uXHXHQuAoYVciTW4ca3cyn-OtOecW23yNY,26
+grpc/_cython/cygrpc.cpython-310-x86_64-linux-gnu.so,sha256=2sXw_TNZtf6ex7QasXGkwhDO83i4E3LgpSYCeV5685w,16113368
+grpc/_grpcio_metadata.py,sha256=gJUbxdAWWv8Hp4PINFNhWqBtk77KejNAKDHpxZI_8uY,26
 grpc/_interceptor.py,sha256=Xewp_gWQdQVqWj1DyzPcd_jSvxTl2paFS_lj7ilnAR0,25796
 grpc/_observability.py,sha256=ttFMaOeW9vptPwLcIcGytXXo5uL03wVXfJ98UKoIJuw,10569
 grpc/_plugin_wrapping.py,sha256=Un2uZWkOnX8mwkBCGuh3KJ5MUD1c3Xcu32XE1cfmYxg,4481
@@ -114,9 +114,9 @@ grpc/framework/interfaces/face/__pycache__/face.cpython-310.pyc,,
 grpc/framework/interfaces/face/__pycache__/utilities.cpython-310.pyc,,
 grpc/framework/interfaces/face/face.py,sha256=OGyApdjsZ8BF9nNq-2sd6WXd9bPpbvj4jvXrGdJu-nY,39700
 grpc/framework/interfaces/face/utilities.py,sha256=jRmAmV0hXPXcN5a6Vg7OlBbcltGB6B10bUfoqqHJmUc,6777
-grpcio-1.81.0.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
-grpcio-1.81.0.dist-info/METADATA,sha256=M4W6jzs4FJs4_VK4mY7fY7sGdfWOPpK5LxNgiiZCGbE,3715
-grpcio-1.81.0.dist-info/RECORD,,
-grpcio-1.81.0.dist-info/WHEEL,sha256=f7C5ekz1-Glez5slVCSSrgeg4o9fIqQlfRm0oTv4nq8,151
-grpcio-1.81.0.dist-info/licenses/LICENSE,sha256=WMhqPytcyg69-e0-f05tw447OHltjD3JIGTGKk450N0,30191
-grpcio-1.81.0.dist-info/top_level.txt,sha256=eEd2Jq_aVQFp38bWW8Pfwjz_5iibqeOFT-2zXlPAq_8,5
+grpcio-1.81.1.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
+grpcio-1.81.1.dist-info/METADATA,sha256=bQOLSpGa6vafJOg4aUAvGTfHCyt-SnMcX6XLUGWe3qY,3715
+grpcio-1.81.1.dist-info/RECORD,,
+grpcio-1.81.1.dist-info/WHEEL,sha256=f7C5ekz1-Glez5slVCSSrgeg4o9fIqQlfRm0oTv4nq8,151
+grpcio-1.81.1.dist-info/licenses/LICENSE,sha256=WMhqPytcyg69-e0-f05tw447OHltjD3JIGTGKk450N0,30191
+grpcio-1.81.1.dist-info/top_level.txt,sha256=eEd2Jq_aVQFp38bWW8Pfwjz_5iibqeOFT-2zXlPAq_8,5

@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: grpcio
-Version: 1.81.0
+Version: 1.81.1
 Summary: HTTP/2-based RPC framework
 Author-email: The gRPC Authors <grpc-io@googlegroups.com>
 License-Expression: Apache-2.0
@@ -21,7 +21,7 @@ Description-Content-Type: text/x-rst
 License-File: LICENSE
 Requires-Dist: typing-extensions~=4.12
 Provides-Extra: protobuf
-Requires-Dist: grpcio-tools>=1.81.0; extra == "protobuf"
+Requires-Dist: grpcio-tools>=1.81.1; extra == "protobuf"
 Dynamic: classifier
 Dynamic: license-file
 Dynamic: provides-extra
