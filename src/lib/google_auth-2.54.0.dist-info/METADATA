@@ -1,8 +1,8 @@
 Metadata-Version: 2.4
 Name: google-auth
-Version: 2.53.0
+Version: 2.54.0
 Summary: Google Authentication Library
-Home-page: https://github.com/googleapis/google-auth-library-python
+Home-page: https://github.com/googleapis/google-cloud-python/tree/main/packages/google-auth
 Author: Google Cloud Platform
 Author-email: googleapis-packages@google.com
 License: Apache 2.0
