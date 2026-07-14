@@ -244,7 +244,7 @@ __all__ = ["cache_all", "compile", "DEFAULT_VERSION", "escape", "findall",
   "VERSION1", "X", "VERBOSE", "W", "WORD", "error", "Regex", "__version__",
   "__doc__", "RegexFlag"]
 
-__version__ = "2026.5.9"
+__version__ = "2026.7.10"
 
 # --------------------------------------------------------------------
 # Public interface.
@@ -364,8 +364,9 @@ def compile(pattern, flags=0, ignore_unused=False, cache_pattern=None, **kwargs)
 
 def purge():
     "Clear the regular expression cache"
-    _cache.clear()
-    _locale_sensitive.clear()
+    with _cache_lock:
+        _cache.clear()
+        _locale_sensitive.clear()
 
 # Whether to cache all patterns.
 _cache_all = True
@@ -473,7 +474,7 @@ def _compile(pattern, flags, ignore_unused, kwargs, cache_it):
     locale_key = (type(pattern), pattern)
     if _locale_sensitive.get(locale_key, True) or (flags & LOCALE) != 0:
         # This pattern is, or might be, locale-sensitive.
-        pattern_locale = _getpreferredencoding()
+        pattern_locale = _getpreferredencoding(False)
     else:
         # This pattern is definitely not locale-sensitive.
         pattern_locale = None
@@ -674,7 +675,9 @@ def _compile(pattern, flags, ignore_unused, kwargs, cache_it):
         # Store this regular expression and named list.
         pattern_key = (pattern, type(pattern), flags, args_needed,
           DEFAULT_VERSION, pattern_locale)
-        _cache[pattern_key] = compiled_pattern
+
+        with _cache_lock:
+            _cache[pattern_key] = compiled_pattern
 
         # Store what keyword arguments are needed.
         _named_args[args_key] = args_needed
