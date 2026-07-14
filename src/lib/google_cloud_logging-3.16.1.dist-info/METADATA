@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: google-cloud-logging
-Version: 3.16.0
+Version: 3.16.1
 Summary: Google Cloud Logging API client library
 Home-page: https://github.com/googleapis/google-cloud-python/tree/main/packages/google-cloud-logging
 Author: Google LLC
@@ -21,18 +21,17 @@ Classifier: Operating System :: OS Independent
 Classifier: Topic :: Internet
 Requires-Python: >=3.10
 License-File: LICENSE
-Requires-Dist: google-api-core[grpc]<3.0.0,>=2.17.1
+Requires-Dist: google-api-core[grpc]<3.0.0,>=2.24.2
 Requires-Dist: google-auth!=2.24.0,!=2.25.0,<3.0.0,>=2.14.1
 Requires-Dist: google-cloud-appengine-logging<2.0.0,>=0.1.3
-Requires-Dist: google-cloud-audit-log<1.0.0,>=0.3.1
+Requires-Dist: google-cloud-audit-log<1.0.0,>=0.3.2
 Requires-Dist: google-cloud-core<3.0.0,>=2.0.0
-Requires-Dist: grpc-google-iam-v1<1.0.0,>=0.12.4
+Requires-Dist: grpc-google-iam-v1<1.0.0,>=0.14.2
 Requires-Dist: opentelemetry-api>=1.16.0
 Requires-Dist: grpcio<2.0.0,>=1.59.0
 Requires-Dist: grpcio<2.0.0,>=1.75.1; python_version >= "3.14"
-Requires-Dist: proto-plus<2.0.0,>=1.22.3
-Requires-Dist: proto-plus<2.0.0,>=1.25.0; python_version >= "3.13"
-Requires-Dist: protobuf<8.0.0,>=4.25.8
+Requires-Dist: proto-plus<2.0.0,>=1.26.1
+Requires-Dist: protobuf<8.0.0,>=6.33.5
 Dynamic: author
 Dynamic: author-email
 Dynamic: classifier
