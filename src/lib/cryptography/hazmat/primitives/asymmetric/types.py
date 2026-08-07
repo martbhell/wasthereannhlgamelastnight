@@ -19,9 +19,10 @@ from cryptography.hazmat.primitives.asymmetric import (
     x25519,
 )
 
-# Every asymmetric key type
+# Every asymmetric key type. These use the private DH aliases so that
+# importing this module doesn't trigger the FFDH deprecation warning.
 PublicKeyTypes = typing.Union[
-    dh.DHPublicKey,
+    dh._DHPublicKey,
     dsa.DSAPublicKey,
     rsa.RSAPublicKey,
     ec.EllipticCurvePublicKey,
@@ -37,7 +38,7 @@ PublicKeyTypes = typing.Union[
 ]
 # Every asymmetric key type
 PrivateKeyTypes = typing.Union[
-    dh.DHPrivateKey,
+    dh._DHPrivateKey,
     ed25519.Ed25519PrivateKey,
     ed448.Ed448PrivateKey,
     mldsa.MLDSA44PrivateKey,
@@ -75,7 +76,7 @@ CertificateIssuerPublicKeyTypes = typing.Union[
     mldsa.MLDSA65PublicKey,
     mldsa.MLDSA87PublicKey,
 ]
-# This type removes DHPublicKey. x448/x25519 can be a public key
+# This type removes DHPublicKey. x448/x25519/mlkem can be a public key
 # but cannot be used in signing so they are allowed here.
 CertificatePublicKeyTypes = typing.Union[
     dsa.DSAPublicKey,
@@ -86,6 +87,8 @@ CertificatePublicKeyTypes = typing.Union[
     mldsa.MLDSA44PublicKey,
     mldsa.MLDSA65PublicKey,
     mldsa.MLDSA87PublicKey,
+    mlkem.MLKEM768PublicKey,
+    mlkem.MLKEM1024PublicKey,
     x25519.X25519PublicKey,
     x448.X448PublicKey,
 ]
