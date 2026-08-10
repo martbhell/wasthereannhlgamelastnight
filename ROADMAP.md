@@ -14,16 +14,16 @@ Each chunk is designed to be self-contained, testable, and executable in a singl
   - Fetch schedule data from NHL API (`https://api-web.nhle.com/v1/schedule/now` + 4 weeks ahead).
   - Generate `dist/get_schedule` (JSON) and `dist/version` (JSON).
 
-- [ ] **Chunk 1.2: Atom Feed Static Generator**
+- [x] **Chunk 1.2: Atom Feed Static Generator**
   - Port `atom_feed_manager` logic into `build.py`.
   - Compare schedule changes against previous build/state.
   - Output `dist/atom.xml` with Atom 1.0 feed entries.
 
-- [ ] **Chunk 1.3: Static Team CSS Generator**
+- [x] **Chunk 1.3: Static Team CSS Generator**
   - Port `menu_css` route logic into `build.py`.
   - Generate `dist/css/menu_team.css` using team definitions and HSL/Hex color contrast rules.
 
-- [ ] **Chunk 1.4: OpenAPI Specification & Swagger UI (`/docs`) Generator**
+- [x] **Chunk 1.4: OpenAPI Specification & Swagger UI (`/docs`) Generator**
   - Create OpenAPI 3.0 schema generator in `build.py` outputting `dist/openapi.json`.
   - Generate interactive Swagger UI documentation at `dist/docs/index.html`.
   - Document all endpoints (`/get_schedule`, `/version`, `/atom.xml`, `/$TEAM`, `/$DATE`, `/$TEAM/$DATE`, `?JSON`, `/menu`).
@@ -31,11 +31,11 @@ Each chunk is designed to be self-contained, testable, and executable in a singl
 ---
 
 ## Phase 2: Static HTML Generation & Client-Side Engine
-- [ ] **Chunk 2.1: Template & Static Asset Pipeline**
+- [x] **Chunk 2.1: Template & Static Asset Pipeline**
   - Refactor HTML templates (`src/templates/`) for static rendering (Jinja2 standalone).
   - Copy static assets (`src/static/` fonts, favicons, app.css, JS) to `dist/`.
 
-- [ ] **Chunk 2.2: Pre-rendered HTML Page Generation**
+- [x] **Chunk 2.2: Pre-rendered HTML Page Generation**
   - Pre-render `dist/index.html` (root page).
   - Pre-render `dist/menu/index.html` (interactive team picker).
   - Pre-render static pages for all 32 NHL teams and abbreviations (`dist/<TEAM>/index.html`, e.g., `dist/DET/index.html`, `dist/RedWings/index.html`).
@@ -75,5 +75,5 @@ Each chunk is designed to be self-contained, testable, and executable in a singl
 
 ## Progress Summary
 - **Total Chunks**: 12
-- **Completed**: 1
-- **Remaining**: 11
+- **Completed**: 6
+- **Remaining**: 6
