@@ -605,6 +605,48 @@ def run_dev_server(dist_dir, port=8080):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, directory=dist_dir, **kwargs)
 
+        def do_GET(self):
+            clean_path = self.path.split("?")[0].rstrip("/")
+            if clean_path in ("/get_schedule", "/get_schedule.json"):
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                file_path = os.path.join(dist_dir, "get_schedule.json")
+                with open(file_path, "rb") as f:
+                    self.wfile.write(f.read())
+                return
+            if clean_path in ("/version", "/version.json"):
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                file_path = os.path.join(dist_dir, "version.json")
+                with open(file_path, "rb") as f:
+                    self.wfile.write(f.read())
+                return
+
+            requested_file = os.path.join(dist_dir, self.path.lstrip("/"))
+            if not os.path.exists(requested_file) and not os.path.exists(
+                requested_file + ".html"
+            ):
+                parts = [p for p in clean_path.split("/") if p]
+                if parts:
+                    first_part = parts[0]
+                    team_folder = os.path.join(dist_dir, first_part)
+                    if os.path.isdir(team_folder):
+                        self.path = f"/{first_part}/index.html"
+                    else:
+                        self.path = "/index.html"
+
+            super().do_GET()
+
+        def guess_type(self, path):
+            basename = os.path.basename(path)
+            if basename in ("get_schedule", "version"):
+                return "application/json"
+            if basename == "atom.xml":
+                return "application/xml"
+            return super().guess_type(path)
+
     server_address = ("", port)
     httpd = HTTPServer(server_address, Handler)
     logging.info("--------------------------------------------------")
