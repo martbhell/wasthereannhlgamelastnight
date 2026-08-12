@@ -13,15 +13,11 @@ except ImportError:
     from backports.strenum import StrEnum
 from urllib.parse import unquote
 import unittest
-import yaml
-try:
-    from yaml import CSafeLoader as SafeLoader
-except ImportError:
-    from yaml import SafeLoader
+import yaml_rs
 
 from device_detector.parser import ClientHints
 from ..settings import ROOT
-from .. import DeviceDetector
+from .. import DeviceDetector, lookup_user_agent
 
 
 # App names -> Application ID map so that upstream
@@ -85,7 +81,7 @@ class Base(unittest.TestCase):
         fixtures = []
         for ffile in self.fixture_files:
             with open(f'{ROOT}/{ffile}', 'r') as r:
-                fixtures.extend(yaml.load(r, SafeLoader))
+                fixtures.extend(yaml_rs.loads(r.read()))
         return fixtures
 
 
@@ -215,7 +211,7 @@ class ParserBaseTest(Base):
         fixtures = []
         for ffile in self.fixture_files:
             with open(f'{ROOT}/{ffile}', 'r') as r:
-                fixtures.extend(yaml.load(r, SafeLoader))
+                fixtures.extend(yaml_rs.loads(r.read()))
         return fixtures
 
     def test_parsing(self):
@@ -227,10 +223,12 @@ class ParserBaseTest(Base):
         for fixture in fixtures:
             self.user_agent = unquote(fixture.pop('user_agent'))
             expect = fixture[self.fixture_key]
+            # clear cache because fixture files may contain duplicate UAs
+            lookup_user_agent.cache_clear()
             parsed = self.Parser(
                 self.user_agent,
                 client_hints=ClientHints.new(fixture.get('headers', {})),
-            ).clear_cache().parse()  # clear cache because fixture files may contain duplicate UAs
+            ).parse()
             data = parsed.ua_data
 
             for field in self.fields:
