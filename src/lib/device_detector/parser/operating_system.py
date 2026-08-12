@@ -31,10 +31,10 @@ x86_REGEX = RegexLazyIgnore(BOUNDED_REGEX.format('.*32bit|.*win32|(?:i[0-9]|x)86
 
 
 class OS(Parser):
-    fixture_files = [
+    fixture_files = (
         'local/oss.yml',
         'upstream/oss.yml',
-    ]
+    )
 
     DESKTOP_OS = DESKTOP_OS
     OPERATING_SYSTEMS = OPERATING_SYSTEMS
@@ -65,7 +65,7 @@ class OS(Parser):
 
     def platform(self) -> str:
         if ch := self.client_hints:
-            ch_architecture = self.client_hints.architecture.lower()
+            ch_architecture = ch.architecture.lower()
             for fragment, code in (
                 ('arm', 'ARM'),
                 ('loongarch64', 'LoongArch64'),
@@ -126,6 +126,9 @@ class OS(Parser):
 
             if name == 'Windows' and version and version[0] == '0':
                 version = '' if version_from_ua == '10' else version_from_ua
+
+            if name == 'Puffin OS':
+                version = version_from_ua
 
             # If the OS name detected from client hints matches the OS family from user agent
             # but the os name is another, use the one from user agent, as it might be more detailed

@@ -6,9 +6,10 @@ class PIM(BaseClientParser):
     __slots__ = ()
     APP_TYPE = AppType.PIM
 
-    fixture_files = [
+    fixture_files = (
+        'local/client/pim.yml',
         'upstream/client/pim.yml',
-    ]
+    )
 
 
 __all__ = [

@@ -9,14 +9,14 @@ except ImportError:
 from regex._regex_core import error as RegexError
 from ..lazy_regex import RegexLazyIgnore
 from .client_hints import ClientHints
-from ..yaml_loader import RegexLoader, app_pretty_names_types_data
+from ..yaml_loader import RegexLoader, app_pretty_names_types_data, load_ahocorasick_patterns
 
 # Match regexes that ONLY values like:
 # iPhone12mini
 # iPhone8
 # iPhone6s
 IPHONE_ONLY_UA = RegexLazyIgnore(r'iPhone(\d{1,2})?(s?$|mini|SE|XR|XS)')
-
+CHROME_ON_APPLE = RegexLazyIgnore(r'^Chrome/[\d\.]+ (CFNetwork|Darwin)')
 ENDSWITH_DARWIN = RegexLazyIgnore(r'Darwin/(?:\d+[.\d]+)(?: \(x86_64\))?$')
 
 
@@ -98,11 +98,17 @@ class Parser(RegexLoader):
         Check if UserAgent consists of iOS-related hardware.
         """
         if self._is_ios_fragment is None:
-            self._is_ios_fragment = IPHONE_ONLY_UA.match(self.user_agent_lower) is not None
-        return self._is_ios_fragment
+            for rgx in (IPHONE_ONLY_UA, CHROME_ON_APPLE):
+                if rgx.match(self.user_agent_lower) is not None:
+                    self._is_ios_fragment = True
+                    break
+            else:
+                self._is_ios_fragment = False
+        return bool(self._is_ios_fragment)
 
     def check_all_regexes(self) -> bool | list[str]:
-        if not (corasick := self.load_ahocorasick_patterns()):
+        name = self.__class__.__name__
+        if not (corasick := load_ahocorasick_patterns(name, tuple(self.fixture_files))):
             return True
         return corasick.find_matches_as_strings(self.user_agent_lower)
 
@@ -120,8 +126,10 @@ class Parser(RegexLoader):
             # Uncomment lines for debugging.
             # If too many ACs are matching when the full regex list failed,
             # to match then the AC pattern matching isn't optimizing anything.
+            #
+            # name = self.__class__.__name__
             # if ac_matched and not isinstance(ac_matched, bool):
-            #     print(f'{self.cache_name}: Unwanted AC Match: {ac_matched}. {self.user_agent}')
+            #     print(f'{name}: Unwanted AC Match: {ac_matched}. {self.user_agent}')
 
     def parse(self) -> Self:
         """
@@ -134,7 +142,7 @@ class Parser(RegexLoader):
 
     def extract_version(self) -> None:
         """
-        Extract the version if UA Yaml files specify version regexes.
+        Extract the version if user agent YAML files specify version regexes.
         See oss.yml for example file structure.
         """
         user_agent = self.user_agent
