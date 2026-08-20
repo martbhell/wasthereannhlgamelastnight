@@ -12,6 +12,6 @@ Classifier: Programming Language :: Python :: 3.12
 Classifier: Programming Language :: Python :: 3.13
 Classifier: Programming Language :: Python :: 3.14
 Requires-Python: >=3.10
-Version: 7.35.1
+Version: 7.36.0
 
 UNKNOWN
