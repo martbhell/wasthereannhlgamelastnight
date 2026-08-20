@@ -478,6 +478,7 @@ cdef public class _Document [ type LxmlDocumentType, object LxmlDocument ]:
     cdef int _ns_counter
     cdef bytes _prefix_tail
     cdef xmlDoc* _c_doc
+    # -- End of public part, '_c_doc' is the only publicly exposed struct field.
     cdef _BaseParser _parser
 
     def __dealloc__(self):
@@ -3161,7 +3162,7 @@ cdef class ElementTextIterator:
         return result
 
 
-cdef xmlNode* _createElement(xmlDoc* c_doc, object name_utf) except NULL:
+cdef xmlNode* _createElement(xmlDoc* c_doc, object name_utf) noexcept:
     cdef xmlNode* c_node
     c_node = tree.xmlNewDocNode(c_doc, NULL, _xcstr(name_utf), NULL)
     return c_node
