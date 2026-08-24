@@ -242,12 +242,12 @@ class BodyReceiver:
             self._closed = True
             return {"type": "http.disconnect"}
 
-        # Wait for body chunk to arrive via callback
-        try:
-            await self._wait_for_data()
-            return self._build_receive_result()
-        except asyncio.CancelledError:
-            return {"type": "http.disconnect"}
+        # Wait for body chunk to arrive via callback.  A real disconnect or a
+        # body-wait expiry is surfaced by _wait_for_data via _disconnected; a
+        # task cancellation propagates to the app rather than being masked as
+        # http.disconnect (#3627).
+        await self._wait_for_data()
+        return self._build_receive_result()
 
     def _pop_chunk(self):
         """Pop a chunk and return the appropriate message."""
@@ -322,11 +322,14 @@ class BodyReceiver:
         loop = asyncio.get_event_loop()
         self._waiter = loop.create_future()
 
+        # Wait for a real transport disconnect.  If the application's task is
+        # cancelled (eg the framework cancels its disconnect listener once the
+        # response is done), let CancelledError propagate instead of swallowing
+        # it and returning http.disconnect.  Swallowing it makes frameworks like
+        # Django raise RequestAborted in place of running response.close(),
+        # which skips request_finished and leaks DB connections (#3627).
         try:
-            # Wait indefinitely for disconnect (or until cancelled)
             await self._waiter
-        except asyncio.CancelledError:
-            pass
         finally:
             self._waiter = None
             self._closed = True
@@ -362,6 +365,11 @@ class ASGIProtocol(asyncio.Protocol):
 
         # Connection state
         self._closed = False
+        # Guards the connection_lost() cleanup so it runs exactly once. Kept
+        # separate from ``_closed`` because a server-initiated close sets
+        # ``_closed`` early (in _close_transport), and connection_lost() must
+        # still run its cleanup (e.g. decrement nr_conns) afterwards.
+        self._conn_lost_handled = False
         self._body_receiver = None  # Set per-request for disconnect signaling
 
         # Response buffering for write batching
@@ -679,10 +687,14 @@ class ASGIProtocol(asyncio.Protocol):
 
         See: https://github.com/benoitc/gunicorn/issues/3484
         """
-        # Guard against multiple calls (idempotent)
-        if self._closed:
+        # Guard against multiple calls (idempotent). Use a dedicated flag rather
+        # than ``_closed``: a server-initiated close sets ``_closed`` in
+        # _close_transport() before the transport reports the loss, and the
+        # cleanup below (notably decrementing nr_conns) must still run.
+        if self._conn_lost_handled:
             return
 
+        self._conn_lost_handled = True
         self._closed = True
         self.worker.nr_conns -= 1
 

@@ -300,6 +300,8 @@ class Response:
         self.sent = 0
         self.upgrade = False
         self.cfg = cfg
+        self._omits_body = False
+        self._omits_body_warned = False
 
     def force_close(self):
         self.must_close = True
@@ -336,8 +338,33 @@ class Response:
             self.status_code = None
 
         self.process_headers(headers)
+        self._omits_body = self._response_omits_body(
+            self.req.method, self.status_code)
+        if self._omits_body and self._response_forbids_content_length(
+                self.status_code):
+            self.headers = [
+                (k, v) for k, v in self.headers if k.lower() != "content-length"
+            ]
+            self.response_length = None
         self.chunked = self.is_chunked()
         return self.write
+
+    @staticmethod
+    def _response_omits_body(method, status):
+        # RFC 9110: HEAD requests and 1xx/204/304 responses MUST NOT carry
+        # a body, regardless of what the application emits.
+        return (
+            method == "HEAD"
+            or status in (204, 304)
+            or (status is not None and 100 <= status < 200)
+        )
+
+    @staticmethod
+    def _response_forbids_content_length(status):
+        # RFC 9110 §6.4.2: a server MUST NOT send Content-Length on 1xx or
+        # 204. HEAD MAY include the Content-Length the same GET would carry,
+        # and 304 MAY include the Content-Length of the unconditional response.
+        return status == 204 or (status is not None and 100 <= status < 200)
 
     def process_headers(self, headers):
         for name, value in headers:
@@ -379,12 +406,8 @@ class Response:
             return False
         elif self.req.version <= (1, 0):
             return False
-        elif self.req.method == 'HEAD':
-            # Responses to a HEAD request MUST NOT contain a response body.
-            return False
-        elif self.status_code in (204, 304):
-            # Do not use chunked responses when the response is guaranteed to
-            # not have a response body.
+        elif self._omits_body:
+            # No body permitted (HEAD or 1xx/204/304), so no chunked framing.
             return False
         return True
 
@@ -422,6 +445,15 @@ class Response:
         self.send_headers()
         if not isinstance(arg, bytes):
             raise TypeError('%r is not a byte' % arg)
+        if self._omits_body:
+            if arg and not self._omits_body_warned:
+                log.warning(
+                    "WSGI app sent body bytes on a no-body response "
+                    "(method=%s status=%s); dropping per RFC 9110.",
+                    self.req.method, self.status_code,
+                )
+                self._omits_body_warned = True
+            return
         arglen = len(arg)
         tosend = arglen
         if self.response_length is not None:
@@ -461,6 +493,19 @@ class Response:
                 nbytes = self.response_length
         except (OSError, io.UnsupportedOperation):
             return False
+
+        if self._omits_body:
+            self.send_headers()
+            # Only complain when there really are body bytes to drop, the
+            # same way write() only warns for a non-empty argument.
+            if nbytes > 0 and not self._omits_body_warned:
+                log.warning(
+                    "WSGI app sent body bytes on a no-body response "
+                    "(method=%s status=%s); dropping per RFC 9110.",
+                    self.req.method, self.status_code,
+                )
+                self._omits_body_warned = True
+            return True
 
         self.send_headers()
 
