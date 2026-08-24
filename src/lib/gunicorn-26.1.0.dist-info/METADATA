@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: gunicorn
-Version: 26.0.0
+Version: 26.1.0
 Summary: WSGI HTTP Server for UNIX
 Author-email: Benoit Chesneau <benoitc@gunicorn.org>
 License-Expression: MIT
@@ -33,27 +33,29 @@ Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content
 Requires-Python: >=3.10
 Description-Content-Type: text/markdown
 License-File: LICENSE
-Requires-Dist: packaging
 Provides-Extra: gevent
 Requires-Dist: gevent>=24.10.1; extra == "gevent"
+Requires-Dist: packaging; extra == "gevent"
 Provides-Extra: tornado
-Requires-Dist: tornado>=6.5.0; extra == "tornado"
+Requires-Dist: tornado>=6.5.7; extra == "tornado"
 Provides-Extra: gthread
 Provides-Extra: setproctitle
 Requires-Dist: setproctitle; extra == "setproctitle"
 Provides-Extra: http2
-Requires-Dist: h2>=4.1.0; extra == "http2"
+Requires-Dist: h2>=4.4.1; extra == "http2"
 Provides-Extra: fast
-Requires-Dist: gunicorn_h1c>=0.6.5; extra == "fast"
+Requires-Dist: gunicorn_h1c>=0.6.6; extra == "fast"
 Provides-Extra: testing
 Requires-Dist: gevent>=24.10.1; extra == "testing"
-Requires-Dist: h2>=4.1.0; extra == "testing"
+Requires-Dist: h2>=4.4.1; extra == "testing"
 Requires-Dist: coverage; extra == "testing"
-Requires-Dist: pytest; extra == "testing"
+Requires-Dist: packaging; extra == "testing"
+Requires-Dist: pytest>=9.0.3; extra == "testing"
 Requires-Dist: pytest-cov; extra == "testing"
 Requires-Dist: pytest-asyncio; extra == "testing"
 Requires-Dist: uvloop>=0.19.0; extra == "testing"
-Requires-Dist: httpx[http2]; extra == "testing"
+Requires-Dist: httpx[http2]>=0.23.0; extra == "testing"
+Requires-Dist: inotify>=0.2.10; sys_platform == "linux" and extra == "testing"
 Dynamic: license-file
 
 # Gunicorn
@@ -61,7 +63,7 @@ Dynamic: license-file
 <p align="center">
   <strong>Gunicorn is maintained by volunteers. If it powers your production, please consider supporting us:</strong><br>
   <a href="https://github.com/sponsors/benoitc"><img src="https://img.shields.io/badge/GitHub_Sponsors-❤-ea4aaa?style=for-the-badge&logo=github" alt="GitHub Sponsors"></a>
-  <a href="https://checkout.revolut.com/pay/ac271e5e-172a-408b-947b-2f9f79d3a88a"><img src="https://img.shields.io/badge/Revolut-Donate-191c20?style=for-the-badge" alt="Revolut"></a>
+  <a href="https://checkout.revolut.com/pay/74cf6fe1-358e-4880-b800-3f0936ce94be"><img src="https://img.shields.io/badge/Revolut-Donate-191c20?style=for-the-badge" alt="Revolut"></a>
 </p>
 
 [![PyPI version](https://img.shields.io/pypi/v/gunicorn.svg?style=flat)](https://pypi.python.org/pypi/gunicorn)
@@ -111,7 +113,7 @@ Full documentation at https://gunicorn.org
 ## Community
 
 - Report bugs on [GitHub Issues](https://github.com/benoitc/gunicorn/issues)
-- Chat in [#gunicorn](https://web.libera.chat/?channels=#gunicorn) on [Libera.chat](https://libera.chat/)
+- [Chat with us in your browser](https://web.libera.chat/?channels=%23gunicorn) (`#gunicorn` on Libera.Chat, no account needed)
 - See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines
 
 ## Support
