@@ -15,9 +15,9 @@ from gettext import ngettext
 from ._compat import _get_argv_encoding
 from ._compat import open_stream
 from .exceptions import BadParameter
+from .utils import _LazyFile
+from .utils import _safecall
 from .utils import format_filename
-from .utils import LazyFile
-from .utils import safecall
 
 if t.TYPE_CHECKING:
     import typing_extensions as te
@@ -30,6 +30,18 @@ _ValueT = t.TypeVar("_ValueT")
 _ValueT_contra = t.TypeVar("_ValueT_contra", contravariant=True)
 _ValueT_co = t.TypeVar("_ValueT_co", covariant=True)
 
+# The input type parameter of ParamType defaults to Any. TypeVar defaults
+# (PEP 696) landed in typing on Python 3.13, so type checkers get the
+# default from typing_extensions, which is never imported at runtime. On
+# older Pythons the runtime TypeVar carries no default;
+# ParamType.__class_getitem__ fills in the omitted parameter instead.
+if t.TYPE_CHECKING:
+    _InputT_contra = te.TypeVar("_InputT_contra", contravariant=True, default=t.Any)
+elif sys.version_info >= (3, 13):
+    _InputT_contra = t.TypeVar("_InputT_contra", contravariant=True, default=t.Any)
+else:
+    _InputT_contra = t.TypeVar("_InputT_contra", contravariant=True)
+
 _FloatValueT = t.TypeVar("_FloatValueT", bound=float)
 _FloatValueT_co = t.TypeVar("_FloatValueT_co", bound=float, covariant=True)
 
@@ -39,7 +51,7 @@ class ParamTypeInfoDict(t.TypedDict):
     name: str
 
 
-class ParamType(t.Generic[_ValueT_co], abc.ABC):
+class ParamType(t.Generic[_ValueT_co, _InputT_contra], abc.ABC):
     """Represents the type of a parameter. Validates and converts values
     from the command line or Python into the correct type.
 
@@ -61,6 +73,11 @@ class ParamType(t.Generic[_ValueT_co], abc.ABC):
         converted value type (``ParamType[int]`` for an integer-returning
         type) so that :meth:`convert` and downstream consumers carry the
         narrowed return type.
+
+    .. versionchanged:: 8.5.0
+        Accepts a second optional type parameter for the input value type
+        that :meth:`convert` accepts (``ParamType[int, str]`` for a type
+        converting strings to integers), defaulting to ``Any``.
     """
 
     is_composite: t.ClassVar[bool] = False
@@ -76,6 +93,20 @@ class ParamType(t.Generic[_ValueT_co], abc.ABC):
     #: are split by ``os.path.pathsep`` by default (":" on Unix and ";" on
     #: Windows).
     envvar_list_splitter: t.ClassVar[str | None] = None
+
+    if sys.version_info < (3, 13):
+        # ``_InputT_contra`` carries its ``Any`` default only for type
+        # checkers: ``TypeVar(default=...)`` (PEP 696) is unavailable at
+        # runtime before Python 3.13. Fill in the omitted input type
+        # parameter by hand so ``ParamType[int]`` keeps working.
+        def __class_getitem__(cls, params: t.Any) -> t.Any:
+            if cls is ParamType:
+                if not isinstance(params, tuple):
+                    params = (params,)
+                if len(params) == 1:
+                    params = (*params, t.Any)
+            # Checkers cannot see Generic.__class_getitem__ through super().
+            return super().__class_getitem__(params)  # type: ignore[misc]
 
     def to_info_dict(self) -> ParamTypeInfoDict:
         """Gather information that could be useful for a tool generating
@@ -98,9 +129,25 @@ class ParamType(t.Generic[_ValueT_co], abc.ABC):
 
         return {"param_type": param_type, "name": name}
 
+    @t.overload
     def __call__(
         self,
-        value: t.Any,
+        value: None,
+        param: Parameter | None = None,
+        ctx: Context | None = None,
+    ) -> None: ...
+
+    @t.overload
+    def __call__(
+        self,
+        value: _InputT_contra,
+        param: Parameter | None = None,
+        ctx: Context | None = None,
+    ) -> _ValueT_co: ...
+
+    def __call__(
+        self,
+        value: _InputT_contra | None,
         param: Parameter | None = None,
         ctx: Context | None = None,
     ) -> _ValueT_co | None:
@@ -119,7 +166,7 @@ class ParamType(t.Generic[_ValueT_co], abc.ABC):
         """
 
     def convert(
-        self, value: t.Any, param: Parameter | None, ctx: Context | None
+        self, value: _InputT_contra, param: Parameter | None, ctx: Context | None
     ) -> _ValueT_co:
         """Convert the value to the correct type. This is not called if
         the value is ``None`` (the missing value).
@@ -936,7 +983,7 @@ class File(ParamType[t.IO[t.Any]]):
             lazy = self.resolve_lazy_flag(value)
 
             if lazy:
-                lf = LazyFile(
+                lf = _LazyFile(
                     value, self.mode, self.encoding, self.errors, atomic=self.atomic
                 )
 
@@ -956,9 +1003,9 @@ class File(ParamType[t.IO[t.Any]]):
             # type is used with prompts.
             if ctx is not None:
                 if should_close:
-                    ctx.call_on_close(safecall(f.close))
+                    ctx.call_on_close(_safecall(f.close))
                 else:
-                    ctx.call_on_close(safecall(f.flush))
+                    ctx.call_on_close(_safecall(f.flush))
 
             return f
         except OSError as e:
@@ -1104,7 +1151,8 @@ class Path(ParamType[str | bytes | os.PathLike[str]]):
     ) -> str | bytes | os.PathLike[str]:
         rv = value
 
-        is_dash = self.file_okay and self.allow_dash and rv in (b"-", "-")
+        dash = b"-" if isinstance(rv, bytes) else "-"
+        is_dash = self.file_okay and self.allow_dash and rv == dash
 
         if not is_dash:
             if self.resolve_path:
