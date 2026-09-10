@@ -6,3 +6,4 @@ credentials.tar.gz
 # Ignore generated credentials from google-github-actions/auth
 gha-creds-*.json
 test_atom_feed.xml
+dist/
