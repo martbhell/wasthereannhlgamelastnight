@@ -1,13 +1,12 @@
 Metadata-Version: 2.4
 Name: googleapis-common-protos
-Version: 1.75.2
+Version: 1.75.3
 Summary: Common protobufs used in Google APIs
 Author-email: Google LLC <googleapis-packages@google.com>
-License: Apache 2.0
+License-Expression: Apache-2.0
 Project-URL: Repository, https://github.com/googleapis/google-cloud-python/tree/main/packages/googleapis-common-protos
 Classifier: Development Status :: 5 - Production/Stable
 Classifier: Intended Audience :: Developers
-Classifier: License :: OSI Approved :: Apache Software License
 Classifier: Programming Language :: Python
 Classifier: Programming Language :: Python :: 3
 Classifier: Programming Language :: Python :: 3.10

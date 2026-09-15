@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: google-api-core
-Version: 2.34.0
+Version: 2.37.0
 Summary: Google API client core library
 Author-email: Google LLC <googleapis-packages@google.com>
 License: Apache 2.0
@@ -27,6 +27,7 @@ Requires-Dist: protobuf<8.0.0,>=6.33.5
 Requires-Dist: proto-plus<2.0.0,>=1.26.1
 Requires-Dist: google-auth<3.0.0,>=2.14.1
 Requires-Dist: requests<3.0.0,>=2.33.0
+Requires-Dist: opentelemetry-api<2.0.0,>=1.44.0
 Provides-Extra: async-rest
 Requires-Dist: google-auth[aiohttp]<3.0.0,>=2.14.1; extra == "async-rest"
 Requires-Dist: aiohttp>=3.13.4; extra == "async-rest"
@@ -35,6 +36,10 @@ Requires-Dist: grpcio<2.0.0,>=1.59.0; extra == "grpc"
 Requires-Dist: grpcio<2.0.0,>=1.75.1; python_version >= "3.14" and extra == "grpc"
 Requires-Dist: grpcio-status<2.0.0,>=1.59.0; extra == "grpc"
 Requires-Dist: grpcio-status<2.0.0,>=1.75.1; python_version >= "3.14" and extra == "grpc"
+Provides-Extra: tracing
+Requires-Dist: opentelemetry-instrumentation-grpc<1.0.0,>=0.65b0; extra == "tracing"
+Provides-Extra: testing
+Requires-Dist: opentelemetry-sdk<2.0.0,>=1.44.0; extra == "testing"
 Dynamic: license-file
 
 Core Library for Google Client Libraries
