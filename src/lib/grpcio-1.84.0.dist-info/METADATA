@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: grpcio
-Version: 1.83.1
+Version: 1.84.0
 Summary: HTTP/2-based RPC framework
 Author-email: The gRPC Authors <grpc-io@googlegroups.com>
 License-Expression: Apache-2.0
@@ -16,12 +16,13 @@ Classifier: Programming Language :: Python :: 3.11
 Classifier: Programming Language :: Python :: 3.12
 Classifier: Programming Language :: Python :: 3.13
 Classifier: Programming Language :: Python :: 3.14
+Classifier: Programming Language :: Python :: 3.15
 Requires-Python: >=3.10
 Description-Content-Type: text/x-rst
 License-File: LICENSE
 Requires-Dist: typing-extensions~=4.12
 Provides-Extra: protobuf
-Requires-Dist: grpcio-tools>=1.83.1; extra == "protobuf"
+Requires-Dist: grpcio-tools>=1.84.0; extra == "protobuf"
 Dynamic: classifier
 Dynamic: license-file
 Dynamic: provides-extra
