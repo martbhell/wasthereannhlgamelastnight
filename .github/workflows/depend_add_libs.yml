@@ -47,10 +47,10 @@ jobs:
       run: pip install -r src/requirements.txt -t src/lib
     - name: Check whether src/lib changed
       run: |
-      if git diff --quiet -- src/lib; then
-        echo "No lib changes to commit"
-        exit 0
-      fi
+        if git diff --quiet -- src/lib; then
+          echo "No lib changes to commit"
+          exit 0
+        fi
     - name: Setup Git and commit and push
       env:
         CI_COMMIT_MESSAGE: "Rebuild src/lib after commit from dependabot"
