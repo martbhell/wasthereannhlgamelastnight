@@ -1,11 +1,19 @@
 name: Add Libs to Dependabot PRs
 
 on:
+  pull_request:
+    types: [opened, synchronize]
+    branches:
+      - master
   workflow_dispatch:
 
+concurrency:
+  group: dependabot-rebuild
+  cancel-in-progress: false
 
 jobs:
   test_and_build:
+    if: github.actor == 'dependabot[bot]' && startsWith(github.head_ref, 'dependabot/') && github.event.pull_request.state == 'open'
 
     runs-on: ubuntu-latest
 
