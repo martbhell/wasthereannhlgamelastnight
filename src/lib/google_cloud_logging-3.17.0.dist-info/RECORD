@@ -1,7 +1,7 @@
 google/cloud/logging/__init__.py,sha256=feWnsHwrcD2eTXehG2tDtwsCvLYGBSYe-VSn-cKAxYY,1368
 google/cloud/logging/__pycache__/__init__.cpython-310.pyc,,
 google/cloud/logging/__pycache__/gapic_version.cpython-310.pyc,,
-google/cloud/logging/gapic_version.py,sha256=f8WsImBbZn4mkhTwJreBNfIRpXZsp0pDt10p2flk_zk,653
+google/cloud/logging/gapic_version.py,sha256=v5WTacbzPixUqAXWS-d6Lh_PAA8gYwAlibJUNI0sMEE,653
 google/cloud/logging/handlers/__init__.py,sha256=gSM7DReRiqHMBk1juWA4-dJcKX7pd97Me86Jhinjhs0,1175
 google/cloud/logging/handlers/__pycache__/__init__.cpython-310.pyc,,
 google/cloud/logging/handlers/middleware/__init__.py,sha256=RYbDZHb51RGjNuErJgnFjp54oNzUovX5cqUeOdL5K1U,711
@@ -9,8 +9,9 @@ google/cloud/logging/handlers/middleware/__pycache__/__init__.cpython-310.pyc,,
 google/cloud/logging/handlers/transports/__init__.py,sha256=ZUo1y3-DNgcA3YMEPUPHa6atdMFAAlF4rR0RKd0F26s,1191
 google/cloud/logging/handlers/transports/__pycache__/__init__.cpython-310.pyc,,
 google/cloud/logging/py.typed,sha256=FMgEe54fsD3NRYC5f7cb0Tu-cP41H4DsGNcSt_hUV9M,81
-google/cloud/logging_v2/__init__.py,sha256=0pjfSuHmadI00BiMcTieHx-of1iPkX5MACpUDL7yRgw,1746
+google/cloud/logging_v2/__init__.py,sha256=WvQBGKc8okRx4xHXugvwEpeALCHn7Q7JHZRr2zcFWAo,1902
 google/cloud/logging_v2/__pycache__/__init__.cpython-310.pyc,,
+google/cloud/logging_v2/__pycache__/_compat.cpython-310.pyc,,
 google/cloud/logging_v2/__pycache__/_gapic.cpython-310.pyc,,
 google/cloud/logging_v2/__pycache__/_helpers.cpython-310.pyc,,
 google/cloud/logging_v2/__pycache__/_http.cpython-310.pyc,,
@@ -22,6 +23,7 @@ google/cloud/logging_v2/__pycache__/logger.cpython-310.pyc,,
 google/cloud/logging_v2/__pycache__/metric.cpython-310.pyc,,
 google/cloud/logging_v2/__pycache__/resource.cpython-310.pyc,,
 google/cloud/logging_v2/__pycache__/sink.cpython-310.pyc,,
+google/cloud/logging_v2/_compat.py,sha256=RXD5k4f7yyamOftWhdRz1quVsVfthj4LksiCrAdLNDc,10079
 google/cloud/logging_v2/_gapic.py,sha256=aspY7Seei40EQrZCJjua6j8vm0HryVrntqCDqfDLJXk,23788
 google/cloud/logging_v2/_helpers.py,sha256=HGVsFczqIPBcvv5dXuFEiUX-MznBx-gw_fEjzxm3Aok,4590
 google/cloud/logging_v2/_http.py,sha256=42rGSNXdfA1Owz9RySDSmpArOXYci_m3aTW8EJPP0jU,20518
@@ -29,7 +31,7 @@ google/cloud/logging_v2/_instrumentation.py,sha256=mMRsdF50aChfLsZLgM3xzp1rrQfM3
 google/cloud/logging_v2/client.py,sha256=RjrBJkzgGSU3JLjUHWEgeqcSSfiu2y23c5Jc4PWj18A,17370
 google/cloud/logging_v2/entries.py,sha256=9tT9yTu0nf0haiALpsAMWBtGM72y76F0-G9AOWEIudQ,11671
 google/cloud/logging_v2/gapic_metadata.json,sha256=oxM-TRjiSt6UhwGF7LWzLPFQwymAsC2G6VsH92QZhlA,11572
-google/cloud/logging_v2/gapic_version.py,sha256=f8WsImBbZn4mkhTwJreBNfIRpXZsp0pDt10p2flk_zk,653
+google/cloud/logging_v2/gapic_version.py,sha256=v5WTacbzPixUqAXWS-d6Lh_PAA8gYwAlibJUNI0sMEE,653
 google/cloud/logging_v2/handlers/__init__.py,sha256=gSM7DReRiqHMBk1juWA4-dJcKX7pd97Me86Jhinjhs0,1175
 google/cloud/logging_v2/handlers/__pycache__/__init__.cpython-310.pyc,,
 google/cloud/logging_v2/handlers/__pycache__/_helpers.cpython-310.pyc,,
@@ -68,7 +70,7 @@ google/cloud/logging_v2/services/config_service_v2/__pycache__/async_client.cpyt
 google/cloud/logging_v2/services/config_service_v2/__pycache__/client.cpython-310.pyc,,
 google/cloud/logging_v2/services/config_service_v2/__pycache__/pagers.cpython-310.pyc,,
 google/cloud/logging_v2/services/config_service_v2/async_client.py,sha256=FPyPzI2F0u5LWbCmWj6n0f6WSK-5CFp6OeFQ30Lkod8,178001
-google/cloud/logging_v2/services/config_service_v2/client.py,sha256=8rCHHt2uKJArJF7MVXV7WD1tWk7p-EyzcBmSFHjKS18,195077
+google/cloud/logging_v2/services/config_service_v2/client.py,sha256=9IgzEBJbVO6hbznVOqYIof1yP5ISh2z7jcIld9wQUoY,189223
 google/cloud/logging_v2/services/config_service_v2/pagers.py,sha256=GqauyWU1uY30eWNQ6Ly4FHj7YIgMoouhcZWaBIMRt24,32975
 google/cloud/logging_v2/services/config_service_v2/transports/__init__.py,sha256=O2YSPhb_cBbRJtR3OZaVu1OE9F_vzdW0f-gZnfr8qGk,1202
 google/cloud/logging_v2/services/config_service_v2/transports/__pycache__/__init__.cpython-310.pyc,,
@@ -84,7 +86,7 @@ google/cloud/logging_v2/services/logging_service_v2/__pycache__/async_client.cpy
 google/cloud/logging_v2/services/logging_service_v2/__pycache__/client.cpython-310.pyc,,
 google/cloud/logging_v2/services/logging_service_v2/__pycache__/pagers.cpython-310.pyc,,
 google/cloud/logging_v2/services/logging_service_v2/async_client.py,sha256=KAKBM8kJmEge2ZfWktOda9nWeZXK2UCmJN-PstEcrtg,55411
-google/cloud/logging_v2/services/logging_service_v2/client.py,sha256=UecAgz8oqh0lOzI5DWrMDUKiVB_Pa_xXNDk8VvF8MZA,72264
+google/cloud/logging_v2/services/logging_service_v2/client.py,sha256=r9roBRoa0fZNOE04Y6RI9b4OmcaE2RvOe-sr0iCyueY,66405
 google/cloud/logging_v2/services/logging_service_v2/pagers.py,sha256=5s5OtxVzCAY_kZ7TbOBRo17r0HXNKpxyAUxxaw8jQnU,20909
 google/cloud/logging_v2/services/logging_service_v2/transports/__init__.py,sha256=iHBIthDWd7XrujmLZrso-wKGunP991aGZwPiCGVTHJY,1211
 google/cloud/logging_v2/services/logging_service_v2/transports/__pycache__/__init__.cpython-310.pyc,,
@@ -100,7 +102,7 @@ google/cloud/logging_v2/services/metrics_service_v2/__pycache__/async_client.cpy
 google/cloud/logging_v2/services/metrics_service_v2/__pycache__/client.cpython-310.pyc,,
 google/cloud/logging_v2/services/metrics_service_v2/__pycache__/pagers.cpython-310.pyc,,
 google/cloud/logging_v2/services/metrics_service_v2/async_client.py,sha256=FBDR3-rJSw3x7wE6DTuiLdLtZ52Itl4u-YEdwmkyzmg,47068
-google/cloud/logging_v2/services/metrics_service_v2/client.py,sha256=2ODiO8hHBUdkqwBF4mchgimq6vVWh1BgWU00bw16qbU,64087
+google/cloud/logging_v2/services/metrics_service_v2/client.py,sha256=THNv5MGcNtw-iqvlwNZ947Ck8HZDPHEhhJOPKWQ5l4g,58228
 google/cloud/logging_v2/services/metrics_service_v2/pagers.py,sha256=TsxB6HT9LTXvGuLCeMPkBJH1Y2s_ruNXjobnqBozP8Y,7772
 google/cloud/logging_v2/services/metrics_service_v2/transports/__init__.py,sha256=XPrIhQHJNp9f29uQ8RNsdX0GlXr8qkkA3ADruJncH9M,1211
 google/cloud/logging_v2/services/metrics_service_v2/transports/__pycache__/__init__.cpython-310.pyc,,
@@ -121,10 +123,10 @@ google/cloud/logging_v2/types/log_entry.py,sha256=qwPMxivUHwqBlx6ktJyxluQHY2PvBK
 google/cloud/logging_v2/types/logging.py,sha256=jkxf48nK1inWy3IsQjWdgfX7h8E-QoSxGdm4AtTZVvo,23119
 google/cloud/logging_v2/types/logging_config.py,sha256=JbW0GB3IaQM5_lRYKbQIVQAu3JqFbAY3i-sqMUYWh2s,79147
 google/cloud/logging_v2/types/logging_metrics.py,sha256=Qgz7ql0ay3Q2lvN2-neGG-CRbkJpVcTGIR6Z0VlTaN0,14118
-google_cloud_logging-3.16.3.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
-google_cloud_logging-3.16.3.dist-info/METADATA,sha256=SsXMCm8FE8SLyj6HlhOQ3JZlofADxVkpoduRPGcwudM,9919
-google_cloud_logging-3.16.3.dist-info/RECORD,,
-google_cloud_logging-3.16.3.dist-info/REQUESTED,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0
-google_cloud_logging-3.16.3.dist-info/WHEEL,sha256=YVMoNqKzERt-wjUZwJ33xBGAwnFl-4cqbYkTtWa4itE,91
-google_cloud_logging-3.16.3.dist-info/licenses/LICENSE,sha256=z8d0m5b2O9McPEK1xHG_dWgUBT6EfBDz6wA0F7xSPTA,11358
-google_cloud_logging-3.16.3.dist-info/top_level.txt,sha256=_1QvSJIhFAGfxb79D6DhB7SUw2X6T4rwnz_LLrbcD3c,7
+google_cloud_logging-3.17.0.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
+google_cloud_logging-3.17.0.dist-info/METADATA,sha256=LfDR4yvaPct6XxmtWUbwhvtVLG-GofkqpEkt9fIsdqA,9970
+google_cloud_logging-3.17.0.dist-info/RECORD,,
+google_cloud_logging-3.17.0.dist-info/REQUESTED,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0
+google_cloud_logging-3.17.0.dist-info/WHEEL,sha256=YVMoNqKzERt-wjUZwJ33xBGAwnFl-4cqbYkTtWa4itE,91
+google_cloud_logging-3.17.0.dist-info/licenses/LICENSE,sha256=z8d0m5b2O9McPEK1xHG_dWgUBT6EfBDz6wA0F7xSPTA,11358
+google_cloud_logging-3.17.0.dist-info/top_level.txt,sha256=_1QvSJIhFAGfxb79D6DhB7SUw2X6T4rwnz_LLrbcD3c,7

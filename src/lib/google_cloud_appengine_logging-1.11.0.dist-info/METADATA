@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: google-cloud-appengine-logging
-Version: 1.10.0
+Version: 1.11.0
 Summary: Google Cloud Appengine Logging API client library
 Home-page: https://github.com/googleapis/google-cloud-python/tree/main/packages/google-cloud-appengine-logging
 Author: Google LLC
@@ -17,17 +17,17 @@ Classifier: Programming Language :: Python :: 3.11
 Classifier: Programming Language :: Python :: 3.12
 Classifier: Programming Language :: Python :: 3.13
 Classifier: Programming Language :: Python :: 3.14
+Classifier: Programming Language :: Python :: 3.15
 Classifier: Operating System :: OS Independent
 Classifier: Topic :: Internet
 Requires-Python: >=3.10
 License-File: LICENSE
-Requires-Dist: google-api-core[grpc]<3.0.0,>=2.17.1
+Requires-Dist: google-api-core[grpc]<3.0.0,>=2.28.0
 Requires-Dist: google-auth!=2.24.0,!=2.25.0,<3.0.0,>=2.14.1
 Requires-Dist: grpcio<2.0.0,>=1.59.0
 Requires-Dist: grpcio<2.0.0,>=1.75.1; python_version >= "3.14"
-Requires-Dist: proto-plus<2.0.0,>=1.22.3
-Requires-Dist: proto-plus<2.0.0,>=1.25.0; python_version >= "3.13"
-Requires-Dist: protobuf<8.0.0,>=4.25.8
+Requires-Dist: proto-plus<2.0.0,>=1.26.1
+Requires-Dist: protobuf<8.0.0,>=6.33.5
 Dynamic: author
 Dynamic: author-email
 Dynamic: classifier
