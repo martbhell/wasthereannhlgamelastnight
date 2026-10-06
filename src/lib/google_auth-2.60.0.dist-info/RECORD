@@ -57,7 +57,7 @@ google/auth/aio/transport/__pycache__/mtls.cpython-310.pyc,,
 google/auth/aio/transport/__pycache__/sessions.cpython-310.pyc,,
 google/auth/aio/transport/aiohttp.py,sha256=JhpnU3WhCja0M6KsHFjtuv2z-u2_gaPWTWfpFtZNaFw,11170
 google/auth/aio/transport/mtls.py,sha256=n6PtCVof_cCtpl83hHPoWzcGKYcAxmifenkNUVTrCf8,8030
-google/auth/aio/transport/sessions.py,sha256=M1rTPPZfeLAPej7hQw9kdU2BMOT-lkK7BXrnG0kYexk,39592
+google/auth/aio/transport/sessions.py,sha256=tXl0SSV9EwifsfQIPITZnTUC7al1TGHh0fSOAgL8A14,44202
 google/auth/api_key.py,sha256=trwmJpF66EXhlsxvZ0PADQAFX2FGMfHcCMuv7alY5I4,2537
 google/auth/app_engine.py,sha256=zfffzh2pMiUXehYTGjkC7LNamY5FFpxZ9p89q7IZCl0,6026
 google/auth/aws.py,sha256=agXfeqrdEZ16BPQrXRMKgFlITw668JIt_fPIgEtybUc,34423
@@ -118,7 +118,7 @@ google/auth/transport/grpc.py,sha256=mixzVQ-EJ02lHdO3HtDNERgIIjzLu4sIz2yuZhNw6hM
 google/auth/transport/mtls.py,sha256=uFr_Uu7jjbSSm1ZrBD-5a69yewJCMFJrIB-vONnlCSk,10662
 google/auth/transport/requests.py,sha256=6uRvPoftzo_4X7UzMW3M58SsnMNuJ2UKVcv4O5yRvIY,31807
 google/auth/transport/urllib3.py,sha256=Ivt5r4KEzpbbk69NSpi7kljY6sR-0uT5i9LLWAzF7Ck,18812
-google/auth/version.py,sha256=syRLo-DHZKGYDQaH8G2RsbUCTOMxtmfEsV8BlrMsvDA,598
+google/auth/version.py,sha256=BPLybERRvJaGEN4D928dTA0Xrgvg2BRPWyTftBA85iA,598
 google/oauth2/__init__.py,sha256=iDyTpxuh864rLf4YyINgeO4wMJLQ53EUMPJpiw1GA3U,619
 google/oauth2/__pycache__/__init__.cpython-310.pyc,,
 google/oauth2/__pycache__/_client.cpython-310.pyc,,
@@ -156,9 +156,9 @@ google/oauth2/utils.py,sha256=4crAdpKbDtobpQfXJc3uF6Zm6F3IzffvRSo-9h_515w,6315
 google/oauth2/webauthn_handler.py,sha256=Dv4u_5F-eGWZmXJz5PqgXNinFdt7jnRqRBNEfK7dle0,3383
 google/oauth2/webauthn_handler_factory.py,sha256=soE5cokZ3pLNbBo1HC6F1N-N-I-ir-DGlD0trGPCpBs,429
 google/oauth2/webauthn_types.py,sha256=wkhN4eTX1vkE9B3J0nZ2_redkywvHbE-yetNL4hQwz8,5386
-google_auth-2.59.1.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
-google_auth-2.59.1.dist-info/METADATA,sha256=60K_xNaRARSjZiZj6ehrXMHfJfA3okQwELU_h3HmUXs,6005
-google_auth-2.59.1.dist-info/RECORD,,
-google_auth-2.59.1.dist-info/WHEEL,sha256=YVMoNqKzERt-wjUZwJ33xBGAwnFl-4cqbYkTtWa4itE,91
-google_auth-2.59.1.dist-info/licenses/LICENSE,sha256=xx0jnfkXJvxRnG63LTGOxlggYnIysveWIZ6H3PNdCrQ,11357
-google_auth-2.59.1.dist-info/top_level.txt,sha256=_1QvSJIhFAGfxb79D6DhB7SUw2X6T4rwnz_LLrbcD3c,7
+google_auth-2.60.0.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
+google_auth-2.60.0.dist-info/METADATA,sha256=CUZkoygx_VTSog7kyvaDCBFR1wIArUH1EZs6MihC1_Y,6005
+google_auth-2.60.0.dist-info/RECORD,,
+google_auth-2.60.0.dist-info/WHEEL,sha256=YVMoNqKzERt-wjUZwJ33xBGAwnFl-4cqbYkTtWa4itE,91
+google_auth-2.60.0.dist-info/licenses/LICENSE,sha256=xx0jnfkXJvxRnG63LTGOxlggYnIysveWIZ6H3PNdCrQ,11357
+google_auth-2.60.0.dist-info/top_level.txt,sha256=_1QvSJIhFAGfxb79D6DhB7SUw2X6T4rwnz_LLrbcD3c,7
