@@ -16,35 +16,41 @@ jobs:
     if: github.actor == 'dependabot[bot]' && startsWith(github.head_ref, 'dependabot/') && github.event.pull_request.state == 'open'
 
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
     - uses: actions/checkout@v4
+
     - name: Set up Python 3.10
       uses: actions/setup-python@v4
       with:
         python-version: "3.10"
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r src/requirements.txt
         pip install -r lint_requirements.txt
+
     - run: pip check
+
     - name: Lint with pylint
       run: |
         pylint --version
         pylint --rcfile=pylintrc src/*.py *.py
+
     - name: Format with black
       run: |
         black --version
         black --diff --check src/*.py *.py
-    - name: Display Github event variable "github.event.commits[0].message"
-      run: echo "last commit message = ${{ github.event.commits[0].message }}"
-    - name: Display Github event variable "github.event.commits[0].author.name"
-      run: echo "last commit author = ${{ github.event.commits[0].author.name }}"
+
     - name: Wipe out src/lib
       run: git rm -rf src/lib
+
     - name: Fresh install of pip libraries to src/lib to update and clean up old crud
       run: pip install -r src/requirements.txt -t src/lib
+
     - name: Check whether src/lib changed
       run: |
         if git diff --quiet -- src/lib; then
@@ -54,11 +60,12 @@ jobs:
 
     - name: Setup Git and commit and push
       env:
-        CI_COMMIT_MESSAGE: "Rebuild src/lib after dependabot"
+        CI_COMMIT_MESSAGE: "Rebuild src/lib after commit from dependabot"
         CI_COMMIT_AUTHOR: "Continuous Integration"
       run: |
         git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
         git config --global user.email "martbhell@users.noreply.github.com"
+        git checkout -B "${{ github.head_ref }}"
         git add src/lib
         git commit -m "${{ env.CI_COMMIT_MESSAGE }}"
-        git push origin HEAD:refs/heads/${{ github.head_ref }}
+        git push origin "${{ github.head_ref }}"
