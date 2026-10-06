@@ -68,4 +68,5 @@ jobs:
         git checkout -B "${{ github.head_ref }}"
         git add src/lib
         git commit -m "${{ env.CI_COMMIT_MESSAGE }}"
+        git pull --rebase origin "${{ github.head_ref }}"
         git push origin "${{ github.head_ref }}"
