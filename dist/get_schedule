@@ -1,0 +1,808 @@
+{
+  "teamdates": {
+    "2026-09-29": [
+      [
+        "Boston Bruins",
+        "New York Rangers"
+      ],
+      [
+        "Carolina Hurricanes",
+        "Florida Panthers"
+      ],
+      [
+        "Chicago Blackhawks",
+        "Vegas Golden Knights"
+      ],
+      [
+        "Edmonton Oilers",
+        "Vancouver Canucks"
+      ],
+      [
+        "Montreal Canadiens",
+        "Toronto Maple Leafs"
+      ]
+    ],
+    "2026-09-30": [
+      [
+        "Colorado Avalanche",
+        "Los Angeles Kings"
+      ],
+      [
+        "New York Islanders",
+        "Toronto Maple Leafs"
+      ],
+      [
+        "Philadelphia Flyers",
+        "Pittsburgh Penguins"
+      ]
+    ],
+    "2026-10-01": [
+      [
+        "Buffalo Sabres",
+        "Columbus Blue Jackets"
+      ],
+      [
+        "Calgary Flames",
+        "Seattle Kraken"
+      ],
+      [
+        "Chicago Blackhawks",
+        "Utah Hockey Club"
+      ],
+      [
+        "Edmonton Oilers",
+        "Vancouver Canucks"
+      ],
+      [
+        "Florida Panthers",
+        "San Jose Sharks"
+      ],
+      [
+        "Minnesota Wild",
+        "Nashville Predators"
+      ],
+      [
+        "New Jersey Devils",
+        "Philadelphia Flyers"
+      ],
+      [
+        "New York Rangers",
+        "Tampa Bay Lightning"
+      ]
+    ],
+    "2026-10-02": [
+      [
+        "Anaheim Ducks",
+        "Vegas Golden Knights"
+      ],
+      [
+        "Boston Bruins",
+        "Winnipeg Jets"
+      ],
+      [
+        "Carolina Hurricanes",
+        "Washington Capitals"
+      ],
+      [
+        "Dallas Stars",
+        "St Louis Blues"
+      ],
+      [
+        "Detroit Red Wings",
+        "New York Rangers"
+      ]
+    ],
+    "2026-10-03": [
+      [
+        "Boston Bruins",
+        "Minnesota Wild"
+      ],
+      [
+        "Buffalo Sabres",
+        "Chicago Blackhawks"
+      ],
+      [
+        "Calgary Flames",
+        "Vancouver Canucks"
+      ],
+      [
+        "Carolina Hurricanes",
+        "Philadelphia Flyers"
+      ],
+      [
+        "Colorado Avalanche",
+        "St Louis Blues"
+      ],
+      [
+        "Columbus Blue Jackets",
+        "Utah Hockey Club"
+      ],
+      [
+        "Dallas Stars",
+        "Nashville Predators"
+      ],
+      [
+        "Edmonton Oilers",
+        "Seattle Kraken"
+      ],
+      [
+        "Los Angeles Kings",
+        "San Jose Sharks"
+      ],
+      [
+        "Montreal Canadiens",
+        "Pittsburgh Penguins"
+      ],
+      [
+        "New Jersey Devils",
+        "New York Islanders"
+      ],
+      [
+        "Ottawa Senators",
+        "Toronto Maple Leafs"
+      ],
+      [
+        "Tampa Bay Lightning",
+        "Washington Capitals"
+      ]
+    ],
+    "2026-10-04": [
+      [
+        "Anaheim Ducks",
+        "Florida Panthers"
+      ],
+      [
+        "Calgary Flames",
+        "Seattle Kraken"
+      ],
+      [
+        "Detroit Red Wings",
+        "Winnipeg Jets"
+      ],
+      [
+        "New York Rangers",
+        "Utah Hockey Club"
+      ],
+      [
+        "Vancouver Canucks",
+        "Vegas Golden Knights"
+      ]
+    ],
+    "2026-10-05": [
+      [
+        "Boston Bruins",
+        "Ottawa Senators"
+      ],
+      [
+        "Dallas Stars",
+        "San Jose Sharks"
+      ],
+      [
+        "Philadelphia Flyers",
+        "Tampa Bay Lightning"
+      ],
+      [
+        "Pittsburgh Penguins",
+        "Winnipeg Jets"
+      ]
+    ],
+    "2026-10-06": [
+      [
+        "Buffalo Sabres",
+        "Minnesota Wild"
+      ],
+      [
+        "Carolina Hurricanes",
+        "Montreal Canadiens"
+      ],
+      [
+        "Chicago Blackhawks",
+        "St Louis Blues"
+      ],
+      [
+        "Detroit Red Wings",
+        "Ottawa Senators"
+      ],
+      [
+        "Florida Panthers",
+        "Los Angeles Kings"
+      ],
+      [
+        "Nashville Predators",
+        "Toronto Maple Leafs"
+      ],
+      [
+        "New Jersey Devils",
+        "Utah Hockey Club"
+      ],
+      [
+        "New York Islanders",
+        "New York Rangers"
+      ],
+      [
+        "Seattle Kraken",
+        "Vegas Golden Knights"
+      ]
+    ],
+    "2026-10-07": [
+      [
+        "Anaheim Ducks",
+        "Edmonton Oilers"
+      ],
+      [
+        "Colorado Avalanche",
+        "Winnipeg Jets"
+      ],
+      [
+        "Pittsburgh Penguins",
+        "Washington Capitals"
+      ]
+    ],
+    "2026-10-08": [
+      [
+        "Boston Bruins",
+        "Utah Hockey Club"
+      ],
+      [
+        "Buffalo Sabres",
+        "Dallas Stars"
+      ],
+      [
+        "Calgary Flames",
+        "Colorado Avalanche"
+      ],
+      [
+        "Carolina Hurricanes",
+        "Vancouver Canucks"
+      ],
+      [
+        "Chicago Blackhawks",
+        "New York Islanders"
+      ],
+      [
+        "Minnesota Wild",
+        "Tampa Bay Lightning"
+      ],
+      [
+        "Montreal Canadiens",
+        "Nashville Predators"
+      ],
+      [
+        "Ottawa Senators",
+        "Philadelphia Flyers"
+      ],
+      [
+        "San Jose Sharks",
+        "St Louis Blues"
+      ],
+      [
+        "Toronto Maple Leafs",
+        "Vegas Golden Knights"
+      ]
+    ],
+    "2026-10-09": [
+      [
+        "Anaheim Ducks",
+        "Winnipeg Jets"
+      ],
+      [
+        "Columbus Blue Jackets",
+        "Pittsburgh Penguins"
+      ],
+      [
+        "Detroit Red Wings",
+        "Seattle Kraken"
+      ],
+      [
+        "New York Rangers",
+        "Washington Capitals"
+      ]
+    ],
+    "2026-10-10": [
+      [
+        "Anaheim Ducks",
+        "Calgary Flames"
+      ],
+      [
+        "Boston Bruins",
+        "Philadelphia Flyers"
+      ],
+      [
+        "Buffalo Sabres",
+        "Utah Hockey Club"
+      ],
+      [
+        "Carolina Hurricanes",
+        "Chicago Blackhawks"
+      ],
+      [
+        "Colorado Avalanche",
+        "Toronto Maple Leafs"
+      ],
+      [
+        "Columbus Blue Jackets",
+        "St Louis Blues"
+      ],
+      [
+        "Dallas Stars",
+        "Pittsburgh Penguins"
+      ],
+      [
+        "Detroit Red Wings",
+        "Montreal Canadiens"
+      ],
+      [
+        "Edmonton Oilers",
+        "San Jose Sharks"
+      ],
+      [
+        "Florida Panthers",
+        "Minnesota Wild"
+      ],
+      [
+        "Los Angeles Kings",
+        "Vegas Golden Knights"
+      ],
+      [
+        "Nashville Predators",
+        "Ottawa Senators"
+      ],
+      [
+        "New Jersey Devils",
+        "Vancouver Canucks"
+      ],
+      [
+        "New York Islanders",
+        "Tampa Bay Lightning"
+      ]
+    ],
+    "2026-10-11": [
+      [
+        "Carolina Hurricanes",
+        "Philadelphia Flyers"
+      ],
+      [
+        "New York Rangers",
+        "Vancouver Canucks"
+      ],
+      [
+        "Seattle Kraken",
+        "Washington Capitals"
+      ]
+    ],
+    "2026-10-12": [
+      [
+        "Buffalo Sabres",
+        "Florida Panthers"
+      ],
+      [
+        "Minnesota Wild",
+        "Vegas Golden Knights"
+      ],
+      [
+        "New Jersey Devils",
+        "Ottawa Senators"
+      ]
+    ],
+    "2026-10-13": [
+      [
+        "Anaheim Ducks",
+        "Calgary Flames"
+      ],
+      [
+        "Boston Bruins",
+        "San Jose Sharks"
+      ],
+      [
+        "Buffalo Sabres",
+        "Montreal Canadiens"
+      ],
+      [
+        "Carolina Hurricanes",
+        "Washington Capitals"
+      ],
+      [
+        "Chicago Blackhawks",
+        "Pittsburgh Penguins"
+      ],
+      [
+        "Colorado Avalanche",
+        "Dallas Stars"
+      ],
+      [
+        "Columbus Blue Jackets",
+        "Florida Panthers"
+      ],
+      [
+        "Detroit Red Wings",
+        "New Jersey Devils"
+      ],
+      [
+        "Edmonton Oilers",
+        "Los Angeles Kings"
+      ],
+      [
+        "Minnesota Wild",
+        "Winnipeg Jets"
+      ],
+      [
+        "Nashville Predators",
+        "Vegas Golden Knights"
+      ],
+      [
+        "New York Islanders",
+        "Vancouver Canucks"
+      ],
+      [
+        "New York Rangers",
+        "Tampa Bay Lightning"
+      ],
+      [
+        "Ottawa Senators",
+        "St Louis Blues"
+      ],
+      [
+        "Philadelphia Flyers",
+        "Seattle Kraken"
+      ],
+      [
+        "Toronto Maple Leafs",
+        "Utah Hockey Club"
+      ]
+    ],
+    "2026-10-14": [
+      [
+        "Colorado Avalanche",
+        "Dallas Stars"
+      ],
+      [
+        "Montreal Canadiens",
+        "Washington Capitals"
+      ]
+    ],
+    "2026-10-15": [
+      [
+        "Buffalo Sabres",
+        "Toronto Maple Leafs"
+      ],
+      [
+        "Calgary Flames",
+        "Vegas Golden Knights"
+      ],
+      [
+        "Chicago Blackhawks",
+        "Winnipeg Jets"
+      ],
+      [
+        "Detroit Red Wings",
+        "Philadelphia Flyers"
+      ],
+      [
+        "Edmonton Oilers",
+        "Utah Hockey Club"
+      ],
+      [
+        "Florida Panthers",
+        "Vancouver Canucks"
+      ],
+      [
+        "Minnesota Wild",
+        "St Louis Blues"
+      ],
+      [
+        "Nashville Predators",
+        "San Jose Sharks"
+      ],
+      [
+        "New Jersey Devils",
+        "New York Rangers"
+      ],
+      [
+        "New York Islanders",
+        "Ottawa Senators"
+      ],
+      [
+        "Seattle Kraken",
+        "Tampa Bay Lightning"
+      ]
+    ],
+    "2026-10-16": [
+      [
+        "Anaheim Ducks",
+        "Boston Bruins"
+      ],
+      [
+        "Colorado Avalanche",
+        "Pittsburgh Penguins"
+      ]
+    ],
+    "2026-10-17": [
+      [
+        "Boston Bruins",
+        "Los Angeles Kings"
+      ],
+      [
+        "Buffalo Sabres",
+        "Montreal Canadiens"
+      ],
+      [
+        "Carolina Hurricanes",
+        "Winnipeg Jets"
+      ],
+      [
+        "Chicago Blackhawks",
+        "Dallas Stars"
+      ],
+      [
+        "Columbus Blue Jackets",
+        "New York Rangers"
+      ],
+      [
+        "Detroit Red Wings",
+        "San Jose Sharks"
+      ],
+      [
+        "Edmonton Oilers",
+        "Utah Hockey Club"
+      ],
+      [
+        "Florida Panthers",
+        "Seattle Kraken"
+      ],
+      [
+        "Nashville Predators",
+        "St Louis Blues"
+      ],
+      [
+        "New Jersey Devils",
+        "Washington Capitals"
+      ],
+      [
+        "New York Islanders",
+        "Toronto Maple Leafs"
+      ],
+      [
+        "Ottawa Senators",
+        "Philadelphia Flyers"
+      ],
+      [
+        "Pittsburgh Penguins",
+        "Vegas Golden Knights"
+      ],
+      [
+        "Tampa Bay Lightning",
+        "Vancouver Canucks"
+      ]
+    ],
+    "2026-10-18": [
+      [
+        "Calgary Flames",
+        "Carolina Hurricanes"
+      ],
+      [
+        "Columbus Blue Jackets",
+        "Minnesota Wild"
+      ]
+    ],
+    "2026-10-19": [
+      [
+        "Anaheim Ducks",
+        "New York Rangers"
+      ],
+      [
+        "Colorado Avalanche",
+        "Philadelphia Flyers"
+      ],
+      [
+        "Pittsburgh Penguins",
+        "Utah Hockey Club"
+      ],
+      [
+        "San Jose Sharks",
+        "Toronto Maple Leafs"
+      ]
+    ],
+    "2026-10-20": [
+      [
+        "Anaheim Ducks",
+        "New York Islanders"
+      ],
+      [
+        "Boston Bruins",
+        "Dallas Stars"
+      ],
+      [
+        "Carolina Hurricanes",
+        "Vancouver Canucks"
+      ],
+      [
+        "Colorado Avalanche",
+        "New Jersey Devils"
+      ],
+      [
+        "Columbus Blue Jackets",
+        "Toronto Maple Leafs"
+      ],
+      [
+        "Detroit Red Wings",
+        "Seattle Kraken"
+      ],
+      [
+        "Edmonton Oilers",
+        "Minnesota Wild"
+      ],
+      [
+        "Los Angeles Kings",
+        "Washington Capitals"
+      ],
+      [
+        "Montreal Canadiens",
+        "San Jose Sharks"
+      ],
+      [
+        "St Louis Blues",
+        "Winnipeg Jets"
+      ],
+      [
+        "Tampa Bay Lightning",
+        "Vegas Golden Knights"
+      ]
+    ],
+    "2026-10-21": [
+      [
+        "Buffalo Sabres",
+        "Philadelphia Flyers"
+      ],
+      [
+        "Florida Panthers",
+        "Ottawa Senators"
+      ]
+    ],
+    "2026-10-22": [
+      [
+        "Anaheim Ducks",
+        "New Jersey Devils"
+      ],
+      [
+        "Boston Bruins",
+        "Nashville Predators"
+      ],
+      [
+        "Calgary Flames",
+        "Minnesota Wild"
+      ],
+      [
+        "Carolina Hurricanes",
+        "Edmonton Oilers"
+      ],
+      [
+        "Dallas Stars",
+        "Winnipeg Jets"
+      ],
+      [
+        "Detroit Red Wings",
+        "Vancouver Canucks"
+      ],
+      [
+        "Florida Panthers",
+        "Pittsburgh Penguins"
+      ],
+      [
+        "Los Angeles Kings",
+        "New York Islanders"
+      ],
+      [
+        "New York Rangers",
+        "Toronto Maple Leafs"
+      ],
+      [
+        "Ottawa Senators",
+        "San Jose Sharks"
+      ],
+      [
+        "Seattle Kraken",
+        "Utah Hockey Club"
+      ],
+      [
+        "St Louis Blues",
+        "Vegas Golden Knights"
+      ]
+    ],
+    "2026-10-23": [
+      [
+        "Chicago Blackhawks",
+        "Montreal Canadiens"
+      ],
+      [
+        "Colorado Avalanche",
+        "Tampa Bay Lightning"
+      ]
+    ],
+    "2026-10-24": [
+      [
+        "Anaheim Ducks",
+        "Philadelphia Flyers"
+      ],
+      [
+        "Boston Bruins",
+        "San Jose Sharks"
+      ],
+      [
+        "Buffalo Sabres",
+        "Washington Capitals"
+      ],
+      [
+        "Calgary Flames",
+        "Detroit Red Wings"
+      ],
+      [
+        "Carolina Hurricanes",
+        "St Louis Blues"
+      ],
+      [
+        "Columbus Blue Jackets",
+        "Vegas Golden Knights"
+      ],
+      [
+        "Edmonton Oilers",
+        "Toronto Maple Leafs"
+      ],
+      [
+        "Los Angeles Kings",
+        "New Jersey Devils"
+      ],
+      [
+        "Minnesota Wild",
+        "Seattle Kraken"
+      ],
+      [
+        "Nashville Predators",
+        "Pittsburgh Penguins"
+      ],
+      [
+        "New York Rangers",
+        "Ottawa Senators"
+      ],
+      [
+        "Tampa Bay Lightning",
+        "Utah Hockey Club"
+      ]
+    ],
+    "2026-10-25": [
+      [
+        "Chicago Blackhawks",
+        "Florida Panthers"
+      ],
+      [
+        "Colorado Avalanche",
+        "Nashville Predators"
+      ],
+      [
+        "Dallas Stars",
+        "New York Islanders"
+      ],
+      [
+        "Minnesota Wild",
+        "Vancouver Canucks"
+      ],
+      [
+        "Montreal Canadiens",
+        "Winnipeg Jets"
+      ]
+    ],
+    "2026-10-26": [
+      [
+        "Calgary Flames",
+        "Toronto Maple Leafs"
+      ],
+      [
+        "Detroit Red Wings",
+        "Edmonton Oilers"
+      ],
+      [
+        "Los Angeles Kings",
+        "New York Rangers"
+      ]
+    ]
+  }
+}
