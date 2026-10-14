@@ -1,0 +1,10 @@
+ahocorasick_rs-1.0.3.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
+ahocorasick_rs-1.0.3.dist-info/METADATA,sha256=ecxvfj_3EnytMiz95NJsExi4O-w6nMBuJN5ttBDULns,9539
+ahocorasick_rs-1.0.3.dist-info/RECORD,,
+ahocorasick_rs-1.0.3.dist-info/WHEEL,sha256=dl3WxzR_Nw4aosEfDsbih2gEVfSIypWD1UeNBSK0wJk,129
+ahocorasick_rs-1.0.3.dist-info/licenses/LICENSE,sha256=xx0jnfkXJvxRnG63LTGOxlggYnIysveWIZ6H3PNdCrQ,11357
+ahocorasick_rs/__init__.py,sha256=ZasSf0nawkbZIAGTCRyJKxgJg0EPDLYe798gA8qX_ck,511
+ahocorasick_rs/__pycache__/__init__.cpython-314.pyc,,
+ahocorasick_rs/ahocorasick_rs.cpython-314-x86_64-linux-gnu.so,sha256=RGGa4DzWW9ZOLhxbYs7a8HQ3aGDy-UyJFiSKSeUCY3I,932416
+ahocorasick_rs/ahocorasick_rs.pyi,sha256=tLImHNKVNW7d1hcDoyKmB7N4EMs1Gyv8ElQT4x12-Ac,1276
+ahocorasick_rs/py.typed,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0

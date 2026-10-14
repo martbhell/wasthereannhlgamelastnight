@@ -1,0 +1,718 @@
+!!set
+' ios': null
+' ipad/': null
+' iphone/': null
+' samsung/': null
+(ios): null
+(next): null
+-ios: null
+.ios: null
+/ios: null
+/ipad/: null
+/iphone/: null
+/samsung/: null
+" suse": null
+/tclwebkit: null
+aeoa: null
+aeob: null
+aeoc: null
+aeoh: null
+aeok: null
+aeot: null
+airplay: null
+aix: null
+alcatel one touch: null
+aliyunos: null
+allview_tx1_quasar : null
+alpine/: null
+amazon;aft: null
+amiga-aweb: null
+amigaos: null
+amigavoyager: null
+amzn/0: null
+amzn/1: null
+amzn/2: null
+amzn/3: null
+amzn/4: null
+amzn/5: null
+amzn/6: null
+amzn/7: null
+amzn/8: null
+amzn/9: null
+andr0id: null
+android: null
+antennapod: null
+aosc os: null
+aosp on r33a0: null
+apple tv: null
+apple watch: null
+appleexchangewebservices: null
+appletv: null
+arch linux: null
+archlinux: null
+armadillo: null
+aros: null
+at&t tv: null
+at&t_tv: null
+at&ttv: null
+bada: null
+bb10;: null
+beos: null
+beyondpod: null
+blackberry: null
+blackpanther os: null
+bmp: null
+bpod: null
+bravia: null
+brew: null
+brew mp: null
+brightsign/: null
+caixamagica: null
+captivenetworksupport: null
+castro: null
+dorado: null
+0 odd/: null
+1 odd/: null
+2 odd/: null
+3 odd/: null
+4 odd/: null
+5 odd/: null
+6 odd/: null
+7 odd/: null
+8 odd/: null
+9 odd/: null
+chromebook: null
+cinnamon/: null
+clear-linux-os/: null
+midp2.0: null
+clearphone: null
+cloud phone: null
+com.apple.trustd: null
+configuration/cldc: null
+coolita os qjy: null
+cordova-amazon-fireos: null
+cosmote_my_mini_tab: null
+cpu iphone os: null
+cros x86_64: null
+cros aarch64: null
+cyanogenmod: null
+cygwin_95-: null
+cygwin_98-: null
+cygwin_me-: null
+cygwin_nt-: null
+darwin: null
+debian/: null
+'deepin ': null
+deepin/: null
+doggcatcher,okhttp: null
+dragonfly: null
+dvkbuntu: null
+electrobsd: null
+eulerosv: null
+fbios: null
+fbmd/ipad;: null
+fbmd/iphone;: null
+fbsv/0;: null
+fbsv/1;: null
+fbsv/2;: null
+fbsv/3;: null
+fbsv/4;: null
+fbsv/5;: null
+fbsv/6;: null
+fbsv/7;: null
+fbsv/8;: null
+fbsv/9;: null
+fedora/: null
+finney u1: null
+fire os: null
+firetvstick2018: null
+foresight linux: null
+freebsd: null
+fritz!os: null
+fuchsia: null
+fydeos: null
+genix 0: null
+genix 1: null
+genix 2: null
+genix 3: null
+genix 4: null
+genix 5: null
+genix 6: null
+genix 7: null
+genix 8: null
+genix 9: null
+geos 0: null
+geos 1: null
+geos 2: null
+geos 3: null
+geos 4: null
+geos 5: null
+geos 6: null
+geos 7: null
+geos 8: null
+geos 9: null
+gnewsense/: null
+google tv: null
+google_tv: null
+googletv: null
+grid os: null
+haiku: null
+handbrake win upd: null
+harmonyos: null
+hascodingos: null
+helio/: null
+helix phone: null
+hmos/1: null
+hp-ux: null
+hpwos/: null
+icatcher: null
+iemobile: null
+imac: null
+inferno: null
+instacast/: null
+instacasthd/: null
+intelx64 mac os x: null
+'ios version ': null
+'ios version,': null
+'ios version;': null
+ios,0: null
+ios,1: null
+ios,2: null
+ios,3: null
+ios,4: null
+ios,5: null
+ios,6: null
+ios,7: null
+ios,8: null
+ios,9: null
+ios/0: null
+ios/1: null
+ios/2: null
+ios/3: null
+ios/4: null
+ios/5: null
+ios/6: null
+ios/7: null
+ios/8: null
+ios/9: null
+'ios/version ': null
+ios0: null
+ios1: null
+ios2: null
+ios3: null
+ios4: null
+ios5: null
+ios6: null
+ios7: null
+ios8: null
+ios9: null
+ios; 0: null
+ios; 1: null
+ios; 2: null
+ios; 3: null
+ios; 4: null
+ios; 5: null
+ios; 6: null
+ios; 7: null
+ios; 8: null
+ios; 9: null
+ios; opera: null
+ipad1,: null
+ipad2,: null
+ipad3,: null
+ipad4,: null
+ipad5,: null
+ipad6,: null
+ipad7,: null
+ipad8,: null
+ipad9,: null
+ipad; cpu ipad os: null
+ipad; cpu os: null
+ipad/1: null
+ipad/2: null
+ipad/3: null
+ipad/4: null
+ipad/5: null
+ipad/6: null
+ipad/7: null
+ipad/8: null
+ipad/9: null
+ipad 1: null
+ipad 2: null
+ipad 3: null
+ipad 4: null
+ipad 5: null
+ipad 6: null
+ipad 7: null
+ipad 8: null
+ipad 9: null
+ipados/: null
+'ipados ': null
+iph10,: null
+iph11,: null
+iph12,: null
+iph13,: null
+iph14,: null
+iph15,: null
+iph16,: null
+iph17,: null
+iph18,: null
+iph19,: null
+'iphone os ': null
+iphone os,: null
+iphone os;: null
+iphone os/: null
+iphone1,: null
+iphone10,: null
+iphone11,: null
+iphone12,: null
+iphone13,: null
+iphone14,: null
+iphone15,: null
+iphone16,: null
+iphone17,: null
+iphone18,: null
+iphone19,: null
+iphone2,: null
+iphone20,: null
+iphone21,: null
+iphone22,: null
+iphone23,: null
+iphone24,: null
+iphone25,: null
+iphone26,: null
+iphone27,: null
+iphone28,: null
+iphone29,: null
+iphone3,: null
+iphone4,: null
+iphone5,: null
+iphone6,: null
+iphone7,: null
+iphone8,: null
+iphone9,: null
+iphoneos,: null
+iphoneos/: null
+iphoneos0: null
+iphoneos1: null
+iphoneos2: null
+iphoneos3: null
+iphoneos4: null
+iphoneos5: null
+iphoneos6: null
+iphoneos7: null
+iphoneos8: null
+iphoneos9: null
+iphoneos;: null
+ipod_touch/: null
+'irix ': null
+'irix/': null
+irix0: null
+irix1: null
+irix2: null
+irix3: null
+irix4: null
+irix5: null
+irix6: null
+irix7: null
+irix8: null
+irix9: null
+irix;: null
+itunes-appletv/: null
+itunes-ipad/: null
+itunes-iphone/: null
+itunes-ipod/: null
+j2me/midp: null
+java me: null
+java; u; midp: null
+joli os/: null
+jolla: null
+kaios: null
+kali0: null
+kali1: null
+kali2: null
+kali3: null
+kali4: null
+kali5: null
+kali6: null
+kali7: null
+kali8: null
+kali9: null
+kanotix: null
+kepler: null
+kin.one: null
+kin.two: null
+kolibrios: null
+kreatv/: null
+ladybird/: null
+leafos: null
+lem14: null
+librem 5: null
+lindowsos: null
+lineage_: null
+linspire: null
+'linux ': null
+opera tv store/: null
+opera tv/: null
+linux!: null
+linux": null
+linux#: null
+linux$: null
+linux%: null
+linux&: null
+linux': null
+linux(: null
+linux): null
+linux*: null
+linux+: null
+linux,: null
+linux-: null
+linux.: null
+linux/: null
+linux0: null
+linux1: null
+linux2: null
+linux3: null
+linux4: null
+linux5: null
+linux6: null
+linux7: null
+linux8: null
+linux9: null
+'linux:': null
+linux;: null
+linuxos: null
+liri/: null
+loongnix-server/: null
+luneos: null
+mac 0: null
+mac 1: null
+mac 2: null
+mac 3: null
+mac 4: null
+mac 5: null
+mac 6: null
+mac 7: null
+mac 8: null
+mac 9: null
+mac os/: null
+mac powerpc: null
+mac-0: null
+mac-1: null
+mac-2: null
+mac-3: null
+mac-4: null
+mac-5: null
+mac-6: null
+mac-7: null
+mac-8: null
+mac-9: null
+mac_powerpc: null
+macbook: null
+macintosh: null
+macos: null
+maemo: null
+mageia; linux: null
+mandriva linux/: null
+mandriva/: null
+maple 0: null
+maple 1: null
+maple 2: null
+maple 3: null
+maple 4: null
+maple 5: null
+maple 6: null
+maple 7: null
+maple 8: null
+maple 9: null
+maple0: null
+maple1: null
+maple2: null
+maple3: null
+maple4: null
+maple5: null
+maple6: null
+maple7: null
+maple8: null
+maple9: null
+maple_0: null
+maple_1: null
+maple_2: null
+maple_3: null
+maple_4: null
+maple_5: null
+maple_6: null
+maple_7: null
+maple_8: null
+maple_9: null
+meego: null
+messengerforios: null
+messengerliteforios: null
+microsoft bits: null
+microsoft-cryptoapi/: null
+microsoft-delivery-optimization/: null
+microsoft-webdav-miniredir/: null
+microsoft-wns/: null
+midp-1.0/cldc: null
+midp-2.0/cldc: null
+midp-2.1/cldc: null
+mikrotik/: null
+mingw32: null
+mmp/: null
+mobilesafari/: null
+mocordroid: null
+moonos/: null
+morphos: null
+mre/: null
+ms-office; msoffice: null
+msdw: null
+mtk: null
+netbsd: null
+'news-os ': null
+'next ': null
+nintendo 3ds: null
+nintendo ds: null
+nintendo switch: null
+nintendo wii: null
+nitro: null
+nokia: null
+nova; linux: null
+nucleus: null
+oculusbrowser: null
+'omdroid ': null
+'omdroid/': null
+openbsd: null
+openharmony: null
+openvms v: null
+' (linux mips': null
+ordissimo: null
+os rosa; linux: null
+os/2: null
+os=ios;osver=: null
+osf1: null
+osx/0: null
+osx/1: null
+osx/2: null
+osx/3: null
+osx/4: null
+osx/5: null
+osx/6: null
+osx/7: null
+osx/8: null
+osx/9: null
+overcast: null
+palm: null
+pardus/: null
+pc-linux-gnu: null
+pclinuxos/: null
+plasma mobile: null
+playbook: null
+playstation: null
+podbean: null
+podcasts/: null
+podcat: null
+podimo: null
+podkicker: null
+portalgo: null
+post2008server: null
+ppc: null
+profile/midp: null
+qnx: null
+qtopia/: null
+raspbian: null
+red hat enterprise linux server: null
+red os; linux: null
+redhat-linux-gnu: null
+remix mini: null
+remix pro: null
+remixos: null
+revengeos_x2: null
+rex; u;: null
+rhel: null
+rim tablet os: null
+risc os: null
+risc os-nc: null
+risingos: null
+rocky/: null
+roku/: null
+roku4640x/: null
+roku4640x/dvp: null
+roku4640x/pluto: null
+'roku; ap; ': null
+'roku; ui; ': null
+rokubrowser/: null
+rokuos/: null
+rssradio/: null
+s60: null
+sailfish: null
+scientific/: null
+sdk_gphone64_arm64-userdebug: null
+seewoos x86_64: null
+serenityos: null
+series 60: null
+series40: null
+series60: null
+silk-accelerated=: null
+sistema fenix: null
+sles/0: null
+sles/1: null
+sles/2: null
+sles/3: null
+sles/4: null
+sles/5: null
+sles/6: null
+sles/7: null
+sles/8: null
+sles/9: null
+sm-r86: null
+sm-r87: null
+sm-r88: null
+sm-r89: null
+sm-r9: null
+smart tv: null
+smart_tv: null
+samsung;smarttv: null
+smarttv_aft: null
+solaris: null
+sonos/: null
+standalone hmd: null
+star-blade os: null
+'staros ': null
+'staros/': null
+sunos: null
+syllable: null
+symbian: null
+symbian os: null
+symbian/: null
+symbianos: null
+symbos: null
+tbrowser/2.0: null
+threadx: null
+threadx_os: null
+titanos: null
+tivoos/: null
+tizen: null
+tos; linux: null
+turbolinux/: null
+tv store/: null
+tvos 10: null
+tvos 11: null
+tvos 12: null
+tvos 13: null
+tvos 14: null
+tvos 15: null
+tvos 16: null
+tvos 17: null
+tvos 18: null
+tvos 19: null
+tvos 26: null
+tvos 9: null
+tvos/: null
+tvos10: null
+tvos11: null
+tvos12: null
+tvos13: null
+tvos14: null
+tvos15: null
+tvos16: null
+tvos17: null
+tvos18: null
+tvos19: null
+tvos26: null
+tvos9: null
+'ubuntu ': null
+ubuntu-: null
+ubuntu/: null
+uclient-fetch: null
+'ultrix ': null
+unknown-linux-gnu: null
+vectorlinux: null
+vidaa/: null
+vizio smartcast: null
+vizio-dtv: null
+vizios/: null
+watch os,: null
+watch1,1/: null
+watch1,2/: null
+watchos: null
+wds 0: null
+wds 1: null
+wds 2: null
+wds 3: null
+wds 4: null
+wds 5: null
+wds 6: null
+wds 7: null
+wds 8: null
+wds 9: null
+wds/0: null
+wds/1: null
+wds/2: null
+wds/3: null
+wds/4: null
+wds/5: null
+wds/6: null
+wds/7: null
+wds/8: null
+wds/9: null
+wds0: null
+wds1: null
+wds2: null
+wds3: null
+wds4: null
+wds5: null
+wds6: null
+wds7: null
+wds8: null
+wds9: null
+webian: null
+webissimo3: null
+webos/: null
+webos;: null
+webtv/: null
+wetab: null
+wh/0: null
+wh/1: null
+wh/2: null
+wh/3: null
+wh/4: null
+wh/5: null
+wh/6: null
+wh/7: null
+wh/8: null
+wh/9: null
+wh0: null
+wh1: null
+wh2: null
+wh3: null
+wh4: null
+wh5: null
+wh6: null
+wh7: null
+wh8: null
+wh9: null
+whaletv: null
+whatsapp/: null
+win 9x 4.90: null
+win10: null
+win32: null
+win64: null
+win7: null
+win95: null
+win98: null
+windows: null
+winfenix: null
+winhttp: null
+winnt: null
+winnt 10.0: null
+wophone: null
+wv-atv: null
+xblwp7: null
+' xbox': null
+'(xbox': null
+xiino: null
+yunos: null
+zeasn/: null
+zenwalk gnu linux: null
+'zorin os ': null
+"\uBD89\uC740\uBCC4": null

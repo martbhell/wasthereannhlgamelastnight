@@ -1,0 +1,165 @@
+# @0ji-uFfHoaGvxwqY8DTh
+# @0NFXk9WqajoaFy3D1PKB
+- regex: ^@([\d\w\-\|%\=]{20,})$
+  groups: Gibberish
+# %%92d381458c2b9fe3d436c7e9e21ce03cf0873c99aad261fc71e3af1159a42ea%%%
+- regex: ^^%([\d\w\-\|%]{20,})%$
+  groups: Gibberish
+  # *BkhBAAQAqpcr-X2cXpK9OlSjOYP1fppAz_54DhGqKw0ULQiEVp0AAYmAAAAAAABA
+- regex: ^\*([\d\w]{12}-[\d\w]{12,})
+  groups: Gibberish
+# NGC/22.14.0.54 MID/{00000000-0000-0000-0000-000000000000} SID/0UYYWwAAAAA LUE/1.15.1.10 (Windows;10.0;SP0.0;X64;ENU)
+# Symantec/3.00.10.2737 MID/{00000000-0000-0000-0000-000000000000} SID/zIRxWwAAAAA LUE/1.12.5.5 (Windows;6.2;SP0.0;X64;ENC)
+- regex: '([\w\d]+/[\d+\.]+) (?:MID\/.* SID\/.*) (\(Windows.*)'
+  groups: '\g<1> \g<2>'
+
+# N360/22.9.3.13 MID/{xCX4MyatyOnekxRFqX39bDtUkg4} SID/7jiIWwAAAAA SEQ/180829061
+# N360/22.9.3.13 MID/{xCX4MyatyOnekxRFqX39bDtUkg4} SID/7jiIWwAAAAA
+# NS/22.10.0.85 MID/{00000000-0000-0000-0000-000000000000} SID/Aoh4WwAAAAA SEQ/180818310
+- regex: '([\w\d]+/[\d+\.]+)( MID\/.+ SID\/.+)'
+  groups: '\g<1>'
+
+- regex: '(@AUVI@[\d+\.]+;\w+-\w+/[\d+\.]+) (\(\w+; \w+; \w+; (?:\w+ [\d+\.]+)?; (?:\w+ [\d+\.]+)?; )([\w ]+); ; ([\w ]+)(?:.*)'
+  groups: '\g<1> (\g<3>; \g<4>)'
+
+- regex: '((:?EIS|EAV) Update \(\w+; \w+; \w+)(?:.*)'
+  groups: '\g<1>)'
+
+- regex: '(AVG(?:INET16|SETUP|FMW)-WV?\d+H?X+\d+)(?:.*)'
+  groups: '\g<1>'
+
+# ACC_2.00.3019_10DCBCD54296E5C55D3
+# ALU_1.02.3502_1C882B536E6F02E3FCE
+- regex: '([A-Z]+_[\d+\.]+)_(?:.*)'
+  groups: '\g<1>'
+
+# A/6.0.1/samsung/SAMSUNG-SM-G930A/msm8996/unknown/QCX3/s182727395/35550207/4204296470/310|410+310|410/samsung/495892/-/-
+# A/5.1.1/kyocera/KYOCERA-E6560/E6560/AT&T
+# A/8.0.0/Sony/H3123/sdm660/unknown/QCX3/l15563066056580133316/35276709/1722758893/310|410 310|410/Sony/5612/5597/-/2.5/1/M
+# A/7.0/samsung/SM-G935V
+- regex: '^(A\/[\d\.]+\/\w+\/[\w\d\-\#\(\)]+)(?:\/(?:.*)|$)'
+  groups: '\g<1>'
+
+# 1.0,win/6.3.9600,AV/18.4.2338,avl/push/18.4.3895.325,ffl
+- regex: '(\d\.\d,win\/[\d+\.]+,AV)(\/[\d+\.]+)(,avl\/[\w]+)\/.*'
+  groups:  '\g<1>\g<3>'
+
+# UAs starting with OTA or FC3 and containing no spaces or punctuation
+# 30001924uLE8rxqZkFP1XQy5RqGlRVly
+# OTA100503107AC282A850DB733C
+- regex: '^(FC3|OTA)[a-zA-Z0-9]*$'
+  groups: Gibberish
+
+# 471306wp2FvTHfnLdwJIY25Ipa9XszPj
+- regex: '(^\d+)[a-zA-Z0-9]{20,}'
+  groups: Gibberish
+
+# Android 5.1.1
+# Android Client
+- regex: '^Android[ -\.]?([\d\.]+|app|client|sdk|os)$'
+  groups: 'Generic Android'
+
+# ArcGIS.Android-10.2.8-1
+- regex: '^([\w\d ]+)[\. ]?Android[ -]?([\d\.\-]+|client|sdk)$'
+  groups: '\g<1> for Android'
+
+# TalentLMS Android - 3.2.1
+# TalentScout - 45
+- regex: '([\w\d ]+) - [\d\.]+$'
+  groups: '\g<1>'
+
+# build 201, Android
+- regex: '^build \d+,? Android$'
+  groups: 'Generic Android'
+
+# 15.5.41 CFNetwork
+# 15 iOS
+- regex: '^[\d\.,]+ (AppleWebKit|Darwin|CFNetwork|iOS|Dalvik)$'
+  groups: 'Generic \g<1>'
+
+# ios/274 CFNetwork/1121.2.2 Darwin
+- regex: '^(ios|iphone|mobile|client|build)/[\d\.]+ CFNetwork/[\d\.]+ Darwin$'
+  groups: 'Generic iOS'
+
+# 1.146.1.2 - LIVE - Mar 13 2019
+- regex: '^[\d\.]+ - (LIVE).*'
+  groups: '\g<1>'
+
+# 1.172.6_ios_LIVE
+- regex: '^[\d\.]+_[\w]+_(LIVE)$'
+  groups: '\g<1>'
+
+# 2001 AutodeskClient
+# 3.3.5-moat
+- regex: '^[\d\.]+[ -]?(AutodeskClient|moat)$'
+  groups: '\g<1>'
+
+# 1010/42 CFNetwork/978.0.7 Darwin
+- regex: '^[\d\/\.]+ (CFNetwork).*(Darwin)$'
+  groups: '\g<1> \g<2>'
+
+# 500px/852 CFNetwork/1121.2.2 Darwin
+# Blink/8019 CFNetwork/1125.2 Darwin
+# BS2012/1.0.11 CFNetwork/808.2.16 Darwin
+# Chrome/71.0.3578.89 CFNetwork/811.5.4 Darwin
+- regex: '^([\w\d \.]+)/[\d\.]+ CFNetwork/[\d\.]+ Darwin$'
+  groups: '\g<1> for iOS/macOS'
+
+# NGL Client/1.42.0.5 (MAC/13.7.8) [2025-12-15T18:03:20.330-0500]
+# Acrobat/25.1.20756.6 NGL Client/1.41.0.11 (WINDOWS_64/10.0.19045.1) [2025-11-07T18:43:38.494-0500]
+- regex: '^(.*) \[\d{4}-\d{2}-\d{2}T.*\]$'
+  groups: '\g<1>'
+
+# McAfee Mosaic API V1 transmitter_{0FF22259-6698-44C5-8B97-7C0142D4F756}
+# McAfee Mosaic API V1 transmitter_{8C81BB84-AFC2-4650-A5D6-32210944726B}
+- regex: '^(.*)[_\b]\{[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\}$'
+  groups: '\g<1>'
+
+# (UALib 17.6.1; n67sD2NiSxal68Fyd7GZmQ)
+# (UALib 17.9.0; N8PAcVorRNeDC1YkyOPRaA)
+- regex: '^\((UALib (?:\d+[\.\d]+)); \w{22}\)$'
+  groups: '\g<1>'
+
+# (UrbanAirshipLib-android/18.4.2; v2eBPSOLTuWKZKMbP728xA)
+# (UrbanAirshipLib-android/18.6.0; v2eBPSOLTuWKZKMbP728xA)
+- regex: '^\((UrbanAirshipLib(?:-\w+)?/(?:\d+[\.\d]+)); [\w-]{22}\)$'
+  groups: '\g<1>'
+
+# Mozilla/5.0 (iPhone; CPU iPhone OS 18_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148##ad-x-identifier##D93722AE-A9C9-4BDA-A510-8B8D20FC6C00##max-request-count##100
+- regex: '^(.{0,})##ad-x-identifier.*'
+  groups: '\g<1>'
+
+# EveryDollar 2022.04.28 (iPhone; iOS 18.0; UALib 14.4.1; RyMhyeRnTai0-hQLGVTwQg; en_CA)
+# ZillowMap 16.2.0 (iPad; iPadOS 17.1.2; UALib 13.5.6; d0EakHoDShSInIDUFOk7Kg; en_US)
+- regex: '^(.{0,} UALib (?:\d+[\.\d]+)); [\w-]{22};(.*)'
+  groups: '\g<1> \g<2>'
+
+# THDConsumer/7.51.2.2 (iPhone;iOS 18.6.2) DID:F5D7F6ED-FEED-48B9-BD9D-4FF08B6B5586
+# StateFarm/10.138.0 (iOS; 18.5; iPhone13,2; en-US; sf-native; uid:66F64303-DB01-4FCE-A5DC-093C8E112A39)
+# Robinhood/2025.10.0 (com.robinhood.release.Robinhood; build:75258; iOS 18.3.1) Titan/1.0 user:aa4c643b-c506-4b95-8018-f15670aaaf0b
+# POF 25.50.491; (iPad14,2; iPadOS 17.5.1; en-US; g=ON; p=OFF; r=WWAN) C1D09C7D-CE56-4160-A7E5-EAA8F09D2BC5;
+- regex: '^(.{0,})[:/ #\({](?:\w{4,8}-)(?:\w{4,8}-)+(?:\w{4,12})(?: ;|\)|})?'
+  groups: '\g<1> uuid'
+
+# Mozilla/5.0 (iPhone; CPU iPhone OS 17_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Nextdoor v6.169.4 ndact:3cb88f4d-7bb9-4c7f-8873-b8650cb4d2c4 ndactsource:email
+# Mozilla/5.0 (iPhone; CPU iPhone OS 17_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Nextdoor v6.171.4 ndact:a0ae26a9-ebcf-450a-bda9-58f63fba58c7 ndactsource:email
+- regex: '^(.*) ndact:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12} ndactsource:\w+$'
+  groups: '\g<1>'
+
+# Servicing/1.0.27 (5afeb5b9-22e5-4084-bbfc-5ab0f031ca15) [4.8.9290.0;533325]
+# Overmind/1.0.27_(5afeb5b9-22e5-4084-bbfc-5ab0f031ca15)
+# Syncro/1.0.185 (c77d4cce-6714-497e-a2d5-b6a7151eb342)
+- regex: '^(.*)[/ _]\([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\)(?: \[.*\])?$'
+  groups: '\g<1>'
+
+# Robinhood/2024.47.1 (com.robinhood.release.Robinhood; build:70057; iOS 18.1.1) Titan/1.0 user:24cec9e1-ad89-4fa9-8653-0bc0d72c40e1
+- regex: '^(.*) user:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+  groups: '\g<1>'
+
+# DSADownloadBootstrapper/24.6.49.8 (//24.5.40.11/e40709c2-0c40-42db-93a7-3e12a85214b6)
+- regex: '^(.*) \(.*/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\)$'
+  groups: '\g<1>'
+
+# VMware/EUC/Analytics/SDK/6.1.2 platform/iOS appId/52fb9395558d6a6d1b000006 deviceId/90ade8b8-4a09-466d-bf97-ef3dce82255d appVersion/7.22.0
+- regex: '^(.*) deviceId/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12} (.*)$'
+  groups: '\g<1> \g<2>'
