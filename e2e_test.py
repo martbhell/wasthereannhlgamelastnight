@@ -146,7 +146,7 @@ def assert_injson_response(arg, html, test_values):
     try:
         data = json.loads(html)
         assert data["teamdates"].popitem()
-    except (KeyError, AssertionError):
+    except KeyError, AssertionError:
         print(f"popitem of JSON on {host}/{arg} key {test_values} failed")
         if not 6 <= THIS_MONTH <= 9:
             sys.exit(8)
