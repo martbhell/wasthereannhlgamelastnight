@@ -1,7 +1,7 @@
 google/cloud/_storage/__init__.py,sha256=U-DdoOXlKsJ_L33IM6tSYQc_E8Nfe_TfB08LamzFc54,3856
 google/cloud/_storage/__pycache__/__init__.cpython-314.pyc,,
 google/cloud/_storage/__pycache__/gapic_version.cpython-314.pyc,,
-google/cloud/_storage/gapic_version.py,sha256=uw49WQjs_jb70VCplzB2fg45KLnVyQuSK5O9pkwgfWQ,653
+google/cloud/_storage/gapic_version.py,sha256=v5WTacbzPixUqAXWS-d6Lh_PAA8gYwAlibJUNI0sMEE,653
 google/cloud/_storage/py.typed,sha256=ALBViCFg0Ua5g_LiXvtQOFImpA6gvQo2P-zw0uk5xxs,81
 google/cloud/_storage_v2/__init__.py,sha256=5O0QKTGCgTP2DumzejzQClvqgTDhNs3ymkyps9T4QGE,4332
 google/cloud/_storage_v2/__pycache__/__init__.cpython-314.pyc,,
@@ -9,7 +9,7 @@ google/cloud/_storage_v2/__pycache__/_compat.cpython-314.pyc,,
 google/cloud/_storage_v2/__pycache__/gapic_version.cpython-314.pyc,,
 google/cloud/_storage_v2/_compat.py,sha256=RXD5k4f7yyamOftWhdRz1quVsVfthj4LksiCrAdLNDc,10079
 google/cloud/_storage_v2/gapic_metadata.json,sha256=mu2vE4XoI7lfGPSgF9qGcoLgn3FcRU3lUS7LEwLwtzI,6431
-google/cloud/_storage_v2/gapic_version.py,sha256=uw49WQjs_jb70VCplzB2fg45KLnVyQuSK5O9pkwgfWQ,653
+google/cloud/_storage_v2/gapic_version.py,sha256=v5WTacbzPixUqAXWS-d6Lh_PAA8gYwAlibJUNI0sMEE,653
 google/cloud/_storage_v2/py.typed,sha256=ALBViCFg0Ua5g_LiXvtQOFImpA6gvQo2P-zw0uk5xxs,81
 google/cloud/_storage_v2/services/__init__.py,sha256=Au3YSSt9PZB2krvBh-d3VYGmLR4EIld-ZxMuodvt8Rk,600
 google/cloud/_storage_v2/services/__pycache__/__init__.cpython-314.pyc,,
@@ -40,6 +40,7 @@ google/cloud/storage/__pycache__/_grpc_conversions.cpython-314.pyc,,
 google/cloud/storage/__pycache__/_helpers.cpython-314.pyc,,
 google/cloud/storage/__pycache__/_http.cpython-314.pyc,,
 google/cloud/storage/__pycache__/_lru_cache.cpython-314.pyc,,
+google/cloud/storage/__pycache__/_opentelemetry_metrics.cpython-314.pyc,,
 google/cloud/storage/__pycache__/_opentelemetry_tracing.cpython-314.pyc,,
 google/cloud/storage/__pycache__/_signing.cpython-314.pyc,,
 google/cloud/storage/__pycache__/acl.cpython-314.pyc,,
@@ -86,7 +87,7 @@ google/cloud/storage/_experimental/asyncio/retry/reads_resumption_strategy.py,sh
 google/cloud/storage/_experimental/asyncio/retry/writes_resumption_strategy.py,sha256=z19c28DoqeJ0n8OJf0Q4G1OWXtmCVb1uS-cDYKncKDc,407
 google/cloud/storage/_experimental/grpc_client.py,sha256=_R908DK4iviRHLo0RjeEstUU81-OCgHO5LKSanuqn-U,320
 google/cloud/storage/_grpc_conversions.py,sha256=ixppKBMwcyAQJCYCztofBfmReFo-9NMFXd2xS_vMDjA,3561
-google/cloud/storage/_helpers.py,sha256=mnyVodk1MF-LqHellV6DAn1zYJYOKMOIUcgdN1LWzLE,27303
+google/cloud/storage/_helpers.py,sha256=S3QiXz16VZwit62jQhOvnEOiGGc5n7A_6zWUfGUjuwY,27933
 google/cloud/storage/_http.py,sha256=vRc1kxEnOXYqZ5kVbg-UX98wMkQUO376qnXkduxAijk,5820
 google/cloud/storage/_lru_cache.py,sha256=hScYxx4xwCVWSBU5wNx-myFZ-yfFQP6RqLDfMZPlprw,2819
 google/cloud/storage/_media/__init__.py,sha256=V4cS4FUJAI-YiKS36QwpRTwAQy3aE9-Q4u6gRoQz938,1002
@@ -108,6 +109,7 @@ google/cloud/storage/_media/requests/__pycache__/upload.cpython-314.pyc,,
 google/cloud/storage/_media/requests/_request_helpers.py,sha256=B5fJx3n8CR2CoCzNinkzpq8YSTdoQApebjDe6CpLgSk,3350
 google/cloud/storage/_media/requests/download.py,sha256=VK-KUpr-01P0VmQnSrms-9XEI9IIpYhrgX_NsTl6vw8,33656
 google/cloud/storage/_media/requests/upload.py,sha256=3V_ZjIRWeKtKq9-Zi5F9fngqgsZ0tLW2I714wDvlMig,30102
+google/cloud/storage/_opentelemetry_metrics.py,sha256=0Odn9UogXs8RZ7gGnXec9g23Ni11ybc9S7c77RBcEsI,6069
 google/cloud/storage/_opentelemetry_tracing.py,sha256=3yZ5ScNV3-S0I0w9rv_iM79yv27yTrbzGeZ2HUbZBss,5488
 google/cloud/storage/_signing.py,sha256=Th_di_HydNiDuPtJqo07DcKtJ64KaY6mLXHcOFMx8b8,26060
 google/cloud/storage/acl.py,sha256=Oi15IpzsKIjUM3WtBGblbMvCtHphLY7JMFwwhwDySIM,32867
@@ -151,11 +153,11 @@ google/cloud/storage/ip_filter.py,sha256=NJIAkH7pH_yjCONVmpY_vzkXpclOGoxkXwvdG8J
 google/cloud/storage/notification.py,sha256=owWa5QOzf7jcsZlXB9RGTZJKuuFsGoySdimW2x73X7s,16339
 google/cloud/storage/retry.py,sha256=UwFVKi_r8d5G70hvh0Ejq75IS60fr1-UqTwaRwthWts,6927
 google/cloud/storage/transfer_manager.py,sha256=Z6TbkBWSUjhZT5RjcUBZ02EuRukpyBZGwdXqC1p6Hb4,60127
-google/cloud/storage/version.py,sha256=KLeTEF5_PEzJ7azQ-SybYa9YYGJWzVsqlBXSffgtziQ,598
-google_cloud_storage-3.16.0.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
-google_cloud_storage-3.16.0.dist-info/METADATA,sha256=5qEOt_cpudRRH0RnhV98BBgv7AJlJee_GvddGcvA71k,14987
-google_cloud_storage-3.16.0.dist-info/RECORD,,
-google_cloud_storage-3.16.0.dist-info/REQUESTED,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0
-google_cloud_storage-3.16.0.dist-info/WHEEL,sha256=YVMoNqKzERt-wjUZwJ33xBGAwnFl-4cqbYkTtWa4itE,91
-google_cloud_storage-3.16.0.dist-info/licenses/LICENSE,sha256=z8d0m5b2O9McPEK1xHG_dWgUBT6EfBDz6wA0F7xSPTA,11358
-google_cloud_storage-3.16.0.dist-info/top_level.txt,sha256=_1QvSJIhFAGfxb79D6DhB7SUw2X6T4rwnz_LLrbcD3c,7
+google/cloud/storage/version.py,sha256=nEb_Ze09nNUwh_fKsMG9WpeqkTtd9rPeUCe4D4zIwrY,598
+google_cloud_storage-3.17.0.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
+google_cloud_storage-3.17.0.dist-info/METADATA,sha256=UB5-y9A9qocZGFeqZbZV96ayDscqgRfjexkwxJnU8fQ,14987
+google_cloud_storage-3.17.0.dist-info/RECORD,,
+google_cloud_storage-3.17.0.dist-info/REQUESTED,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0
+google_cloud_storage-3.17.0.dist-info/WHEEL,sha256=YVMoNqKzERt-wjUZwJ33xBGAwnFl-4cqbYkTtWa4itE,91
+google_cloud_storage-3.17.0.dist-info/licenses/LICENSE,sha256=z8d0m5b2O9McPEK1xHG_dWgUBT6EfBDz6wA0F7xSPTA,11358
+google_cloud_storage-3.17.0.dist-info/top_level.txt,sha256=_1QvSJIhFAGfxb79D6DhB7SUw2X6T4rwnz_LLrbcD3c,7
