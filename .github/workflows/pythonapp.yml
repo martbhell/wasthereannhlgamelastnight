@@ -13,11 +13,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-      # TODO: Migrate to 3.10 after succesful redeploy with GitHub Actions
-    - name: Set up Python 3.10
+    - name: Set up Python 3.14
       uses: actions/setup-python@v5
       with:
-        python-version: "3.10"
+        python-version: "3.14"
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -141,10 +140,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python 3.10
+    - name: Set up Python 3.14
       uses: actions/setup-python@v5
       with:
-        python-version: "3.10"
+        python-version: "3.14"
     - name: sleep a bit to let things load
       run: "sleep 10"
     - name: update_schedule in testing first
@@ -158,9 +157,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python 3.10
+    - name: Set up Python 3.14
       uses: actions/setup-python@v5
       with:
-        python-version: "3.10"
+        python-version: "3.14"
     - name: e2e_test.py prod too
       run: "python e2e_test.py --host https://wtangy.se"
