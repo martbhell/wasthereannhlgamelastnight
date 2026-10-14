@@ -1,5 +1,5 @@
-../../bin/gunicorn,sha256=Bzz_OyLNHi2ZcoZmNFGS8JoqQa0Y5VuznnquCJZJCqs,202
-../../bin/gunicornc,sha256=b21ph_AzWiiptAOXivTlG_sBGzu0U2rVmWU62ityuiE,200
+../../bin/gunicorn,sha256=DXPop6Nem2h63UIOQWw4lu5ndKpOhBHOBjsIeLRzYXs,198
+../../bin/gunicornc,sha256=zyezDLLeIsnKaH8k89FZoP7q_SSxK8JhfXRHn0i5yKI,196
 gunicorn-26.2.0.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
 gunicorn-26.2.0.dist-info/METADATA,sha256=xBUDGqZvHBEbl8XUEKBeVwZJoyJss0nF7w4Y67msFsU,5544
 gunicorn-26.2.0.dist-info/RECORD,,

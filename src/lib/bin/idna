@@ -1,4 +1,4 @@
-#!/home/johan/miniconda3/envs/wtangy_314/bin/python3.14
+#!/opt/hostedtoolcache/Python/3.14.8/x64/bin/python
 import sys
 from idna.cli import main
 if __name__ == '__main__':
