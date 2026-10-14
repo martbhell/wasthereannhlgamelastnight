@@ -2,7 +2,7 @@ import regex
 from typing import NamedTuple
 
 from ..lazy_regex import RegexLazyIgnore
-from .settings import SKIP_PREFIXES
+from .settings import SKIP_PREFIXES, STRIP_PUNCTUATION
 
 UNICODE_CATEGORIES = r'\p{Geometric_Shapes}\p{Extended_Pictographic}\p{Other_Symbol}'
 NAME_PATTERN = rf'[\w\d{UNICODE_CATEGORIES}\.\-_\'!®\?, \+\&‘’]+'
@@ -62,6 +62,10 @@ NAME_VERSION_REGEXES = (
     # LibreOffice 5.4.3.2 (92a7159f7e4af62137622921e809f8546db437e5; windows; x86;)
     # openoffice.org 3.2 (320m18(build:9502); windows; x86; bundledlanguages=en-us)
     RegexLazyIgnore(rf'^(?P<name>{NAME_PATTERN}) [rv]?(?P<version>[\d\.\-\&\?]+)\b'),
+
+    # <name><colon><space><version> - anchored at the beginning
+    # CoreSync: 7.10.0.1 And Windows 10.0.26200 (Wow32on64)
+    RegexLazyIgnore(rf'^(?P<name>{NAME_PATTERN}): (?P<version>[\d\.\-\&\?]+)'),
 
     # <name><space><version> - anywhere in remainder of string
     # Mozilla/5.0 AppleWebKit/537.36 Mobile Safari/537.36 Android SermonAudio.com 1.9.8, wanting "SermonAudio.com 1.9.8"
@@ -125,12 +129,12 @@ def scrub_name_version_pairs(matches: list[NameVersion]) -> list[CodeNameVersion
     """
     pairs = []
     for name, version in matches:
-        name = name.strip(' -,:')
-        if not name:
-            continue
-
         # does this look like base64 encoded data?
         if name.endswith('=='):
+            continue
+
+        name = name.strip(STRIP_PUNCTUATION).strip()
+        if not name or len(name) < 2:
             continue
 
         name_lower = name.lower()

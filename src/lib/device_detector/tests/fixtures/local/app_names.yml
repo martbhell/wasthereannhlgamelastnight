@@ -718,6 +718,21 @@
   client:
     name: iOS NASCAR
     version: 16.1.1
+-
+  user_agent: Mozilla/5 (iPod; U; CPU iPhone OS 4 like Mac OS X; yue-HK) AppleWebKit/532 (KHTML, like Gecko) Version/3.0.5 Mobile/8B114 Safari/6532
+  client:
+    name: Mobile Safari
+    version: 3.0.5
+-
+  user_agent: Mozilla/5 (iPad; CPU iPad OS 7 like Mac OS X) AppleWebKit/531 (KHTML, like Gecko) CriOS/37 Mobile/68W711 Safari/531
+  client:
+    name: Chrome Mobile iOS
+    version: ''
+-
+  user_agent: Mozilla/5 (iPad; CPU iPad OS 4 like Mac OS X) AppleWebKit/533 (KHTML, like Gecko) FxiOS/14.9m8433.0 Mobile/99U814 Safari/533
+  client:
+    name: Firefox Mobile iOS
+    version: ''
 # --------------------------------------------------------------------------------
 # UA Strings with no interesting pairs should fall back to browser details
 -
@@ -736,3 +751,29 @@
     name: Android Browser
     version: ''
 # --------------------------------------------------------------------------------
+# Facebook Analytics should return App ID that uses the library
+-
+  user_agent: Mozilla/5 (iPad; CPU OS 18 like Mac OS X) AppleWebKit/605 (KHTML, like Gecko) Mobile/15E148 [FBAB/com.itwcalculator.calculatorforipadfree]
+  client:
+    name: com.itwcalculator.calculatorforipadfree
+    version: ''
+-
+  user_agent: Mozilla/5 (iPhone; CPU iPhone OS 18 like Mac OS X) AppleWebKit/605 (KHTML, like Gecko) Mobile/15E148 [FBAB/puzzle.yarn.fever.unravel.puzzle]
+  client:
+    name: puzzle.yarn.fever.unravel.puzzle
+    version: ''
+-
+  user_agent: Mozilla/5 (iPhone; CPU iPhone OS 27 like Mac OS X) AppleWebKit/605 (KHTML, like Gecko) Mobile/24A446 Safari/604 [FBAN/WhatsAppSMBIPhone]
+  client:
+    name: WhatsApp
+    version: ''
+-
+  user_agent: Mozilla/5 (iPhone; CPU iPhone OS 27 like Mac OS X) AppleWebKit/605 (KHTML, like Gecko) Mobile/24A437 Safari/604 [FBAN/FBIOS]
+  client:
+    name: Facebook
+    version: ''
+-
+  user_agent: Mozilla/5 (iPhone; CPU iPhone OS 26 like Mac OS X) AppleWebKit/605 (KHTML, like Gecko) Mobile/23G90 [FBAN/StellaForiOS]
+  client:
+    name: StellaForiOS
+    version: ''
