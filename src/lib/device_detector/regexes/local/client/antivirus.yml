@@ -1,0 +1,41 @@
+###############
+# Supplemental regexes for Device Detector - The Universal Device Detection library for parsing User Agents
+#
+# Copyright (c) 2018 Dave Burkholder, Thinkwell Designs
+# @license http://www.gnu.org/licenses/lgpl.html LGPL v3 or later
+###############
+
+- regex: McAfee \w+ Transmitter
+  name: McAfee
+  version:
+
+- regex: McAfee Mosaic API
+  name: McAfee
+
+- regex: ^cis_([\d\.]+)_
+  name: Comodo Internet Security
+  version: '\g<1>'
+
+- regex: AV/,,ffl$
+  name: Avast
+  version: ''
+
+- regex: Avast!? (Antivirus|curl|SimpleHttp|NCC|Emergency|TUNEUP)
+  name: Avast
+  version:
+
+- regex: AV/(\d+[\.\d]+)
+  name: Avast
+  version: '\g<1>'
+
+- regex: CCleaner, ?(\d+[\.\d]+)
+  name: CCleaner
+  version: '\g<1>'
+
+- regex: panda ?security ?nano
+  name: Panda Security Nano
+  version: ''
+
+- regex: sophos autoupdate
+  name: Sophos Autoupdate
+  version: ''

@@ -1,0 +1,65 @@
+- uaname: com.google.maps
+  name: Google Maps
+- uaname: osmand
+  suffix: maps
+  name: OsmAnd Maps
+- uaname: mapboxgl
+  name: Mapbox GL
+- uaname: mapquest
+  name: MapQuest
+- uaname: maps
+  name: Maps
+- uaname: maps.me
+  name: maps.me
+- uaname: mapssupport
+  name: Maps Support
+- uaname: maps_weatherfoundation
+  name: Maps Weather Foundation
+- uaname: mapulator
+  name: Mapulator
+- uaname: mapwidget
+  name: Map Widget
+- uaname: com.google.android.apps.navlite
+  name: Google Maps
+- uaname: com.google.android.apps.mapslite
+  name: Google Maps
+- uaname: com.google.android.apps.searchlite
+  name: Google Go Search
+- uaname: com.google.android.apps.maps
+  name: Google Maps
+- uaname: com.google.earth
+  name: Google Earth
+- uaname: com.apple.maps
+  name: Apple Maps
+- uaname: google earth
+  name: Google Earth
+- uaname: google maps
+  name: Google Maps
+- uaname: Windows Maps
+  name: Windows Maps
+- uaname: com.ansangha.drdriving
+  name: Dr. Driving
+- uaname: gaiagps
+  name: GAIA GPS
+- uaname: truckmap
+  name: Truck Map
+- uaname: azdev.citymapper
+  name: Citymapper - the Ultimate Transit App
+- uaname: app.TractorGPS
+  name: Tractor GPS
+- uaname: com.blocoware.speedometer
+  name: Speedometer 55
+- uaname: com.fleetcomplete.vision2
+  name: Unity VisionAI
+- uaname: com.garmin
+  suffixes: .connect.mobile|.explore
+  name: Garmin
+- uaname: connect for garmin
+  name: Connect for Garmin
+- uaname: com.rvlife.rvlife
+  name: RV Life - RV GPS & Campgrounds
+- uaname: com.waze
+  suffixes: .iphone
+  name: Waze Navigation & Live Traffic
+- uaname: com.chimani.parks.free
+  name: National Park Guides

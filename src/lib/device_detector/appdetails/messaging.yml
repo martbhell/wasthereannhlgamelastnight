@@ -1,0 +1,104 @@
+###############
+# App Name / Type details for Device Detector - The Universal Device Detection library for parsing User Agents
+#
+# Copyright (c) 2019 Dave Burkholder, Thinkwell Designs
+# @license http://www.gnu.org/licenses/lgpl.html LGPL v3 or later
+###############
+
+- uaname: mattermost
+  name: Mattermost
+- uaname: x-lite
+  name: X-Lite Softphone
+- uaname: zoiperpremium
+  name: Zoiper Premium Softphone
+- uaname: textme
+  name: TextMe
+- uaname: com.tencent.mm
+  name: WeChat
+- uaname: com.snapchat.android
+  name: Snapchat
+- uaname: in.mohalla.sharechat
+  name: ShareChat Trends Videos & Live
+- uaname: com.sgiggle.production
+  name: Tango- Live Stream, Video Chat
+- uaname: org.telegram.messenger
+  name: Telegram
+- uaname: com.instagram.android
+  name: Instagram
+- uaname: app.beerbuddy
+  suffixes: .android|.ios
+  name: Beer Buddy - Friends Alerts
+- uaname: com.wigle.chat
+  name: Wigle Random Video Сhat
+
+- uaname: com.google.android.apps.dynamite
+  name: Google Сhat
+- uaname: Hangouts
+  name: Google Hangouts
+- uaname: com.google.hangouts
+  suffixes: _ios
+  name: Google Hangouts
+
+- uaname: com.groupme.iphone-app
+  name: GroupMe
+- uaname: com.messengerx
+  name: MessengerX
+
+# Signal
+- uaname: signal
+  name: Signal Private Messenger
+- uaname: signal-ios
+  name: Signal Private Messenger
+- uaname: org.thoughtcrime.securesms
+  name: Signal Private Messenger
+
+# Telegram
+- uaname: com.tele.messanger
+  name: Telegram Messenger
+- uaname: org.telegram.messenger
+  name: Telegram Messenger
+- uaname: com.telegrammer
+  name: Telegram Messenger
+- uaname: TelegramTool
+  name: Telegram Messenger
+- uaname: Telegram
+  name: Telegram Messenger
+- uaname: TelegramLite
+  name: Telegram Messenger
+- uaname: ios-telegram
+  name: Telegram Messenger
+- uaname: TelegramChannelHub
+  name: Telegram Channel Hub
+
+# WhatsApp
+- uaname: com.whatsapp
+  suffixes: .w4b
+  name: WhatsApp
+- uaname: WhatsApp
+  name: WhatsApp
+- uaname: WhatsAppDesktop
+  name: WhatsApp
+- uaname: Messenger for WhatsApp
+  name: WhatsApp
+- uaname: WatchsApp for WhatsApp
+  name: WhatsApp
+- uaname: WhatsApp Business
+  name: WhatsApp
+- uaname: WAChat
+  name: WhatsApp
+- uaname: WAChat
+  name: WhatsApp
+- uaname: WatchsApp for Whatsapp
+  name: WhatsApp
+- uaname: Dual Whatsapp
+  name: WhatsApp
+- uaname: WhatsAppTee
+  name: WhatsApp
+- uaname: Chat for WhatsApp
+  name: WhatsApp
+- uaname: Guide for WhatsApp
+  name: WhatsApp
+- uaname: Groups for WhatsApp
+  name: WhatsApp
+- uaname: Memes for WhatsApp
+  name: WhatsApp
