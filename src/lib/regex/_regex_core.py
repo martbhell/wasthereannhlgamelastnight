@@ -708,7 +708,7 @@ def parse_cost_constraint(source, constraints):
             if not max_inc:
                 max_cost -= 1
 
-            if max_cost < 0:
+            if not 0 <= max_cost <= 0xFFFFFFFF:
                 raise error("bad fuzzy cost limit", source.string, cost_pos)
 
             constraints[constraint] = 0, max_cost
@@ -798,7 +798,7 @@ def parse_cost_equation(source, constraints):
     if not max_inc:
         max_cost -= 1
 
-    if max_cost < 0:
+    if not 0 <= max_cost <= 0xFFFFFFFF:
         raise error("bad fuzzy cost limit", source.string, source.pos)
 
     cost["max"] = max_cost
@@ -2066,6 +2066,17 @@ class AnyAll(Any):
         self.case_flags = 0
 
         self._key = self.__class__, self.positive
+
+    def with_flags(self, positive=None, case_flags=None, zerowidth=None):
+        new = AnyAll()
+        if positive is not None:
+            new.positive = positive
+        if zerowidth is not None:
+            new.zerowidth = zerowidth
+        return new
+
+    def optimise(self, info, reverse, in_set=False):
+        return self
 
 class AnyU(Any):
     _opcode = {False: OP.ANY_U, True: OP.ANY_U_REV}
@@ -4356,6 +4367,9 @@ class Info:
     "Info about the regular expression."
 
     def __init__(self, flags=0, char_type=None, kwargs={}):
+        if (flags & _ALL_VERSIONS) == _ALL_VERSIONS:
+            raise ValueError("VERSION0 and VERSION1 flags are mutually incompatible")
+
         flags |= DEFAULT_FLAGS[(flags & _ALL_VERSIONS) or DEFAULT_VERSION]
         self.flags = flags
         self.global_flags = flags
