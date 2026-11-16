@@ -4408,6 +4408,34 @@ thing
         # Git PR 585: Fix AttributeError: 'AnyAll' object has no attribute '_key'
         self.assertEqual(bool(regex.compile('(?:[\\S\\s]|[A-D][M-Z])')), True)
 
+        # Git issue 629: SEGV (NULL pointer dereference) in Match.fuzzy_changes with POSIX+ASCII+IGNORECASE flags
+        self.assertEqual(regex.match("..{e}", "a", flags=regex.POSIX | regex.ASCII | regex.IGNORECASE).fuzzy_changes, ([], [], [1]))
+
+        # Git issue 630: RuntimeError: invalid RE code for a fuzzy limit of 2**32 or more
+        self.assertRaises(regex.error, lambda: regex.compile("a{e<=4294967296}"))
+
+        # Git issue 631: RuntimeError: invalid RE code when searching with (?r:(())a\G){i<2}
+        self.assertEqual(regex.search(r"(?r:\Ga){i<2}", "The quick brown fox"), None)
+        self.assertEqual(regex.search(r"(?r:a\G){i<2}", "The quick brown fox"), None)
+
+        # Git issue 632: AttributeError: 'AnyAll' object has no attribute 'rebuild' for [^\d\D] with IGNORECASE
+        self.assertEqual(bool(regex.compile(r"(?i)[^\d\D]")), True)
+
+        # Git issue 633: TypeError from optimise() (unexpected keyword 'in_set') for (?V1)[a&&[\PL\pL]] with IGNORECASE
+        self.assertEqual(bool(regex.compile(r"(?V1)[a&&[\PL\pL]]")), True)
+        self.assertEqual(bool(regex.compile(r"(?V1)[a&&[\PL\pL]]", regex.IGNORECASE)), True)
+
+        # PR 635: Fix out-of-bounds read in the partial-match string search
+        self.assertEqual(regex.search("abcde" * 5, "xy", partial=True).span(), (2, 2))
+        self.assertEqual(regex.search("(?i)" + "abcde" * 5, "xy", partial=True).span(), (2, 2))
+        self.assertEqual(regex.search("(?r)" + "abcde" * 5, "xy", partial=True).span(), (0, 0))
+        self.assertEqual(regex.search("(?ri)" + "abcde" * 5, "xy", partial=True).span(), (0, 0))
+        self.assertEqual(regex.search("abcde" * 5, "zzabc", partial=True).span(), (2, 5))
+        self.assertEqual(regex.search("(?r)" + "abcde" * 5, "cdezz", partial=True).span(), (0, 3))
+
+        # Git issue 636: \X splits Indic conjuncts since 2026.11.7 (GB9c never applies)
+        self.assertEqual([m for m in regex.findall(r"\X", "\u0915\u094D\u0937")], ["\u0915\u094D\u0937"])
+
     def test_fuzzy_ext(self):
         self.assertEqual(bool(regex.fullmatch(r'(?r)(?:a){e<=1:[a-z]}', 'e')),
           True)
